@@ -3,7 +3,6 @@ import pandas as pd
 import requests
 import json
 import re
-import time
 import concurrent.futures
 import xml.etree.ElementTree as ET
 from urllib.parse import urlparse, urljoin, quote_plus
@@ -61,144 +60,145 @@ def search_organizations(industry, location_input, keyword_tags=None, max_pages=
     url = "https://api.apollo.io/v1/organizations/search"
     headers = {'Content-Type': 'application/json', 'X-Api-Key': APOLLO_API_KEY}
     all_orgs = []
-
     for page in range(1, max_pages + 1):
-        payload = {
-            "organization_locations": [location_input],
-            "page": page,
-            "per_page": 100,
-        }
+        payload = {"organization_locations": [location_input], "page": page, "per_page": 100}
         if industry:
             payload["q_organization_industries"] = [industry]
         if keyword_tags:
             payload["q_organization_keyword_tags"] = keyword_tags
-
         try:
             response = requests.post(url, headers=headers, json=payload, timeout=15)
-            if response.status_code != 200:
-                break
+            if response.status_code != 200: break
             orgs = response.json().get('organizations', [])
-            if not orgs:
-                break
+            if not orgs: break
             all_orgs.extend(orgs)
-            if len(orgs) < 100:
-                break
-        except:
-            break
-
+            if len(orgs) < 100: break
+        except: break
     return all_orgs
 
 def is_buyable_structure(org, mode):
     """
-    Mode A (Buy/Strict): private, non-PE, ≤5,000 employees.
-    Mode B (Loose): non-public, ≤10,000 employees.
-    Both modes block obviously non-acquirable entities.
+    Mode A (Buy): block explicitly public companies, explicit subsidiaries, and
+    PE/VC-backed firms. Soft employee cap.
+    Mode B (Sell/Scout): minimal blocking — only filter genuine mega-corps that
+    could never be an acquisition or relevant partner. No public/private filter
+    because large health systems are valid sell-side partners.
     """
     emp_count = org.get('estimated_num_employees', 0) or 0
-    status = str(org.get('ownership_status', '')).lower()
-    tags = [t.lower() for t in org.get('keywords', [])]
+    # Use exact equality so 'non_profit_public', 'publicly_traded_subsidiary', etc.
+    # do NOT accidentally get filtered out. Apollo's status field is inconsistent.
+    raw_status = str(org.get('ownership_status') or '').strip().lower()
+    tags = [t.lower() for t in (org.get('keywords') or [])]
 
     if mode == 'A':
-        if 'public' in status: return False, "Publicly Traded"
-        if 'subsidiary' in status: return False, "Subsidiary"
-        if 'private equity' in tags or 'venture capital' in tags: return False, "PE/VC Backed"
-        if emp_count > 5000: return False, f"Too Large ({emp_count} employees)"
-    else:  # Mode B — still block public giants
-        if 'public' in status: return False, "Publicly Traded"
-        if emp_count > 10000: return False, f"Too Large ({emp_count} employees)"
+        if raw_status == 'public':
+            return False, "Publicly Traded"
+        if raw_status == 'subsidiary':
+            return False, "Subsidiary"
+        if 'private equity' in tags or 'venture capital' in tags:
+            return False, "PE/VC Backed"
+        if emp_count > 7500:
+            return False, f"Too Large ({emp_count} employees)"
+    else:
+        # Mode B: only block true mega-corps (Compass Group 293k, etc.)
+        if emp_count > 100000:
+            return False, f"Too Large ({emp_count} employees)"
 
     return True, "Valid Structure"
 
+# Name fragments that indicate the company is never a valid target in ANY niche.
+# NOTE: We deliberately do NOT filter on Apollo keyword *tags* because Apollo
+# frequently mis-tags legitimate operators with 'technology', 'software', etc.
+_UNIVERSAL_NAME_BLOCKS = [
+    'university', 'college', 'food service', 'catering',
+    'staffing solutions', 'temp agency',
+]
+
 def is_obvious_mismatch(org, target_niche, mode):
     """
-    Universal poison pills apply to every search regardless of mode.
-    Mode A adds additional sector-based pills.
+    Name-only blocking. Tag-based filtering is intentionally removed:
+    Apollo keyword tags are unreliable and cause too many false eliminations
+    (e.g., a PACE operator tagged 'health information technology').
     """
-    name = (org.get('name') or "").lower()
-    tags = [t.lower() for t in org.get('keywords', [])]
+    name = (org.get('name') or '').lower()
 
-    # Always filter — these are never valid acquisition targets for any niche
-    universal_poison = [
-        'university', 'college', ' labs', 'analytics',
-        'food service', 'catering', 'staffing', 'recruiting',
-    ]
-    for p in universal_poison:
-        if p in name: return True, f"Universal Mismatch ('{p}')"
+    for fragment in _UNIVERSAL_NAME_BLOCKS:
+        if fragment in name:
+            return True, f"Name block: '{fragment}'"
 
     if mode == 'B':
         return False, "Pass (Mode B)"
 
-    # Mode A: filter pure service-to-industry companies (not operators)
-    poison = ['consulting', 'software', 'technology', 'saas', 'billing',
-              'platform', 'marketing', 'agency']
-
-    # Architecture-specific additions (applied dynamically)
-    if "architect" in target_niche.lower():
-        poison.extend(['realty', 'real estate', 'tax', 'accounting', 'legal', 'law',
-                       'supplies', 'material', 'wood', 'lumber', 'golf', 'naval', 'marine'])
-
-    for p in poison:
-        if p in name: return True, f"Bad Name ('{p}')"
-        if p in tags: return True, f"Bad Tag ('{p}')"
+    # Mode A: a few extra name signals that indicate service-TO-industry, not operator
+    mode_a_extras = ['consulting group', 'advisory group', ' billing', 'software inc', 'software llc']
+    if 'architect' in target_niche.lower():
+        mode_a_extras += ['realty', 'real estate', 'lumber', 'golf course', 'naval architect']
+    for fragment in mode_a_extras:
+        if fragment in name:
+            return True, f"Name block (A): '{fragment}'"
 
     return False, "Pass"
 
 def check_relevance_gpt4o(company_name, description, keywords, target_niche, mode):
     """
-    Mode A: strict — must be a direct or closely adjacent operator in the niche.
-    Mode B: medium — must be in the same broad industry sector as the niche.
-    Prompts are fully generalized — no hardcoded niche examples or company names.
+    Mode A — strict: must be a direct operator or closely adjacent operator.
+              Accept adjacent niches liberally; only hard-reject clear misfits.
+    Mode B — loose: must be in the same broad industry ecosystem.
+              Accept health systems, insurers, pharma, etc. Only reject companies
+              that are genuinely in an unrelated industry.
     """
     if mode == 'A':
-        prompt = f"""
-You are helping a private equity investor find founder-owned businesses to acquire in this niche:
+        prompt = f"""You are helping a private equity investor identify companies to ACQUIRE in this niche:
 "{target_niche}"
 
-Candidate company: "{company_name}"
+Company: "{company_name}"
 Description: "{description}"
 Keywords: {keywords}
 
-Question: Is this company a DIRECT OPERATOR or a closely adjacent operator in the niche above?
+Evaluate whether this company is a direct operator OR a closely adjacent operator that could be acquired or is in the same sector.
 
-Rules:
-- YES if the company directly delivers the core service or product of the niche.
-- YES if the company operates in a closely adjacent sub-sector of the same niche.
-- NO if it is a consulting firm, software/technology vendor, billing service, or staffing agency
-  that serves the industry rather than operating within it.
-- NO if it is a supplier of equipment or materials to the industry.
-- NO if it is clearly in a completely different industry sector.
-- NO if it appears to be a large enterprise (national chain, health system, university, etc.)
-  that would not be a realistic private acquisition target.
-- If the description is empty, evaluate the COMPANY NAME carefully against the niche. If the name
-  is consistent with the niche, say YES. If the name suggests a different business, say NO.
+PASS (match=true) if:
+- The company directly delivers care, services, or products in the niche
+- The company operates in a closely adjacent sub-sector (e.g., for elderly care niches also pass: adult day health, home health, assisted living, senior living, memory care, disability services, managed care for elderly/disabled populations)
+- The company name clearly suggests a care operator even if the description is sparse
 
-Answer ONLY with JSON: {{ "match": true/false, "reason": "one-sentence reason" }}
-"""
+FAIL (match=false) only if clearly one of these:
+- A large regional/national health system or hospital network
+- A pure software, EMR, or analytics vendor with no care delivery
+- A consulting, billing, or administrative outsourcing firm
+- An insurance carrier that does NOT deliver direct care
+- Completely unrelated industry (finance, construction, retail, food, etc.)
+
+If you are uncertain, return match=true.
+Answer ONLY with JSON: {{"match": true/false, "reason": "one sentence"}}"""
+
     else:
-        prompt = f"""
-You are helping evaluate companies for relevance to the following niche:
+        prompt = f"""You are mapping the industry ecosystem around this niche:
 "{target_niche}"
 
-Candidate company: "{company_name}"
+Company: "{company_name}"
 Description: "{description}"
 Keywords: {keywords}
 
-Question: Is this company in the same broad industry sector as the niche, and plausibly relevant
-as an operator or direct service provider?
+Is this company part of the healthcare or health-services ecosystem broadly?
 
-Rules:
-- YES if the company operates in the same sector or a genuinely adjacent sub-sector.
-- YES if the company provides direct services within the niche industry (not just software or
-  consulting to the industry).
-- NO if it is primarily a software, analytics, or technology company serving the industry.
-- NO if it is a staffing firm, consulting company, or administrative services provider.
-- NO if it is a large institution (hospital system, university, national chain) that would not
-  be a realistic acquisition or partnership target.
-- NO if it is clearly in a completely unrelated industry.
-- When genuinely uncertain about a company that appears to be in the same sector, lean YES.
+PASS (match=true) for:
+- Any care provider, clinic, hospital, health system, senior care, home health, behavioral health, rehab, therapy, hospice
+- Managed care, insurance, or payer organizations in the health sector
+- Pharma, biotech, medical devices, diagnostics companies
+- Health IT or services companies whose PRIMARY market is healthcare
+- Companies that clearly sell into or operate within the healthcare sector
 
-Answer ONLY with JSON: {{ "match": true/false, "reason": "one-sentence reason" }}
-"""
+FAIL (match=false) for:
+- Software/analytics companies whose primary customers are NOT in healthcare (e.g., general business analytics)
+- Food service, catering, or facilities management companies
+- Staffing or temp employment agencies
+- Universities or academic research institutions
+- Companies clearly in construction, retail, finance, entertainment, or other non-health sectors
+
+When uncertain, return match=true.
+Answer ONLY with JSON: {{"match": true/false, "reason": "one sentence"}}"""
+
     try:
         response = client.chat.completions.create(
             model="gpt-4o",
@@ -211,22 +211,6 @@ Answer ONLY with JSON: {{ "match": true/false, "reason": "one-sentence reason" }
     except:
         return True, "AI Error"
 
-def is_buyable_structure(org, mode):
-    emp_count = org.get('estimated_num_employees', 0) or 0
-    status = str(org.get('ownership_status', '')).lower()
-    tags = [t.lower() for t in org.get('keywords', [])]
-
-    if mode == 'A':
-        if 'public' in status: return False, "Publicly Traded"
-        if 'subsidiary' in status: return False, "Subsidiary"
-        if 'private equity' in tags or 'venture capital' in tags: return False, "PE/VC Backed"
-        if emp_count > 5000: return False, f"Too Large ({emp_count} employees)"
-    else:
-        if 'public' in status: return False, "Publicly Traded"
-        if emp_count > 10000: return False, f"Too Large ({emp_count} employees)"
-
-    return True, "Valid Structure"
-
 def firecrawl_scrape(url):
     api_url = "https://api.firecrawl.dev/v1/scrape"
     headers = {"Authorization": f"Bearer {FIRECRAWL_API_KEY}", "Content-Type": "application/json"}
@@ -238,8 +222,7 @@ def firecrawl_scrape(url):
             markdown = (data.get('data') or {}).get('markdown') or data.get('markdown')
             if markdown:
                 return markdown[:50000]
-    except:
-        pass
+    except: pass
     return None
 
 def extract_relevant_links(markdown_text, base_url):
@@ -251,7 +234,7 @@ def extract_relevant_links(markdown_text, base_url):
     candidates = []
     for text, link in links:
         score = 0
-        t, l = text.lower(), link.lower()
+        t = text.lower()
         if any(x in t for x in high): score = 3
         elif any(x in t for x in med): score = 1
         if score > 0:
@@ -267,8 +250,7 @@ def extract_relevant_links(markdown_text, base_url):
     return final[:4]
 
 def extract_names_openai(text, company_name):
-    prompt = f"""
-Analyze the text from the website of "{company_name}".
+    prompt = f"""Analyze the text from the website of "{company_name}".
 
 1. Identify the PRIMARY LEADER (CEO, Owner, Founder, President, Principal, Administrator, Executive Director, Medical Director).
 2. Extract any contact email address visible on the page.
@@ -281,10 +263,9 @@ Rules:
 - phone: A phone number found on the page, "None" if not found.
 
 Return JSON only:
-{{ "name": "John Doe", "title": "CEO", "email": "john@example.com", "phone": "704-555-1234" }}
+{{"name": "John Doe", "title": "CEO", "email": "john@example.com", "phone": "704-555-1234"}}
 
-Text: {text[:15000]}
-"""
+Text: {text[:15000]}"""
     try:
         response = client.chat.completions.create(
             model="gpt-4o",
@@ -293,8 +274,7 @@ Text: {text[:15000]}
             timeout=20,
         )
         return json.loads(response.choices[0].message.content)
-    except:
-        return None
+    except: return None
 
 def clean_company_name_for_search(name):
     if not name: return ""
@@ -313,31 +293,25 @@ def get_people_apollo_robust(company_name, domain):
         try:
             res = requests.post(url, headers=headers,
                                 json={"q_organization_domains": [domain],
-                                      "person_seniority": c_suite_seniority,
-                                      "per_page": 10}, timeout=10)
+                                      "person_seniority": c_suite_seniority, "per_page": 10}, timeout=10)
             if res.status_code == 200:
                 people = res.json().get('people', [])
-                if people:
-                    return people
-        except:
-            pass
+                if people: return people
+        except: pass
         try:
             res = requests.post(url, headers=headers,
                                 json={"q_organization_domains": [domain], "per_page": 35}, timeout=10)
             if res.status_code == 200:
                 return res.json().get('people', [])
-        except:
-            pass
+        except: pass
     else:
         try:
             res = requests.post(url, headers=headers,
                                 json={"q_organization_names": [clean_name],
-                                      "person_seniority": c_suite_seniority,
-                                      "per_page": 10}, timeout=10)
+                                      "person_seniority": c_suite_seniority, "per_page": 10}, timeout=10)
             if res.status_code == 200:
                 return res.json().get('people', [])
-        except:
-            pass
+        except: pass
     return []
 
 def select_best_apollo_contact(people):
@@ -374,24 +348,17 @@ def repair_single_name(first_name, people_list):
     return None
 
 def get_latest_news_link(company_name, city=None):
-    query = company_name
-    if city:
-        query = f"{company_name} {city}"
+    query = f"{company_name} {city}" if city else company_name
     rss_url = f"https://news.google.com/rss/search?q={quote_plus(query)}&hl=en-US&gl=US&ceid=US:en"
     try:
         res = requests.get(rss_url, timeout=10, headers={"User-Agent": "Mozilla/5.0"})
-        if res.status_code != 200:
-            return None, None
+        if res.status_code != 200: return None, None
         root = ET.fromstring(res.content)
         items = root.findall('./channel/item')
-        if not items:
-            return None, None
+        if not items: return None, None
         first = items[0]
-        title = first.findtext('title') or ""
-        link = first.findtext('link') or ""
-        return title.strip(), link.strip()
-    except:
-        return None, None
+        return (first.findtext('title') or "").strip(), (first.findtext('link') or "").strip()
+    except: return None, None
 
 def bulk_enrich_names(people_list, domain):
     if not people_list or not domain: return []
@@ -405,35 +372,28 @@ def bulk_enrich_names(people_list, domain):
             timeout=15,
         )
         return res.json().get('matches', [])
-    except:
-        return []
+    except: return []
 
 # --- MULTI-THREADED WORKER ---
 def process_single_company(org, specific_niche, strat_code):
     comp_name = org.get('name')
 
-    # 1. STRUCTURE CHECK
-    is_valid, reason = is_buyable_structure(org, strat_code)
+    is_valid, _ = is_buyable_structure(org, strat_code)
     if not is_valid: return None
 
-    # 2. POISON PILLS
-    is_bad, reason = is_obvious_mismatch(org, specific_niche, strat_code)
+    is_bad, _ = is_obvious_mismatch(org, specific_niche, strat_code)
     if is_bad: return None
 
-    # 3. AI GATEKEEPER
     desc = org.get('short_description') or org.get('headline') or ""
     tags = org.get('keywords') or []
-    is_relevant, reason = check_relevance_gpt4o(comp_name, desc, tags, specific_niche, strat_code)
+    is_relevant, _ = check_relevance_gpt4o(comp_name, desc, tags, specific_niche, strat_code)
     if not is_relevant: return None
 
     domain = clean_domain(org.get('website_url'))
     row = {
-        "Company": comp_name,
-        "Website": org.get('website_url'),
-        "City": org.get('city'),
-        "State": org.get('state'),
-        "LinkedIn": org.get('linkedin_url'),
-        "Employees": org.get('estimated_num_employees'),
+        "Company": comp_name, "Website": org.get('website_url'),
+        "City": org.get('city'), "State": org.get('state'),
+        "LinkedIn": org.get('linkedin_url'), "Employees": org.get('estimated_num_employees'),
         "CEO/Owner Name": "N/A", "Title": "N/A", "Email": "N/A", "Phone": "N/A",
         "Source": "Pending", "Notes": "", "Confidence": "Low", "Latest News": "N/A"
     }
@@ -443,12 +403,10 @@ def process_single_company(org, specific_niche, strat_code):
     web_email = None
     web_phone = None
 
-    # 4. WEB SPIDER
     if domain:
         home_url = f"https://{domain}"
         queue = [home_url]
         visited = set()
-
         for url in queue[:6]:
             if url in visited: continue
             visited.add(url)
@@ -456,13 +414,9 @@ def process_single_company(org, specific_niche, strat_code):
             if content:
                 ai_data = extract_names_openai(content, comp_name)
                 if ai_data:
-                    extracted_email = ai_data.get('email')
-                    extracted_phone = ai_data.get('phone')
-                    if extracted_email and extracted_email != "None":
-                        web_email = extracted_email
-                    if extracted_phone and extracted_phone != "None":
-                        web_phone = extracted_phone
-
+                    e = ai_data.get('email'); p = ai_data.get('phone')
+                    if e and e != "None": web_email = e
+                    if p and p != "None": web_phone = p
                     name = ai_data.get('name', 'None')
                     if name and name != "None":
                         if " " in name and len(name) > 3:
@@ -478,11 +432,9 @@ def process_single_company(org, specific_niche, strat_code):
                             if repaired:
                                 found_person = repaired
                                 row['Source'] = "Web -> Repaired"; break
-                links = extract_relevant_links(content, url)
-                for l in links:
-                    if l not in visited: queue.insert(1, l)
+                for lnk in extract_relevant_links(content, url):
+                    if lnk not in visited: queue.insert(1, lnk)
 
-    # 5. APOLLO BACKUP
     if not found_person:
         if not apollo_cache: apollo_cache = get_people_apollo_robust(comp_name, domain)
         best, method = select_best_apollo_contact(apollo_cache)
@@ -490,7 +442,6 @@ def process_single_company(org, specific_niche, strat_code):
             found_person = best
             row['Source'] = method
 
-    # 6. ENRICH & SAVE
     if found_person:
         row['CEO/Owner Name'] = f"{found_person.get('first_name', '')} {found_person.get('last_name', '')}".strip()
         row['Title'] = found_person.get('title') or 'N/A'
@@ -502,21 +453,17 @@ def process_single_company(org, specific_niche, strat_code):
                 row['Confidence'] = "High"
         elif "Apollo" in row['Source']:
             row['Confidence'] = "Medium"
-
         apollo_email = found_person.get('email')
         row['Email'] = apollo_email if apollo_email else (web_email or 'N/A')
-
         pnums = found_person.get('phone_numbers', [])
         apollo_phone = pnums[0].get('sanitized_number') if pnums else None
         row['Phone'] = apollo_phone if apollo_phone else (web_phone or 'N/A')
-
         if found_person.get('notes'): row['Notes'] = found_person.get('notes')
     else:
         row['CEO/Owner Name'] = 'N/A'
         if web_email: row['Email'] = web_email
         if web_phone: row['Phone'] = web_phone
 
-    # 7. LATEST NEWS
     news_title, news_url = get_latest_news_link(comp_name, org.get('city'))
     if news_url:
         row['Latest News'] = f"{news_title} | {news_url}" if news_title else news_url
@@ -561,12 +508,12 @@ with st.form("sourcing_form"):
     col3, col4 = st.columns(2)
     target_geo = col3.text_input("3. Geography", value="North Carolina, United States")
     mode = col4.selectbox("4. Strategy", [
-        "A - Buy/Private (Strict — direct operators only, private, ≤5,000 employees)",
-        "B - Sell/Any (Healthcare-Filtered — same sector, non-public, ≤10,000 employees)"
+        "A - Buy/Private (Strict — operators only, private, ≤7,500 employees)",
+        "B - Sell/Scout (Broad — full healthcare ecosystem, all sizes)"
     ])
 
     apollo_keywords_raw = st.text_input(
-        "5. Apollo Keywords (optional — comma-separated terms to narrow the search within the industry above)",
+        "5. Apollo Keywords (optional — comma-separated terms to narrow the Apollo search)",
         value="",
         placeholder="e.g. PACE, elderly care, adult day care"
     )
@@ -594,15 +541,12 @@ if submitted:
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
             futures = {executor.submit(process_single_company, org, specific_niche, strat_code): org for org in orgs}
-
             for i, future in enumerate(concurrent.futures.as_completed(futures)):
                 result = future.result()
                 if result:
                     final_data.append(result)
-
-                progress = (i + 1) / len(orgs)
-                progress_bar.progress(progress)
-                status_text.caption(f"Processed {i+1}/{len(orgs)} companies | {len(final_data)} passed filters so far...")
+                progress_bar.progress((i + 1) / len(orgs))
+                status_text.caption(f"Processed {i+1}/{len(orgs)} | {len(final_data)} passed so far...")
 
         status_text.write("✅ **Sourcing Complete!**")
 
@@ -615,5 +559,6 @@ if submitted:
         else:
             st.warning(
                 "No valid targets passed the filters. "
-                "Try switching to **Mode B** for broader results, or adjust your Specific Niche description."
+                "Try switching to **Mode B** for broader results, or adjust your Specific Niche description. "
+                "For very narrow niches like PACE, also try adding keywords in field 5 (e.g. 'PACE, adult day, elder care')."
             )
