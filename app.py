@@ -24,24 +24,21 @@ def check_password():
             st.session_state["password_correct"] = False
 
     if "password_correct" not in st.session_state:
-        # First run, show input for password.
         st.text_input(
             "Enter Password", type="password", on_change=password_entered, key="password"
         )
         return False
     elif not st.session_state["password_correct"]:
-        # Password not correct, show input + error.
         st.text_input(
             "Enter Password", type="password", on_change=password_entered, key="password"
         )
         st.error("😕 Password incorrect")
         return False
     else:
-        # Password correct.
         return True
 
 if not check_password():
-    st.stop()  # Do not run the rest of the app if password is wrong.
+    st.stop()
 
 # --- SECRETS MANAGEMENT ---
 try:
@@ -66,52 +63,114 @@ def clean_domain(url):
         return domain
     except: return None
 
-def search_organizations(keyword, location_input):
+def search_organizations(industry, location_input, keyword_tags=None, max_pages=2):
+    """
+    FIX #1: Use q_organization_industries (not q_organization_keyword_tags) for the
+    industry dropdown so Apollo filters by actual industry taxonomy.
+    FIX #2: Accept optional keyword_tags for specific term filtering within that industry.
+    FIX #3: Paginate up to max_pages (default 2 = up to 200 companies).
+    """
     url = "https://api.apollo.io/v1/organizations/search"
     headers = {'Content-Type': 'application/json', 'X-Api-Key': APOLLO_API_KEY}
-    # Fetch 100 to catch deep targets
-    payload = {"q_organization_keyword_tags": [keyword], "organization_locations": [location_input], "page": 1, "per_page": 100}
-    try:
-        response = requests.post(url, headers=headers, json=payload)
-        return response.json().get('organizations', [])
-    except: return []
+    all_orgs = []
 
-def is_obvious_mismatch(org, target_niche):
+    for page in range(1, max_pages + 1):
+        payload = {
+            "organization_locations": [location_input],
+            "page": page,
+            "per_page": 100,
+        }
+        if industry:
+            payload["q_organization_industries"] = [industry]
+        if keyword_tags:
+            payload["q_organization_keyword_tags"] = keyword_tags
+
+        try:
+            response = requests.post(url, headers=headers, json=payload, timeout=15)
+            if response.status_code != 200:
+                break
+            orgs = response.json().get('organizations', [])
+            if not orgs:
+                break
+            all_orgs.extend(orgs)
+            if len(orgs) < 100:  # fewer than a full page — no point paginating further
+                break
+        except:
+            break
+
+    return all_orgs
+
+def is_obvious_mismatch(org, target_niche, mode):
+    """
+    FIX #4: Skip poison pill filter entirely for Mode B (any ownership).
+    Mode A retains strict filtering.
+    """
+    if mode == 'B':
+        return False, "Pass (Mode B — skipped)"
+
     name = (org.get('name') or "").lower()
     tags = [t.lower() for t in org.get('keywords', [])]
-    
-    poison = ['consulting', 'staffing', 'recruiting', 'software', 'technology', 'saas', 'billing', 'platform', 'marketing', 'agency']
+
+    poison = ['consulting', 'staffing', 'recruiting', 'software', 'technology', 'saas',
+              'billing', 'platform', 'marketing', 'agency']
     if "architect" in target_niche.lower():
-        poison.extend(['realty', 'real estate', 'tax', 'accounting', 'legal', 'law', 'supplies', 'material', 'wood', 'lumber', 'golf', 'naval', 'marine'])
-        
+        poison.extend(['realty', 'real estate', 'tax', 'accounting', 'legal', 'law',
+                       'supplies', 'material', 'wood', 'lumber', 'golf', 'naval', 'marine'])
+
     for p in poison:
         if p in name: return True, f"Bad Name ('{p}')"
         if p in tags: return True, f"Bad Tag ('{p}')"
     return False, "Pass"
 
-def check_relevance_gpt4o(company_name, description, keywords, target_niche):
-    prompt = f"""
-    I am a private equity sourcer looking to buy companies in this niche: "{target_niche}".
-    
-    Candidate: "{company_name}"
-    Description: "{description}"
-    Keywords: {keywords}
-    
-    Task: Is this a VALID acquisition target?
-    - Strict NO if it is a Service Provider (Tax, Legal, Realty).
-    - Strict NO if it is a Supplier (wood, software).
-    - Strict NO if wrong sub-sector (e.g. Golf Architect vs Residential).
-    
-    Answer ONLY with JSON: {{ "match": true/false, "reason": "short reason" }}
+def check_relevance_gpt4o(company_name, description, keywords, target_niche, mode):
     """
+    FIX #5: Mode B uses a permissive prompt (any ownership, broad match).
+    Mode A retains the strict acquisition-target prompt.
+    Both prompts now give benefit of the doubt when description is empty.
+    """
+    if mode == 'A':
+        prompt = f"""
+        I am a private equity investor looking to acquire founder-owned businesses in this niche: "{target_niche}".
+
+        Candidate: "{company_name}"
+        Description: "{description}"
+        Keywords: {keywords}
+
+        Is this an OPERATOR that directly delivers services/products in this niche?
+        - YES if it is an operator (care provider, clinic, facility, service company) in the niche.
+        - YES if the description is empty or vague — give benefit of the doubt.
+        - NO if it is clearly a Service Provider to the industry (consulting, legal, software vendor).
+        - NO if it is clearly a Supplier (equipment, materials).
+        - NO if it is clearly in a completely different sector.
+
+        Answer ONLY with JSON: {{ "match": true/false, "reason": "short reason" }}
+        """
+    else:  # Mode B — permissive
+        prompt = f"""
+        I am a private equity investor looking for any business loosely related to: "{target_niche}".
+
+        Candidate: "{company_name}"
+        Description: "{description}"
+        Keywords: {keywords}
+
+        Is this company potentially relevant to the "{target_niche}" space?
+        - YES unless it is completely unrelated (e.g., a restaurant chain when searching healthcare).
+        - YES if the description is empty or vague — give benefit of the doubt.
+        - NO only if it is clearly in a totally different industry.
+
+        Answer ONLY with JSON: {{ "match": true/false, "reason": "short reason" }}
+        """
     try:
         response = client.chat.completions.create(
-            model="gpt-4o", messages=[{"role": "user", "content": prompt}],
-            response_format={"type": "json_object"}
+            model="gpt-4o",
+            messages=[{"role": "user", "content": prompt}],
+            response_format={"type": "json_object"},
+            timeout=20,
         )
         data = json.loads(response.choices[0].message.content)
         return data.get('match'), data.get('reason')
-    except: return True, "AI Error"
+    except:
+        return True, "AI Error"
 
 def is_buyable_structure(org, mode):
     if mode == 'A':
@@ -129,17 +188,24 @@ def firecrawl_scrape(url):
     headers = {"Authorization": f"Bearer {FIRECRAWL_API_KEY}", "Content-Type": "application/json"}
     payload = {"url": url, "formats": ["markdown"]}
     try:
-        res = requests.post(api_url, headers=headers, json=payload)
+        res = requests.post(api_url, headers=headers, json=payload, timeout=20)
         if res.status_code == 200:
-            return res.json()['data']['markdown'][:50000]
-    except: pass
+            data = res.json()
+            # Handle both response shapes Firecrawl has used
+            markdown = (data.get('data') or {}).get('markdown') or data.get('markdown')
+            if markdown:
+                return markdown[:50000]
+    except:
+        pass
     return None
 
 def extract_relevant_links(markdown_text, base_url):
     if not markdown_text: return []
     links = re.findall(r'\[([^\]]+)\]\(([^)]+)\)', markdown_text)
-    high = ["leadership", "executive", "our team", "care team", "management", "principals", "partners", "architects"]
-    med = ["about", "who we are", "meet", "staff", "firm", "studio", "people"]
+    # FIX #6: Added healthcare-specific link keywords
+    high = ["leadership", "executive", "our team", "care team", "management", "principals",
+            "partners", "architects", "providers", "staff directory", "medical staff"]
+    med = ["about", "who we are", "meet", "staff", "firm", "studio", "people", "team", "contact"]
     candidates = []
     for text, link in links:
         score = 0
@@ -160,18 +226,22 @@ def extract_relevant_links(markdown_text, base_url):
 
 def extract_names_openai(text, company_name):
     prompt = f"""
-    Analyze text for "{company_name}". Identify PRIMARY LEADER (Owner, Principal, Founder, CEO).
-    Rules: Return Full Name if found. Return First Name if only First Name found.
+    Analyze text for "{company_name}". Identify the PRIMARY LEADER.
+    Look for: Owner, Principal, Founder, CEO, President, Administrator, Executive Director, Medical Director.
+    Rules: Return Full Name if found. Return First Name only if that is all that appears.
     Return JSON: {{ "name": "John Doe", "title": "Principal" }} or {{ "name": "None", "title": "None" }}
     Text: {text[:15000]}
     """
     try:
         response = client.chat.completions.create(
-            model="gpt-4o", messages=[{"role": "user", "content": prompt}],
-            response_format={"type": "json_object"}
+            model="gpt-4o",
+            messages=[{"role": "user", "content": prompt}],
+            response_format={"type": "json_object"},
+            timeout=20,
         )
         return json.loads(response.choices[0].message.content)
-    except: return None
+    except:
+        return None
 
 def clean_company_name_for_search(name):
     if not name: return ""
@@ -184,28 +254,40 @@ def get_people_apollo_robust(company_name, domain):
     url = "https://api.apollo.io/v1/mixed_people/search"
     headers = {'Content-Type': 'application/json', 'X-Api-Key': APOLLO_API_KEY}
     clean_name = clean_company_name_for_search(company_name)
+    # Warm the cache with a name-based lookup
     try:
-        requests.post(url, headers=headers, json={"q_organization_names": [clean_name], "per_page": 35})
-    except: pass
+        requests.post(url, headers=headers,
+                      json={"q_organization_names": [clean_name], "per_page": 35}, timeout=10)
+    except:
+        pass
     if domain:
         try:
-            res = requests.post(url, headers=headers, json={"q_organization_domains": [domain], "per_page": 35})
-            if res.status_code == 200: return res.json().get('people', [])
-        except: pass
+            res = requests.post(url, headers=headers,
+                                json={"q_organization_domains": [domain], "per_page": 35}, timeout=10)
+            if res.status_code == 200:
+                return res.json().get('people', [])
+        except:
+            pass
     return []
 
 def select_best_apollo_contact(people):
     if not people: return None, "None"
-    valid = [p for p in people if "Bill" not in p.get('first_name','') and "None" not in p.get('last_name','')]
+    valid = [p for p in people if p.get('first_name') and p.get('last_name')
+             and "Bill" not in p.get('first_name', '') and "None" not in p.get('last_name', '')]
     if not valid: return None, "None"
-    tier1 = ['owner', 'principal', 'founder', 'ceo', 'president', 'partner', 'architect']
-    tier2 = ['associate', 'manager', 'director', 'vp', 'operations']
+    # FIX #7: Added healthcare leadership titles (administrator, executive director, etc.)
+    tier1 = ['owner', 'principal', 'founder', 'ceo', 'president', 'partner', 'architect',
+             'administrator', 'executive director', 'medical director', 'director of']
+    tier2 = ['associate', 'manager', 'vp', 'operations', 'coordinator']
     top = None; backup = None
     for p in valid:
-        if any(x in (p.get('title') or "").lower() for x in tier1): top = p; break
+        if any(x in (p.get('title') or "").lower() for x in tier1):
+            top = p; break
     if top and not top.get('email'):
         for p in valid:
-            if (any(x in (p.get('title') or "").lower() for x in tier2) or 'assistant' in (p.get('title') or "").lower()) and p.get('email'): backup = p; break
+            if (any(x in (p.get('title') or "").lower() for x in tier2)
+                    or 'assistant' in (p.get('title') or "").lower()) and p.get('email'):
+                backup = p; break
     if top:
         src = "Apollo (Top)"
         if not top.get('email'):
@@ -226,30 +308,36 @@ def bulk_enrich_names(people_list, domain):
     if not people_list or not domain: return []
     url = "https://api.apollo.io/v1/people/bulk_match"
     try:
-        res = requests.post(url, headers={'Content-Type': 'application/json', 'X-Api-Key': APOLLO_API_KEY}, 
-                            json={"details": [{"first_name": p.get('first_name'), "last_name": p.get('last_name'), "domain": domain} for p in people_list]})
+        res = requests.post(
+            url,
+            headers={'Content-Type': 'application/json', 'X-Api-Key': APOLLO_API_KEY},
+            json={"details": [{"first_name": p.get('first_name'), "last_name": p.get('last_name'),
+                               "domain": domain} for p in people_list]},
+            timeout=15,
+        )
         return res.json().get('matches', [])
-    except: return []
+    except:
+        return []
 
 # --- MULTI-THREADED WORKER ---
 def process_single_company(org, specific_niche, strat_code):
     """The full logic for one company, isolated for threading."""
     comp_name = org.get('name')
-    
+
     # 1. STRUCTURE CHECK
     is_valid, reason = is_buyable_structure(org, strat_code)
     if not is_valid: return None
 
-    # 2. POISON PILLS
-    is_bad, reason = is_obvious_mismatch(org, specific_niche)
+    # 2. POISON PILLS (FIX: pass mode so Mode B skips this)
+    is_bad, reason = is_obvious_mismatch(org, specific_niche, strat_code)
     if is_bad: return None
 
-    # 3. AI GATEKEEPER
+    # 3. AI GATEKEEPER (FIX: pass mode for prompt selection)
     desc = org.get('short_description') or org.get('headline') or ""
     tags = org.get('keywords') or []
-    is_relevant, reason = check_relevance_gpt4o(comp_name, desc, tags, specific_niche)
+    is_relevant, reason = check_relevance_gpt4o(comp_name, desc, tags, specific_niche, strat_code)
     if not is_relevant: return None
-    
+
     # --- START PROCESSING VALID TARGET ---
     domain = clean_domain(org.get('website_url'))
     row = {
@@ -259,29 +347,33 @@ def process_single_company(org, specific_niche, strat_code):
         "State": org.get('state'),
         "LinkedIn": org.get('linkedin_url'),
         "Employees": org.get('estimated_num_employees'),
-        "Manager Name": "N/A", "Title": "N/A", "Email": "N/A", "Phone": "N/A", 
+        "Manager Name": "N/A", "Title": "N/A", "Email": "N/A", "Phone": "N/A",
         "Source": "Pending", "Notes": "", "Confidence": "Low"
     }
-    
+
     found_person = None
     apollo_cache = None
-    
+
     # 4. WEB SPIDER
     if domain:
-        home_url = f"http://{domain}"
-        queue = [home_url, f"http://{domain}/about", f"http://{domain}/firm", f"http://{domain}/studio", f"http://{domain}/people", f"http://{domain}/team"]
+        # FIX #8: Use HTTPS to avoid redirect overhead/failures
+        home_url = f"https://{domain}"
+        # FIX #9: Start with homepage only; discover real sub-pages via link extraction
+        queue = [home_url]
         visited = set()
-        
-        for url in queue[:5]:
+
+        for url in queue[:6]:
             if url in visited: continue
             visited.add(url)
             content = firecrawl_scrape(url)
             if content:
                 ai_data = extract_names_openai(content, comp_name)
-                if ai_data and ai_data.get('name') != "None":
+                if ai_data and ai_data.get('name') and ai_data.get('name') != "None":
                     name = ai_data.get('name')
                     if " " in name and len(name) > 3:
-                        found_person = {"first_name": name.split()[0], "last_name": " ".join(name.split()[1:]), "title": ai_data.get('title')}
+                        found_person = {"first_name": name.split()[0],
+                                        "last_name": " ".join(name.split()[1:]),
+                                        "title": ai_data.get('title')}
                         row['Source'] = "Web Spider"; break
                     elif len(name) > 1:
                         if not apollo_cache: apollo_cache = get_people_apollo_robust(comp_name, domain)
@@ -290,7 +382,7 @@ def process_single_company(org, specific_niche, strat_code):
                             found_person = repaired
                             row['Source'] = "Web -> Repaired"; break
                 links = extract_relevant_links(content, url)
-                for l in links: 
+                for l in links:
                     if l not in visited: queue.insert(1, l)
 
     # 5. APOLLO BACKUP
@@ -303,8 +395,8 @@ def process_single_company(org, specific_niche, strat_code):
 
     # 6. ENRICH & SAVE
     if found_person:
-        row['Manager Name'] = f"{found_person.get('first_name')} {found_person.get('last_name')}"
-        row['Title'] = found_person.get('title')
+        row['Manager Name'] = f"{found_person.get('first_name', '')} {found_person.get('last_name', '')}".strip()
+        row['Title'] = found_person.get('title') or 'N/A'
         if "Web" in row['Source'] and domain:
             matches = bulk_enrich_names([found_person], domain)
             if matches and matches[0]:
@@ -313,12 +405,12 @@ def process_single_company(org, specific_niche, strat_code):
                 row['Confidence'] = "High"
         elif "Apollo" in row['Source']:
             row['Confidence'] = "Medium"
-        
+
         row['Email'] = found_person.get('email') or 'N/A'
         pnums = found_person.get('phone_numbers', [])
         row['Phone'] = pnums[0].get('sanitized_number') if pnums else 'N/A'
         if found_person.get('notes'): row['Notes'] = found_person.get('notes')
-    
+
     return row
 
 # --- UI LAYOUT ---
@@ -327,79 +419,95 @@ st.markdown("Automated Deal Sourcing with Multi-Threaded AI.")
 
 # Apollo's Standard Industry List
 APOLLO_INDUSTRIES = [
-    "Accounting", "Airlines/Aviation", "Alternative Dispute Resolution", "Alternative Medicine", "Animation", "Apparel & Fashion", 
-    "Architecture & Planning", "Arts and Crafts", "Automotive", "Aviation & Aerospace", "Banking", "Biotechnology", "Broadcast Media", 
-    "Building Materials", "Business Supplies and Equipment", "Capital Markets", "Chemicals", "Civic & Social Organization", "Civil Engineering", 
-    "Commercial Real Estate", "Computer & Network Security", "Computer Games", "Computer Hardware", "Computer Networking", "Computer Software", 
-    "Construction", "Consumer Electronics", "Consumer Goods", "Consumer Services", "Cosmetics", "Dairy", "Defense & Space", "Design", 
-    "Education Management", "E-Learning", "Electrical/Electronic Manufacturing", "Entertainment", "Environmental Services", "Events Services", 
-    "Executive Office", "Facilities Services", "Farming", "Financial Services", "Fine Art", "Food & Beverages", "Food Production", "Fund-Raising", 
-    "Furniture", "Gambling & Casinos", "Glass, Ceramics & Concrete", "Government Administration", "Government Relations", "Graphic Design", 
-    "Health, Wellness and Fitness", "Higher Education", "Hospital & Health Care", "Hospitality", "Human Resources", "Import and Export", 
-    "Individual & Family Services", "Industrial Automation", "Information Services", "Information Technology and Services", "Insurance", 
-    "International Affairs", "International Trade and Development", "Internet", "Investment Banking", "Investment Management", "Judiciary", 
-    "Law Enforcement", "Law Practice", "Legal Services", "Legislative Office", "Leisure, Travel & Tourism", "Libraries", "Logistics and Supply Chain", 
-    "Luxury Goods & Jewelry", "Machinery", "Management Consulting", "Maritime", "Market Research", "Marketing and Advertising", 
-    "Mechanical or Industrial Engineering", "Media Production", "Medical Devices", "Medical Practice", "Mental Health Care", "Military", 
-    "Mining & Metals", "Motion Pictures and Film", "Museums and Institutions", "Music", "Nanotechnology", "Newspapers", 
-    "Non-Profit Organization Management", "Oil & Energy", "Online Media", "Outsourcing/Offshoring", "Package/Freight Delivery", 
-    "Packaging and Containers", "Paper & Forest Products", "Performing Arts", "Pharmaceuticals", "Philanthropy", "Photography", "Plastics", 
-    "Political Organization", "Primary/Secondary Education", "Printing", "Professional Training & Coaching", "Program Development", "Public Policy", 
-    "Public Relations and Communications", "Public Safety", "Publishing", "Railroad Manufacture", "Ranching", "Real Estate", 
-    "Recreational Facilities and Services", "Religious Institutions", "Renewables & Environment", "Research", "Restaurants", "Retail", 
-    "Security and Investigations", "Semiconductors", "Shipbuilding", "Sporting Goods", "Sports", "Staffing and Recruiting", "Supermarkets", 
-    "Telecommunications", "Textiles", "Think Tanks", "Tobacco", "Translation and Localization", "Transportation/Trucking/Railroad", "Utilities", 
+    "Accounting", "Airlines/Aviation", "Alternative Dispute Resolution", "Alternative Medicine", "Animation", "Apparel & Fashion",
+    "Architecture & Planning", "Arts and Crafts", "Automotive", "Aviation & Aerospace", "Banking", "Biotechnology", "Broadcast Media",
+    "Building Materials", "Business Supplies and Equipment", "Capital Markets", "Chemicals", "Civic & Social Organization", "Civil Engineering",
+    "Commercial Real Estate", "Computer & Network Security", "Computer Games", "Computer Hardware", "Computer Networking", "Computer Software",
+    "Construction", "Consumer Electronics", "Consumer Goods", "Consumer Services", "Cosmetics", "Dairy", "Defense & Space", "Design",
+    "Education Management", "E-Learning", "Electrical/Electronic Manufacturing", "Entertainment", "Environmental Services", "Events Services",
+    "Executive Office", "Facilities Services", "Farming", "Financial Services", "Fine Art", "Food & Beverages", "Food Production", "Fund-Raising",
+    "Furniture", "Gambling & Casinos", "Glass, Ceramics & Concrete", "Government Administration", "Government Relations", "Graphic Design",
+    "Health, Wellness and Fitness", "Higher Education", "Hospital & Health Care", "Hospitality", "Human Resources", "Import and Export",
+    "Individual & Family Services", "Industrial Automation", "Information Services", "Information Technology and Services", "Insurance",
+    "International Affairs", "International Trade and Development", "Internet", "Investment Banking", "Investment Management", "Judiciary",
+    "Law Enforcement", "Law Practice", "Legal Services", "Legislative Office", "Leisure, Travel & Tourism", "Libraries", "Logistics and Supply Chain",
+    "Luxury Goods & Jewelry", "Machinery", "Management Consulting", "Maritime", "Market Research", "Marketing and Advertising",
+    "Mechanical or Industrial Engineering", "Media Production", "Medical Devices", "Medical Practice", "Mental Health Care", "Military",
+    "Mining & Metals", "Motion Pictures and Film", "Museums and Institutions", "Music", "Nanotechnology", "Newspapers",
+    "Non-Profit Organization Management", "Oil & Energy", "Online Media", "Outsourcing/Offshoring", "Package/Freight Delivery",
+    "Packaging and Containers", "Paper & Forest Products", "Performing Arts", "Pharmaceuticals", "Philanthropy", "Photography", "Plastics",
+    "Political Organization", "Primary/Secondary Education", "Printing", "Professional Training & Coaching", "Program Development", "Public Policy",
+    "Public Relations and Communications", "Public Safety", "Publishing", "Railroad Manufacture", "Ranching", "Real Estate",
+    "Recreational Facilities and Services", "Religious Institutions", "Renewables & Environment", "Research", "Restaurants", "Retail",
+    "Security and Investigations", "Semiconductors", "Shipbuilding", "Sporting Goods", "Sports", "Staffing and Recruiting", "Supermarkets",
+    "Telecommunications", "Textiles", "Think Tanks", "Tobacco", "Translation and Localization", "Transportation/Trucking/Railroad", "Utilities",
     "Venture Capital & Private Equity", "Veterinary", "Warehousing", "Wholesale", "Wine and Spirits", "Wireless", "Writing and Editing"
 ]
 
 with st.form("sourcing_form"):
     col1, col2 = st.columns(2)
-    # Changed from text_input to selectbox, default index 6 is "Architecture & Planning"
-    broad_keyword = col1.selectbox("1. Broad Apollo Category", options=APOLLO_INDUSTRIES, index=6)
-    specific_niche = col2.text_input("2. Specific Niche (AI Filter)", value="Luxury Residential Architect")
-    
+    broad_industry = col1.selectbox("1. Broad Apollo Industry", options=APOLLO_INDUSTRIES, index=56)  # Hospital & Health Care
+    specific_niche = col2.text_input("2. Specific Niche (AI Filter)", value="Program for All-Inclusive Care for the Elderly (PACE)")
+
     col3, col4 = st.columns(2)
-    target_geo = col3.text_input("3. Geography", value="Birmingham, AL")
+    target_geo = col3.text_input("3. Geography", value="North Carolina, United States")
     mode = col4.selectbox("4. Strategy", ["A - Buy/Private (Strict)", "B - Sell/Any (Loose)"])
-    
+
+    # FIX #10: New optional field — lets users pass specific search terms to Apollo
+    # (e.g. "PACE", "elder care", "senior care") to narrow results within the industry
+    apollo_keywords_raw = st.text_input(
+        "5. Apollo Keywords (optional — comma-separated terms to narrow the search within the industry above)",
+        value="",
+        placeholder="e.g. PACE, elderly care, adult day care"
+    )
+
     submitted = st.form_submit_button("Start Sourcing 💎", type="primary")
 
 if submitted:
     strat_code = "A" if "A -" in mode else "B"
-    st.info(f"🔎 Searching for **{specific_niche}** in **{target_geo}**...")
-    
-    orgs = search_organizations(broad_keyword, target_geo)
-    
+
+    # Parse optional keyword tags
+    apollo_keyword_tags = [k.strip() for k in apollo_keywords_raw.split(',') if k.strip()] or None
+
+    st.info(f"🔎 Searching Apollo for **{broad_industry}** in **{target_geo}**...")
+
+    orgs = search_organizations(broad_industry, target_geo, keyword_tags=apollo_keyword_tags)
+
     if not orgs:
-        st.error("No companies found via Apollo. Try a broader category.")
+        st.error(
+            "No companies found via Apollo. "
+            "Try a broader industry category, remove keyword tags, or check your geography spelling."
+        )
     else:
-        st.success(f"Found {len(orgs)} candidates. Running 5x Parallel Workers...")
-        
+        st.success(f"Found **{len(orgs)}** candidates from Apollo. Running 5x Parallel Workers through AI filter...")
+
         progress_bar = st.progress(0)
         status_text = st.empty()
         final_data = []
-        
+
         # Parallel Execution
         with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
             futures = {executor.submit(process_single_company, org, specific_niche, strat_code): org for org in orgs}
-            
+
             for i, future in enumerate(concurrent.futures.as_completed(futures)):
                 result = future.result()
                 if result:
                     final_data.append(result)
-                
-                # Update UI
+
                 progress = (i + 1) / len(orgs)
                 progress_bar.progress(progress)
-                status_text.caption(f"Processed {i+1}/{len(orgs)} companies...")
+                status_text.caption(f"Processed {i+1}/{len(orgs)} companies | {len(final_data)} passed filters so far...")
 
         status_text.write("✅ **Sourcing Complete!**")
-        
+
         if final_data:
             df = pd.DataFrame(final_data)
             st.dataframe(df)
             csv = df.to_csv(index=False).encode('utf-8')
-            filename = f"NCP_{broad_keyword}_{target_geo}.csv"
-            st.download_button(label="Download Excel/CSV", data=csv, file_name=filename, mime="text/csv", type="primary")
+            filename = f"NCP_{broad_industry}_{target_geo}.csv".replace(" ", "_").replace(",", "")
+            st.download_button(label="Download CSV", data=csv, file_name=filename, mime="text/csv", type="primary")
         else:
-            st.warning("No valid targets passed the filters.")
+            st.warning(
+                "No valid targets passed the filters. "
+                "Try switching to **Mode B** for broader results, or adjust your Specific Niche description."
+            )
