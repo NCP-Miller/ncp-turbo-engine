@@ -5,7 +5,8 @@ import json
 import re
 import time
 import concurrent.futures
-from urllib.parse import urlparse, urljoin
+import xml.etree.ElementTree as ET
+from urllib.parse import urlparse, urljoin, quote_plus
 from openai import OpenAI
 
 # --- PAGE CONFIGURATION ---
@@ -123,11 +124,6 @@ def is_obvious_mismatch(org, target_niche, mode):
     return False, "Pass"
 
 def check_relevance_gpt4o(company_name, description, keywords, target_niche, mode):
-    """
-    FIX #5: Mode B uses a permissive prompt (any ownership, broad match).
-    Mode A retains the strict acquisition-target prompt.
-    Both prompts now give benefit of the doubt when description is empty.
-    """
     if mode == 'A':
         prompt = f"""
         I am a private equity investor looking to acquire founder-owned businesses in this niche: "{target_niche}".
@@ -138,10 +134,14 @@ def check_relevance_gpt4o(company_name, description, keywords, target_niche, mod
 
         Is this an OPERATOR that directly delivers services/products in this niche?
         - YES if it is an operator (care provider, clinic, facility, service company) in the niche.
-        - YES if the description is empty or vague — give benefit of the doubt.
+        - If the description is empty or vague, evaluate the COMPANY NAME carefully:
+            - If the name is clearly consistent with the niche, say YES.
+            - If the name suggests a different business (e.g. fitness, real estate, software), say NO.
         - NO if it is clearly a Service Provider to the industry (consulting, legal, software vendor).
         - NO if it is clearly a Supplier (equipment, materials).
         - NO if it is clearly in a completely different sector.
+        - Be especially careful with niche acronyms — e.g. "PACE" means Program for All-Inclusive Care
+          for the Elderly (a Medicare/Medicaid program), NOT pace/speed/fitness.
 
         Answer ONLY with JSON: {{ "match": true/false, "reason": "short reason" }}
         """
@@ -155,7 +155,7 @@ def check_relevance_gpt4o(company_name, description, keywords, target_niche, mod
 
         Is this company potentially relevant to the "{target_niche}" space?
         - YES unless it is completely unrelated (e.g., a restaurant chain when searching healthcare).
-        - YES if the description is empty or vague — give benefit of the doubt.
+        - If the description is empty, evaluate whether the company NAME is plausibly related to the niche.
         - NO only if it is clearly in a totally different industry.
 
         Answer ONLY with JSON: {{ "match": true/false, "reason": "short reason" }}
@@ -226,10 +226,21 @@ def extract_relevant_links(markdown_text, base_url):
 
 def extract_names_openai(text, company_name):
     prompt = f"""
-    Analyze text for "{company_name}". Identify the PRIMARY LEADER.
-    Look for: Owner, Principal, Founder, CEO, President, Administrator, Executive Director, Medical Director.
-    Rules: Return Full Name if found. Return First Name only if that is all that appears.
-    Return JSON: {{ "name": "John Doe", "title": "Principal" }} or {{ "name": "None", "title": "None" }}
+    Analyze the text from the website of "{company_name}".
+
+    1. Identify the PRIMARY LEADER (CEO, Owner, Founder, President, Principal, Administrator, Executive Director, Medical Director).
+    2. Extract any contact email address visible on the page.
+    3. Extract any contact phone number visible on the page.
+
+    Rules:
+    - name: Full name if found. First name only if that is all that appears. "None" if not found.
+    - title: Their title, "None" if not found.
+    - email: An email address found on the page, "None" if not found.
+    - phone: A phone number found on the page, "None" if not found.
+
+    Return JSON only:
+    {{ "name": "John Doe", "title": "CEO", "email": "john@example.com", "phone": "704-555-1234" }}
+
     Text: {text[:15000]}
     """
     try:
@@ -254,16 +265,36 @@ def get_people_apollo_robust(company_name, domain):
     url = "https://api.apollo.io/v1/mixed_people/search"
     headers = {'Content-Type': 'application/json', 'X-Api-Key': APOLLO_API_KEY}
     clean_name = clean_company_name_for_search(company_name)
-    # Warm the cache with a name-based lookup
-    try:
-        requests.post(url, headers=headers,
-                      json={"q_organization_names": [clean_name], "per_page": 35}, timeout=10)
-    except:
-        pass
+    c_suite_seniority = ["owner", "founder", "c_suite", "president"]
+
     if domain:
         try:
+            # First pass: C-suite/owner only
+            res = requests.post(url, headers=headers,
+                                json={"q_organization_domains": [domain],
+                                      "person_seniority": c_suite_seniority,
+                                      "per_page": 10}, timeout=10)
+            if res.status_code == 200:
+                people = res.json().get('people', [])
+                if people:
+                    return people
+        except:
+            pass
+        try:
+            # Second pass: no seniority filter — broader net
             res = requests.post(url, headers=headers,
                                 json={"q_organization_domains": [domain], "per_page": 35}, timeout=10)
+            if res.status_code == 200:
+                return res.json().get('people', [])
+        except:
+            pass
+    else:
+        # No domain — fall back to name-based lookup
+        try:
+            res = requests.post(url, headers=headers,
+                                json={"q_organization_names": [clean_name],
+                                      "person_seniority": c_suite_seniority,
+                                      "per_page": 10}, timeout=10)
             if res.status_code == 200:
                 return res.json().get('people', [])
         except:
@@ -303,6 +334,30 @@ def repair_single_name(first_name, people_list):
         p_first = (p.get('first_name') or "").lower().strip()
         if p_first == target or (len(target) > 2 and target in p_first): return p
     return None
+
+def get_latest_news_link(company_name, city=None):
+    """Search Google News RSS for the most recent article about the company.
+    Returns (title, url) or (None, None) if nothing found."""
+    query = company_name
+    if city:
+        query = f"{company_name} {city}"
+    rss_url = f"https://news.google.com/rss/search?q={quote_plus(query)}&hl=en-US&gl=US&ceid=US:en"
+    try:
+        res = requests.get(rss_url, timeout=10, headers={"User-Agent": "Mozilla/5.0"})
+        if res.status_code != 200:
+            return None, None
+        root = ET.fromstring(res.content)
+        # RSS items live at channel > item
+        items = root.findall('./channel/item')
+        if not items:
+            return None, None
+        first = items[0]
+        title = first.findtext('title') or ""
+        link = first.findtext('link') or ""
+        # Google News RSS wraps the real URL in the <link> tag directly
+        return title.strip(), link.strip()
+    except:
+        return None, None
 
 def bulk_enrich_names(people_list, domain):
     if not people_list or not domain: return []
@@ -347,18 +402,18 @@ def process_single_company(org, specific_niche, strat_code):
         "State": org.get('state'),
         "LinkedIn": org.get('linkedin_url'),
         "Employees": org.get('estimated_num_employees'),
-        "Manager Name": "N/A", "Title": "N/A", "Email": "N/A", "Phone": "N/A",
-        "Source": "Pending", "Notes": "", "Confidence": "Low"
+        "CEO/Owner Name": "N/A", "Title": "N/A", "Email": "N/A", "Phone": "N/A",
+        "Source": "Pending", "Notes": "", "Confidence": "Low", "Latest News": "N/A"
     }
 
     found_person = None
     apollo_cache = None
+    web_email = None
+    web_phone = None
 
     # 4. WEB SPIDER
     if domain:
-        # FIX #8: Use HTTPS to avoid redirect overhead/failures
         home_url = f"https://{domain}"
-        # FIX #9: Start with homepage only; discover real sub-pages via link extraction
         queue = [home_url]
         visited = set()
 
@@ -368,19 +423,30 @@ def process_single_company(org, specific_niche, strat_code):
             content = firecrawl_scrape(url)
             if content:
                 ai_data = extract_names_openai(content, comp_name)
-                if ai_data and ai_data.get('name') and ai_data.get('name') != "None":
-                    name = ai_data.get('name')
-                    if " " in name and len(name) > 3:
-                        found_person = {"first_name": name.split()[0],
-                                        "last_name": " ".join(name.split()[1:]),
-                                        "title": ai_data.get('title')}
-                        row['Source'] = "Web Spider"; break
-                    elif len(name) > 1:
-                        if not apollo_cache: apollo_cache = get_people_apollo_robust(comp_name, domain)
-                        repaired = repair_single_name(name, apollo_cache)
-                        if repaired:
-                            found_person = repaired
-                            row['Source'] = "Web -> Repaired"; break
+                if ai_data:
+                    # Capture email/phone from web even if name not found
+                    extracted_email = ai_data.get('email')
+                    extracted_phone = ai_data.get('phone')
+                    if extracted_email and extracted_email != "None":
+                        web_email = extracted_email
+                    if extracted_phone and extracted_phone != "None":
+                        web_phone = extracted_phone
+
+                    name = ai_data.get('name', 'None')
+                    if name and name != "None":
+                        if " " in name and len(name) > 3:
+                            found_person = {"first_name": name.split()[0],
+                                            "last_name": " ".join(name.split()[1:]),
+                                            "title": ai_data.get('title'),
+                                            "email": web_email,
+                                            "phone_numbers": [{"sanitized_number": web_phone}] if web_phone else []}
+                            row['Source'] = "Web Spider"; break
+                        elif len(name) > 1:
+                            if not apollo_cache: apollo_cache = get_people_apollo_robust(comp_name, domain)
+                            repaired = repair_single_name(name, apollo_cache)
+                            if repaired:
+                                found_person = repaired
+                                row['Source'] = "Web -> Repaired"; break
                 links = extract_relevant_links(content, url)
                 for l in links:
                     if l not in visited: queue.insert(1, l)
@@ -395,7 +461,7 @@ def process_single_company(org, specific_niche, strat_code):
 
     # 6. ENRICH & SAVE
     if found_person:
-        row['Manager Name'] = f"{found_person.get('first_name', '')} {found_person.get('last_name', '')}".strip()
+        row['CEO/Owner Name'] = f"{found_person.get('first_name', '')} {found_person.get('last_name', '')}".strip()
         row['Title'] = found_person.get('title') or 'N/A'
         if "Web" in row['Source'] and domain:
             matches = bulk_enrich_names([found_person], domain)
@@ -406,10 +472,26 @@ def process_single_company(org, specific_niche, strat_code):
         elif "Apollo" in row['Source']:
             row['Confidence'] = "Medium"
 
-        row['Email'] = found_person.get('email') or 'N/A'
+        # Email: prefer Apollo enriched, fall back to web-extracted
+        apollo_email = found_person.get('email')
+        row['Email'] = apollo_email if apollo_email else (web_email or 'N/A')
+
+        # Phone: prefer Apollo enriched, fall back to web-extracted
         pnums = found_person.get('phone_numbers', [])
-        row['Phone'] = pnums[0].get('sanitized_number') if pnums else 'N/A'
+        apollo_phone = pnums[0].get('sanitized_number') if pnums else None
+        row['Phone'] = apollo_phone if apollo_phone else (web_phone or 'N/A')
+
         if found_person.get('notes'): row['Notes'] = found_person.get('notes')
+    else:
+        # No person found at all — still surface any web-scraped contact info
+        row['CEO/Owner Name'] = 'N/A'
+        if web_email: row['Email'] = web_email
+        if web_phone: row['Phone'] = web_phone
+
+    # 7. LATEST NEWS
+    news_title, news_url = get_latest_news_link(comp_name, org.get('city'))
+    if news_url:
+        row['Latest News'] = f"{news_title} | {news_url}" if news_title else news_url
 
     return row
 
