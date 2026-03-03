@@ -113,6 +113,7 @@ _CONTACT_PATHS = [
 # AI — NICHE → APOLLO PARAMETERS
 # ---------------------------------------------------------------------------
 def _fallback_keywords(niche: str) -> str:
+    """Rule-based keyword fallback used when the AI call returns nothing."""
     n = niche.lower()
     if any(x in n for x in ["pace", "program for all-inclusive", "all-inclusive care"]):
         return "pace program, adult day care, home health"
@@ -144,6 +145,12 @@ def _fallback_keywords(niche: str) -> str:
 
 
 def suggest_search_params(niche_description: str) -> dict:
+    """
+    Maps a plain-English niche to Apollo industries + keyword tags.
+    The prompt gives GPT-4o concrete Apollo tag examples so it generates
+    short real tags rather than long descriptive phrases that match nothing.
+    A rule-based fallback fires if the AI returns empty keywords.
+    """
     prompt = f"""You are configuring a B2B company database search on Apollo.io.
 The analyst is targeting companies in this niche:
 
@@ -212,6 +219,7 @@ Return JSON only — no explanation:
             "keywords":   keywords,
         }
 
+    # Attempt 1 — structured JSON output
     try:
         resp = client.chat.completions.create(
             model="gpt-4o",
@@ -228,6 +236,7 @@ Return JSON only — no explanation:
                 "keywords":   _fallback_keywords(niche_description),
             }
 
+    # Attempt 2 — retry without response_format (avoids content-filter on structured output)
     try:
         resp = client.chat.completions.create(
             model="gpt-4o",
@@ -252,6 +261,20 @@ Return JSON only — no explanation:
 # APOLLO — TWO-PASS ORGANIZATION SEARCH
 # ---------------------------------------------------------------------------
 def search_organizations(industries, location_input, keyword_tags=None, max_pages=5):
+    """
+    Two-pass search for maximum candidate coverage:
+
+    Pass 1 — Industry sweep (NO keyword filter):
+      Search each selected industry broadly so we don't miss companies
+      that have the right industry tag but aren't tagged with our keywords.
+      AI filter handles relevance.
+
+    Pass 2 — Keyword-only sweep (NO industry filter):
+      Search by keyword tags across ALL industries so we catch companies
+      that Apollo has classified in an unexpected industry category.
+
+    Both passes are deduplicated by Apollo org ID.
+    """
     url     = "https://api.apollo.io/v1/organizations/search"
     headers = {"Content-Type": "application/json", "X-Api-Key": APOLLO_API_KEY}
     all_orgs, seen_ids = [], set()
@@ -276,12 +299,14 @@ def search_organizations(industries, location_input, keyword_tags=None, max_page
             except:
                 break
 
+    # Pass 1: broad industry sweeps — no keyword restriction
     for industry in (industries or [None]):
         base = {"organization_locations": [location_input]}
         if industry:
             base["q_organization_industries"] = [industry]
         _fetch_pages(base)
 
+    # Pass 2: keyword-only sweep — catches misclassified companies
     if keyword_tags:
         _fetch_pages({
             "organization_locations":        [location_input],
@@ -292,7 +317,7 @@ def search_organizations(industries, location_input, keyword_tags=None, max_page
 
 
 # ---------------------------------------------------------------------------
-# FILTERS & AI GATEKEEPER
+# FILTERS
 # ---------------------------------------------------------------------------
 def is_buyable_structure(org, mode):
     emp    = org.get("estimated_num_employees", 0) or 0
@@ -313,6 +338,7 @@ def is_buyable_structure(org, mode):
 _UNIVERSAL_BLOCKS = [
     "university", "college", "food service", "catering",
     "staffing solutions", "temp agency",
+    # Large food-service management companies that appear in healthcare industry searches
     "eurest", "aramark", "sodexo", "compass group", "canteen",
 ]
 _MODE_A_BLOCKS    = ["consulting group", "advisory group", " billing services",
@@ -329,6 +355,7 @@ def is_obvious_mismatch(org, target_niche, mode):
     for f in extras:
         if f in name: return True, f"Mode-A block: '{f}'"
     return False, "Pass"
+
 
 def check_relevance_gpt4o(company_name, description, keywords, target_niche, mode):
     if mode == "A":
@@ -347,10 +374,12 @@ PASS if the company fits ONE of these:
 FAIL if any of these apply:
 - Software, SaaS, analytics, or pure technology vendor
 - Consulting, billing, staffing, marketing, or outsourced services firm
-- Large national chain or massive enterprise
+- Large national chain or massive enterprise not suitable for acquisition
 - Completely unrelated industry
+- "PACE" in the niche means Program for All-Inclusive Care for the Elderly — NOT fitness/pace
 
-If the company appears to be a legitimate local or regional operator in the target niche, PASS them. Do not over-filter if the description is brief.
+If the company appears to be a legitimate local or regional operator in the target niche, PASS them.
+Do not over-filter if the description is brief.
 Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
 
     else:
@@ -362,12 +391,14 @@ Keywords: {keywords}
 
 PASS ONLY if the company fits ONE of these:
 1. A direct competitor operating in the exact same niche.
-2. A major strategic operator in the broader parent industry that routinely acquires smaller companies in this niche.
+2. A major strategic operator in the broader parent industry that routinely acquires smaller
+   companies in this niche.
 
 FAIL if:
-- They are merely a vendor, supplier, or service provider TO the niche (e.g., selling software, consulting, or equipment to the target niche).
-- Completely unrelated industry (finance, real estate, general retail, etc.).
-- General investment firms or banks (unless specifically focused on operating in this exact niche).
+- They are merely a vendor, supplier, or service provider TO the niche (e.g., selling software,
+  consulting, or equipment to companies in the target niche)
+- Completely unrelated industry (finance, real estate, general retail, etc.)
+- General investment firms or banks (unless specifically focused on operating in this exact niche)
 
 Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
 
@@ -375,6 +406,7 @@ Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
         data = json.loads(content)
         return data.get("match"), data.get("reason")
 
+    # Attempt 1 — structured JSON output
     try:
         resp = client.chat.completions.create(
             model="gpt-4o",
@@ -387,6 +419,7 @@ Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
         if "content" not in str(e).lower() and "filter" not in str(e).lower() and "400" not in str(e):
             return True, "AI Error"
 
+    # Attempt 2 — retry without response_format
     try:
         resp = client.chat.completions.create(
             model="gpt-4o",
@@ -464,6 +497,7 @@ Text:
                 data[k] = None
         return data
 
+    # Attempt 1 — structured JSON output
     try:
         resp = client.chat.completions.create(
             model="gpt-4o",
@@ -476,6 +510,7 @@ Text:
         if "content" not in str(e).lower() and "filter" not in str(e).lower() and "400" not in str(e):
             return None
 
+    # Attempt 2 — retry without response_format
     try:
         resp = client.chat.completions.create(
             model="gpt-4o",
@@ -555,6 +590,7 @@ def clean_domain(url):
     except:
         return None
 
+
 def clean_company_name_for_search(name):
     if not name: return ""
     c = name.replace(",", "").replace(".", "")
@@ -563,11 +599,13 @@ def clean_company_name_for_search(name):
         if c.lower().endswith(s): c = c[:-len(s)]
     return c.strip()
 
+
 def _title_score(title: str) -> int:
     t = (title or "").lower()
     for phrase, score in _TITLE_SCORES.items():
         if phrase in t: return score
     return 0
+
 
 def get_people_apollo_robust(company_name, domain, org_id=None):
     url     = "https://api.apollo.io/v1/mixed_people/search"
@@ -582,7 +620,7 @@ def get_people_apollo_robust(company_name, domain, org_id=None):
         attempts += [
             {"organization_ids": [org_id], "person_seniority": top_seniority,  "per_page": 10},
             {"organization_ids": [org_id], "person_seniority": wide_seniority, "per_page": 25},
-            {"organization_ids": [org_id],                                     "per_page": 25},
+            {"organization_ids": [org_id],                                      "per_page": 25},
         ]
     if domain:
         domains = list({domain, f"www.{domain}",
@@ -596,7 +634,7 @@ def get_people_apollo_robust(company_name, domain, org_id=None):
         attempts += [
             {"q_organization_names": [name], "person_seniority": top_seniority,  "per_page": 10},
             {"q_organization_names": [name], "person_seniority": wide_seniority, "per_page": 15},
-            {"q_organization_names": [name],                                     "per_page": 15},
+            {"q_organization_names": [name],                                      "per_page": 15},
         ]
 
     all_people, seen_ids = [], set()
@@ -621,6 +659,7 @@ def get_people_apollo_robust(company_name, domain, org_id=None):
     )
     return all_people
 
+
 def select_best_apollo_contact(people):
     if not people: return None, "None"
     valid = [p for p in people
@@ -634,12 +673,14 @@ def select_best_apollo_contact(people):
     if not best.get("email"): label += " [No Email]"
     return best, label
 
+
 def repair_single_name(first_name, people_list):
     if not first_name or not people_list: return None
     target = first_name.split()[0].lower()
     for p in people_list:
         if target in (p.get("first_name") or "").lower(): return p
     return None
+
 
 def bulk_enrich_names(people_list, domain):
     if not people_list or not domain: return []
@@ -655,6 +696,7 @@ def bulk_enrich_names(people_list, domain):
         return r.json().get("matches", [])
     except:
         return []
+
 
 # ---------------------------------------------------------------------------
 # NEWS
@@ -673,10 +715,13 @@ def get_latest_news_link(company_name, city=None):
     except:
         return None, None
 
+
 # ---------------------------------------------------------------------------
 # HELPERS
 # ---------------------------------------------------------------------------
 def _email_matches_domain(email: str, company_domain: str) -> bool:
+    """Return True if the email's domain plausibly belongs to the company domain.
+    Used to reject Apollo bulk_enrich returning a same-name person at a different company."""
     if not email or not company_domain:
         return True
     try:
@@ -687,6 +732,7 @@ def _email_matches_domain(email: str, company_domain: str) -> bool:
                 or c_dom.endswith("." + e_dom))
     except Exception:
         return True
+
 
 # ---------------------------------------------------------------------------
 # WORKER
@@ -731,8 +777,9 @@ def process_single_company(org, specific_niche, strat_code):
     found_person = None
 
     if web_person:
-        found_person  = web_person
-        row["Source"] = web_source or "Web Spider"
+        found_person      = web_person
+        row["Source"]     = web_source or "Web Spider"
+        row["Confidence"] = "Medium"   # named person found — upgrade to High if verified
         full = f"{found_person.get('first_name','')} {found_person.get('last_name','')}".strip()
         if " " not in full:
             rep = repair_single_name(full, apollo_people)
@@ -742,6 +789,7 @@ def process_single_company(org, specific_niche, strat_code):
             if matches and matches[0]:
                 enriched       = matches[0]
                 enr_email      = enriched.get("email")
+                # Reject if Apollo matched a same-name person at a different company
                 if not enr_email or _email_matches_domain(enr_email, domain):
                     found_person      = enriched
                     row["Source"]    += " → Verified"
@@ -760,6 +808,7 @@ def process_single_company(org, specific_niche, strat_code):
             f"{found_person.get('last_name','')}").strip()
         row["Title"] = found_person.get("title") or "N/A"
         a_email = found_person.get("email")
+        # Discard email if it clearly belongs to a different company's domain
         if a_email and domain and not _email_matches_domain(a_email, domain):
             a_email = None
         row["Email"] = a_email if a_email else (web_email or "N/A")
@@ -772,11 +821,13 @@ def process_single_company(org, specific_niche, strat_code):
         if web_phone: row["Phone"] = web_phone
         if web_email or web_phone:
             row["Confidence"] = "Medium"
+            row["Source"]     = "Web (contact only)"
 
     t, u = get_latest_news_link(comp_name, org.get("city"))
     if u: row["Latest News"] = f"{t} | {u}" if t else u
 
     return row
+
 
 # ---------------------------------------------------------------------------
 # UI
@@ -806,7 +857,7 @@ if suggest_clicked:
             st.session_state["s_niche"]      = niche_raw
         st.rerun()
 
-# Banner — show what was suggested
+# Banner — show what was suggested (only after Suggest Fields has run)
 if "s_industries" in st.session_state:
     ind_str = ", ".join(st.session_state["s_industries"])
     kw_str  = st.session_state.get("s_keywords") or "(none — broaden if needed)"
@@ -821,6 +872,7 @@ st.divider()
 # ── Step 2: Review / adjust fields ──────────────────────────────────────────
 st.markdown("### Step 2 — Review, adjust, and run")
 
+# Initialise session state defaults so widgets don't crash on first load
 for k, v in [("s_industries", ["Hospital & Health Care"]),
              ("s_keywords",   ""),
              ("s_niche",      "")]:
