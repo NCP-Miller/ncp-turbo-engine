@@ -383,22 +383,23 @@ Do not over-filter if the description is brief.
 Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
 
     else:
-        prompt = f"""You are identifying strategic buyers or direct competitors for companies in: "{target_niche}"
+        prompt = f"""You are identifying potential buyers or strategic partners for companies in: "{target_niche}"
 
 Company: "{company_name}"
 Description: "{description}"
 Keywords: {keywords}
 
-PASS ONLY if the company fits ONE of these:
-1. A direct competitor operating in the exact same niche.
-2. A major strategic operator in the broader parent industry that routinely acquires smaller
-   companies in this niche.
+PASS if the company fits ANY of these:
+1. Direct operator or competitor in the exact same niche (any size).
+2. Operator in an adjacent senior care or healthcare vertical who could plausibly expand into
+   or acquire a company in this niche (e.g., home health, assisted living, managed care).
+3. Large health system, hospital network, or managed care organization active in this space.
 
 FAIL if:
-- They are merely a vendor, supplier, or service provider TO the niche (e.g., selling software,
-  consulting, or equipment to companies in the target niche)
-- Completely unrelated industry (finance, real estate, general retail, etc.)
-- General investment firms or banks (unless specifically focused on operating in this exact niche)
+- Pure technology, software, SaaS, or analytics vendor with no direct care delivery
+- Consulting, billing, staffing, or outsourced services firm
+- Completely unrelated industry (construction, finance, retail, food, etc.)
+- Pharma, biotech, or medical device manufacturer with no patient care operations
 
 Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
 
