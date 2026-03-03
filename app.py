@@ -260,7 +260,7 @@ Return JSON only — no explanation:
 # ---------------------------------------------------------------------------
 # APOLLO — TWO-PASS ORGANIZATION SEARCH
 # ---------------------------------------------------------------------------
-def search_organizations(industries, location_input, keyword_tags=None, max_pages=5):
+def search_organizations(industries, location_input, keyword_tags=None, max_pages=10):
     """
     Two-pass search for maximum candidate coverage:
 
@@ -383,22 +383,24 @@ Do not over-filter if the description is brief.
 Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
 
     else:
-        prompt = f"""You are identifying potential buyers or strategic partners for companies in: "{target_niche}"
+        prompt = f"""You are identifying sales prospects and competitors for companies operating in: "{target_niche}"
 
 Company: "{company_name}"
 Description: "{description}"
 Keywords: {keywords}
 
 PASS if the company fits ANY of these:
-1. Direct operator or competitor in the exact same niche (any size).
-2. Operator in an adjacent senior care or healthcare vertical who could plausibly expand into
-   or acquire a company in this niche (e.g., home health, assisted living, managed care).
-3. Large health system, hospital network, or managed care organization active in this space.
+1. Direct competitor operating in the same or a closely adjacent niche (any size, any ownership).
+2. An organization that regularly refers clients, contracts with, or partners with companies in
+   this niche — e.g., for PACE: hospitals, home health agencies, assisted living, skilled nursing,
+   hospice, physician groups, area agencies on aging.
+3. Any operator serving the same patient or client population who could be a referral source,
+   channel partner, or purchaser of services.
 
 FAIL if:
 - Pure technology, software, SaaS, or analytics vendor with no direct care delivery
 - Consulting, billing, staffing, or outsourced services firm
-- Completely unrelated industry (construction, finance, retail, food, etc.)
+- Completely unrelated industry (manufacturing, finance, retail, food, etc.)
 - Pharma, biotech, or medical device manufacturer with no patient care operations
 
 Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
@@ -895,8 +897,8 @@ specific_niche = r1b.text_input(
 r2a, r2b, r2c = st.columns(3)
 target_geo = r2a.text_input("Geography", value="North Carolina, United States")
 mode = r2b.selectbox("Strategy", [
-    "A - Buy/Private  (Strict: small private operators only)",
-    "B - Sell/Scout   (Broad: same sector, all sizes)",
+    "A - Acquire  (Strict: small private operators only)",
+    "B - Prospect (Broad: competitors & referral/sales targets, all sizes)",
 ])
 apollo_keywords_raw = r2c.text_input(
     "Apollo Keyword Tags",
@@ -909,10 +911,12 @@ apollo_keywords_raw = r2c.text_input(
 )
 
 st.caption(
-    "**Search strategy:** Industries are searched broadly (no keyword filter) so no "
-    "relevant company is missed. Keywords run a *separate* sweep across ALL industries "
-    "to catch companies Apollo has placed in unexpected categories. The AI filter then "
-    "screens every result for true niche relevance."
+    "**Search strategy:** Each industry is swept up to 1,000 results (no keyword filter) so "
+    "broadly-classified companies aren't missed. Keywords run a *separate* sweep across ALL "
+    "industries to catch companies Apollo has placed in unexpected categories. The AI filter "
+    "then screens every candidate for true niche relevance. "
+    "Note: if a company doesn't appear, it may be absent from Apollo's database or untagged "
+    "with the expected industry/keywords — try adding alternate keyword tags to improve coverage."
 )
 
 if st.button("🚀 Start Sourcing", type="primary"):
@@ -926,7 +930,7 @@ if st.button("🚀 Start Sourcing", type="primary"):
     kw_display = f" + keyword sweep ({', '.join(keyword_tags)})" if keyword_tags else ""
     st.info(
         f"🔎 Searching **{len(industries)} industries**{kw_display} "
-        f"in **{target_geo}** (up to 500 results per industry)…"
+        f"in **{target_geo}** (up to 1,000 results per industry)…"
     )
 
     orgs = search_organizations(industries, target_geo, keyword_tags=keyword_tags)
