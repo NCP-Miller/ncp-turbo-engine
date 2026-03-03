@@ -14,15 +14,24 @@ st.set_page_config(page_title="NCP Sourcing Engine", page_icon="🚀", layout="w
 # AUTH
 # ---------------------------------------------------------------------------
 def check_password():
-    def on_submit():
-        st.session_state["auth"] = (st.session_state.get("pw_input") == "NCP2026")
-    if not st.session_state.get("auth"):
-        st.text_input("Enter Password", type="password", key="pw_input", on_change=on_submit)
-        if "auth" in st.session_state and not st.session_state["auth"]:
-            st.error("😕 Incorrect password")
-        st.stop()
+    def password_entered():
+        if st.session_state["password"] == "NCP2026":
+            st.session_state["password_correct"] = True
+            del st.session_state["password"]
+        else:
+            st.session_state["password_correct"] = False
 
-check_password()
+    if "password_correct" not in st.session_state:
+        st.text_input("Enter Password", type="password", on_change=password_entered, key="password")
+        return False
+    elif not st.session_state["password_correct"]:
+        st.text_input("Enter Password", type="password", on_change=password_entered, key="password")
+        st.error("😕 Password incorrect")
+        return False
+    return True
+
+if not check_password():
+    st.stop()
 
 # ---------------------------------------------------------------------------
 # SECRETS
@@ -88,7 +97,6 @@ _TITLE_SCORES = {
     "chief operating": 75, " coo": 75,
     "chief financial": 70, " cfo": 70,
     "chief medical": 80, "chief clinical": 78, "chief nursing": 75,
-    "chief strategy": 68, "chief people": 65, "chief growth": 65,
     "administrator": 70, "director of": 60,
     "vice president": 50, " vp ": 50,
     "manager": 30,
@@ -98,129 +106,218 @@ _CONTACT_PATHS = [
     "/about", "/about-us", "/team", "/our-team", "/leadership",
     "/staff", "/management", "/who-we-are", "/meet-the-team",
     "/people", "/executives", "/administration", "/about/team",
-    "/about/leadership", "/about/staff", "/contact", "/contact-us",
-    "/board", "/board-of-directors",
+    "/about/leadership", "/contact", "/contact-us",
 ]
 
 # ---------------------------------------------------------------------------
-# AI — NICHE → APOLLO PARAMETERS  (core improvement)
+# AI — NICHE → APOLLO PARAMETERS
 # ---------------------------------------------------------------------------
+def _fallback_keywords(niche: str) -> str:
+    """Rule-based keyword fallback used when the AI call returns nothing."""
+    n = niche.lower()
+    if any(x in n for x in ["pace", "program for all-inclusive", "all-inclusive care"]):
+        return "pace program, adult day care, home health"
+    if any(x in n for x in ["senior", "elderly", "elder care", "aging in place"]):
+        return "senior living, home health, assisted living"
+    if any(x in n for x in ["home health", "home care", "home-based"]):
+        return "home health, home care, skilled nursing"
+    if any(x in n for x in ["hospice", "palliative"]):
+        return "hospice, palliative care, home health"
+    if any(x in n for x in ["assisted living", "memory care", "dementia"]):
+        return "assisted living, memory care, senior living"
+    if any(x in n for x in ["skilled nursing", "nursing home", "snf"]):
+        return "skilled nursing facility, long-term care"
+    if any(x in n for x in ["behavioral health", "mental health", "psychiatr"]):
+        return "behavioral health, mental health, outpatient"
+    if any(x in n for x in ["substance", "addiction", "recovery", "rehab"]):
+        return "substance abuse, addiction treatment, behavioral health"
+    if any(x in n for x in ["urgent care", "walk-in"]):
+        return "urgent care, ambulatory care, primary care"
+    if any(x in n for x in ["hvac", "heating", "cooling", "air condition"]):
+        return "hvac, mechanical contractor, facilities management"
+    if any(x in n for x in ["veterinary", "vet ", "animal hospital"]):
+        return "veterinary, animal hospital, pet care"
+    if any(x in n for x in ["dental", "dentist"]):
+        return "dental practice, dental care"
+    if any(x in n for x in ["physical therapy", "occupational therapy", "pt clinic"]):
+        return "physical therapy, outpatient rehab, sports medicine"
+    return ""
+
+
 def suggest_search_params(niche_description: str) -> dict:
     """
-    Maps a plain-English niche to Apollo search parameters.
-    The prompt teaches GPT-4o about Apollo's actual tag vocabulary so it
-    generates short, real tags instead of long descriptive phrases.
+    Maps a plain-English niche to Apollo industries + keyword tags.
+    The prompt gives GPT-4o concrete Apollo tag examples so it generates
+    short real tags rather than long descriptive phrases that match nothing.
+    A rule-based fallback fires if the AI returns empty keywords.
     """
     prompt = f"""You are configuring a B2B company database search on Apollo.io.
 The analyst is targeting companies in this niche:
 
   "{niche_description}"
 
-You must produce two search parameters. Read the niche description carefully —
-your choices must be driven by what kinds of companies appear in that specific niche.
+Study that niche carefully. Your choices must be driven by what kinds of companies
+operate in that specific niche — not just obvious label matching.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-PARAMETER 1 — INDUSTRY CATEGORIES
+PARAMETER 1 — INDUSTRY CATEGORIES (choose 3–5)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Select 3–5 from this exact list. Choose the categories where companies in this
-niche are ACTUALLY classified in Apollo — not just the most obvious label.
+Pick from this exact list only. Choose the categories where companies in this niche
+are ACTUALLY classified in Apollo — include non-obvious ones:
 
 {json.dumps(APOLLO_INDUSTRIES)}
 
-Common classification traps to avoid:
-• PACE / adult day programs → appear in "Individual & Family Services" and
-  "Non-Profit Organization Management", NOT only "Hospital & Health Care"
-• Senior living operators → "Individual & Family Services", "Health, Wellness and Fitness"
-• Small clinics / practices → "Medical Practice" more than "Hospital & Health Care"
-• Specialty trade contractors → "Construction" AND "Facilities Services"
-• Non-profit care orgs → always add "Non-Profit Organization Management"
+Classification guidance:
+• PACE / senior day programs → "Individual & Family Services", "Non-Profit Organization Management",
+  "Hospital & Health Care" (NOT "Pharmaceuticals" — that is drug manufacturers)
+• Skilled nursing / assisted living → "Hospital & Health Care", "Individual & Family Services"
+• Behavioral / mental health → "Mental Health Care", "Hospital & Health Care", "Individual & Family Services"
+• Small clinics / practices → "Medical Practice" is usually more accurate than "Hospital & Health Care"
+• Home services / HVAC → "Construction", "Facilities Services"
+• Non-profit care operators → always add "Non-Profit Organization Management"
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-PARAMETER 2 — APOLLO KEYWORD TAGS
+PARAMETER 2 — KEYWORD TAGS (REQUIRED — do not leave blank)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Apollo tags each company with SHORT keyword phrases (1–4 words each).
-These are categorical labels — not sentences or descriptions.
+You MUST return 2–5 tags. Empty keywords is not acceptable.
 
-Real Apollo tag examples by domain:
-  Senior / elder care:   "home health", "adult day care", "assisted living",
-                         "skilled nursing", "hospice", "memory care", "pace program",
-                         "senior living", "home care", "long-term care"
-  Managed care / payer:  "managed care", "medicare advantage", "medicaid managed care",
-                         "health plan", "care management"
-  General healthcare:    "behavioral health", "outpatient", "urgent care",
-                         "telehealth", "ambulatory care", "primary care"
-  Home / trade services: "hvac", "plumbing", "electrical contractor",
-                         "facilities management", "commercial services"
-  Veterinary:            "veterinary", "animal hospital", "pet care"
-  Non-profit services:   "community health", "social services", "nonprofit healthcare"
+Real Apollo tags by domain (use these as your vocabulary):
+  PACE / senior day:   "pace program", "adult day care", "adult day services",
+                       "managed long-term care", "home health", "senior services"
+  Senior living:       "senior living", "assisted living", "memory care",
+                       "independent living", "continuing care"
+  Home-based care:     "home health", "home care", "home-based care", "homemaker services"
+  Skilled nursing:     "skilled nursing facility", "long-term care", "nursing home", "rehabilitation"
+  Hospice / palliative:"hospice", "palliative care", "end-of-life care"
+  Behavioral health:   "behavioral health", "mental health", "outpatient therapy",
+                       "substance abuse", "addiction treatment"
+  General healthcare:  "managed care", "medicaid", "medicare", "primary care",
+                       "ambulatory care", "urgent care", "telehealth"
+  Home / trade:        "hvac", "plumbing", "electrical contractor", "facilities management"
+  Veterinary:          "veterinary", "animal hospital", "pet care"
 
-RULES — follow these exactly:
-1. Tags MUST be 1–4 words. Phrases longer than 4 words will match nothing in Apollo.
-2. Choose tags that specifically describe companies in "{niche_description}".
-3. Suggest 2–5 tags. Prioritize specificity over quantity.
-4. Only include tags you are confident exist in Apollo's vocabulary based on the
-   examples above. When in doubt, leave a tag out.
-5. Return as a comma-separated string: "tag one, tag two, tag three"
+RULES:
+1. Tags MUST be 1–4 words. Longer phrases will match nothing in Apollo.
+2. Choose tags that specifically describe "{niche_description}" operators.
+3. Return 2–5 tags as a comma-separated string.
+4. You MUST return keywords — do not return an empty string.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Return JSON only — no explanation:
 {{"industries": ["Category A", "Category B", "Category C"],
-  "keywords":   "short tag one, short tag two"}}"""
+  "keywords":   "short tag one, short tag two, short tag three"}}"""
 
+    def _parse_suggest(content):
+        data     = json.loads(content)
+        valid    = [i for i in (data.get("industries") or []) if i in APOLLO_INDUSTRIES]
+        keywords = (data.get("keywords") or "").strip()
+        if not keywords:
+            keywords = _fallback_keywords(niche_description)
+        return {
+            "industries": valid or ["Hospital & Health Care"],
+            "keywords":   keywords,
+        }
+
+    # Attempt 1 — structured JSON output
     try:
         resp = client.chat.completions.create(
             model="gpt-4o",
             messages=[{"role": "user", "content": prompt}],
             response_format={"type": "json_object"},
             temperature=0,
-            timeout=20,
+            timeout=25,
         )
-        data     = json.loads(resp.choices[0].message.content)
-        valid    = [i for i in (data.get("industries") or []) if i in APOLLO_INDUSTRIES]
-        keywords = (data.get("keywords") or "").strip()
-        return {
-            "industries": valid or ["Hospital & Health Care"],
-            "keywords":   keywords,
-        }
-    except:
-        return {"industries": ["Hospital & Health Care"], "keywords": ""}
+        return _parse_suggest(resp.choices[0].message.content)
+    except Exception as e:
+        if "content" not in str(e).lower() and "filter" not in str(e).lower() and "400" not in str(e):
+            return {
+                "industries": ["Hospital & Health Care"],
+                "keywords":   _fallback_keywords(niche_description),
+            }
+
+    # Attempt 2 — retry without response_format (avoids content-filter on structured output)
+    try:
+        resp = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0,
+            timeout=25,
+        )
+        raw   = resp.choices[0].message.content or ""
+        match = re.search(r'\{.*\}', raw, re.DOTALL)
+        if match:
+            return _parse_suggest(match.group())
+    except Exception:
+        pass
+
+    return {
+        "industries": ["Hospital & Health Care"],
+        "keywords":   _fallback_keywords(niche_description),
+    }
+
 
 # ---------------------------------------------------------------------------
-# APOLLO — ORGANIZATIONS
+# APOLLO — TWO-PASS ORGANIZATION SEARCH
 # ---------------------------------------------------------------------------
-def search_organizations(industries, location_input, keyword_tags=None, max_pages=2):
+def search_organizations(industries, location_input, keyword_tags=None, max_pages=5):
+    """
+    Two-pass search for maximum candidate coverage:
+
+    Pass 1 — Industry sweep (NO keyword filter):
+      Search each selected industry broadly so we don't miss companies
+      that have the right industry tag but aren't tagged with our keywords.
+      AI filter handles relevance.
+
+    Pass 2 — Keyword-only sweep (NO industry filter):
+      Search by keyword tags across ALL industries so we catch companies
+      that Apollo has classified in an unexpected industry category.
+
+    Both passes are deduplicated by Apollo org ID.
+    """
     url     = "https://api.apollo.io/v1/organizations/search"
     headers = {"Content-Type": "application/json", "X-Api-Key": APOLLO_API_KEY}
     all_orgs, seen_ids = [], set()
 
-    for industry in (industries or [None]):
+    def _fetch_pages(base_payload):
         for page in range(1, max_pages + 1):
-            payload = {
-                "organization_locations": [location_input],
-                "page": page,
-                "per_page": 100,
-            }
-            if industry:
-                payload["q_organization_industries"] = [industry]
-            if keyword_tags:
-                payload["q_organization_keyword_tags"] = keyword_tags
+            payload = {**base_payload, "page": page, "per_page": 100}
             try:
                 r = requests.post(url, headers=headers, json=payload, timeout=15)
-                if r.status_code != 200: break
+                if r.status_code != 200:
+                    break
                 orgs = r.json().get("organizations", [])
-                if not orgs: break
+                if not orgs:
+                    break
                 for o in orgs:
                     oid = o.get("id")
                     if oid and oid not in seen_ids:
                         seen_ids.add(oid)
                         all_orgs.append(o)
-                if len(orgs) < 100: break
-            except: break
+                if len(orgs) < 100:
+                    break
+            except:
+                break
+
+    # Pass 1: broad industry sweeps — no keyword restriction
+    for industry in (industries or [None]):
+        base = {"organization_locations": [location_input]}
+        if industry:
+            base["q_organization_industries"] = [industry]
+        _fetch_pages(base)
+
+    # Pass 2: keyword-only sweep — catches misclassified companies
+    if keyword_tags:
+        _fetch_pages({
+            "organization_locations":        [location_input],
+            "q_organization_keyword_tags":   keyword_tags,
+        })
 
     return all_orgs
 
+
 # ---------------------------------------------------------------------------
-# FILTER 1 — STRUCTURE
+# FILTERS
 # ---------------------------------------------------------------------------
 def is_buyable_structure(org, mode):
     emp    = org.get("estimated_num_employees", 0) or 0
@@ -228,27 +325,20 @@ def is_buyable_structure(org, mode):
     tags   = [t.lower() for t in (org.get("keywords") or [])]
 
     if mode == "A":
-        if status == "public":                         return False, "Publicly Traded"
-        if status == "subsidiary":                     return False, "Subsidiary"
-        if "private equity" in tags or "venture capital" in tags:
-                                                       return False, "PE/VC Backed"
-        if emp > 7500:                                 return False, f"Too Large ({emp})"
+        if status == "public":                                  return False, "Publicly Traded"
+        if status == "subsidiary":                              return False, "Subsidiary"
+        if "private equity" in tags or "venture capital" in tags: return False, "PE/VC Backed"
+        if emp > 7500:                                          return False, f"Too Large ({emp})"
     else:
-        if emp > 100000:                               return False, f"Mega-Corp ({emp})"
+        if emp > 100000:                                        return False, f"Mega-Corp ({emp})"
 
     return True, "OK"
 
-# ---------------------------------------------------------------------------
-# FILTER 2 — OBVIOUS NAME MISMATCHES
-# ---------------------------------------------------------------------------
-_UNIVERSAL_BLOCKS = [
-    "university", "college", "food service", "catering",
-    "staffing solutions", "temp agency",
-]
-_MODE_A_BLOCKS = [
-    "consulting group", "advisory group", " billing services",
-    "software inc", "software llc",
-]
+
+_UNIVERSAL_BLOCKS = ["university", "college", "food service", "catering",
+                     "staffing solutions", "temp agency"]
+_MODE_A_BLOCKS    = ["consulting group", "advisory group", " billing services",
+                     "software inc", "software llc"]
 
 def is_obvious_mismatch(org, target_niche, mode):
     name = (org.get("name") or "").lower()
@@ -262,9 +352,7 @@ def is_obvious_mismatch(org, target_niche, mode):
         if f in name: return True, f"Mode-A block: '{f}'"
     return False, "Pass"
 
-# ---------------------------------------------------------------------------
-# FILTER 3 — AI GATEKEEPER
-# ---------------------------------------------------------------------------
+
 def check_relevance_gpt4o(company_name, description, keywords, target_niche, mode):
     if mode == "A":
         prompt = f"""You are a strict acquisition filter for a private equity investor.
@@ -276,15 +364,13 @@ Keywords: {keywords}
 
 PASS only if the company clearly fits ONE of these:
 1. Direct operator in the exact niche described above.
-2. Operator in a directly adjacent sub-sector serving THE SAME primary
-   customer or patient population through COMPREHENSIVE or INTEGRATED care
-   (not standalone specialty services like dental, vision, or pharmacy alone).
+2. Operator in a directly adjacent sub-sector serving THE SAME primary customer or patient
+   population through COMPREHENSIVE or INTEGRATED care (not standalone specialty services).
 3. Company name alone strongly implies a matching operator AND description is empty.
 
 FAIL if any of these apply:
 - Serves a DIFFERENT primary population than the target niche
-- Provides only a SINGLE specialty service (dental, vision, pharmacy, lab, therapy)
-  rather than comprehensive/integrated care
+- Provides only a SINGLE specialty service (dental, vision, pharmacy, lab) not comprehensive care
 - Large enterprise, national chain, or institution not suitable for acquisition
 - Software, analytics, EMR, or technology vendor
 - Consulting, billing, staffing, CRO, or outsourcing firm
@@ -292,35 +378,36 @@ FAIL if any of these apply:
 - Pharma, biotech, or laboratory company
 - Government agency or regulatory body
 - Completely unrelated industry
+- "PACE" in the niche means Program for All-Inclusive Care for the Elderly — NOT fitness/pace
 
-IMPORTANT: When uncertain → FAIL. This is a strict buy-side filter.
+When uncertain → FAIL.
 Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
 
     else:
-        prompt = f"""You are identifying potential buyers or strategic partners for
-companies in this niche: "{target_niche}"
+        prompt = f"""You are identifying potential buyers or strategic partners for companies in: "{target_niche}"
 
 Company: "{company_name}"
 Description: "{description}"
 Keywords: {keywords}
 
-PASS if the company operates in the same sector or serves the same customer/patient
-population and could plausibly acquire, invest in, or partner with a company in the niche:
-- Direct competitors or adjacent operators in the same sector
-- Health systems, insurers, or managed-care orgs serving the same population
-- Operators in closely adjacent sub-sectors (same customer type)
+PASS if the company operates in the same sector or serves the same customer/patient population
+and could plausibly acquire, invest in, or partner with a company in the niche.
 
 FAIL if:
-- Pharma, biotech, drug manufacturing, or CRO company
-- Clinical laboratory or diagnostics company
-- Dental, vision, pharmacy, or unrelated specialty
+- Pharma, biotech, drug manufacturing, or CRO
+- Clinical laboratory or diagnostics only
 - Health IT, analytics, or software with no direct care delivery
-- Medical device manufacturer with no patient care operations
+- Medical device manufacturer with no patient care
 - Government agency or regulatory body
-- Companies clearly in construction, finance, retail, food, or other unrelated sectors
+- Completely unrelated industry (construction, finance, retail, food, etc.)
 
 Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
 
+    def _parse_relevance(content):
+        data = json.loads(content)
+        return data.get("match"), data.get("reason")
+
+    # Attempt 1 — structured JSON output
     try:
         resp = client.chat.completions.create(
             model="gpt-4o",
@@ -328,10 +415,27 @@ Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
             response_format={"type": "json_object"},
             timeout=20,
         )
-        data = json.loads(resp.choices[0].message.content)
-        return data.get("match"), data.get("reason")
-    except:
-        return True, "AI Error"
+        return _parse_relevance(resp.choices[0].message.content)
+    except Exception as e:
+        if "content" not in str(e).lower() and "filter" not in str(e).lower() and "400" not in str(e):
+            return True, "AI Error"
+
+    # Attempt 2 — retry without response_format
+    try:
+        resp = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[{"role": "user", "content": prompt}],
+            timeout=20,
+        )
+        raw   = resp.choices[0].message.content or ""
+        match = re.search(r'\{.*\}', raw, re.DOTALL)
+        if match:
+            return _parse_relevance(match.group())
+    except Exception:
+        pass
+
+    return True, "AI Error"
+
 
 # ---------------------------------------------------------------------------
 # CONTACT FINDING — FIRECRAWL
@@ -349,13 +453,15 @@ def firecrawl_scrape(url):
             data = r.json()
             md   = (data.get("data") or {}).get("markdown") or data.get("markdown")
             return md[:50000] if md else None
-    except: pass
+    except:
+        pass
     return None
+
 
 def extract_relevant_links(md, base_url):
     if not md: return []
     high = ["leadership","executive","our team","care team","management",
-            "principals","partners","architects","providers","medical staff"]
+            "principals","partners","providers","medical staff","administration"]
     med  = ["about","who we are","meet","staff","firm","studio","people","team","contact"]
     skip = ["linkedin","facebook","twitter","pdf","jpg","login","mailto"]
     seen, out = set(), []
@@ -366,9 +472,11 @@ def extract_relevant_links(md, base_url):
         full = urljoin(base_url, link) if link.startswith("/") else \
                (link if link.startswith("http") else None)
         if not full or any(s in full for s in skip) or full in seen: continue
-        seen.add(full); out.append((score, full))
+        seen.add(full)
+        out.append((score, full))
     out.sort(key=lambda x: x[0], reverse=True)
     return [u for _, u in out[:4]]
+
 
 def extract_names_openai(text, company_name):
     prompt = f"""From the website text of "{company_name}", extract the primary leader
@@ -383,6 +491,14 @@ Return JSON only (use null when not found):
 
 Text:
 {text[:15000]}"""
+    def _parse_contact(content):
+        data = json.loads(content)
+        for k in ("name", "title", "email", "phone"):
+            if isinstance(data.get(k), str) and data[k].lower() in ("none", "n/a", "null", ""):
+                data[k] = None
+        return data
+
+    # Attempt 1 — structured JSON output
     try:
         resp = client.chat.completions.create(
             model="gpt-4o",
@@ -390,18 +506,29 @@ Text:
             response_format={"type": "json_object"},
             timeout=20,
         )
-        data = json.loads(resp.choices[0].message.content)
-        for k in ("name", "title", "email", "phone"):
-            if isinstance(data.get(k), str) and data[k].lower() in ("none","n/a","null",""):
-                data[k] = None
-        return data
-    except: return None
+        return _parse_contact(resp.choices[0].message.content)
+    except Exception as e:
+        if "content" not in str(e).lower() and "filter" not in str(e).lower() and "400" not in str(e):
+            return None
+
+    # Attempt 2 — retry without response_format
+    try:
+        resp = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[{"role": "user", "content": prompt}],
+            timeout=20,
+        )
+        raw   = resp.choices[0].message.content or ""
+        match = re.search(r'\{.*\}', raw, re.DOTALL)
+        if match:
+            return _parse_contact(match.group())
+    except Exception:
+        pass
+
+    return None
+
 
 def spider_for_contact(company_name, domain):
-    """
-    Phase 1: try known leadership paths directly.
-    Phase 2: scrape homepage and follow high-value links.
-    """
     if not domain:
         return None, None, None, None
 
@@ -451,28 +578,6 @@ def spider_for_contact(company_name, domain):
 
     return None, None, web_email, web_phone
 
-def web_search_contact(company_name, city=None):
-    loc   = f" {city}" if city else ""
-    query = (f'"{company_name}"{loc} '
-             f'"executive director" OR "president" OR "CEO" OR "owner" OR "administrator"')
-    try:
-        r = requests.post(
-            "https://api.firecrawl.dev/v1/search",
-            headers={"Authorization": f"Bearer {FIRECRAWL_API_KEY}",
-                     "Content-Type": "application/json"},
-            json={"query": query, "limit": 3},
-            timeout=15,
-        )
-        if r.status_code == 200:
-            for result in r.json().get("data", []):
-                url     = result.get("url", "")
-                if any(s in url for s in ["linkedin.com","facebook.com","twitter.com"]):
-                    continue
-                content = result.get("markdown") or result.get("content", "")
-                if content and len(content) > 200:
-                    return content[:15000], url
-    except: pass
-    return None, None
 
 # ---------------------------------------------------------------------------
 # CONTACT FINDING — APOLLO PEOPLE
@@ -483,7 +588,9 @@ def clean_domain(url):
         if not url.startswith("http"): url = "http://" + url
         d = urlparse(url).netloc
         return d[4:] if d.startswith("www.") else d
-    except: return None
+    except:
+        return None
+
 
 def clean_company_name_for_search(name):
     if not name: return ""
@@ -493,11 +600,13 @@ def clean_company_name_for_search(name):
         if c.lower().endswith(s): c = c[:-len(s)]
     return c.strip()
 
+
 def _title_score(title: str) -> int:
     t = (title or "").lower()
     for phrase, score in _TITLE_SCORES.items():
         if phrase in t: return score
     return 0
+
 
 def get_people_apollo_robust(company_name, domain, org_id=None):
     url     = "https://api.apollo.io/v1/mixed_people/search"
@@ -542,13 +651,15 @@ def get_people_apollo_robust(company_name, domain, org_id=None):
                 all_people.extend(new)
                 if any(_title_score(p.get("title")) >= 80 for p in all_people):
                     break
-        except: pass
+        except:
+            pass
 
     all_people.sort(
         key=lambda p: (_title_score(p.get("title")), bool(p.get("email"))),
         reverse=True,
     )
     return all_people
+
 
 def select_best_apollo_contact(people):
     if not people: return None, "None"
@@ -563,12 +674,14 @@ def select_best_apollo_contact(people):
     if not best.get("email"): label += " [No Email]"
     return best, label
 
+
 def repair_single_name(first_name, people_list):
     if not first_name or not people_list: return None
     target = first_name.split()[0].lower()
     for p in people_list:
         if target in (p.get("first_name") or "").lower(): return p
     return None
+
 
 def bulk_enrich_names(people_list, domain):
     if not people_list or not domain: return []
@@ -582,7 +695,9 @@ def bulk_enrich_names(people_list, domain):
             timeout=15,
         )
         return r.json().get("matches", [])
-    except: return []
+    except:
+        return []
+
 
 # ---------------------------------------------------------------------------
 # NEWS
@@ -598,7 +713,9 @@ def get_latest_news_link(company_name, city=None):
         if not items: return None, None
         return (items[0].findtext("title") or "").strip(), \
                (items[0].findtext("link")  or "").strip()
-    except: return None, None
+    except:
+        return None, None
+
 
 # ---------------------------------------------------------------------------
 # WORKER
@@ -637,8 +754,8 @@ def process_single_company(org, specific_niche, strat_code):
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as inner:
         apollo_future = inner.submit(get_people_apollo_robust, comp_name, domain, org_id)
         web_future    = inner.submit(spider_for_contact, comp_name, domain)
-        apollo_people                                    = apollo_future.result()
-        web_person, web_source, web_email, web_phone    = web_future.result()
+        apollo_people                                 = apollo_future.result()
+        web_person, web_source, web_email, web_phone = web_future.result()
 
     found_person = None
 
@@ -657,30 +774,11 @@ def process_single_company(org, specific_niche, strat_code):
                 row["Confidence"] = "High"
 
     if not found_person and apollo_people:
-        best, method  = select_best_apollo_contact(apollo_people)
+        best, method = select_best_apollo_contact(apollo_people)
         if best:
             found_person      = best
             row["Source"]     = method
             row["Confidence"] = "Medium"
-
-    if not found_person:
-        content, _ = web_search_contact(comp_name, org.get("city"))
-        if content:
-            ai = extract_names_openai(content, comp_name)
-            if ai:
-                n = ai.get("name")
-                if n and " " in n and len(n) > 3:
-                    found_person = {
-                        "first_name":    n.split()[0],
-                        "last_name":     " ".join(n.split()[1:]),
-                        "title":         ai.get("title"),
-                        "email":         ai.get("email"),
-                        "phone_numbers": [],
-                    }
-                    row["Source"]     = "Web Search"
-                    row["Confidence"] = "Low"
-                if not web_email and ai.get("email"): web_email = ai["email"]
-                if not web_phone and ai.get("phone"): web_phone = ai["phone"]
 
     if found_person:
         row["CEO/Owner Name"] = (
@@ -702,12 +800,14 @@ def process_single_company(org, specific_niche, strat_code):
 
     return row
 
+
 # ---------------------------------------------------------------------------
 # UI
 # ---------------------------------------------------------------------------
 st.title("🚀 NCP Sourcing Engine")
-st.caption("Describe your target → get AI-suggested search fields → source.")
+st.caption("Describe your target → AI suggests search fields → source at scale.")
 
+# ── Step 1: Niche input + Suggest Fields ────────────────────────────────────
 st.markdown("### Step 1 — What are you looking for?")
 n1, n2 = st.columns([5, 1])
 niche_raw = n1.text_input(
@@ -722,24 +822,29 @@ if suggest_clicked:
     if not (niche_raw or "").strip():
         st.warning("Please describe your target niche first.")
     else:
-        with st.spinner(f"Mapping '{niche_raw}' to Apollo parameters…"):
+        with st.spinner(f"Analysing '{niche_raw}' and mapping to Apollo parameters…"):
             s = suggest_search_params(niche_raw)
             st.session_state["s_industries"] = s["industries"]
             st.session_state["s_keywords"]   = s["keywords"]
             st.session_state["s_niche"]      = niche_raw
         st.rerun()
 
+# Banner — show what was suggested (only after Suggest Fields has run)
 if "s_industries" in st.session_state:
     ind_str = ", ".join(st.session_state["s_industries"])
-    kw_str  = st.session_state.get("s_keywords") or "(none)"
+    kw_str  = st.session_state.get("s_keywords") or "(none — broaden if needed)"
     st.success(
-        f"✅  Industries: **{ind_str}**  |  Keywords: **{kw_str}** "
-        f"— review below and click **Start Sourcing**."
+        f"**Industries:** {ind_str}\n\n"
+        f"**Keywords:** {kw_str}\n\n"
+        f"Review and adjust below, then click **Start Sourcing**."
     )
 
 st.divider()
+
+# ── Step 2: Review / adjust fields ──────────────────────────────────────────
 st.markdown("### Step 2 — Review, adjust, and run")
 
+# Initialise session state defaults so widgets don't crash on first load
 for k, v in [("s_industries", ["Hospital & Health Care"]),
              ("s_keywords",   ""),
              ("s_niche",      "")]:
@@ -752,7 +857,11 @@ industries = r1a.multiselect(
     options=APOLLO_INDUSTRIES,
     key="s_industries",
 )
-specific_niche = r1b.text_input("Specific Niche (AI Filter)", key="s_niche")
+specific_niche = r1b.text_input(
+    "Specific Niche (AI Filter)",
+    key="s_niche",
+    help="Plain-English description used by the AI relevance filter — be specific.",
+)
 
 r2a, r2b, r2c = st.columns(3)
 target_geo = r2a.text_input("Geography", value="North Carolina, United States")
@@ -763,8 +872,18 @@ mode = r2b.selectbox("Strategy", [
 apollo_keywords_raw = r2c.text_input(
     "Apollo Keyword Tags",
     key="s_keywords",
-    help="Short 1–4 word tags only. Long phrases match nothing. "
-         "Examples: 'pace program', 'adult day care', 'home health'",
+    help=(
+        "Short 1–4 word tags only — longer phrases match nothing. "
+        "Leave blank to search by industry alone (broadest results). "
+        "Examples: pace program, adult day care, home health"
+    ),
+)
+
+st.caption(
+    "**Search strategy:** Industries are searched broadly (no keyword filter) so no "
+    "relevant company is missed. Keywords run a *separate* sweep across ALL industries "
+    "to catch companies Apollo has placed in unexpected categories. The AI filter then "
+    "screens every result for true niche relevance."
 )
 
 if st.button("🚀 Start Sourcing", type="primary"):
@@ -775,17 +894,25 @@ if st.button("🚀 Start Sourcing", type="primary"):
     strat_code   = "A" if "A -" in mode else "B"
     keyword_tags = [k.strip() for k in apollo_keywords_raw.split(",") if k.strip()] or None
 
-    st.info(f"🔎 Searching **{len(industries)} industries** separately in **{target_geo}**…")
+    kw_display = f" + keyword sweep ({', '.join(keyword_tags)})" if keyword_tags else ""
+    st.info(
+        f"🔎 Searching **{len(industries)} industries**{kw_display} "
+        f"in **{target_geo}** (up to 500 results per industry)…"
+    )
+
     orgs = search_organizations(industries, target_geo, keyword_tags=keyword_tags)
 
     if not orgs:
         st.error(
-            "Apollo returned no companies. Try broadening the industry selection or "
-            "clearing the Keywords field."
+            "Apollo returned no companies. "
+            "Try broadening the industry selection or clearing the Keywords field."
         )
         st.stop()
 
-    st.success(f"Found **{len(orgs)}** unique candidates — filtering with 5 parallel workers…")
+    st.success(
+        f"Found **{len(orgs)}** unique candidates — "
+        f"running AI filter with 5 parallel workers…"
+    )
     progress_bar = st.progress(0)
     status_text  = st.empty()
     final_data   = []
@@ -808,18 +935,19 @@ if st.button("🚀 Start Sourcing", type="primary"):
     if final_data:
         df  = pd.DataFrame(final_data)
         st.dataframe(df)
-        csv = df.to_csv(index=False).encode("utf-8")
+        csv   = df.to_csv(index=False).encode("utf-8")
         fname = (
             f"NCP_{'_'.join(industries[:2])}_{target_geo}.csv"
             .replace(" ", "_").replace(",", "")
         )
-        st.download_button("Download CSV", data=csv, file_name=fname,
-                           mime="text/csv", type="primary")
+        st.download_button(
+            "Download CSV", data=csv, file_name=fname, mime="text/csv", type="primary"
+        )
     else:
         st.warning(
             "No targets passed the filters.\n\n"
             "**Tips:**\n"
-            "- Clear the Keywords field and retry\n"
+            "- Clear the Keywords field and retry (keywords narrow Apollo results)\n"
             "- Click **Suggest Fields** for AI-recommended parameters\n"
             "- Switch to **Mode B** for a broader sweep\n"
             "- Add more industry categories"
