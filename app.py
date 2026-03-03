@@ -79,7 +79,6 @@ APOLLO_INDUSTRIES = [
     "Wine and Spirits","Wireless","Writing and Editing",
 ]
 
-# Full executive title phrases (Apollo stores full titles, not acronyms)
 _TIER1_TITLES = [
     "owner","founder","principal","managing partner","managing member","managing director",
     "chief executive","chief operating","chief financial","chief medical","chief nursing",
@@ -94,7 +93,6 @@ _TIER2_TITLES = ["vice president"," vp ","manager","associate","coordinator","op
 # AI — NICHE → APOLLO PARAMETERS
 # ---------------------------------------------------------------------------
 def suggest_search_params(niche_description: str) -> dict:
-    """Map a plain-English niche to Apollo industry categories + search keywords."""
     prompt = f"""You are configuring a company search on Apollo.io for this target niche:
 "{niche_description}"
 
@@ -114,12 +112,14 @@ Think carefully — niche operators often appear in unexpected categories:
 Never rely on just one category for niche operators.
 
 Task 2 — Keywords:
-Generate 4-6 short keyword phrases that would appear in an Apollo company profile
-for this niche. Be specific, not generic.
+Generate 3-5 SHORT keyword tags (1-3 words each) that Apollo would use to tag
+companies in this niche. These must be brief, common tags — NOT long phrases.
+Good examples: "adult day care", "PACE", "home health", "elder care", "hospice"
+Bad examples: "comprehensive elderly healthcare", "affordable senior care programs"
 
 Return JSON only:
 {{"industries": ["Category A", "Category B", "Category C"],
-  "keywords": "term1, term2, term3, term4"}}"""
+  "keywords": "tag1, tag2, tag3"}}"""
     try:
         resp = client.chat.completions.create(
             model="gpt-4o",
@@ -140,25 +140,42 @@ Return JSON only:
 # APOLLO — ORGANIZATIONS
 # ---------------------------------------------------------------------------
 def search_organizations(industries, location_input, keyword_tags=None, max_pages=2):
+    """
+    IMPORTANT: Apollo treats q_organization_industries as AND when multiple values
+    are passed — so passing 5 industries returns only companies in ALL 5 simultaneously
+    (almost nothing). Fix: query each industry separately and deduplicate by org ID.
+    """
     url     = "https://api.apollo.io/v1/organizations/search"
     headers = {"Content-Type": "application/json", "X-Api-Key": APOLLO_API_KEY}
     all_orgs, seen_ids = [], set()
 
-    for page in range(1, max_pages + 1):
-        payload = {"organization_locations": [location_input], "page": page, "per_page": 100}
-        if industries:    payload["q_organization_industries"] = industries
-        if keyword_tags:  payload["q_organization_keyword_tags"] = keyword_tags
-        try:
-            r = requests.post(url, headers=headers, json=payload, timeout=15)
-            if r.status_code != 200: break
-            orgs = r.json().get("organizations", [])
-            if not orgs: break
-            for o in orgs:
-                oid = o.get("id")
-                if oid and oid not in seen_ids:
-                    seen_ids.add(oid); all_orgs.append(o)
-            if len(orgs) < 100: break
-        except: break
+    # One API call per industry so results are ORed, not ANDed
+    search_list = industries if industries else [None]
+
+    for industry in search_list:
+        for page in range(1, max_pages + 1):
+            payload = {
+                "organization_locations": [location_input],
+                "page": page,
+                "per_page": 100,
+            }
+            if industry:
+                payload["q_organization_industries"] = [industry]   # single industry
+            if keyword_tags:
+                payload["q_organization_keyword_tags"] = keyword_tags
+            try:
+                r = requests.post(url, headers=headers, json=payload, timeout=15)
+                if r.status_code != 200: break
+                orgs = r.json().get("organizations", [])
+                if not orgs: break
+                for o in orgs:
+                    oid = o.get("id")
+                    if oid and oid not in seen_ids:
+                        seen_ids.add(oid)
+                        all_orgs.append(o)
+                if len(orgs) < 100: break
+            except:
+                break
 
     return all_orgs
 
@@ -166,11 +183,6 @@ def search_organizations(industries, location_input, keyword_tags=None, max_page
 # FILTER 1 — STRUCTURE
 # ---------------------------------------------------------------------------
 def is_buyable_structure(org, mode):
-    """
-    Mode A: private, non-PE, <=7,500 employees.
-            Uses exact status match so 'non_profit_public' is NOT caught.
-    Mode B: only blocks genuine mega-corps (>100k employees).
-    """
     emp    = org.get("estimated_num_employees", 0) or 0
     status = str(org.get("ownership_status") or "").strip().lower()
     tags   = [t.lower() for t in (org.get("keywords") or [])]
@@ -187,10 +199,8 @@ def is_buyable_structure(org, mode):
     return True, "OK"
 
 # ---------------------------------------------------------------------------
-# FILTER 2 — OBVIOUS NAME MISMATCHES  (name-only; no tag filtering)
+# FILTER 2 — OBVIOUS NAME MISMATCHES
 # ---------------------------------------------------------------------------
-# Tag-based filtering intentionally omitted: Apollo frequently mis-tags
-# legitimate operators with 'technology', 'software', 'staffing', etc.
 _UNIVERSAL_BLOCKS = [
     "university", "college", "food service", "catering",
     "staffing solutions", "temp agency",
@@ -216,16 +226,6 @@ def is_obvious_mismatch(org, target_niche, mode):
 # FILTER 3 — AI GATEKEEPER
 # ---------------------------------------------------------------------------
 def check_relevance_gpt4o(company_name, description, keywords, target_niche, mode):
-    """
-    Mode A — strict acquisition filter.
-      Uses target_niche as the anchor; no niche-specific examples hardcoded.
-      'When uncertain → FAIL' keeps the list tight.
-
-    Mode B — sector-match filter.
-      Must be in the same care/service sector and customer population.
-      Rejects companies in adjacent-but-different sectors (pharma for elder-care,
-      dental for behavioral health, etc.).
-    """
     if mode == "A":
         prompt = f"""You are a strict acquisition filter for a private equity investor.
 Target niche: "{target_niche}"
@@ -274,8 +274,7 @@ FAIL if:
 - Dental, aesthetics, ophthalmology, or specialty unrelated to the niche
 - Health IT, analytics, or software with no direct care delivery
 - Medical device manufacturer with no patient/customer care operations
-- Companies clearly in construction, finance, retail, food, or other
-  unrelated sectors
+- Companies clearly in construction, finance, retail, food, or other unrelated sectors
 
 Base the decision on the SPECIFIC niche, not on broad industry membership.
 Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
@@ -355,7 +354,7 @@ Text:
     except: return None
 
 # ---------------------------------------------------------------------------
-# APOLLO — PEOPLE  (org_id first — most reliable lookup key)
+# APOLLO — PEOPLE
 # ---------------------------------------------------------------------------
 def clean_domain(url):
     if not url or not isinstance(url, str): return None
@@ -380,7 +379,6 @@ def get_people_apollo_robust(company_name, domain, org_id=None):
     senior  = ["owner", "founder", "c_suite", "president"]
 
     attempts = []
-    # Apollo org ID is the most reliable key — use it first
     if org_id:
         attempts += [
             {"organization_ids": [org_id], "person_seniority": senior, "per_page": 10},
@@ -478,7 +476,7 @@ def get_latest_news_link(company_name, city=None):
 def process_single_company(org, specific_niche, strat_code):
     comp_name = org.get("name")
 
-    if not is_buyable_structure(org, strat_code)[0]:          return None
+    if not is_buyable_structure(org, strat_code)[0]:            return None
     if is_obvious_mismatch(org, specific_niche, strat_code)[0]: return None
 
     desc = org.get("short_description") or org.get("headline") or ""
@@ -487,7 +485,7 @@ def process_single_company(org, specific_niche, strat_code):
         return None
 
     domain = clean_domain(org.get("website_url"))
-    org_id = org.get("id")   # Apollo internal ID — most reliable for people lookup
+    org_id = org.get("id")
 
     row = {
         "Company":        comp_name,
@@ -508,7 +506,6 @@ def process_single_company(org, specific_niche, strat_code):
 
     found_person = apollo_cache = web_email = web_phone = None
 
-    # ── Web spider ──────────────────────────────────────────────────────────
     if domain:
         queue, visited = [f"https://{domain}"], set()
         for url in queue[:6]:
@@ -540,29 +537,25 @@ def process_single_company(org, specific_niche, strat_code):
             for lnk in extract_relevant_links(content, url):
                 if lnk not in visited: queue.insert(1, lnk)
 
-    # ── Apollo fallback ─────────────────────────────────────────────────────
     if not found_person:
         if not apollo_cache:
             apollo_cache = get_people_apollo_robust(comp_name, domain, org_id)
         best, method = select_best_apollo_contact(apollo_cache)
         if best: found_person = best; row["Source"] = method
 
-    # ── Populate contact fields ─────────────────────────────────────────────
     if found_person:
         row["CEO/Owner Name"] = (
             f"{found_person.get('first_name','')} "
             f"{found_person.get('last_name','')}").strip()
         row["Title"] = found_person.get("title") or "N/A"
-
         if "Web" in row["Source"] and domain:
             matches = bulk_enrich_names([found_person], domain)
             if matches and matches[0]:
-                found_person        = matches[0]
-                row["Source"]      += " → Verified"
-                row["Confidence"]   = "High"
+                found_person      = matches[0]
+                row["Source"]    += " → Verified"
+                row["Confidence"] = "High"
         elif "Apollo" in row["Source"]:
             row["Confidence"] = "Medium"
-
         a_email = found_person.get("email")
         row["Email"] = a_email if a_email else (web_email or "N/A")
         pnums   = found_person.get("phone_numbers") or []
@@ -584,9 +577,7 @@ def process_single_company(org, specific_niche, strat_code):
 st.title("🚀 NCP Sourcing Engine")
 st.caption("Describe your target → get AI-suggested search fields → source.")
 
-# ── STEP 1: NICHE DISCOVERY ──────────────────────────────────────────────────
 st.markdown("### Step 1 — What are you looking for?")
-
 n1, n2 = st.columns([5, 1])
 niche_raw = n1.text_input(
     "Niche",
@@ -615,14 +606,11 @@ if "s_industries" in st.session_state:
     )
 
 st.divider()
-
-# ── STEP 2: CONFIGURE + RUN ──────────────────────────────────────────────────
 st.markdown("### Step 2 — Review, adjust, and run")
 
-# Initialise session_state defaults for first load
 for k, v in [("s_industries", ["Hospital & Health Care"]),
-              ("s_keywords",   ""),
-              ("s_niche",      "")]:
+             ("s_keywords",   ""),
+             ("s_niche",      "")]:
     if k not in st.session_state:
         st.session_state[k] = v
 
@@ -630,21 +618,18 @@ r1a, r1b = st.columns(2)
 industries = r1a.multiselect(
     "Apollo Industry Categories",
     options=APOLLO_INDUSTRIES,
-    key="s_industries",   # reads & writes st.session_state["s_industries"]
+    key="s_industries",
 )
-specific_niche = r1b.text_input(
-    "Specific Niche (AI Filter)",
-    key="s_niche",
-)
+specific_niche = r1b.text_input("Specific Niche (AI Filter)", key="s_niche")
 
 r2a, r2b, r2c = st.columns(3)
-target_geo = r2a.text_input("Geography", value="North Carolina, United States")
-mode = r2b.selectbox("Strategy", [
+target_geo          = r2a.text_input("Geography", value="North Carolina, United States")
+mode                = r2b.selectbox("Strategy", [
     "A - Buy/Private  (Strict: small private operators only)",
     "B - Sell/Scout   (Broad: same sector, all sizes)",
 ])
 apollo_keywords_raw = r2c.text_input(
-    "Apollo Keywords (optional — add or adjust)",
+    "Apollo Keywords (optional — short tags only)",
     key="s_keywords",
 )
 
@@ -656,7 +641,7 @@ if st.button("🚀 Start Sourcing", type="primary"):
     strat_code   = "A" if "A -" in mode else "B"
     keyword_tags = [k.strip() for k in apollo_keywords_raw.split(",") if k.strip()] or None
 
-    st.info(f"🔎 Searching **{', '.join(industries)}** in **{target_geo}**…")
+    st.info(f"🔎 Searching each of **{len(industries)} industries** separately in **{target_geo}**…")
     orgs = search_organizations(industries, target_geo, keyword_tags=keyword_tags)
 
     if not orgs:
@@ -666,7 +651,7 @@ if st.button("🚀 Start Sourcing", type="primary"):
         )
         st.stop()
 
-    st.success(f"Found **{len(orgs)}** candidates — filtering with 5 parallel workers…")
+    st.success(f"Found **{len(orgs)}** unique candidates — filtering with 5 parallel workers…")
     progress_bar = st.progress(0)
     status_text  = st.empty()
     final_data   = []
@@ -700,8 +685,8 @@ if st.button("🚀 Start Sourcing", type="primary"):
         st.warning(
             "No targets passed the filters.\n\n"
             "**Tips:**\n"
-            "- Click **Suggest Fields** and use the AI-recommended industries + keywords\n"
+            "- Click **Suggest Fields** to get AI-recommended industries + keywords\n"
+            "- Try clearing the Keywords field — Apollo keyword tags must match exactly\n"
             "- Switch to **Mode B** for a broader sweep\n"
-            "- Add more industry categories (niche operators often appear under unexpected ones)\n"
-            "- Broaden the Specific Niche description in Step 2"
+            "- Add more industry categories"
         )
