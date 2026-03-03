@@ -335,8 +335,12 @@ def is_buyable_structure(org, mode):
     return True, "OK"
 
 
-_UNIVERSAL_BLOCKS = ["university", "college", "food service", "catering",
-                     "staffing solutions", "temp agency"]
+_UNIVERSAL_BLOCKS = [
+    "university", "college", "food service", "catering",
+    "staffing solutions", "temp agency",
+    # Large food-service management companies that appear in healthcare industry searches
+    "eurest", "aramark", "sodexo", "compass group", "canteen",
+]
 _MODE_A_BLOCKS    = ["consulting group", "advisory group", " billing services",
                      "software inc", "software llc"]
 
@@ -537,7 +541,7 @@ def spider_for_contact(company_name, domain):
 
     for path in _CONTACT_PATHS:
         content = firecrawl_scrape(base + path)
-        if not content or len(content) < 300: continue
+        if not content or len(content) < 100: continue
         ai = extract_names_openai(content, company_name)
         if not ai: continue
         if ai.get("email"): web_email = ai["email"]
@@ -718,6 +722,24 @@ def get_latest_news_link(company_name, city=None):
 
 
 # ---------------------------------------------------------------------------
+# HELPERS
+# ---------------------------------------------------------------------------
+def _email_matches_domain(email: str, company_domain: str) -> bool:
+    """Return True if the email's domain plausibly belongs to the company domain.
+    Used to reject Apollo bulk_enrich returning a same-name person at a different company."""
+    if not email or not company_domain:
+        return True
+    try:
+        e_dom = email.split("@")[-1].lower().lstrip("www.")
+        c_dom = company_domain.lower().lstrip("www.")
+        return (e_dom == c_dom
+                or e_dom.endswith("." + c_dom)
+                or c_dom.endswith("." + e_dom))
+    except Exception:
+        return True
+
+
+# ---------------------------------------------------------------------------
 # WORKER
 # ---------------------------------------------------------------------------
 def process_single_company(org, specific_niche, strat_code):
@@ -769,9 +791,13 @@ def process_single_company(org, specific_niche, strat_code):
         if domain:
             matches = bulk_enrich_names([found_person], domain)
             if matches and matches[0]:
-                found_person      = matches[0]
-                row["Source"]    += " → Verified"
-                row["Confidence"] = "High"
+                enriched       = matches[0]
+                enr_email      = enriched.get("email")
+                # Reject if Apollo matched a same-name person at a different company
+                if not enr_email or _email_matches_domain(enr_email, domain):
+                    found_person      = enriched
+                    row["Source"]    += " → Verified"
+                    row["Confidence"] = "High"
 
     if not found_person and apollo_people:
         best, method = select_best_apollo_contact(apollo_people)
@@ -786,6 +812,9 @@ def process_single_company(org, specific_niche, strat_code):
             f"{found_person.get('last_name','')}").strip()
         row["Title"] = found_person.get("title") or "N/A"
         a_email = found_person.get("email")
+        # Discard email if it clearly belongs to a different company's domain
+        if a_email and domain and not _email_matches_domain(a_email, domain):
+            a_email = None
         row["Email"] = a_email if a_email else (web_email or "N/A")
         pnums   = found_person.get("phone_numbers") or []
         a_phone = pnums[0].get("sanitized_number") if pnums else None
@@ -794,6 +823,9 @@ def process_single_company(org, specific_niche, strat_code):
     else:
         if web_email: row["Email"] = web_email
         if web_phone: row["Phone"] = web_phone
+        # We have some contact info even without a named person
+        if web_email or web_phone:
+            row["Confidence"] = "Medium"
 
     t, u = get_latest_news_link(comp_name, org.get("city"))
     if u: row["Latest News"] = f"{t} | {u}" if t else u
