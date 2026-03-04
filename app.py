@@ -107,6 +107,10 @@ _CONTACT_PATHS = [
     "/staff", "/management", "/who-we-are", "/meet-the-team",
     "/people", "/executives", "/administration", "/about/team",
     "/about/leadership", "/contact", "/contact-us",
+    # Additional paths common on small operator sites
+    "/our-staff", "/board", "/board-of-directors", "/leadership-team",
+    "/meet-our-team", "/staff-directory", "/our-leadership", "/directors",
+    "/about/staff", "/about/leadership-team", "/about/administration",
 ]
 
 # ---------------------------------------------------------------------------
@@ -318,26 +322,37 @@ def search_organizations(industries, location_input, keyword_tags=None, max_page
 
 def web_discovery_pass(niche, geography, seen_domains, seen_names):
     """
-    Pass 3: Scrape Google page 1, page 2, and the Places tab to catch companies
-    that Apollo doesn't have or hasn't tagged with the expected industry/keywords.
+    Pass 3: Scrape multiple search engines (Google, DuckDuckGo, Bing) with query
+    variations to catch companies that Apollo doesn't have.
     Returns a list of org-like dicts compatible with process_single_company.
     """
-    query = f"{niche} {geography}"
-    search_urls = [
-        f"https://www.google.com/search?q={quote_plus(query)}&num=20",           # Page 1
-        f"https://www.google.com/search?q={quote_plus(query)}&num=20&start=20",  # Page 2
-        f"https://www.google.com/search?q={quote_plus(query)}&tbm=lcl",          # Places tab
-    ]
+    # Two query variations — full geography and short (state/region only)
+    geo_short = geography.split(",")[0].strip()
+    q1 = f"{niche} {geo_short}"
+    q2 = f"{niche} providers {geo_short}"
 
     _UA = (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     )
 
+    search_urls = [
+        # Google — page 1 + Places tab (page 2 often blocked along with p1)
+        f"https://www.google.com/search?q={quote_plus(q1)}&num=20",
+        f"https://www.google.com/search?q={quote_plus(q1)}&tbm=lcl",
+        # DuckDuckGo HTML — much more scraper-friendly than Google
+        f"https://html.duckduckgo.com/html/?q={quote_plus(q1)}",
+        f"https://html.duckduckgo.com/html/?q={quote_plus(q2)}",
+        # Bing — independent index, catches different results
+        f"https://www.bing.com/search?q={quote_plus(q1)}",
+    ]
+
     def fetch_one(url):
+        # Try Firecrawl first (JS rendering, handles some bot-protection)
         content = firecrawl_scrape(url)
         if content and len(content) >= 200:
             return content
+        # Raw request fallback
         try:
             r = requests.get(url, headers={"User-Agent": _UA}, timeout=15)
             if r.status_code == 200 and len(r.text) > 500:
@@ -346,35 +361,36 @@ def web_discovery_pass(niche, geography, seen_domains, seen_names):
             pass
         return ""
 
-    # Fetch all three sources in parallel
-    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as ex:
+    # Fetch all five sources in parallel
+    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as ex:
         results = list(ex.map(fetch_one, search_urls))
 
-    combined = "\n\n---\n\n".join(r for r in results if r)
+    combined = "\n\n---NEW SOURCE---\n\n".join(r for r in results if r)
     if not combined or len(combined) < 200:
         return []
 
-    extract_prompt = f"""From these Google search results (pages 1 & 2 plus the Places/local tab),
+    extract_prompt = f"""From these search results (Google, DuckDuckGo, and Bing),
 extract every company that appears to be an actual operator or provider in "{niche}"
 located in or near "{geography}".
 
-The Places section may contain entries with a business name, address, phone number, and
-star rating — treat those as valid companies even without a website URL.
+Local/Places listings may show a business name, address, phone number, and star rating
+— include those even if no website URL is present.
 
 Return JSON only:
 {{"companies": [
-  {{"name": "Company Name", "website": "https://example.com",
+  {{"name": "Company Name", "website": "https://example.com or blank",
     "city": "City", "state": "ST", "snippet": "What they do"}}
 ]}}
 
 Rules:
-- Only include actual operating companies in the niche
-- Do NOT include directories, news articles, government sites, Wikipedia, or vendor/consultant pages
-- Use the company's own website URL when available; leave blank if not found
+- Only include actual operating companies in the niche (not vendors, consultants, or tech firms)
+- Do NOT include directories, news articles, government agencies, Wikipedia, or ad listings
+- Use the company's own website URL when visible; leave blank if not found
+- Deduplicate — if the same company appears multiple times, include it only once
 - Return {{"companies": []}} if none found
 
 Search content:
-{combined[:20000]}"""
+{combined[:25000]}"""
 
     companies = []
     try:
@@ -458,11 +474,18 @@ def is_buyable_structure(org, mode):
 _UNIVERSAL_BLOCKS = [
     "university", "college", "food service", "catering",
     "staffing solutions", "temp agency",
-    # Large food-service management companies that appear in healthcare industry searches
+    # Transportation / logistics — not care operators
+    " transportation", "non-emergency transport", "medical transport",
+    "nemt ", " logistics",
+    # Large food-service management companies
     "eurest", "aramark", "sodexo", "compass group", "canteen",
 ]
-_MODE_A_BLOCKS    = ["consulting group", "advisory group", " billing services",
-                     "software inc", "software llc"]
+_MODE_A_BLOCKS = [
+    "consulting group", "advisory group", " billing services",
+    "software inc", "software llc",
+    # Tech firms that slip through on healthcare-adjacent keywords
+    "healthtech", " technologies", "tech solutions", " it services",
+]
 
 def is_obvious_mismatch(org, target_niche, mode):
     name = (org.get("name") or "").lower()
@@ -492,9 +515,11 @@ PASS if the company fits ONE of these:
 3. Description is vague, but the company name and keywords strongly align with the target niche.
 
 FAIL if any of these apply:
-- Software, SaaS, analytics, or pure technology vendor
+- Software, SaaS, analytics, HealthTech, or pure technology vendor — even if health-adjacent
+- IT services, digital health platform, or software development firm
 - Consulting, billing, staffing, marketing, or outsourced services firm
 - Training, education, or coaching organization with no direct patient/client care operations
+- Medical transportation, non-emergency medical transport (NEMT), or logistics company
 - Large national chain or massive enterprise not suitable for acquisition
 - Completely unrelated industry
 - "PACE" in the niche means Program for All-Inclusive Care for the Elderly — NOT fitness/pace
@@ -519,7 +544,9 @@ FAIL if any of these apply:
 - Insurance company, managed care payer, financial services firm, or health insurer
 - Large institutional network, national chain, or conglomerate with 10,000+ employees, UNLESS
   it is a direct competitor operating in the exact same niche as the target
-- Pure technology, software, SaaS, or analytics vendor with no direct service delivery
+- Technology company, IT firm, HealthTech, software developer, or digital health platform —
+  even if their product serves the healthcare sector
+- Medical transportation, non-emergency medical transport (NEMT), or logistics company
 - Consulting, billing, staffing, training, or outsourced services firm
 - Completely unrelated industry (manufacturing, finance, retail, food service, etc.)
 
@@ -654,12 +681,35 @@ def spider_for_contact(company_name, domain):
     if not domain:
         return None, None, None, None
 
-    base      = f"https://{domain}"
     web_email = web_phone = None
 
+    # Try https first, then http — many small operators have no SSL or expired certs
+    def _scrape(url):
+        content = firecrawl_scrape(url)
+        if content and len(content) >= 100:
+            return content
+        # Raw http fallback for sites Firecrawl can't reach
+        try:
+            r = requests.get(
+                url,
+                headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                         "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"},
+                timeout=10, allow_redirects=True,
+            )
+            if r.status_code == 200 and len(r.text) > 200:
+                return r.text[:40000]
+        except:
+            pass
+        return None
+
+    # Determine working base URL (https preferred, http fallback)
+    base = f"https://{domain}"
+    if not _scrape(base):
+        base = f"http://{domain}"
+
     for path in _CONTACT_PATHS:
-        content = firecrawl_scrape(base + path)
-        if not content or len(content) < 100: continue
+        content = _scrape(base + path)
+        if not content: continue
         ai = extract_names_openai(content, company_name)
         if not ai: continue
         if ai.get("email"): web_email = ai["email"]
@@ -676,10 +726,10 @@ def spider_for_contact(company_name, domain):
             return person, f"Web Path ({path})", web_email, web_phone
 
     visited, queue = set(), [base]
-    for url in queue[:6]:
+    for url in queue[:8]:
         if url in visited: continue
         visited.add(url)
-        content = firecrawl_scrape(url)
+        content = _scrape(url)
         if not content: continue
         ai = extract_names_openai(content, company_name)
         if ai:
