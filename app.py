@@ -145,12 +145,6 @@ def _fallback_keywords(niche: str) -> str:
 
 
 def suggest_search_params(niche_description: str) -> dict:
-    """
-    Maps a plain-English niche to Apollo industries + keyword tags.
-    The prompt gives GPT-4o concrete Apollo tag examples so it generates
-    short real tags rather than long descriptive phrases that match nothing.
-    A rule-based fallback fires if the AI returns empty keywords.
-    """
     prompt = f"""You are configuring a B2B company database search on Apollo.io.
 The analyst is targeting companies in this niche:
 
@@ -219,7 +213,6 @@ Return JSON only — no explanation:
             "keywords":   keywords,
         }
 
-    # Attempt 1 — structured JSON output
     try:
         resp = client.chat.completions.create(
             model="gpt-4o",
@@ -236,7 +229,6 @@ Return JSON only — no explanation:
                 "keywords":   _fallback_keywords(niche_description),
             }
 
-    # Attempt 2 — retry without response_format (avoids content-filter on structured output)
     try:
         resp = client.chat.completions.create(
             model="gpt-4o",
@@ -261,20 +253,6 @@ Return JSON only — no explanation:
 # APOLLO — TWO-PASS ORGANIZATION SEARCH
 # ---------------------------------------------------------------------------
 def search_organizations(industries, location_input, keyword_tags=None, max_pages=10):
-    """
-    Two-pass search for maximum candidate coverage:
-
-    Pass 1 — Industry sweep (NO keyword filter):
-      Search each selected industry broadly so we don't miss companies
-      that have the right industry tag but aren't tagged with our keywords.
-      AI filter handles relevance.
-
-    Pass 2 — Keyword-only sweep (NO industry filter):
-      Search by keyword tags across ALL industries so we catch companies
-      that Apollo has classified in an unexpected industry category.
-
-    Both passes are deduplicated by Apollo org ID.
-    """
     url     = "https://api.apollo.io/v1/organizations/search"
     headers = {"Content-Type": "application/json", "X-Api-Key": APOLLO_API_KEY}
     all_orgs, seen_ids = [], set()
@@ -299,14 +277,12 @@ def search_organizations(industries, location_input, keyword_tags=None, max_page
             except:
                 break
 
-    # Pass 1: broad industry sweeps — no keyword restriction
     for industry in (industries or [None]):
         base = {"organization_locations": [location_input]}
         if industry:
             base["q_organization_industries"] = [industry]
         _fetch_pages(base)
 
-    # Pass 2: keyword-only sweep — catches misclassified companies
     if keyword_tags:
         _fetch_pages({
             "organization_locations":        [location_input],
@@ -314,39 +290,49 @@ def search_organizations(industries, location_input, keyword_tags=None, max_page
         })
 
     return all_orgs
-
-
 def web_discovery_pass(niche, geography, seen_domains, seen_names):
     """
-    Pass 3: Scrape first page of Google results to catch companies that
-    Apollo doesn't have or hasn't tagged with the expected industry/keywords.
+    Pass 3: Scrape Google page 1, page 2, and the Places tab to catch companies
+    that Apollo doesn't have or hasn't tagged with the expected industry/keywords.
     Returns a list of org-like dicts compatible with process_single_company.
     """
     query = f"{niche} {geography}"
-    search_url = f"https://www.google.com/search?q={quote_plus(query)}&num=20"
+    search_urls = [
+        f"https://www.google.com/search?q={quote_plus(query)}&num=20",           # Page 1
+        f"https://www.google.com/search?q={quote_plus(query)}&num=20&start=20",  # Page 2
+        f"https://www.google.com/search?q={quote_plus(query)}&tbm=lcl",          # Places tab
+    ]
 
-    # Try Firecrawl first (handles JS rendering), then raw requests as fallback
-    md = firecrawl_scrape(search_url)
-    if not md or len(md) < 200:
+    _UA = (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    )
+
+    def fetch_one(url):
+        content = firecrawl_scrape(url)
+        if content and len(content) >= 200:
+            return content
         try:
-            r = requests.get(
-                search_url,
-                headers={
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                    "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-                },
-                timeout=15,
-            )
+            r = requests.get(url, headers={"User-Agent": _UA}, timeout=15)
             if r.status_code == 200 and len(r.text) > 500:
-                md = r.text[:30000]
+                return r.text[:30000]
         except:
             pass
+        return ""
 
-    if not md or len(md) < 200:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as ex:
+        results = list(ex.map(fetch_one, search_urls))
+
+    combined = "\n\n---\n\n".join(r for r in results if r)
+    if not combined or len(combined) < 200:
         return []
 
-    extract_prompt = f"""From these search results, extract every company that appears to be
-an actual operator or provider in "{niche}" located in or near "{geography}".
+    extract_prompt = f"""From these Google search results (pages 1 & 2 plus the Places/local tab),
+extract every company that appears to be an actual operator or provider in "{niche}"
+located in or near "{geography}".
+
+The Places section may contain entries with a business name, address, phone number, and
+star rating — treat those as valid companies even without a website URL.
 
 Return JSON only:
 {{"companies": [
@@ -357,11 +343,11 @@ Return JSON only:
 Rules:
 - Only include actual operating companies in the niche
 - Do NOT include directories, news articles, government sites, Wikipedia, or vendor/consultant pages
-- Use the company's own website URL, not a directory or listing URL
+- Use the company's own website URL when available; leave blank if not found
 - Return {{"companies": []}} if none found
 
 Search content:
-{md[:15000]}"""
+{combined[:20000]}"""
 
     companies = []
     try:
@@ -369,7 +355,7 @@ Search content:
             model="gpt-4o",
             messages=[{"role": "user", "content": extract_prompt}],
             response_format={"type": "json_object"},
-            timeout=25,
+            timeout=30,
         )
         data = json.loads(resp.choices[0].message.content)
         companies = data.get("companies") or []
@@ -380,7 +366,7 @@ Search content:
             resp = client.chat.completions.create(
                 model="gpt-4o",
                 messages=[{"role": "user", "content": extract_prompt}],
-                timeout=25,
+                timeout=30,
             )
             raw = resp.choices[0].message.content or ""
             match = re.search(r'\{.*\}', raw, re.DOTALL)
@@ -390,7 +376,6 @@ Search content:
         except:
             return []
 
-    # Deduplicate against Apollo results and build org-like dicts
     new_orgs = []
     for c in companies:
         if not isinstance(c, dict) or not c.get("name"):
@@ -436,8 +421,9 @@ def is_buyable_structure(org, mode):
         if status == "subsidiary":                              return False, "Subsidiary"
         if "private equity" in tags or "venture capital" in tags: return False, "PE/VC Backed"
         if emp > 7500:                                          return False, f"Too Large ({emp})"
-    else:
-        if emp > 100000:                                        return False, f"Mega-Corp ({emp})"
+    else:  # Mode B — block public companies and large conglomerates
+        if "public" in status:                                  return False, "Publicly Traded"
+        if emp > 10000:                                         return False, f"Too Large ({emp})"
 
     return True, "OK"
 
@@ -445,11 +431,10 @@ def is_buyable_structure(org, mode):
 _UNIVERSAL_BLOCKS = [
     "university", "college", "food service", "catering",
     "staffing solutions", "temp agency",
-    # Large food-service management companies that appear in healthcare industry searches
     "eurest", "aramark", "sodexo", "compass group", "canteen",
 ]
-_MODE_A_BLOCKS    = ["consulting group", "advisory group", " billing services",
-                     "software inc", "software llc"]
+_MODE_A_BLOCKS = ["consulting group", "advisory group", " billing services",
+                  "software inc", "software llc"]
 
 def is_obvious_mismatch(org, target_niche, mode):
     name = (org.get("name") or "").lower()
@@ -516,7 +501,6 @@ Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
         data = json.loads(content)
         return data.get("match"), data.get("reason")
 
-    # Attempt 1 — structured JSON output
     try:
         resp = client.chat.completions.create(
             model="gpt-4o",
@@ -529,7 +513,6 @@ Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
         if "content" not in str(e).lower() and "filter" not in str(e).lower() and "400" not in str(e):
             return True, "AI Error"
 
-    # Attempt 2 — retry without response_format
     try:
         resp = client.chat.completions.create(
             model="gpt-4o",
@@ -600,6 +583,7 @@ Return JSON only (use null when not found):
 
 Text:
 {text[:15000]}"""
+
     def _parse_contact(content):
         data = json.loads(content)
         for k in ("name", "title", "email", "phone"):
@@ -607,7 +591,6 @@ Text:
                 data[k] = None
         return data
 
-    # Attempt 1 — structured JSON output
     try:
         resp = client.chat.completions.create(
             model="gpt-4o",
@@ -620,7 +603,6 @@ Text:
         if "content" not in str(e).lower() and "filter" not in str(e).lower() and "400" not in str(e):
             return None
 
-    # Attempt 2 — retry without response_format
     try:
         resp = client.chat.completions.create(
             model="gpt-4o",
@@ -806,8 +788,6 @@ def bulk_enrich_names(people_list, domain):
         return r.json().get("matches", [])
     except:
         return []
-
-
 # ---------------------------------------------------------------------------
 # NEWS
 # ---------------------------------------------------------------------------
@@ -830,8 +810,7 @@ def get_latest_news_link(company_name, city=None):
 # HELPERS
 # ---------------------------------------------------------------------------
 def _email_matches_domain(email: str, company_domain: str) -> bool:
-    """Return True if the email's domain plausibly belongs to the company domain.
-    Used to reject Apollo bulk_enrich returning a same-name person at a different company."""
+    """Return True if the email's domain plausibly belongs to the company domain."""
     if not email or not company_domain:
         return True
     try:
@@ -897,9 +876,8 @@ def process_single_company(org, specific_niche, strat_code):
         if domain:
             matches = bulk_enrich_names([found_person], domain)
             if matches and matches[0]:
-                enriched       = matches[0]
-                enr_email      = enriched.get("email")
-                # Reject if Apollo matched a same-name person at a different company
+                enriched  = matches[0]
+                enr_email = enriched.get("email")
                 if not enr_email or _email_matches_domain(enr_email, domain):
                     found_person      = enriched
                     row["Source"]    += " → Verified"
@@ -918,7 +896,6 @@ def process_single_company(org, specific_niche, strat_code):
             f"{found_person.get('last_name','')}").strip()
         row["Title"] = found_person.get("title") or "N/A"
         a_email = found_person.get("email")
-        # Discard email if it clearly belongs to a different company's domain
         if a_email and domain and not _email_matches_domain(a_email, domain):
             a_email = None
         row["Email"] = a_email if a_email else (web_email or "N/A")
@@ -945,7 +922,6 @@ def process_single_company(org, specific_niche, strat_code):
 st.title("🚀 NCP Sourcing Engine")
 st.caption("Describe your target → AI suggests search fields → source at scale.")
 
-# ── Step 1: Niche input + Suggest Fields ────────────────────────────────────
 st.markdown("### Step 1 — What are you looking for?")
 n1, n2 = st.columns([5, 1])
 niche_raw = n1.text_input(
@@ -967,7 +943,6 @@ if suggest_clicked:
             st.session_state["s_niche"]      = niche_raw
         st.rerun()
 
-# Banner — show what was suggested (only after Suggest Fields has run)
 if "s_industries" in st.session_state:
     ind_str = ", ".join(st.session_state["s_industries"])
     kw_str  = st.session_state.get("s_keywords") or "(none — broaden if needed)"
@@ -979,10 +954,8 @@ if "s_industries" in st.session_state:
 
 st.divider()
 
-# ── Step 2: Review / adjust fields ──────────────────────────────────────────
 st.markdown("### Step 2 — Review, adjust, and run")
 
-# Initialise session state defaults so widgets don't crash on first load
 for k, v in [("s_industries", ["Hospital & Health Care"]),
              ("s_keywords",   ""),
              ("s_niche",      "")]:
@@ -1021,7 +994,7 @@ st.caption(
     "**Search strategy:** Each industry is swept up to 1,000 results (no keyword filter) so "
     "broadly-classified companies aren't missed. Keywords run a *separate* sweep across ALL "
     "industries to catch companies Apollo has placed in unexpected categories. "
-    "A Google discovery pass then scrapes page 1 of Google to catch companies that "
+    "A Google discovery pass then scrapes pages 1 & 2 plus the Places tab to catch companies "
     "Apollo doesn't have at all. The AI filter screens every candidate for true niche relevance."
 )
 
@@ -1041,7 +1014,6 @@ if st.button("🚀 Start Sourcing", type="primary"):
 
     orgs = search_organizations(industries, target_geo, keyword_tags=keyword_tags)
 
-    # Build dedup sets for Google discovery pass
     seen_domains = set()
     seen_names   = set()
     for o in orgs:
@@ -1050,7 +1022,6 @@ if st.button("🚀 Start Sourcing", type="primary"):
         n = (o.get("name") or "").strip().lower()
         if n: seen_names.add(n)
 
-    # Pass 3: Google scrape to catch companies Apollo missed
     with st.spinner("Checking Google for companies Apollo may have missed…"):
         google_orgs = web_discovery_pass(specific_niche, target_geo,
                                          seen_domains, seen_names)
