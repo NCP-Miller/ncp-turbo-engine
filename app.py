@@ -316,6 +316,113 @@ def search_organizations(industries, location_input, keyword_tags=None, max_page
     return all_orgs
 
 
+def web_discovery_pass(niche, geography, seen_domains, seen_names):
+    """
+    Pass 3: Scrape first page of Google results to catch companies that
+    Apollo doesn't have or hasn't tagged with the expected industry/keywords.
+    Returns a list of org-like dicts compatible with process_single_company.
+    """
+    query = f"{niche} {geography}"
+    search_url = f"https://www.google.com/search?q={quote_plus(query)}&num=20"
+
+    # Try Firecrawl first (handles JS rendering), then raw requests as fallback
+    md = firecrawl_scrape(search_url)
+    if not md or len(md) < 200:
+        try:
+            r = requests.get(
+                search_url,
+                headers={
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                    "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                },
+                timeout=15,
+            )
+            if r.status_code == 200 and len(r.text) > 500:
+                md = r.text[:30000]
+        except:
+            pass
+
+    if not md or len(md) < 200:
+        return []
+
+    extract_prompt = f"""From these search results, extract every company that appears to be
+an actual operator or provider in "{niche}" located in or near "{geography}".
+
+Return JSON only:
+{{"companies": [
+  {{"name": "Company Name", "website": "https://example.com",
+    "city": "City", "state": "ST", "snippet": "What they do"}}
+]}}
+
+Rules:
+- Only include actual operating companies in the niche
+- Do NOT include directories, news articles, government sites, Wikipedia, or vendor/consultant pages
+- Use the company's own website URL, not a directory or listing URL
+- Return {{"companies": []}} if none found
+
+Search content:
+{md[:15000]}"""
+
+    companies = []
+    try:
+        resp = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[{"role": "user", "content": extract_prompt}],
+            response_format={"type": "json_object"},
+            timeout=25,
+        )
+        data = json.loads(resp.choices[0].message.content)
+        companies = data.get("companies") or []
+    except Exception as e:
+        if "content" not in str(e).lower() and "filter" not in str(e).lower() and "400" not in str(e):
+            return []
+        try:
+            resp = client.chat.completions.create(
+                model="gpt-4o",
+                messages=[{"role": "user", "content": extract_prompt}],
+                timeout=25,
+            )
+            raw = resp.choices[0].message.content or ""
+            match = re.search(r'\{.*\}', raw, re.DOTALL)
+            if match:
+                data = json.loads(match.group())
+                companies = data.get("companies") or []
+        except:
+            return []
+
+    # Deduplicate against Apollo results and build org-like dicts
+    new_orgs = []
+    for c in companies:
+        if not isinstance(c, dict) or not c.get("name"):
+            continue
+        name_lower = c["name"].strip().lower()
+        if name_lower in seen_names:
+            continue
+        domain = clean_domain(c.get("website"))
+        if domain and domain in seen_domains:
+            continue
+
+        org = {
+            "id":                       None,
+            "name":                     c["name"].strip(),
+            "website_url":              c.get("website"),
+            "city":                     c.get("city"),
+            "state":                    c.get("state"),
+            "linkedin_url":             None,
+            "estimated_num_employees":  None,
+            "short_description":        c.get("snippet") or "",
+            "headline":                 "",
+            "keywords":                 [],
+            "ownership_status":         None,
+        }
+        new_orgs.append(org)
+        if domain:
+            seen_domains.add(domain)
+        seen_names.add(name_lower)
+
+    return new_orgs
+
+
 # ---------------------------------------------------------------------------
 # FILTERS
 # ---------------------------------------------------------------------------
@@ -913,10 +1020,9 @@ apollo_keywords_raw = r2c.text_input(
 st.caption(
     "**Search strategy:** Each industry is swept up to 1,000 results (no keyword filter) so "
     "broadly-classified companies aren't missed. Keywords run a *separate* sweep across ALL "
-    "industries to catch companies Apollo has placed in unexpected categories. The AI filter "
-    "then screens every candidate for true niche relevance. "
-    "Note: if a company doesn't appear, it may be absent from Apollo's database or untagged "
-    "with the expected industry/keywords — try adding alternate keyword tags to improve coverage."
+    "industries to catch companies Apollo has placed in unexpected categories. "
+    "A Google discovery pass then scrapes page 1 of Google to catch companies that "
+    "Apollo doesn't have at all. The AI filter screens every candidate for true niche relevance."
 )
 
 if st.button("🚀 Start Sourcing", type="primary"):
@@ -935,15 +1041,33 @@ if st.button("🚀 Start Sourcing", type="primary"):
 
     orgs = search_organizations(industries, target_geo, keyword_tags=keyword_tags)
 
+    # Build dedup sets for Google discovery pass
+    seen_domains = set()
+    seen_names   = set()
+    for o in orgs:
+        d = clean_domain(o.get("website_url"))
+        if d: seen_domains.add(d)
+        n = (o.get("name") or "").strip().lower()
+        if n: seen_names.add(n)
+
+    # Pass 3: Google scrape to catch companies Apollo missed
+    with st.spinner("Checking Google for companies Apollo may have missed…"):
+        google_orgs = web_discovery_pass(specific_niche, target_geo,
+                                         seen_domains, seen_names)
+    if google_orgs:
+        orgs.extend(google_orgs)
+        st.info(f"🔍 Google discovery added **{len(google_orgs)}** companies not in Apollo.")
+
     if not orgs:
         st.error(
-            "Apollo returned no companies. "
+            "No companies found in Apollo or Google. "
             "Try broadening the industry selection or clearing the Keywords field."
         )
         st.stop()
 
     st.success(
-        f"Found **{len(orgs)}** unique candidates — "
+        f"Found **{len(orgs)}** unique candidates ({len(orgs) - len(google_orgs) if google_orgs else len(orgs)} "
+        f"Apollo + {len(google_orgs) if google_orgs else 0} Google) — "
         f"running AI filter with 5 parallel workers…"
     )
     progress_bar = st.progress(0)
