@@ -374,6 +374,7 @@ PASS if the company fits ONE of these:
 FAIL if any of these apply:
 - Software, SaaS, analytics, or pure technology vendor
 - Consulting, billing, staffing, marketing, or outsourced services firm
+- Training, education, or coaching organization with no direct patient/client care operations
 - Large national chain or massive enterprise not suitable for acquisition
 - Completely unrelated industry
 - "PACE" in the niche means Program for All-Inclusive Care for the Elderly — NOT fitness/pace
@@ -383,25 +384,24 @@ Do not over-filter if the description is brief.
 Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
 
     else:
-        prompt = f"""You are identifying sales prospects and competitors for companies operating in: "{target_niche}"
+        prompt = f"""You are identifying realistic sales prospects and direct competitors for companies in: "{target_niche}"
 
 Company: "{company_name}"
 Description: "{description}"
 Keywords: {keywords}
 
-PASS if the company fits ANY of these:
-1. Direct competitor operating in the same or a closely adjacent niche (any size, any ownership).
-2. An organization that regularly refers clients, contracts with, or partners with companies in
-   this niche — e.g., for PACE: hospitals, home health agencies, assisted living, skilled nursing,
-   hospice, physician groups, area agencies on aging.
-3. Any operator serving the same patient or client population who could be a referral source,
-   channel partner, or purchaser of services.
+PASS if the company fits ONE of these:
+1. Direct competitor — operates in the same niche or a closely adjacent one (any size).
+2. Realistic sales prospect — a similarly-scaled operator in the same sector who could refer
+   clients to, partner with, or purchase services from companies in this niche.
 
-FAIL if:
-- Pure technology, software, SaaS, or analytics vendor with no direct care delivery
-- Consulting, billing, staffing, or outsourced services firm
-- Completely unrelated industry (manufacturing, finance, retail, food, etc.)
-- Pharma, biotech, or medical device manufacturer with no patient care operations
+FAIL if any of these apply:
+- Insurance company, managed care payer, financial services firm, or health insurer
+- Large institutional network, national chain, or conglomerate with 10,000+ employees, UNLESS
+  it is a direct competitor operating in the exact same niche as the target
+- Pure technology, software, SaaS, or analytics vendor with no direct service delivery
+- Consulting, billing, staffing, training, or outsourced services firm
+- Completely unrelated industry (manufacturing, finance, retail, food service, etc.)
 
 Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
 
