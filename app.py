@@ -918,17 +918,24 @@ def spider_for_contact(company_name, domain):
 
     def _extract_email(content):
         """Return the first email found in content.
-        Checks mailto: links first (most reliable), then plain-text addresses."""
+        Priority: Cloudflare-decoded > mailto: link > plain-text address."""
         if not content:
             return None
-        # 1. mailto: links — most reliable, parse even inside HTML/markdown
+        # 1. Cloudflare email protection — data-cfemail="hex" attribute.
+        #    Firecrawl renders JS but CF emails often don't survive markdown
+        #    conversion; decode directly from the raw attribute instead.
+        for encoded in re.findall(r'data-cfemail="([0-9a-f]+)"', content, re.IGNORECASE):
+            decoded = _decode_cf_email(encoded)
+            if decoded and "@" in decoded:
+                return decoded
+        # 2. mailto: links — most reliable once page is rendered
         hits = re.findall(
             r'mailto:([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})',
             content, re.IGNORECASE,
         )
         if hits:
             return hits[0]
-        # 2. Plain-text email addresses visible in the page
+        # 3. Plain-text email addresses visible in the page
         hits = re.findall(
             r'\b([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})\b',
             content, re.IGNORECASE,
@@ -1214,6 +1221,16 @@ def get_latest_news_link(company_name, city=None):
 # ---------------------------------------------------------------------------
 # HELPERS
 # ---------------------------------------------------------------------------
+def _decode_cf_email(encoded: str) -> str | None:
+    """Decode a Cloudflare __cf_email__ hex-encoded address (data-cfemail attribute).
+    Cloudflare XORs every byte with the first byte as a key."""
+    try:
+        key = int(encoded[:2], 16)
+        return "".join(chr(int(encoded[i:i + 2], 16) ^ key) for i in range(2, len(encoded), 2))
+    except Exception:
+        return None
+
+
 def _email_matches_domain(email: str, company_domain: str) -> bool:
     """Return True if the email's domain plausibly belongs to the company domain.
     Used to reject Apollo bulk_enrich returning a same-name person at a different company."""
