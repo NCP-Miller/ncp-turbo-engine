@@ -491,6 +491,8 @@ _UNIVERSAL_BLOCKS = [
     # Material suppliers / distributors — not operators or service firms
     "building materials", "building supply", "building products",
     " supply co", " distributors", " wholesale",
+    # Publications / media — not operators
+    "publication", "print magazine", "digital magazine",
 ]
 _MODE_A_BLOCKS = [
     "consulting group", "advisory group", " billing services",
@@ -511,15 +513,38 @@ _CONTEXTUAL_NAME_BLOCKS = [
     (" pr ",       "public relations"),
 ]
 
+# These terms, if found in the company DESCRIPTION/HEADLINE (not name), are
+# strong enough signals to block regardless of the company name.  Kept tighter
+# than _UNIVERSAL_BLOCKS to avoid false positives from vague descriptions.
+_DESCRIPTION_BLOCKS = [
+    "building materials", "building supply", "building products",
+    "luxury building materials",
+    "fireplace manufacturer", "fireplace products",
+    "print magazine", "digital magazine", "news publication",
+]
+
 def is_obvious_mismatch(org, target_niche, mode):
     name = (org.get("name") or "").lower()
+    desc = ((org.get("short_description") or "") + " " + (org.get("headline") or "")).lower()
     niche_lower = target_niche.lower()
+
+    # Check name against hard blocks
     for f in _UNIVERSAL_BLOCKS:
         if f in name: return True, f"Block: '{f}'"
+    # Check description against hard blocks (catches "FireRock" whose Apollo
+    # name omits "Luxury Building Materials" but description reveals it)
+    for f in _DESCRIPTION_BLOCKS:
+        if f in desc: return True, f"Desc block: '{f}'"
     # Block companies whose names clearly signal an irrelevant industry
     for term, exempt in _CONTEXTUAL_NAME_BLOCKS:
         if term in name and exempt not in niche_lower:
             return True, f"Name block: '{term.strip()}'"
+    # Also check description for magazine/media signals (catches "B-Metro"
+    # stored without "Magazine" in Apollo's name field)
+    for term, exempt in _CONTEXTUAL_NAME_BLOCKS:
+        if term in desc and exempt not in niche_lower:
+            return True, f"Desc name block: '{term.strip()}'"
+
     if mode == "B": return False, "Pass"
     extras = list(_MODE_A_BLOCKS)
     if "architect" in target_niche.lower():
@@ -625,65 +650,112 @@ Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
 # ---------------------------------------------------------------------------
 # WEBSITE-BASED RELEVANCE VERIFICATION
 # ---------------------------------------------------------------------------
-def check_relevance_via_website(company_name: str, domain: str | None, target_niche: str, mode: str, target_geo: str = "") -> tuple[bool, str]:
-    """Scrape the company homepage and use GPT-4o to confirm it actually operates
-    in the target niche.  Called after the Apollo-data AI filter so it only fires
-    on candidates that already cleared the first pass.
+def _scrape_or_search(company_name: str, domain: str | None) -> tuple[str, str]:
+    """Return (content, source_label) for the best available description of the company.
 
-    Returns (is_relevant, reason).
-    Defaults to True (pass-through) when the site can't be reached, so we never
-    silently drop companies just because their server is slow or blocks scrapers.
+    Priority:
+      1. Firecrawl scrape of the homepage
+      2. Direct HTTP GET of the homepage
+      3. DuckDuckGo search for the company name — snippets come from the search
+         engine's own index so they are never blocked by the company's server.
+
+    Returns ("", "") only if all three approaches fail.
     """
-    if not domain:
-        return True, "No website to verify"
+    # ── 1. Firecrawl ────────────────────────────────────────────────────────
+    if domain:
+        content = firecrawl_scrape(f"https://{domain}")
+        if content and len(content) >= 100:
+            return content[:20000], "website (Firecrawl)"
 
-    base_url = f"https://{domain}"
-    content = firecrawl_scrape(base_url)
-
-    if not content or len(content) < 100:
+    # ── 2. Direct HTTP ───────────────────────────────────────────────────────
+    if domain:
         try:
             r = requests.get(
-                base_url,
+                f"https://{domain}",
                 headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                          "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"},
                 timeout=10, allow_redirects=True,
             )
             if r.status_code == 200 and len(r.text) > 200:
-                content = r.text[:20000]
+                return r.text[:20000], "website (direct)"
         except Exception:
             pass
 
-    if not content or len(content) < 100:
-        return True, "Website unreachable — skipping web verification"
+    # ── 3. DuckDuckGo search ─────────────────────────────────────────────────
+    # When the company's own server blocks us, search engine snippets still
+    # describe what the company does — sourced from Google/Bing's cached index.
+    for q in ([f'"{company_name}" {domain}', company_name] if domain else [company_name]):
+        try:
+            r = requests.get(
+                f"https://html.duckduckgo.com/html/?q={quote_plus(q)}",
+                headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                         "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"},
+                timeout=12,
+            )
+            if r.status_code == 200 and len(r.text) > 200:
+                text = re.sub(r"<[^>]+>", " ", r.text)
+                text = re.sub(r"\s{2,}", " ", text)
+                if len(text) >= 100:
+                    return text[:8000], "web search snippets (DuckDuckGo)"
+        except Exception:
+            pass
+
+    return "", ""
+
+
+def check_relevance_via_website(company_name: str, domain: str | None, target_niche: str, mode: str, target_geo: str = "", org: dict | None = None) -> tuple[bool, str]:
+    """Verify that the company actually operates in the target niche.
+
+    Data sources tried in order:
+      1. Scrape the company homepage (Firecrawl → direct HTTP)
+      2. DuckDuckGo search snippets — works even when the company's server
+         blocks direct access (Cloudflare, etc.)
+      3. Apollo description/headline from the org dict (last resort)
+
+    Defaults to True (pass-through) only when ALL sources return nothing.
+    """
+    content, source = _scrape_or_search(company_name, domain)
+
+    # If every external source failed, fall back to whatever Apollo gave us.
+    if not content:
+        apollo_desc = " ".join(filter(None, [
+            (org or {}).get("short_description"),
+            (org or {}).get("headline"),
+        ]))
+        if apollo_desc:
+            content = apollo_desc
+            source  = "Apollo description"
+
+    if not content:
+        return True, "No content available — skipping web verification"
 
     geo_line = (f'\n- The company clearly operates primarily outside of {target_geo} '
                 f'(wrong geography)' if target_geo else "")
-    prompt = f"""You are verifying whether a company's website confirms it actually operates in the target niche.
+    prompt = f"""You are verifying whether a company actually operates in the target niche.
 
 Target niche: "{target_niche}"
 Company: "{company_name}"
 Target geography: "{target_geo}"
+Content source: {source}
 
-Read the website content below and answer: Is this company a genuine operator or service provider IN the target niche?
+Read the content below and answer: Is this company a genuine operator or direct service provider IN the target niche?
 
-FAIL (match: false) if the website shows the company is:
+FAIL (match: false) if the content shows the company is:
 - A manufacturer or supplier of raw materials, building products, or components
-- A media company, magazine, blog, or publication
+- A media company, magazine, blog, news outlet, or publication
 - A rental company, property manager, or landlord (not a design/build firm)
-- An interior designer or decorator (not an architect or builder)
-- A commercial-only builder (never works on residential projects)
-- A staffing, consulting, marketing, or technology firm{geo_line}
+- A staffing, consulting, marketing, or technology firm
+- An insurance, finance, or investment firm{geo_line}
 - Completely unrelated to the niche
 
-PASS (match: true) only if the website clearly shows this company designs, builds, or plans
-residential projects in the luxury/high-end segment — i.e. it is an actual operator in:
-"{target_niche}"
+PASS (match: true) only if the content clearly confirms this company is an actual operator
+or direct service provider in: "{target_niche}"
 
-Website content:
+Content:
 {content[:12000]}
 
 Return JSON only:
-{{"match": true/false, "reason": "one sentence describing what the website shows this company actually does"}}"""
+{{"match": true/false, "reason": "one sentence describing what the content shows this company actually does"}}"""
 
     def _parse(c):
         data = json.loads(c)
@@ -697,7 +769,7 @@ Return JSON only:
             timeout=20,
         )
         match, reason = _parse(resp.choices[0].message.content)
-        return bool(match), reason
+        return bool(match), f"{reason} [{source}]"
     except Exception as e:
         if "content" not in str(e).lower() and "filter" not in str(e).lower() and "400" not in str(e):
             return True, "AI Error"
@@ -712,7 +784,7 @@ Return JSON only:
         m = re.search(r'\{.*\}', raw, re.DOTALL)
         if m:
             match, reason = _parse(m.group())
-            return bool(match), reason
+            return bool(match), f"{reason} [{source}]"
     except Exception:
         pass
 
@@ -1267,7 +1339,7 @@ def process_single_company(org, specific_niche, strat_code, target_geo=""):
     # operates in the target niche.  Apollo's metadata is often sparse or wrong,
     # so this catches manufacturers, magazines, rental firms, etc. that slipped
     # through the first AI filter.
-    if not check_relevance_via_website(comp_name, domain, specific_niche, strat_code, target_geo)[0]:
+    if not check_relevance_via_website(comp_name, domain, specific_niche, strat_code, target_geo, org=org)[0]:
         return None
 
     # Mode A only: secondary web check to confirm no PE/VC backing.
