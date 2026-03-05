@@ -454,19 +454,28 @@ Search content:
 # ---------------------------------------------------------------------------
 # FILTERS
 # ---------------------------------------------------------------------------
+_PE_SIGNALS = {
+    "private equity", "venture capital", "venture-backed", "vc-backed",
+    "pe-backed", "portfolio company", "growth equity", "buyout",
+    "backed by", "investor-backed",
+}
+
 def is_buyable_structure(org, mode):
     emp    = org.get("estimated_num_employees", 0) or 0
     status = str(org.get("ownership_status") or "").strip().lower()
-    tags   = [t.lower() for t in (org.get("keywords") or [])]
+    tags   = " ".join(t.lower() for t in (org.get("keywords") or []))
+    funding_stage = str(org.get("latest_funding_stage") or "").strip().lower()
 
     if mode == "A":
-        if status == "public":                                  return False, "Publicly Traded"
-        if status == "subsidiary":                              return False, "Subsidiary"
-        if "private equity" in tags or "venture capital" in tags: return False, "PE/VC Backed"
-        if emp > 7500:                                          return False, f"Too Large ({emp})"
+        if status == "public":                      return False, "Publicly Traded"
+        if status == "subsidiary":                  return False, "Subsidiary"
+        if any(sig in tags for sig in _PE_SIGNALS): return False, "PE/VC Backed"
+        if any(sig in funding_stage for sig in ("private equity", "venture", "series", "seed", "growth")):
+            return False, "PE/VC Funded"
+        if emp > 7500:                              return False, f"Too Large ({emp})"
     else:  # Mode B — block public companies and large conglomerates
-        if "public" in status:                                  return False, "Publicly Traded"
-        if emp > 10000:                                         return False, f"Too Large ({emp})"
+        if "public" in status:                      return False, "Publicly Traded"
+        if emp > 10000:                             return False, f"Too Large ({emp})"
 
     return True, "OK"
 
@@ -479,6 +488,9 @@ _UNIVERSAL_BLOCKS = [
     "nemt ", " logistics",
     # Large food-service management companies
     "eurest", "aramark", "sodexo", "compass group", "canteen",
+    # Material suppliers / distributors — not operators or service firms
+    "building materials", "building supply", "building products",
+    " supply co", " distributors", " wholesale",
 ]
 _MODE_A_BLOCKS = [
     "consulting group", "advisory group", " billing services",
@@ -487,10 +499,27 @@ _MODE_A_BLOCKS = [
     "healthtech", " technologies", "tech solutions", " it services",
 ]
 
+# Pairs of (term_in_company_name, term_that_must_not_be_in_target_niche).
+# If the company name contains the term AND the niche doesn't, it's blocked.
+# This catches marketing agencies, magazines, ad firms, etc. without needing
+# a website scrape — unless the user is actually targeting those industries.
+_CONTEXTUAL_NAME_BLOCKS = [
+    (" marketing", "marketing"),
+    ("advertising", "advertising"),
+    ("magazine",   "magazine"),
+    (" media",     "media"),
+    (" pr ",       "public relations"),
+]
+
 def is_obvious_mismatch(org, target_niche, mode):
     name = (org.get("name") or "").lower()
+    niche_lower = target_niche.lower()
     for f in _UNIVERSAL_BLOCKS:
         if f in name: return True, f"Block: '{f}'"
+    # Block companies whose names clearly signal an irrelevant industry
+    for term, exempt in _CONTEXTUAL_NAME_BLOCKS:
+        if term in name and exempt not in niche_lower:
+            return True, f"Name block: '{term.strip()}'"
     if mode == "B": return False, "Pass"
     extras = list(_MODE_A_BLOCKS)
     if "architect" in target_niche.lower():
@@ -509,46 +538,53 @@ Company: "{company_name}"
 Description: "{description}"
 Keywords: {keywords}
 
-PASS if the company fits ONE of these:
-1. A direct operator or service provider in the exact niche described above.
-2. A highly adjacent operator serving the same core customer base in a directly related vertical.
-3. Description is vague, but the company name and keywords strongly align with the target niche.
+PASS only if the company is itself a direct operator or service provider IN the exact niche
+described above. If the description is vague but the company name and keywords strongly suggest
+it is an operator in the target niche, PASS.
 
-FAIL if any of these apply:
-- Software, SaaS, analytics, HealthTech, or pure technology vendor — even if health-adjacent
-- IT services, digital health platform, or software development firm
-- Consulting, billing, staffing, marketing, or outsourced services firm
-- Training, education, or coaching organization with no direct patient/client care operations
-- Medical transportation, non-emergency medical transport (NEMT), or logistics company
-- Large national chain or massive enterprise not suitable for acquisition
-- Completely unrelated industry
-- "PACE" in the niche means Program for All-Inclusive Care for the Elderly — NOT fitness/pace
+FAIL if ANY of these apply:
+- The company sells products, software, or services TO operators in this niche (e.g., marketing
+  agencies, ad firms, software vendors, consultants, billing services, staffing firms) rather
+  than being a direct operator itself
+- Software, SaaS, technology platform, analytics, or IT services firm — even if it specifically
+  serves this sector
+- Consulting, advisory, training, coaching, or outsourced professional services firm
+- Staffing, recruiting, or workforce solutions firm
+- Marketing, advertising, PR, branding, or digital media firm
+- Logistics, transportation, installation contractor, or distribution company — unless the niche
+  explicitly includes those trades
+- Large national chain, franchise network, or enterprise clearly unsuitable for a
+  lower-middle-market acquisition
+- Completely unrelated industry with no meaningful operational overlap
 
-If the company appears to be a legitimate local or regional operator in the target niche, PASS them.
-Do not over-filter if the description is brief.
+Do NOT pass a company simply because it serves or supports operators in the niche.
 Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
 
     else:
-        prompt = f"""You are identifying realistic sales prospects and direct competitors for companies in: "{target_niche}"
+        prompt = f"""You are identifying direct competitors and realistic sales prospects for companies in: "{target_niche}"
 
 Company: "{company_name}"
 Description: "{description}"
 Keywords: {keywords}
 
-PASS if the company fits ONE of these:
-1. Direct competitor — operates in the same niche or a closely adjacent one (any size).
-2. Realistic sales prospect — a similarly-scaled operator in the same sector who could refer
-   clients to, partner with, or purchase services from companies in this niche.
+PASS only if the company is an actual operator or direct competitor in this niche or a clearly
+overlapping adjacent niche — meaning it delivers the same core service or product to the same
+end customers.
 
-FAIL if any of these apply:
-- Insurance company, managed care payer, financial services firm, or health insurer
-- Large institutional network, national chain, or conglomerate with 10,000+ employees, UNLESS
-  it is a direct competitor operating in the exact same niche as the target
-- Technology company, IT firm, HealthTech, software developer, or digital health platform —
-  even if their product serves the healthcare sector
-- Medical transportation, non-emergency medical transport (NEMT), or logistics company
-- Consulting, billing, staffing, training, or outsourced services firm
-- Completely unrelated industry (manufacturing, finance, retail, food service, etc.)
+FAIL if ANY of these apply:
+- The company sells products, software, or services TO operators in this niche rather than
+  being an operator itself
+- Software, SaaS, technology platform, analytics, or IT services firm — even if it serves
+  this sector
+- Consulting, advisory, training, coaching, or outsourced professional services firm
+- Staffing, recruiting, or workforce solutions firm
+- Marketing, advertising, PR, branding, or digital media firm
+- Logistics, transportation, or distribution company — unless the niche explicitly includes
+  those trades
+- Insurance company, financial services firm, or pure investor/fund
+- Large institutional network, government agency, or non-operator entity with 10,000+ employees
+  unless it is a direct operator in the exact same niche
+- Completely unrelated industry
 
 Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
 
@@ -584,6 +620,193 @@ Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
         pass
 
     return True, "AI Error"
+
+
+# ---------------------------------------------------------------------------
+# WEBSITE-BASED RELEVANCE VERIFICATION
+# ---------------------------------------------------------------------------
+def check_relevance_via_website(company_name: str, domain: str | None, target_niche: str, mode: str, target_geo: str = "") -> tuple[bool, str]:
+    """Scrape the company homepage and use GPT-4o to confirm it actually operates
+    in the target niche.  Called after the Apollo-data AI filter so it only fires
+    on candidates that already cleared the first pass.
+
+    Returns (is_relevant, reason).
+    Defaults to True (pass-through) when the site can't be reached, so we never
+    silently drop companies just because their server is slow or blocks scrapers.
+    """
+    if not domain:
+        return True, "No website to verify"
+
+    base_url = f"https://{domain}"
+    content = firecrawl_scrape(base_url)
+
+    if not content or len(content) < 100:
+        try:
+            r = requests.get(
+                base_url,
+                headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                         "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"},
+                timeout=10, allow_redirects=True,
+            )
+            if r.status_code == 200 and len(r.text) > 200:
+                content = r.text[:20000]
+        except Exception:
+            pass
+
+    if not content or len(content) < 100:
+        return True, "Website unreachable — skipping web verification"
+
+    geo_line = (f'\n- The company clearly operates primarily outside of {target_geo} '
+                f'(wrong geography)' if target_geo else "")
+    prompt = f"""You are verifying whether a company's website confirms it actually operates in the target niche.
+
+Target niche: "{target_niche}"
+Company: "{company_name}"
+Target geography: "{target_geo}"
+
+Read the website content below and answer: Is this company a genuine operator or service provider IN the target niche?
+
+FAIL (match: false) if the website shows the company is:
+- A manufacturer or supplier of raw materials, building products, or components
+- A media company, magazine, blog, or publication
+- A rental company, property manager, or landlord (not a design/build firm)
+- An interior designer or decorator (not an architect or builder)
+- A commercial-only builder (never works on residential projects)
+- A staffing, consulting, marketing, or technology firm{geo_line}
+- Completely unrelated to the niche
+
+PASS (match: true) only if the website clearly shows this company designs, builds, or plans
+residential projects in the luxury/high-end segment — i.e. it is an actual operator in:
+"{target_niche}"
+
+Website content:
+{content[:12000]}
+
+Return JSON only:
+{{"match": true/false, "reason": "one sentence describing what the website shows this company actually does"}}"""
+
+    def _parse(c):
+        data = json.loads(c)
+        return data.get("match"), data.get("reason", "")
+
+    try:
+        resp = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[{"role": "user", "content": prompt}],
+            response_format={"type": "json_object"},
+            timeout=20,
+        )
+        match, reason = _parse(resp.choices[0].message.content)
+        return bool(match), reason
+    except Exception as e:
+        if "content" not in str(e).lower() and "filter" not in str(e).lower() and "400" not in str(e):
+            return True, "AI Error"
+
+    try:
+        resp = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[{"role": "user", "content": prompt}],
+            timeout=20,
+        )
+        raw = resp.choices[0].message.content or ""
+        m = re.search(r'\{.*\}', raw, re.DOTALL)
+        if m:
+            match, reason = _parse(m.group())
+            return bool(match), reason
+    except Exception:
+        pass
+
+    return True, "AI Error"
+
+
+# ---------------------------------------------------------------------------
+# WEB-BASED PE/VC OWNERSHIP CHECK
+# ---------------------------------------------------------------------------
+def check_pe_via_web(company_name: str, domain: str | None) -> tuple[bool, str]:
+    """Search Google News RSS + DuckDuckGo to confirm no PE/VC backing.
+
+    Returns (is_pe_backed, reason).  Called for Mode A candidates that pass
+    all structural and AI filters as a secondary confirmation step.
+    """
+    queries = [
+        f'"{company_name}" "private equity"',
+        f'"{company_name}" "portfolio company"',
+        f'"{company_name}" acquisition investor',
+    ]
+
+    snippets: list[str] = []
+
+    # ── Google News RSS (fast, no JS required) ───────────────────────────
+    for q in queries[:2]:
+        rss_url = (
+            "https://news.google.com/rss/search"
+            f"?q={quote_plus(q)}&hl=en-US&gl=US&ceid=US:en"
+        )
+        try:
+            r = requests.get(rss_url, timeout=10,
+                             headers={"User-Agent": "Mozilla/5.0"})
+            if r.status_code == 200:
+                root = ET.fromstring(r.content)
+                for item in root.findall("./channel/item")[:4]:
+                    title = item.findtext("title") or ""
+                    desc  = item.findtext("description") or ""
+                    snippets.append(f"Headline: {title}\nSnippet: {desc[:300]}")
+        except Exception:
+            pass
+
+    # ── DuckDuckGo HTML search ───────────────────────────────────────────
+    ddg_q = f"{company_name} private equity investment portfolio company"
+    try:
+        r = requests.get(
+            f"https://html.duckduckgo.com/html/?q={quote_plus(ddg_q)}",
+            headers={"User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/120.0.0.0 Safari/537.36"
+            )},
+            timeout=12,
+        )
+        if r.status_code == 200:
+            # Strip HTML tags and keep text up to 4 000 chars
+            text = re.sub(r"<[^>]+>", " ", r.text)
+            text = re.sub(r"\s{2,}", " ", text)
+            snippets.append(text[:4000])
+    except Exception:
+        pass
+
+    if not snippets:
+        return False, "No web data retrieved"
+
+    combined = "\n\n---\n\n".join(snippets[:7])
+
+    prompt = f"""Review these web search results about "{company_name}" and determine whether
+there is credible evidence that this company is backed by private equity (PE) or venture
+capital (VC) investors.
+
+Look for:
+- The company listed as a portfolio company on a PE/VC firm's website
+- News articles or press releases announcing a PE/VC investment, buyout, or funding round
+- References to the company being acquired by or partnered with a PE/VC firm
+- Investor announcements explicitly naming the company as an investment target
+
+Search results:
+{combined[:8000]}
+
+Return JSON only: {{"pe_backed": true/false, "reason": "one sentence"}}
+- pe_backed: true ONLY if there is clear, credible evidence of PE or VC involvement
+- pe_backed: false if results are ambiguous, unrelated, or clearly about a different company"""
+
+    try:
+        resp = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[{"role": "user", "content": prompt}],
+            response_format={"type": "json_object"},
+            timeout=20,
+        )
+        data = json.loads(resp.choices[0].message.content)
+        return bool(data.get("pe_backed")), data.get("reason", "")
+    except Exception:
+        return False, "AI check error — defaulting to not PE-backed"
 
 
 # ---------------------------------------------------------------------------
@@ -683,6 +906,34 @@ def spider_for_contact(company_name, domain):
 
     web_email = web_phone = None
 
+    # URL fragments that indicate an individual bio/profile sub-page
+    _BIO_FRAGMENTS = ("/team/", "/people/", "/staff/", "/bio/", "/meet/",
+                      "/person/", "/member/", "/about/team/", "/leadership/")
+
+    def _extract_mailto(content):
+        """Return the first email found in a mailto: link (catches email-icon links)."""
+        if not content:
+            return None
+        hits = re.findall(
+            r'mailto:([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})',
+            content, re.IGNORECASE,
+        )
+        return hits[0] if hits else None
+
+    def _bio_links(content, page_url):
+        """Return links that look like individual bio/profile sub-pages on this site."""
+        if not content:
+            return []
+        seen, out = set(), []
+        for _text, link in re.findall(r'\[([^\]]*)\]\(([^)]+)\)', content):
+            full = (urljoin(page_url, link) if link.startswith("/")
+                    else (link if link.startswith("http") else None))
+            if (full and full not in seen and full != page_url
+                    and any(f in full.lower() for f in _BIO_FRAGMENTS)):
+                seen.add(full)
+                out.append(full)
+        return out[:6]
+
     # Try https first, then http — many small operators have no SSL or expired certs
     def _scrape(url):
         content = firecrawl_scrape(url)
@@ -708,14 +959,60 @@ def spider_for_contact(company_name, domain):
         base = f"http://{domain}"
 
     for path in _CONTACT_PATHS:
-        content = _scrape(base + path)
-        if not content: continue
+        page_url = base + path
+        content = _scrape(page_url)
+        if not content:
+            continue
+
+        # Grab any mailto: email immediately — catches email-icon links
+        if not web_email:
+            web_email = _extract_mailto(content)
+
         ai = extract_names_openai(content, company_name)
-        if not ai: continue
-        if ai.get("email"): web_email = ai["email"]
-        if ai.get("phone"): web_phone = ai["phone"]
+        if not ai:
+            # No name found on this path — try individual bio sub-pages
+            for bio_url in _bio_links(content, page_url):
+                bio = _scrape(bio_url)
+                if not bio:
+                    continue
+                if not web_email:
+                    web_email = _extract_mailto(bio)
+                bio_ai = extract_names_openai(bio, company_name)
+                if bio_ai:
+                    if bio_ai.get("email"):
+                        web_email = bio_ai["email"]
+                    if bio_ai.get("phone"):
+                        web_phone = bio_ai["phone"]
+                    bn = bio_ai.get("name")
+                    if bn and " " in bn and len(bn) > 3:
+                        person = {
+                            "first_name":    bn.split()[0],
+                            "last_name":     " ".join(bn.split()[1:]),
+                            "title":         bio_ai.get("title"),
+                            "email":         web_email,
+                            "phone_numbers": [{"sanitized_number": web_phone}] if web_phone else [],
+                        }
+                        return person, f"Web Bio ({path})", web_email, web_phone
+            continue
+
+        if ai.get("email"):
+            web_email = ai["email"]
+        if ai.get("phone"):
+            web_phone = ai["phone"]
         n = ai.get("name")
         if n and " " in n and len(n) > 3:
+            # Email still missing — check bio sub-pages before returning
+            if not web_email:
+                for bio_url in _bio_links(content, page_url):
+                    bio = _scrape(bio_url)
+                    found = _extract_mailto(bio)
+                    if found:
+                        web_email = found
+                        break
+                    bio_ai = extract_names_openai(bio or "", company_name)
+                    if bio_ai and bio_ai.get("email"):
+                        web_email = bio_ai["email"]
+                        break
             person = {
                 "first_name":    n.split()[0],
                 "last_name":     " ".join(n.split()[1:]),
@@ -727,14 +1024,20 @@ def spider_for_contact(company_name, domain):
 
     visited, queue = set(), [base]
     for url in queue[:8]:
-        if url in visited: continue
+        if url in visited:
+            continue
         visited.add(url)
         content = _scrape(url)
-        if not content: continue
+        if not content:
+            continue
+        if not web_email:
+            web_email = _extract_mailto(content)
         ai = extract_names_openai(content, company_name)
         if ai:
-            if ai.get("email"): web_email = ai["email"]
-            if ai.get("phone"): web_phone = ai["phone"]
+            if ai.get("email"):
+                web_email = ai["email"]
+            if ai.get("phone"):
+                web_phone = ai["phone"]
             n = ai.get("name")
             if n and " " in n and len(n) > 3:
                 person = {
@@ -746,7 +1049,8 @@ def spider_for_contact(company_name, domain):
                 }
                 return person, "Web Spider", web_email, web_phone
         for lnk in extract_relevant_links(content, url):
-            if lnk not in visited: queue.insert(1, lnk)
+            if lnk not in visited:
+                queue.insert(1, lnk)
 
     return None, None, web_email, web_phone
 
@@ -910,7 +1214,7 @@ def _email_matches_domain(email: str, company_domain: str) -> bool:
 # ---------------------------------------------------------------------------
 # WORKER
 # ---------------------------------------------------------------------------
-def process_single_company(org, specific_niche, strat_code):
+def process_single_company(org, specific_niche, strat_code, target_geo=""):
     comp_name = org.get("name")
 
     if not is_buyable_structure(org, strat_code)[0]:            return None
@@ -923,6 +1227,21 @@ def process_single_company(org, specific_niche, strat_code):
 
     domain = clean_domain(org.get("website_url"))
     org_id = org.get("id")
+
+    # Website verification: scrape the company homepage and confirm it actually
+    # operates in the target niche.  Apollo's metadata is often sparse or wrong,
+    # so this catches manufacturers, magazines, rental firms, etc. that slipped
+    # through the first AI filter.
+    if not check_relevance_via_website(comp_name, domain, specific_niche, strat_code, target_geo)[0]:
+        return None
+
+    # Mode A only: secondary web check to confirm no PE/VC backing.
+    # Companies backed by PE/VC are routinely listed as portfolio companies or
+    # announced via press release — web search catches what Crunchbase misses.
+    if strat_code == "A":
+        pe_backed, _pe_reason = check_pe_via_web(comp_name, domain)
+        if pe_backed:
+            return None
 
     row = {
         "Company":        comp_name,
@@ -984,6 +1303,17 @@ def process_single_company(org, specific_niche, strat_code):
         # Discard email if it clearly belongs to a different company's domain
         if a_email and domain and not _email_matches_domain(a_email, domain):
             a_email = None
+        # Email still missing — try to find it in apollo_people by matching the name
+        if not a_email and not web_email and apollo_people:
+            fn = (found_person.get("first_name") or "").lower()
+            ln = (found_person.get("last_name") or "").lower()
+            for ap in apollo_people:
+                if ((ap.get("first_name") or "").lower() == fn
+                        and (ap.get("last_name") or "").lower() == ln
+                        and ap.get("email")
+                        and _email_matches_domain(ap["email"], domain or "")):
+                    a_email = ap["email"]
+                    break
         row["Email"] = a_email if a_email else (web_email or "N/A")
         pnums   = found_person.get("phone_numbers") or []
         a_phone = pnums[0].get("sanitized_number") if pnums else None
@@ -1139,7 +1469,7 @@ if st.button("🚀 Start Sourcing", type="primary"):
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as ex:
         futures = {
-            ex.submit(process_single_company, org, specific_niche, strat_code): org
+            ex.submit(process_single_company, org, specific_niche, strat_code, target_geo): org
             for org in orgs
         }
         for i, future in enumerate(concurrent.futures.as_completed(futures)):
