@@ -910,15 +910,33 @@ def spider_for_contact(company_name, domain):
     _BIO_FRAGMENTS = ("/team/", "/people/", "/staff/", "/bio/", "/meet/",
                       "/person/", "/member/", "/about/team/", "/leadership/")
 
-    def _extract_mailto(content):
-        """Return the first email found in a mailto: link (catches email-icon links)."""
+    _EMAIL_FALSE_POSITIVES = {
+        "example.com", "youremail", "email@", "@domain", "test@",
+        "noreply", "no-reply", "donotreply", "sentry.io", "wixpress",
+        "squarespace", "wordpress", "schema.org",
+    }
+
+    def _extract_email(content):
+        """Return the first email found in content.
+        Checks mailto: links first (most reliable), then plain-text addresses."""
         if not content:
             return None
+        # 1. mailto: links — most reliable, parse even inside HTML/markdown
         hits = re.findall(
             r'mailto:([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})',
             content, re.IGNORECASE,
         )
-        return hits[0] if hits else None
+        if hits:
+            return hits[0]
+        # 2. Plain-text email addresses visible in the page
+        hits = re.findall(
+            r'\b([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})\b',
+            content, re.IGNORECASE,
+        )
+        for h in hits:
+            if not any(fp in h.lower() for fp in _EMAIL_FALSE_POSITIVES):
+                return h
+        return None
 
     def _bio_links(content, page_url):
         """Return links that look like individual bio/profile sub-pages on this site."""
@@ -966,7 +984,7 @@ def spider_for_contact(company_name, domain):
 
         # Grab any mailto: email immediately — catches email-icon links
         if not web_email:
-            web_email = _extract_mailto(content)
+            web_email = _extract_email(content)
 
         ai = extract_names_openai(content, company_name)
         if not ai:
@@ -976,7 +994,7 @@ def spider_for_contact(company_name, domain):
                 if not bio:
                     continue
                 if not web_email:
-                    web_email = _extract_mailto(bio)
+                    web_email = _extract_email(bio)
                 bio_ai = extract_names_openai(bio, company_name)
                 if bio_ai:
                     if bio_ai.get("email"):
@@ -1005,7 +1023,7 @@ def spider_for_contact(company_name, domain):
             if not web_email:
                 for bio_url in _bio_links(content, page_url):
                     bio = _scrape(bio_url)
-                    found = _extract_mailto(bio)
+                    found = _extract_email(bio)
                     if found:
                         web_email = found
                         break
@@ -1031,7 +1049,7 @@ def spider_for_contact(company_name, domain):
         if not content:
             continue
         if not web_email:
-            web_email = _extract_mailto(content)
+            web_email = _extract_email(content)
         ai = extract_names_openai(content, company_name)
         if ai:
             if ai.get("email"):
