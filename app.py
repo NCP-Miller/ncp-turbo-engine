@@ -1532,16 +1532,24 @@ if st.button("🚀 Start Sourcing", type="primary"):
 
     strat_code   = "A" if "A -" in mode else "B"
     keyword_tags = [k.strip() for k in apollo_keywords_raw.split(",") if k.strip()] or None
+    kw_display   = f" + keyword sweep ({', '.join(keyword_tags)})" if keyword_tags else ""
 
-    kw_display = f" + keyword sweep ({', '.join(keyword_tags)})" if keyword_tags else ""
-    st.info(
-        f"🔎 Searching **{len(industries)} industries**{kw_display} "
-        f"in **{target_geo}** (up to 1,000 results per industry)…"
+    st.markdown("---")
+    st.markdown("### Search Progress")
+
+    # ── Phase 1: Apollo ──────────────────────────────────────────────────────
+    ph1 = st.empty()
+    ph1.info(
+        f"🔎 **Phase 1** — Searching Apollo: {len(industries)} "
+        f"{'industry' if len(industries) == 1 else 'industries'}{kw_display} in **{target_geo}**…"
+    )
+    orgs = search_organizations(industries, target_geo, keyword_tags=keyword_tags)
+    ph1.success(
+        f"✅ **Phase 1 complete** — Apollo returned **{len(orgs):,}** candidates "
+        f"across {len(industries)} {'industry' if len(industries) == 1 else 'industries'}{kw_display}"
     )
 
-    orgs = search_organizations(industries, target_geo, keyword_tags=keyword_tags)
-
-    # Build dedup sets for Google discovery pass
+    # ── Phase 2: Web discovery ───────────────────────────────────────────────
     seen_domains = set()
     seen_names   = set()
     for o in orgs:
@@ -1550,13 +1558,14 @@ if st.button("🚀 Start Sourcing", type="primary"):
         n = (o.get("name") or "").strip().lower()
         if n: seen_names.add(n)
 
-    # Pass 3: Google scrape to catch companies Apollo missed
-    with st.spinner("Checking Google for companies Apollo may have missed…"):
-        google_orgs = web_discovery_pass(specific_niche, target_geo,
-                                         seen_domains, seen_names)
+    ph2 = st.empty()
+    ph2.info("🌐 **Phase 2** — Running web discovery (Google · DuckDuckGo · Bing) for companies Apollo may have missed…")
+    google_orgs = web_discovery_pass(specific_niche, target_geo, seen_domains, seen_names)
     if google_orgs:
         orgs.extend(google_orgs)
-        st.info(f"🔍 Google discovery added **{len(google_orgs)}** companies not in Apollo.")
+        ph2.success(f"✅ **Phase 2 complete** — Web discovery found **{len(google_orgs)}** additional companies not in Apollo")
+    else:
+        ph2.success("✅ **Phase 2 complete** — No additional companies found via web discovery")
 
     if not orgs:
         st.error(
@@ -1565,14 +1574,30 @@ if st.button("🚀 Start Sourcing", type="primary"):
         )
         st.stop()
 
-    st.success(
-        f"Found **{len(orgs)}** unique candidates ({len(orgs) - len(google_orgs) if google_orgs else len(orgs)} "
-        f"Apollo + {len(google_orgs) if google_orgs else 0} Google) — "
-        f"running AI filter with 5 parallel workers…"
-    )
+    # ── Summary metrics ──────────────────────────────────────────────────────
+    mc1, mc2, mc3, mc4 = st.columns(4)
+    mc1.metric("Apollo Candidates", f"{len(orgs) - (len(google_orgs) if google_orgs else 0):,}")
+    mc2.metric("Web Discovery Added", f"{len(google_orgs) if google_orgs else 0:,}")
+    mc3.metric("Total to Screen", f"{len(orgs):,}")
+    with mc4:
+        passed_ph = st.empty()
+        passed_ph.metric("Passed Filters", "0")
+
+    # ── Phase 3: AI filtering ────────────────────────────────────────────────
+    st.markdown("#### Phase 3 — AI Filtering & Contact Discovery")
     progress_bar = st.progress(0)
     status_text  = st.empty()
+
+    log_col, tbl_col = st.columns([2, 3])
+    with log_col:
+        st.caption("Live Activity")
+        activity_ph = st.empty()
+    with tbl_col:
+        st.caption("Passed Companies (live)")
+        results_ph = st.empty()
+
     final_data   = []
+    activity_log = []
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as ex:
         futures = {
@@ -1580,25 +1605,56 @@ if st.button("🚀 Start Sourcing", type="primary"):
             for org in orgs
         }
         for i, future in enumerate(concurrent.futures.as_completed(futures)):
+            org    = futures[future]
             result = future.result()
-            if result: final_data.append(result)
+
+            comp_name = org.get("name") or "Unknown"
+            city      = org.get("city") or ""
+            state     = org.get("state") or ""
+            loc       = f"{city}, {state}".strip(", ") if (city or state) else ""
+
+            if result:
+                final_data.append(result)
+                contact = result["CEO/Owner Name"]
+                email   = result["Email"]
+                detail  = " · ".join(x for x in [contact, email] if x != "N/A")
+                activity_log.append(
+                    f"✅ **{comp_name}**{f' ({loc})' if loc else ''}"
+                    + (f"  \n&nbsp;&nbsp;&nbsp;&nbsp;↳ {detail}" if detail else "")
+                )
+                results_ph.dataframe(
+                    pd.DataFrame(final_data)[["Company", "City", "State", "CEO/Owner Name", "Email", "Confidence"]],
+                    use_container_width=True, hide_index=True,
+                )
+            else:
+                activity_log.append(f"⏭️ {comp_name}{f' ({loc})' if loc else ''} — filtered")
+
+            # Show last 15 entries, newest first
+            activity_ph.markdown("\n\n".join(activity_log[-15:][::-1]))
+
             progress_bar.progress((i + 1) / len(orgs))
-            status_text.caption(
-                f"Processed {i+1}/{len(orgs)} | {len(final_data)} passed so far…"
-            )
+            status_text.caption(f"Processed {i+1:,} / {len(orgs):,} — {len(final_data)} passed")
+            passed_ph.metric("Passed Filters", str(len(final_data)))
 
-    status_text.write("✅ Sourcing complete!")
+    status_text.success(
+        f"✅ **Phase 3 complete** — **{len(final_data)}** companies passed all filters "
+        f"out of **{len(orgs):,}** screened"
+    )
+    passed_ph.metric("Passed Filters", str(len(final_data)))
 
+    # ── Final results ────────────────────────────────────────────────────────
     if final_data:
-        df  = pd.DataFrame(final_data)
-        st.dataframe(df)
+        st.markdown("---")
+        st.markdown("### Results")
+        df    = pd.DataFrame(final_data)
+        st.dataframe(df, use_container_width=True, hide_index=True)
         csv   = df.to_csv(index=False).encode("utf-8")
         fname = (
             f"NCP_{'_'.join(industries[:2])}_{target_geo}.csv"
             .replace(" ", "_").replace(",", "")
         )
         st.download_button(
-            "Download CSV", data=csv, file_name=fname, mime="text/csv", type="primary"
+            "⬇️ Download CSV", data=csv, file_name=fname, mime="text/csv", type="primary"
         )
     else:
         st.warning(
