@@ -4,6 +4,8 @@ import requests
 import json
 import re
 import concurrent.futures
+import threading
+import time
 import xml.etree.ElementTree as ET
 from urllib.parse import urlparse, urljoin, quote_plus
 from openai import OpenAI
@@ -14,8 +16,13 @@ st.set_page_config(page_title="NCP Sourcing Engine", page_icon="🚀", layout="w
 # AUTH
 # ---------------------------------------------------------------------------
 def check_password():
+    try:
+        app_password = st.secrets["APP_PASSWORD"]
+    except (FileNotFoundError, KeyError):
+        app_password = "NCP2026"
+
     def password_entered():
-        if st.session_state["password"] == "NCP2026":
+        if st.session_state["password"] == app_password:
             st.session_state["password_correct"] = True
             del st.session_state["password"]
         else:
@@ -26,7 +33,7 @@ def check_password():
         return False
     elif not st.session_state["password_correct"]:
         st.text_input("Enter Password", type="password", on_change=password_entered, key="password")
-        st.error("😕 Password incorrect")
+        st.error("Password incorrect")
         return False
     return True
 
@@ -41,15 +48,46 @@ try:
     OPENAI_API_KEY    = st.secrets["OPENAI_API_KEY"]
     FIRECRAWL_API_KEY = st.secrets["FIRECRAWL_API_KEY"]
 except (FileNotFoundError, KeyError):
-    st.error("❌ API Keys missing. Set them in `.streamlit/secrets.toml`.")
+    st.error("API Keys missing. Set them in `.streamlit/secrets.toml`.")
     st.stop()
 
 client = OpenAI(api_key=OPENAI_API_KEY, timeout=30.0)
+
+
+# ---------------------------------------------------------------------------
+# RATE LIMITING
+# ---------------------------------------------------------------------------
+class RateLimiter:
+    """Thread-safe rate limiter to avoid hitting API rate limits."""
+    def __init__(self, calls_per_second: float):
+        self._min_interval = 1.0 / calls_per_second
+        self._lock = threading.Lock()
+        self._last_call = 0.0
+
+    def wait(self):
+        with self._lock:
+            now = time.monotonic()
+            wait = self._min_interval - (now - self._last_call)
+            if wait > 0:
+                time.sleep(wait)
+            self._last_call = time.monotonic()
+
+
+_openai_limiter   = RateLimiter(calls_per_second=8)   # ~480/min
+_apollo_limiter   = RateLimiter(calls_per_second=5)   # ~300/min
+_firecrawl_limiter = RateLimiter(calls_per_second=3)  # ~180/min
+
 
 # ---------------------------------------------------------------------------
 # CONSTANTS
 # ---------------------------------------------------------------------------
 OPENAI_MODEL = "gpt-4o"  # Change here if model rotates or you upgrade
+
+
+def _openai_create(**kwargs):
+    """Rate-limited wrapper around client.chat.completions.create."""
+    _openai_limiter.wait()
+    return client.chat.completions.create(**kwargs)
 APOLLO_INDUSTRIES = [
     "Accounting","Airlines/Aviation","Alternative Dispute Resolution","Alternative Medicine",
     "Animation","Apparel & Fashion","Architecture & Planning","Arts and Crafts","Automotive",
@@ -108,10 +146,6 @@ _CONTACT_PATHS = [
     "/staff", "/management", "/who-we-are", "/meet-the-team",
     "/people", "/executives", "/administration", "/about/team",
     "/about/leadership", "/contact", "/contact-us",
-    # Additional paths common on small operator sites
-    "/our-staff", "/board", "/board-of-directors", "/leadership-team",
-    "/meet-our-team", "/staff-directory", "/our-leadership", "/directors",
-    "/about/staff", "/about/leadership-team", "/about/administration",
 ]
 
 # ---------------------------------------------------------------------------
@@ -226,7 +260,7 @@ Return JSON only — no explanation:
 
     # Attempt 1 — structured JSON output
     try:
-        resp = client.chat.completions.create(
+        resp = _openai_create(
             model=OPENAI_MODEL,
             messages=[{"role": "user", "content": prompt}],
             response_format={"type": "json_object"},
@@ -243,7 +277,7 @@ Return JSON only — no explanation:
 
     # Attempt 2 — retry without response_format (avoids content-filter on structured output)
     try:
-        resp = client.chat.completions.create(
+        resp = _openai_create(
             model=OPENAI_MODEL,
             messages=[{"role": "user", "content": prompt}],
             temperature=0,
@@ -287,6 +321,7 @@ def search_organizations(industries, location_input, keyword_tags=None, max_page
     def _fetch_pages(base_payload):
         for page in range(1, max_pages + 1):
             payload = {**base_payload, "page": page, "per_page": 100}
+            _apollo_limiter.wait()
             try:
                 r = requests.post(url, headers=headers, json=payload, timeout=15)
                 if r.status_code != 200:
@@ -301,7 +336,7 @@ def search_organizations(industries, location_input, keyword_tags=None, max_page
                         all_orgs.append(o)
                 if len(orgs) < 100:
                     break
-            except:
+            except Exception:
                 break
 
     # Pass 1: broad industry sweeps — no keyword restriction
@@ -323,14 +358,11 @@ def search_organizations(industries, location_input, keyword_tags=None, max_page
 
 def web_discovery_pass(niche, geography, seen_domains, seen_names):
     """
-    Pass 3: Scrape multiple search engines (Google, DuckDuckGo, Bing) with query
-    variations to catch companies that Apollo doesn't have.
+    Pass 3: Scrape Google page 1, page 2, and the Places tab to catch companies
+    that Apollo doesn't have or hasn't tagged with the expected industry/keywords.
     Returns a list of org-like dicts compatible with process_single_company.
     """
-    # Two query variations — full geography and short (state/region only)
-    geo_short = geography.split(",")[0].strip()
-    q1 = f"{niche} {geo_short}"
-    q2 = f"{niche} providers {geo_short}"
+    query = f"{niche} {geography}"
 
     _UA = (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -338,39 +370,31 @@ def web_discovery_pass(niche, geography, seen_domains, seen_names):
     )
 
     search_urls = [
-        # Google — page 1 + Places tab (page 2 often blocked along with p1)
-        f"https://www.google.com/search?q={quote_plus(q1)}&num=20",
-        f"https://www.google.com/search?q={quote_plus(q1)}&tbm=lcl",
-        # DuckDuckGo HTML — much more scraper-friendly than Google
-        f"https://html.duckduckgo.com/html/?q={quote_plus(q1)}",
-        f"https://html.duckduckgo.com/html/?q={quote_plus(q2)}",
-        # Bing — independent index, catches different results
-        f"https://www.bing.com/search?q={quote_plus(q1)}",
+        f"https://www.google.com/search?q={quote_plus(query)}&num=20",            # Page 1
+        f"https://www.google.com/search?q={quote_plus(query)}&num=20&start=20",   # Page 2
+        f"https://www.google.com/search?q={quote_plus(query)}&tbm=lcl",           # Places tab
     ]
 
     def fetch_one(url):
-        # Try Firecrawl first (JS rendering, handles some bot-protection)
         content = firecrawl_scrape(url)
         if content and len(content) >= 200:
             return content
-        # Raw request fallback
         try:
             r = requests.get(url, headers={"User-Agent": _UA}, timeout=15)
             if r.status_code == 200 and len(r.text) > 500:
                 return r.text[:30000]
-        except:
+        except Exception:
             pass
         return ""
 
-    # Fetch all five sources in parallel
-    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as ex:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as ex:
         results = list(ex.map(fetch_one, search_urls))
 
     combined = "\n\n---NEW SOURCE---\n\n".join(r for r in results if r)
     if not combined or len(combined) < 200:
         return []
 
-    extract_prompt = f"""From these search results (Google, DuckDuckGo, and Bing),
+    extract_prompt = f"""From these Google search results (pages 1 & 2 plus the Places/local tab),
 extract every company that appears to be an actual operator or provider in "{niche}"
 located in or near "{geography}".
 
@@ -395,7 +419,7 @@ Search content:
 
     companies = []
     try:
-        resp = client.chat.completions.create(
+        resp = _openai_create(
             model=OPENAI_MODEL,
             messages=[{"role": "user", "content": extract_prompt}],
             response_format={"type": "json_object"},
@@ -407,7 +431,7 @@ Search content:
         if "content" not in str(e).lower() and "filter" not in str(e).lower() and "400" not in str(e):
             return []
         try:
-            resp = client.chat.completions.create(
+            resp = _openai_create(
                 model=OPENAI_MODEL,
                 messages=[{"role": "user", "content": extract_prompt}],
                 timeout=30,
@@ -417,7 +441,7 @@ Search content:
             if match:
                 data = json.loads(match.group())
                 companies = data.get("companies") or []
-        except:
+        except Exception:
             return []
 
     # Deduplicate against Apollo results and build org-like dicts
@@ -497,39 +521,55 @@ def is_buyable_structure(org, mode):
 def check_pe_vc_web(company_name, domain):
     """
     Web-based PE/VC ownership check for Strategy A.
-    Scrapes company about/investor pages and runs a quick search to detect
+    Uses Firecrawl to scrape company pages + Crunchbase profile to detect
     private equity or venture capital backing that Apollo data missed.
     Returns (is_pe_vc: bool, reason: str).
     """
-    _UA = (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-    )
     snippets = []
 
     # 1. Scrape company's own about/investor pages for PE/VC mentions
     if domain:
-        pe_paths = ["/about", "/about-us", "/investors", "/company", "/leadership"]
+        pe_paths = ["/about", "/about-us", "/investors", "/company"]
         for path in pe_paths:
-            for scheme in ("https", "http"):
-                url = f"{scheme}://{domain}{path}"
-                content = firecrawl_scrape(url)
-                if content and len(content) >= 100:
-                    snippets.append(content[:8000])
-                    break
+            content = firecrawl_scrape(f"https://{domain}{path}")
+            if content and len(content) >= 100:
+                snippets.append(content[:8000])
 
-    # 2. Quick DuckDuckGo search for PE/VC ownership
-    for query in [
-        f"{company_name} private equity acquisition",
-        f"{company_name} venture capital funding",
-    ]:
-        try:
-            ddg_url = f"https://html.duckduckgo.com/html/?q={quote_plus(query)}"
-            r = requests.get(ddg_url, headers={"User-Agent": _UA}, timeout=10)
-            if r.status_code == 200 and len(r.text) > 500:
-                snippets.append(r.text[:8000])
-        except Exception:
-            pass
+    # 2. Scrape Crunchbase profile (reliable PE/VC data source)
+    cb_slug = company_name.lower().replace(" ", "-").replace(",", "").replace(".", "")
+    for slug in [cb_slug, cb_slug.split("-")[0]]:
+        content = firecrawl_scrape(f"https://www.crunchbase.com/organization/{slug}")
+        if content and len(content) >= 200:
+            snippets.append(f"CRUNCHBASE PROFILE:\n{content[:10000]}")
+            break
+
+    # 3. Check known PE/VC firm portfolio pages if their name appears
+    #    in the company's own website content
+    _known_pe_portfolios = {
+        "apax": "https://www.apax.com/portfolio/",
+        "bain capital": "https://www.baincapital.com/portfolio",
+        "carlyle": "https://www.carlyle.com/portfolio",
+        "kkr": "https://www.kkr.com/businesses/private-equity/portfolio",
+        "blackstone": "https://www.blackstone.com/portfolio/",
+        "thoma bravo": "https://www.thomabravo.com/companies",
+        "insight partners": "https://www.insightpartners.com/portfolio/",
+        "warburg pincus": "https://www.warburgpincus.com/investments/",
+        "silver lake": "https://www.silverlake.com/portfolio/",
+        "vista equity": "https://www.vistaequitypartners.com/companies/",
+        "hellman & friedman": "https://www.hfriedman.com/portfolio",
+        "permira": "https://www.permira.com/portfolio",
+        "advent international": "https://www.adventinternational.com/portfolio/",
+        "general atlantic": "https://www.generalatlantic.com/portfolio/",
+        "summit partners": "https://www.summitpartners.com/companies",
+        "new capital partners": "https://www.newcapitalpartners.com/portfolio",
+        "bv investment": "https://www.bvinvestmentpartners.com/portfolio",
+    }
+    snippet_text = " ".join(snippets).lower()
+    for firm_name, portfolio_url in _known_pe_portfolios.items():
+        if firm_name in snippet_text:
+            content = firecrawl_scrape(portfolio_url)
+            if content and len(content) >= 100:
+                snippets.append(f"PE FIRM PORTFOLIO ({firm_name}):\n{content[:8000]}")
 
     if not snippets:
         return False, "No web data"
@@ -542,18 +582,23 @@ Look for evidence such as:
 - "backed by [PE/VC firm name]"
 - "portfolio company of [firm]"
 - "acquired by [firm]"
+- Company name appearing on a PE/VC firm's portfolio page
+- Crunchbase listing showing PE/VC investors or funding rounds
 - Series A/B/C/D funding rounds
 - Recapitalization or leveraged buyout
 - Any named PE or VC firm as an investor or owner
 
+IMPORTANT: If "{company_name}" appears on any PE/VC firm's portfolio page, that is
+definitive proof of PE/VC ownership — return true.
+
 Web content:
-{combined[:20000]}
+{combined[:25000]}
 
 Return JSON only:
 {{"pe_vc_owned": true/false, "evidence": "one sentence explaining why, or 'No evidence found'"}}"""
 
     try:
-        resp = client.chat.completions.create(
+        resp = _openai_create(
             model=OPENAI_MODEL,
             messages=[{"role": "user", "content": prompt}],
             response_format={"type": "json_object"},
@@ -565,7 +610,7 @@ Return JSON only:
         pass
 
     try:
-        resp = client.chat.completions.create(
+        resp = _openai_create(
             model=OPENAI_MODEL,
             messages=[{"role": "user", "content": prompt}],
             timeout=20,
@@ -683,7 +728,7 @@ Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
 
     # Attempt 1 — structured JSON output
     try:
-        resp = client.chat.completions.create(
+        resp = _openai_create(
             model=OPENAI_MODEL,
             messages=[{"role": "user", "content": prompt}],
             response_format={"type": "json_object"},
@@ -696,7 +741,7 @@ Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
 
     # Attempt 2 — retry without response_format
     try:
-        resp = client.chat.completions.create(
+        resp = _openai_create(
             model=OPENAI_MODEL,
             messages=[{"role": "user", "content": prompt}],
             timeout=20,
@@ -715,6 +760,7 @@ Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
 # CONTACT FINDING — FIRECRAWL
 # ---------------------------------------------------------------------------
 def firecrawl_scrape(url):
+    _firecrawl_limiter.wait()
     try:
         r = requests.post(
             "https://api.firecrawl.dev/v1/scrape",
@@ -727,7 +773,7 @@ def firecrawl_scrape(url):
             data = r.json()
             md   = (data.get("data") or {}).get("markdown") or data.get("markdown")
             return md[:50000] if md else None
-    except:
+    except Exception:
         pass
     return None
 
@@ -774,7 +820,7 @@ Text:
 
     # Attempt 1 — structured JSON output
     try:
-        resp = client.chat.completions.create(
+        resp = _openai_create(
             model=OPENAI_MODEL,
             messages=[{"role": "user", "content": prompt}],
             response_format={"type": "json_object"},
@@ -787,7 +833,7 @@ Text:
 
     # Attempt 2 — retry without response_format
     try:
-        resp = client.chat.completions.create(
+        resp = _openai_create(
             model=OPENAI_MODEL,
             messages=[{"role": "user", "content": prompt}],
             timeout=20,
@@ -806,35 +852,12 @@ def spider_for_contact(company_name, domain):
     if not domain:
         return None, None, None, None
 
+    base      = f"https://{domain}"
     web_email = web_phone = None
 
-    # Try https first, then http — many small operators have no SSL or expired certs
-    def _scrape(url):
-        content = firecrawl_scrape(url)
-        if content and len(content) >= 100:
-            return content
-        # Raw http fallback for sites Firecrawl can't reach
-        try:
-            r = requests.get(
-                url,
-                headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                         "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"},
-                timeout=10, allow_redirects=True,
-            )
-            if r.status_code == 200 and len(r.text) > 200:
-                return r.text[:40000]
-        except:
-            pass
-        return None
-
-    # Determine working base URL (https preferred, http fallback)
-    base = f"https://{domain}"
-    if not _scrape(base):
-        base = f"http://{domain}"
-
     for path in _CONTACT_PATHS:
-        content = _scrape(base + path)
-        if not content: continue
+        content = firecrawl_scrape(base + path)
+        if not content or len(content) < 100: continue
         ai = extract_names_openai(content, company_name)
         if not ai: continue
         if ai.get("email"): web_email = ai["email"]
@@ -851,11 +874,11 @@ def spider_for_contact(company_name, domain):
             return person, f"Web Path ({path})", web_email, web_phone
 
     visited, queue = set(), [base]
-    for url in queue[:8]:
+    for url in queue[:6]:
         if url in visited: continue
         visited.add(url)
-        content = _scrape(url)
-        if not content: continue
+        content = firecrawl_scrape(url)
+        if not content or len(content) < 100: continue
         ai = extract_names_openai(content, company_name)
         if ai:
             if ai.get("email"): web_email = ai["email"]
@@ -885,7 +908,7 @@ def clean_domain(url):
         if not url.startswith("http"): url = "http://" + url
         d = urlparse(url).netloc
         return d[4:] if d.startswith("www.") else d
-    except:
+    except Exception:
         return None
 
 
@@ -937,6 +960,7 @@ def get_people_apollo_robust(company_name, domain, org_id=None):
 
     all_people, seen_ids = [], set()
     for payload in attempts:
+        _apollo_limiter.wait()
         try:
             r = requests.post(url, headers=headers, json=payload, timeout=10)
             if r.status_code == 200:
@@ -948,7 +972,7 @@ def get_people_apollo_robust(company_name, domain, org_id=None):
                 all_people.extend(new)
                 if any(_title_score(p.get("title")) >= 80 for p in all_people):
                     break
-        except:
+        except Exception:
             pass
 
     all_people.sort(
@@ -982,6 +1006,7 @@ def repair_single_name(first_name, people_list):
 
 def bulk_enrich_names(people_list, domain):
     if not people_list or not domain: return []
+    _apollo_limiter.wait()
     try:
         r = requests.post(
             "https://api.apollo.io/v1/people/bulk_match",
@@ -992,7 +1017,7 @@ def bulk_enrich_names(people_list, domain):
             timeout=15,
         )
         return r.json().get("matches", [])
-    except:
+    except Exception:
         return []
 
 
@@ -1010,7 +1035,7 @@ def get_latest_news_link(company_name, city=None):
         if not items: return None, None
         return (items[0].findtext("title") or "").strip(), \
                (items[0].findtext("link")  or "").strip()
-    except:
+    except Exception:
         return None, None
 
 
