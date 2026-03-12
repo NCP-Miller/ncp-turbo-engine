@@ -44,11 +44,12 @@ except (FileNotFoundError, KeyError):
     st.error("❌ API Keys missing. Set them in `.streamlit/secrets.toml`.")
     st.stop()
 
-client = OpenAI(api_key=OPENAI_API_KEY)
+client = OpenAI(api_key=OPENAI_API_KEY, timeout=30.0)
 
 # ---------------------------------------------------------------------------
 # CONSTANTS
 # ---------------------------------------------------------------------------
+OPENAI_MODEL = "gpt-4o"  # Change here if model rotates or you upgrade
 APOLLO_INDUSTRIES = [
     "Accounting","Airlines/Aviation","Alternative Dispute Resolution","Alternative Medicine",
     "Animation","Apparel & Fashion","Architecture & Planning","Arts and Crafts","Automotive",
@@ -226,7 +227,7 @@ Return JSON only — no explanation:
     # Attempt 1 — structured JSON output
     try:
         resp = client.chat.completions.create(
-            model="gpt-4o",
+            model=OPENAI_MODEL,
             messages=[{"role": "user", "content": prompt}],
             response_format={"type": "json_object"},
             temperature=0,
@@ -243,7 +244,7 @@ Return JSON only — no explanation:
     # Attempt 2 — retry without response_format (avoids content-filter on structured output)
     try:
         resp = client.chat.completions.create(
-            model="gpt-4o",
+            model=OPENAI_MODEL,
             messages=[{"role": "user", "content": prompt}],
             temperature=0,
             timeout=25,
@@ -395,7 +396,7 @@ Search content:
     companies = []
     try:
         resp = client.chat.completions.create(
-            model="gpt-4o",
+            model=OPENAI_MODEL,
             messages=[{"role": "user", "content": extract_prompt}],
             response_format={"type": "json_object"},
             timeout=30,
@@ -407,7 +408,7 @@ Search content:
             return []
         try:
             resp = client.chat.completions.create(
-                model="gpt-4o",
+                model=OPENAI_MODEL,
                 messages=[{"role": "user", "content": extract_prompt}],
                 timeout=30,
             )
@@ -559,7 +560,7 @@ Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
     # Attempt 1 — structured JSON output
     try:
         resp = client.chat.completions.create(
-            model="gpt-4o",
+            model=OPENAI_MODEL,
             messages=[{"role": "user", "content": prompt}],
             response_format={"type": "json_object"},
             timeout=20,
@@ -572,7 +573,7 @@ Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
     # Attempt 2 — retry without response_format
     try:
         resp = client.chat.completions.create(
-            model="gpt-4o",
+            model=OPENAI_MODEL,
             messages=[{"role": "user", "content": prompt}],
             timeout=20,
         )
@@ -650,7 +651,7 @@ Text:
     # Attempt 1 — structured JSON output
     try:
         resp = client.chat.completions.create(
-            model="gpt-4o",
+            model=OPENAI_MODEL,
             messages=[{"role": "user", "content": prompt}],
             response_format={"type": "json_object"},
             timeout=20,
@@ -663,7 +664,7 @@ Text:
     # Attempt 2 — retry without response_format
     try:
         resp = client.chat.completions.create(
-            model="gpt-4o",
+            model=OPENAI_MODEL,
             messages=[{"role": "user", "content": prompt}],
             timeout=20,
         )
@@ -1102,7 +1103,11 @@ if st.button("🚀 Start Sourcing", type="primary"):
         f"in **{target_geo}** (up to 1,000 results per industry)…"
     )
 
-    orgs = search_organizations(industries, target_geo, keyword_tags=keyword_tags)
+    try:
+        orgs = search_organizations(industries, target_geo, keyword_tags=keyword_tags)
+    except Exception as e:
+        st.error(f"Apollo API error: {e}")
+        st.stop()
 
     # Build dedup sets for Google discovery pass
     seen_domains = set()
@@ -1113,13 +1118,17 @@ if st.button("🚀 Start Sourcing", type="primary"):
         n = (o.get("name") or "").strip().lower()
         if n: seen_names.add(n)
 
-    # Pass 3: Google scrape to catch companies Apollo missed
-    with st.spinner("Checking Google for companies Apollo may have missed…"):
-        google_orgs = web_discovery_pass(specific_niche, target_geo,
-                                         seen_domains, seen_names)
+    # Pass 3: Web scrape to catch companies Apollo missed
+    google_orgs = []
+    with st.spinner("Checking Google/DuckDuckGo/Bing for companies Apollo may have missed…"):
+        try:
+            google_orgs = web_discovery_pass(specific_niche, target_geo,
+                                             seen_domains, seen_names)
+        except Exception as e:
+            st.warning(f"Web discovery pass failed (continuing with Apollo results): {e}")
     if google_orgs:
         orgs.extend(google_orgs)
-        st.info(f"🔍 Google discovery added **{len(google_orgs)}** companies not in Apollo.")
+        st.info(f"🔍 Web discovery added **{len(google_orgs)}** companies not in Apollo.")
 
     if not orgs:
         st.error(
@@ -1143,8 +1152,11 @@ if st.button("🚀 Start Sourcing", type="primary"):
             for org in orgs
         }
         for i, future in enumerate(concurrent.futures.as_completed(futures)):
-            result = future.result()
-            if result: final_data.append(result)
+            try:
+                result = future.result()
+                if result: final_data.append(result)
+            except Exception:
+                pass  # skip companies that error out
             progress_bar.progress((i + 1) / len(orgs))
             status_text.caption(
                 f"Processed {i+1}/{len(orgs)} | {len(final_data)} passed so far…"
