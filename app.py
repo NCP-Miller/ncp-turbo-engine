@@ -455,6 +455,19 @@ Search content:
 # ---------------------------------------------------------------------------
 # FILTERS
 # ---------------------------------------------------------------------------
+_PE_VC_SIGNALS = [
+    "private equity", "venture capital", "portfolio company", "backed by",
+    "pe-backed", "vc-backed", "pe backed", "vc backed", "growth equity",
+    "buyout", "recapitalization", "capital partners", "equity partners",
+    "investment partners", "apax", "bain capital", "carlyle", "kkr",
+    "blackstone", "thoma bravo", "insight partners", "warburg pincus",
+    "silver lake", "vista equity", "hellman & friedman", "permira",
+    "advent international", "general atlantic", "summit partners",
+    "series a", "series b", "series c", "series d", "series e",
+    "funding round", "raised $", "investment from",
+]
+
+
 def is_buyable_structure(org, mode):
     emp    = org.get("estimated_num_employees", 0) or 0
     status = str(org.get("ownership_status") or "").strip().lower()
@@ -463,13 +476,124 @@ def is_buyable_structure(org, mode):
     if mode == "A":
         if status == "public":                                  return False, "Publicly Traded"
         if status == "subsidiary":                              return False, "Subsidiary"
-        if "private equity" in tags or "venture capital" in tags: return False, "PE/VC Backed"
+        if "private equity" in tags or "venture capital" in tags: return False, "PE/VC Backed (tags)"
         if emp > 7500:                                          return False, f"Too Large ({emp})"
+
+        # Deeper Apollo field scan for PE/VC signals
+        desc = (org.get("short_description") or org.get("headline") or "").lower()
+        tag_str = " ".join(tags)
+        combined = f"{desc} {tag_str} {status}"
+        for signal in _PE_VC_SIGNALS:
+            if signal in combined:
+                return False, f"PE/VC Backed ('{signal}' in Apollo data)"
+
     else:  # Mode B — block public companies and large conglomerates
         if "public" in status:                                  return False, "Publicly Traded"
         if emp > 10000:                                         return False, f"Too Large ({emp})"
 
     return True, "OK"
+
+
+def check_pe_vc_web(company_name, domain):
+    """
+    Web-based PE/VC ownership check for Strategy A.
+    Scrapes company about/investor pages and runs a quick search to detect
+    private equity or venture capital backing that Apollo data missed.
+    Returns (is_pe_vc: bool, reason: str).
+    """
+    _UA = (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    )
+    snippets = []
+
+    # 1. Scrape company's own about/investor pages for PE/VC mentions
+    if domain:
+        pe_paths = ["/about", "/about-us", "/investors", "/company", "/leadership"]
+        for path in pe_paths:
+            for scheme in ("https", "http"):
+                url = f"{scheme}://{domain}{path}"
+                content = firecrawl_scrape(url)
+                if content and len(content) >= 100:
+                    snippets.append(content[:8000])
+                    break
+
+    # 2. Quick DuckDuckGo search for PE/VC ownership
+    for query in [
+        f"{company_name} private equity acquisition",
+        f"{company_name} venture capital funding",
+    ]:
+        try:
+            ddg_url = f"https://html.duckduckgo.com/html/?q={quote_plus(query)}"
+            r = requests.get(ddg_url, headers={"User-Agent": _UA}, timeout=10)
+            if r.status_code == 200 and len(r.text) > 500:
+                snippets.append(r.text[:8000])
+        except Exception:
+            pass
+
+    if not snippets:
+        return False, "No web data"
+
+    combined = "\n---\n".join(snippets)
+    prompt = f"""Determine whether "{company_name}" is owned by or has received significant
+investment from a private equity firm or venture capital firm.
+
+Look for evidence such as:
+- "backed by [PE/VC firm name]"
+- "portfolio company of [firm]"
+- "acquired by [firm]"
+- Series A/B/C/D funding rounds
+- Recapitalization or leveraged buyout
+- Any named PE or VC firm as an investor or owner
+
+Web content:
+{combined[:20000]}
+
+Return JSON only:
+{{"pe_vc_owned": true/false, "evidence": "one sentence explaining why, or 'No evidence found'"}}"""
+
+    try:
+        resp = client.chat.completions.create(
+            model=OPENAI_MODEL,
+            messages=[{"role": "user", "content": prompt}],
+            response_format={"type": "json_object"},
+            timeout=20,
+        )
+        data = json.loads(resp.choices[0].message.content)
+        return data.get("pe_vc_owned", False), data.get("evidence", "")
+    except Exception:
+        pass
+
+    try:
+        resp = client.chat.completions.create(
+            model=OPENAI_MODEL,
+            messages=[{"role": "user", "content": prompt}],
+            timeout=20,
+        )
+        raw = resp.choices[0].message.content or ""
+        match = re.search(r'\{.*\}', raw, re.DOTALL)
+        if match:
+            data = json.loads(match.group())
+            return data.get("pe_vc_owned", False), data.get("evidence", "")
+    except Exception:
+        pass
+
+    return False, "AI check failed"
+
+
+def check_news_for_pe_vc(news_title):
+    """Quick keyword scan of news headline for PE/VC signals."""
+    if not news_title:
+        return False
+    t = news_title.lower()
+    signals = [
+        "private equity", "venture capital", "pe-backed", "vc-backed",
+        "acquired by", "acquisition", "buyout", "recapitalization",
+        "series a", "series b", "series c", "series d",
+        "funding round", "raises $", "raised $", "secures $",
+        "investment from", "growth equity", "portfolio company",
+    ]
+    return any(s in t for s in signals)
 
 
 _UNIVERSAL_BLOCKS = [
@@ -925,6 +1049,12 @@ def process_single_company(org, specific_niche, strat_code):
     domain = clean_domain(org.get("website_url"))
     org_id = org.get("id")
 
+    # Strategy A: web-based PE/VC ownership check before expensive contact work
+    if strat_code == "A":
+        is_pe_vc, pe_reason = check_pe_vc_web(comp_name, domain)
+        if is_pe_vc:
+            return None
+
     row = {
         "Company":        comp_name,
         "Website":        org.get("website_url"),
@@ -999,6 +1129,10 @@ def process_single_company(org, specific_niche, strat_code):
 
     t, u = get_latest_news_link(comp_name, org.get("city"))
     if u: row["Latest News"] = f"{t} | {u}" if t else u
+
+    # Final PE/VC gate for Strategy A: check news headline for funding/acquisition signals
+    if strat_code == "A" and check_news_for_pe_vc(t):
+        return None
 
     return row
 
