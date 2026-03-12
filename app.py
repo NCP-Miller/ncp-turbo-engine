@@ -40,6 +40,7 @@ try:
     APOLLO_API_KEY    = st.secrets["APOLLO_API_KEY"]
     OPENAI_API_KEY    = st.secrets["OPENAI_API_KEY"]
     FIRECRAWL_API_KEY = st.secrets["FIRECRAWL_API_KEY"]
+    HTTP_USER_AGENT   = st.secrets["HTTP_USER_AGENT"]
 except (FileNotFoundError, KeyError):
     st.error("❌ Secrets missing (APP_PASSWORD, API keys). Set them in `.streamlit/secrets.toml`.")
     st.stop()
@@ -332,10 +333,7 @@ def web_discovery_pass(niche, geography, seen_domains, seen_names):
     q1 = f"{niche} {geo_short}"
     q2 = f"{niche} providers {geo_short}"
 
-    _UA = (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-    )
+    _UA = HTTP_USER_AGENT
 
     search_urls = [
         # Google — page 1 + Places tab (page 2 often blocked along with p1)
@@ -693,8 +691,7 @@ def spider_for_contact(company_name, domain):
         try:
             r = requests.get(
                 url,
-                headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                         "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"},
+                headers={"User-Agent": HTTP_USER_AGENT},
                 timeout=10, allow_redirects=True,
             )
             if r.status_code == 200 and len(r.text) > 200:
@@ -879,7 +876,7 @@ def get_latest_news_link(company_name, city=None):
     q   = f"{company_name} {city}" if city else company_name
     rss = f"https://news.google.com/rss/search?q={quote_plus(q)}&hl=en-US&gl=US&ceid=US:en"
     try:
-        r = requests.get(rss, timeout=10, headers={"User-Agent": "Mozilla/5.0"})
+        r = requests.get(rss, timeout=10, headers={"User-Agent": HTTP_USER_AGENT})
         if r.status_code != 200: return None, None
         root  = ET.fromstring(r.content)
         items = root.findall("./channel/item")
