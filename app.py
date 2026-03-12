@@ -15,7 +15,7 @@ st.set_page_config(page_title="NCP Sourcing Engine", page_icon="🚀", layout="w
 # ---------------------------------------------------------------------------
 def check_password():
     def password_entered():
-        if st.session_state["password"] == "NCP2026":
+        if st.session_state["password"] == st.secrets["APP_PASSWORD"]:
             st.session_state["password_correct"] = True
             del st.session_state["password"]
         else:
@@ -41,7 +41,7 @@ try:
     OPENAI_API_KEY    = st.secrets["OPENAI_API_KEY"]
     FIRECRAWL_API_KEY = st.secrets["FIRECRAWL_API_KEY"]
 except (FileNotFoundError, KeyError):
-    st.error("❌ API Keys missing. Set them in `.streamlit/secrets.toml`.")
+    st.error("❌ Secrets missing (APP_PASSWORD, API keys). Set them in `.streamlit/secrets.toml`.")
     st.stop()
 
 client = OpenAI(api_key=OPENAI_API_KEY, timeout=30.0)
