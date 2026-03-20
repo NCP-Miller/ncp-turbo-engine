@@ -148,6 +148,34 @@ _CONTACT_PATHS = [
     "/about/leadership", "/contact", "/contact-us",
 ]
 
+# States at or east of Denver (used for NCP geography prioritization)
+_EASTERN_US_STATES = {
+    "al", "ar", "co", "ct", "dc", "de", "fl", "ga", "ia", "il", "in",
+    "ks", "ky", "la", "ma", "md", "me", "mi", "mn", "mo", "ms", "nc",
+    "nd", "ne", "nh", "nj", "ny", "oh", "ok", "pa", "ri", "sc", "sd",
+    "tn", "tx", "va", "vt", "wi", "wv",
+}
+
+# Revenue-per-employee benchmarks by sector (used for EBITDA estimation)
+_REV_PER_EMP = {
+    "healthcare":             150_000,
+    "financial_services":     200_000,
+    "technology":             250_000,
+    "professional_services":  175_000,
+    "default":                175_000,
+}
+_EBITDA_MARGINS = {
+    "healthcare":             (0.10, 0.20),
+    "financial_services":     (0.15, 0.25),
+    "technology":             (0.15, 0.30),
+    "professional_services":  (0.12, 0.22),
+    "default":                (0.10, 0.20),
+}
+
+# Sourcing history ledger for cross-run deduplication
+import os as _os
+_HISTORY_FILE = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "sourcing_history.csv")
+
 # ---------------------------------------------------------------------------
 # AI — NICHE → APOLLO PARAMETERS
 # ---------------------------------------------------------------------------
@@ -757,6 +785,471 @@ Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
 
 
 # ---------------------------------------------------------------------------
+# COMPANY DESCRIPTION + PRIORITY
+# ---------------------------------------------------------------------------
+def generate_company_description(company_name, domain, apollo_desc, apollo_keywords):
+    """Generate a 2-3 sentence company description from website content + Apollo data."""
+    snippets = []
+
+    if domain:
+        urls = [f"https://{domain}", f"https://{domain}/about",
+                f"https://{domain}/about-us"]
+        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as ex:
+            futures = {ex.submit(firecrawl_scrape, u): u for u in urls}
+            for f in concurrent.futures.as_completed(futures):
+                content = f.result()
+                if content and len(content) >= 100:
+                    snippets.append(content[:8000])
+
+    web_text = "\n---\n".join(snippets) if snippets else "(no website content available)"
+
+    prompt = f"""Write a 2-3 sentence factual description of "{company_name}".
+
+Apollo database info:
+- Description: "{apollo_desc}"
+- Keywords: {apollo_keywords}
+
+Website content:
+{web_text[:20000]}
+
+Rules:
+- Focus on what the company does, who they serve, and where they operate
+- Be factual and concise — no marketing language or superlatives
+- If limited information is available, write what you can confirm
+- Return ONLY the description text, nothing else"""
+
+    try:
+        resp = _openai_create(
+            model=OPENAI_MODEL,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.3,
+            timeout=20,
+        )
+        result = (resp.choices[0].message.content or "").strip()
+        if result:
+            return result
+    except Exception:
+        pass
+
+    return apollo_desc if apollo_desc else "No description available."
+
+
+def assess_priority(company_name, description, state, employees, keywords, niche):
+    """Assess acquisition priority (High/Medium/Low) for Strategy A based on NCP criteria."""
+    prompt = f"""You are prioritizing acquisition targets for New Capital Partners (NCP).
+
+NCP's investment criteria:
+1. Founder-owned (not public, not PE/VC backed) — already pre-filtered, assume satisfied
+2. US-based, preferably eastern US (Denver/Colorado and east)
+3. $2M–$4M EBITDA (use ~20–80 employees as a rough proxy)
+4. Niche, high-growth (>10%) markets with limited competitors
+5. Focus sectors: tech-enabled healthcare, financial services, governance risk & compliance (GRC)
+
+Company: "{company_name}"
+Description: "{description}"
+State: "{state}"
+Estimated employees: {employees}
+Keywords: {keywords}
+Search niche: "{niche}"
+
+Eastern US states (preferred): AL, AR, CO, CT, DC, DE, FL, GA, IA, IL, IN, KS, KY,
+LA, MA, MD, ME, MI, MN, MO, MS, NC, ND, NE, NH, NJ, NY, OH, OK, PA, RI, SC, SD,
+TN, TX, VA, VT, WI, WV
+
+Scoring guidance:
+- HIGH: Strong fit on geography (eastern US), size (20–80 employees), AND sector
+  alignment with NCP's focus areas (tech-enabled healthcare, financial services, or GRC)
+- MEDIUM: Fits most criteria but has one notable weakness (e.g., slightly outside
+  ideal size range, western US, or adjacent but not core NCP sector)
+- LOW: Matches the search niche but weak fit on multiple NCP criteria (wrong geography,
+  very small or very large, or sector is not aligned with NCP's focus)
+
+Return JSON only: {{"priority": "High", "reason": "one sentence"}}"""
+
+    try:
+        resp = _openai_create(
+            model=OPENAI_MODEL,
+            messages=[{"role": "user", "content": prompt}],
+            response_format={"type": "json_object"},
+            timeout=20,
+        )
+        data = json.loads(resp.choices[0].message.content)
+        p = (data.get("priority") or "Medium").strip().capitalize()
+        if p not in ("High", "Medium", "Low"):
+            p = "Medium"
+        return p, data.get("reason", "")
+    except Exception:
+        pass
+
+    # Fallback: rule-based scoring
+    score = 0
+    st_code = (state or "").strip().lower()
+    if st_code in _EASTERN_US_STATES:
+        score += 2
+    emp = employees or 0
+    if 20 <= emp <= 80:
+        score += 3
+    elif 10 <= emp <= 150:
+        score += 1
+    if score >= 4:
+        return "High", "Good geography and size fit"
+    elif score >= 2:
+        return "Medium", "Partial criteria match"
+    return "Low", "Weak criteria match"
+
+
+def assess_growth_score(company_name, domain, apollo_people):
+    """Assess growth trajectory (High/Medium/Low) from hiring activity and job postings."""
+    signals = []
+
+    # 1. Scrape careers / jobs pages
+    if domain:
+        job_urls = [f"https://{domain}{p}" for p in
+                    ["/careers", "/jobs", "/join-us", "/work-with-us",
+                     "/career-opportunities", "/open-positions"]]
+        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as ex:
+            futs = {ex.submit(firecrawl_scrape, u): u for u in job_urls[:3]}
+            for f in concurrent.futures.as_completed(futs):
+                content = f.result()
+                if content and len(content) >= 200:
+                    signals.append(f"CAREERS PAGE ({futs[f]}):\n{content[:6000]}")
+        # Second batch if first yielded nothing
+        if not signals:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=3) as ex:
+                futs = {ex.submit(firecrawl_scrape, u): u for u in job_urls[3:]}
+                for f in concurrent.futures.as_completed(futs):
+                    content = f.result()
+                    if content and len(content) >= 200:
+                        signals.append(f"CAREERS PAGE ({futs[f]}):\n{content[:6000]}")
+
+    # 2. Summarise Apollo people as a team-size / role signal
+    if apollo_people:
+        team_lines = [f"- {p.get('first_name','')} {p.get('last_name','')} — {p.get('title','')}"
+                      for p in apollo_people[:20]]
+        signals.append(f"CURRENT TEAM ({len(apollo_people)} found):\n" + "\n".join(team_lines))
+
+    prompt = f"""Assess the growth trajectory of "{company_name}" based on these signals.
+
+Indicators of growth:
+- Open job postings (more = growing; especially operational/clinical roles)
+- Team size increases or many recent hires
+- Expansion language (new locations, new services, new markets)
+- Hiring for roles that indicate scaling (operations, sales, regional managers)
+
+Available data:
+{chr(10).join(signals) if signals else "(no careers page found; limited data)"}
+
+Rating guidance:
+- HIGH: Clear evidence of active hiring (3+ open positions) or explicit expansion plans
+- MEDIUM: Some hiring activity or moderate growth signals (1-2 open roles, growing team)
+- LOW: No evidence of active hiring or growth; appears stable or contracting
+
+Return JSON only: {{"growth_score": "High", "reason": "one sentence"}}"""
+
+    try:
+        resp = _openai_create(
+            model=OPENAI_MODEL,
+            messages=[{"role": "user", "content": prompt}],
+            response_format={"type": "json_object"},
+            timeout=20,
+        )
+        data = json.loads(resp.choices[0].message.content)
+        g = (data.get("growth_score") or "Low").strip().capitalize()
+        if g not in ("High", "Medium", "Low"):
+            g = "Low"
+        return g, data.get("reason", "")
+    except Exception:
+        pass
+    return "Low", "Unable to assess"
+
+
+def assess_transaction_readiness(company_name, domain, apollo_people, description):
+    """Assess transaction readiness (High/Medium/Low) based on founder age, CFO hire, etc."""
+    signals = []
+
+    owner_person = None
+    for p in (apollo_people or []):
+        title = (p.get("title") or "").lower()
+        if any(t in title for t in ["owner", "founder", "co-founder", "ceo",
+                                     "president", "managing partner", "managing member"]):
+            owner_person = p
+            break
+
+    # 1. Scrape founder's LinkedIn for age / tenure clues
+    if owner_person:
+        li_url = owner_person.get("linkedin_url")
+        if li_url:
+            content = firecrawl_scrape(li_url)
+            if content and len(content) >= 200:
+                signals.append(f"FOUNDER LINKEDIN ({owner_person.get('first_name','')} "
+                               f"{owner_person.get('last_name','')}):\n{content[:8000]}")
+        signals.append(f"FOUNDER: {owner_person.get('first_name','')} "
+                       f"{owner_person.get('last_name','')} — {owner_person.get('title','')}")
+
+    # 2. Check for CFO / VP Finance in the team (recent hire = sell-side prep signal)
+    for p in (apollo_people or []):
+        title = (p.get("title") or "").lower()
+        if any(t in title for t in ["cfo", "chief financial", "vp finance",
+                                     "vp of finance", "vice president of finance",
+                                     "vice president, finance"]):
+            signals.append(f"CFO/FINANCE LEADER PRESENT: {p.get('first_name','')} "
+                           f"{p.get('last_name','')} — {p.get('title','')}")
+
+    # 3. Scrape homepage for strategic-options / transition language
+    if domain:
+        content = firecrawl_scrape(f"https://{domain}")
+        if content and len(content) >= 200:
+            signals.append(f"HOMEPAGE:\n{content[:5000]}")
+
+    prompt = f"""Assess how likely "{company_name}" is to be open to a sale or investment
+in the near term.
+
+Key transaction-readiness signals (in order of importance):
+1. Founder/owner appears to be 60+ years old (look at college graduation dates,
+   career start dates, years of experience — a 1985 grad is ~62 in 2026)
+2. Recently hired a CFO or VP of Finance for the first time (classic pre-sale move)
+3. Language suggesting "exploring strategic options", "next chapter", succession planning
+4. Long founder tenure (25+ years running the business suggests approaching retirement)
+5. No clear next-generation successor visible in the leadership team
+
+Company description: "{description}"
+
+Available data:
+{chr(10).join(signals) if signals else "(limited data available)"}
+
+Rating guidance:
+- HIGH: Strong evidence of 60+ founder age OR recent CFO/finance hire with no prior one,
+  OR explicit succession/strategic language
+- MEDIUM: Some signals (long-tenured founder, CFO present but unclear if recent,
+  founder age plausibly 55-65 but uncertain)
+- LOW: Young founder, no CFO hire signal, no transition indicators, or insufficient data
+
+Return JSON only: {{"readiness": "High", "reason": "one sentence"}}"""
+
+    try:
+        resp = _openai_create(
+            model=OPENAI_MODEL,
+            messages=[{"role": "user", "content": prompt}],
+            response_format={"type": "json_object"},
+            timeout=20,
+        )
+        data = json.loads(resp.choices[0].message.content)
+        r = (data.get("readiness") or "Low").strip().capitalize()
+        if r not in ("High", "Medium", "Low"):
+            r = "Low"
+        return r, data.get("reason", "")
+    except Exception:
+        pass
+    return "Low", "Unable to assess"
+
+
+def estimate_revenue_ebitda(employees, apollo_revenue, niche):
+    """Estimate revenue and EBITDA range from employee count and sector benchmarks."""
+    hint = (niche or "").lower()
+    if any(x in hint for x in ["health", "medical", "care", "clinical", "hospice",
+                                "nursing", "dental", "therapy", "behavioral", "pace"]):
+        sector = "healthcare"
+    elif any(x in hint for x in ["financial", "banking", "insurance", "fintech",
+                                  "wealth", "lending", "payment"]):
+        sector = "financial_services"
+    elif any(x in hint for x in ["software", "saas", "tech", "digital", "platform",
+                                  "cyber", "compliance tech"]):
+        sector = "technology"
+    elif any(x in hint for x in ["consulting", "advisory", "legal", "accounting"]):
+        sector = "professional_services"
+    else:
+        sector = "default"
+
+    rev = None
+    if apollo_revenue and apollo_revenue > 0:
+        rev = apollo_revenue
+    elif employees and employees > 0:
+        rev = employees * _REV_PER_EMP[sector]
+
+    if not rev:
+        return "Unknown"
+
+    low_m, high_m = _EBITDA_MARGINS[sector]
+    ebitda_low  = rev * low_m
+    ebitda_high = rev * high_m
+
+    def _fmt(n):
+        if n >= 1_000_000:
+            return f"${n / 1_000_000:.1f}M"
+        return f"${n / 1_000:.0f}K"
+
+    return f"{_fmt(ebitda_low)}–{_fmt(ebitda_high)}"
+
+
+# ---------------------------------------------------------------------------
+# EMAIL GUESSING
+# ---------------------------------------------------------------------------
+def guess_email(first_name, last_name, domain, company_name):
+    """
+    When no verified email exists, scrape the web for ANY email @domain,
+    detect the naming pattern, and apply it to the target person's name.
+    Returns (guessed_email, pattern_source) or (None, None).
+    """
+    if not first_name or not last_name or not domain:
+        return None, None
+
+    first = first_name.strip().split()[0].lower()
+    last  = last_name.strip().split()[-1].lower()
+
+    # 1. Collect sample emails from company pages + press/news
+    sample_emails = set()
+    scrape_urls = [
+        f"https://{domain}/contact",
+        f"https://{domain}/contact-us",
+        f"https://{domain}/about",
+        f"https://{domain}/about-us",
+        f"https://{domain}/team",
+        f"https://{domain}/leadership",
+    ]
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as ex:
+        futs = {ex.submit(firecrawl_scrape, u): u for u in scrape_urls[:3]}
+        for f in concurrent.futures.as_completed(futs):
+            content = f.result()
+            if content:
+                found = re.findall(r'[a-zA-Z0-9._%+-]+@' + re.escape(domain), content)
+                sample_emails.update(e.lower() for e in found)
+    if len(sample_emails) < 2:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as ex:
+            futs = {ex.submit(firecrawl_scrape, u): u for u in scrape_urls[3:]}
+            for f in concurrent.futures.as_completed(futs):
+                content = f.result()
+                if content:
+                    found = re.findall(r'[a-zA-Z0-9._%+-]+@' + re.escape(domain), content)
+                    sample_emails.update(e.lower() for e in found)
+
+    # 2. Try a Google search for company emails if scraping yielded few results
+    if len(sample_emails) < 2:
+        search_content = firecrawl_scrape(
+            f"https://www.google.com/search?q=%22%40{domain}%22+email&num=10"
+        )
+        if search_content:
+            found = re.findall(r'[a-zA-Z0-9._%+-]+@' + re.escape(domain), search_content)
+            sample_emails.update(e.lower() for e in found)
+
+    # Filter out generic addresses
+    _generic = {"info", "contact", "admin", "support", "hello", "sales",
+                "office", "help", "hr", "jobs", "careers", "billing",
+                "noreply", "no-reply", "webmaster", "marketing"}
+    personal_emails = [e for e in sample_emails if e.split("@")[0] not in _generic]
+
+    if not personal_emails and not sample_emails:
+        return None, None
+
+    # 3. Ask GPT to detect the pattern and apply it
+    prompt = f"""You found these email addresses from {domain}:
+{json.dumps(list(sample_emails))}
+
+Of these, the personal (non-generic) ones are:
+{json.dumps(personal_emails) if personal_emails else "(none identified)"}
+
+Detect the email naming pattern used at this company (e.g., first.last@, flast@,
+firstl@, first@, first_last@, etc.).
+
+Then apply that SAME pattern to generate an email for:
+  First name: "{first_name}"
+  Last name: "{last_name}"
+
+Rules:
+- Use lowercase only
+- If multiple patterns exist, use the most common one
+- If you can identify a clear pattern from even ONE personal email, use it
+- If only generic emails exist (info@, contact@), try the most common convention: first.last@{domain}
+
+Return JSON only:
+{{"pattern": "description of pattern detected",
+  "sample_used": "the example email you based it on",
+  "guessed_email": "result@{domain}"}}"""
+
+    try:
+        resp = _openai_create(
+            model=OPENAI_MODEL,
+            messages=[{"role": "user", "content": prompt}],
+            response_format={"type": "json_object"},
+            timeout=20,
+        )
+        data = json.loads(resp.choices[0].message.content)
+        guessed = (data.get("guessed_email") or "").strip().lower()
+        pattern = data.get("pattern") or ""
+        sample  = data.get("sample_used") or ""
+
+        # Validate: must contain @domain and look like a real email
+        if guessed and f"@{domain}" in guessed and re.match(r'^[a-z0-9._%+-]+@', guessed):
+            source = f"Pattern: {pattern}"
+            if sample:
+                source += f" (from {sample})"
+            return guessed, source
+    except Exception:
+        pass
+
+    # Fallback: if we found personal emails, try simple pattern detection locally
+    if personal_emails:
+        sample = personal_emails[0]
+        local = sample.split("@")[0]
+        # Try to detect pattern from the sample (would need the person's name too,
+        # which we don't have) — fall back to first.last as safest guess
+        guess = f"{first}.{last}@{domain}"
+        return guess, f"Fallback: first.last (sample found: {sample})"
+
+    return None, None
+
+
+# ---------------------------------------------------------------------------
+# SOURCING HISTORY (cross-run deduplication)
+# ---------------------------------------------------------------------------
+def _load_history():
+    """Load previously sourced companies from the CSV ledger."""
+    if not _os.path.exists(_HISTORY_FILE):
+        return set()
+    try:
+        df = pd.read_csv(_HISTORY_FILE)
+        keys = set()
+        for _, r in df.iterrows():
+            name = str(r.get("company", "")).strip().lower()
+            domain = str(r.get("domain", "")).strip().lower()
+            if name:
+                keys.add(name)
+            if domain and domain != "nan":
+                keys.add(domain)
+        return keys
+    except Exception:
+        return set()
+
+
+def _save_history(rows):
+    """Append sourced companies to the CSV ledger."""
+    from datetime import datetime
+    new_rows = []
+    for r in rows:
+        domain = clean_domain(r.get("Website")) or ""
+        new_rows.append({
+            "company": (r.get("Company") or "").strip(),
+            "domain":  domain,
+            "date":    datetime.now().strftime("%Y-%m-%d"),
+            "niche":   r.get("_niche", ""),
+        })
+    new_df = pd.DataFrame(new_rows)
+    if _os.path.exists(_HISTORY_FILE):
+        try:
+            old = pd.read_csv(_HISTORY_FILE)
+            new_df = pd.concat([old, new_df], ignore_index=True)
+        except Exception:
+            pass
+    new_df.to_csv(_HISTORY_FILE, index=False)
+
+
+def _company_in_history(org, history_keys):
+    """Check if a company was already sourced in a prior run."""
+    name = (org.get("name") or "").strip().lower()
+    domain = clean_domain(org.get("website_url")) or ""
+    return (name in history_keys) or (domain and domain.lower() in history_keys)
+
+
+# ---------------------------------------------------------------------------
 # CONTACT FINDING — FIRECRAWL
 # ---------------------------------------------------------------------------
 def firecrawl_scrape(url):
@@ -1060,7 +1553,7 @@ def _email_matches_domain(email: str, company_domain: str) -> bool:
 # ---------------------------------------------------------------------------
 # WORKER
 # ---------------------------------------------------------------------------
-def process_single_company(org, specific_niche, strat_code):
+def process_single_company(org, specific_niche, strat_code, history_keys=None):
     comp_name = org.get("name")
 
     if not is_buyable_structure(org, strat_code)[0]:            return None
@@ -1080,28 +1573,47 @@ def process_single_company(org, specific_niche, strat_code):
         if is_pe_vc:
             return None
 
+    # Check history for cross-run deduplication
+    previously_sourced = False
+    if history_keys and _company_in_history(org, history_keys):
+        previously_sourced = True
+
     row = {
         "Company":        comp_name,
+        "Description":    "",
         "Website":        org.get("website_url"),
         "City":           org.get("city"),
         "State":          org.get("state"),
         "LinkedIn":       org.get("linkedin_url"),
         "Employees":      org.get("estimated_num_employees"),
+        "Est. EBITDA":    estimate_revenue_ebitda(
+                              org.get("estimated_num_employees"),
+                              org.get("estimated_annual_revenue"),
+                              specific_niche),
         "CEO/Owner Name": "N/A",
         "Title":          "N/A",
         "Email":          "N/A",
+        "Email Estimate": "",
         "Phone":          "N/A",
         "Source":         "Not Found",
         "Notes":          "",
         "Confidence":     "Low",
         "Latest News":    "N/A",
+        "Previously Sourced": "Yes" if previously_sourced else "No",
+        "_niche":         specific_niche,  # internal — stripped before display
     }
+    if strat_code == "A":
+        row["Priority"]    = "Medium"
+        row["Growth"]      = "Low"
+        row["Txn Readiness"] = "Low"
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as inner:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as inner:
         apollo_future = inner.submit(get_people_apollo_robust, comp_name, domain, org_id)
         web_future    = inner.submit(spider_for_contact, comp_name, domain)
+        desc_future   = inner.submit(generate_company_description, comp_name, domain, desc, tags)
         apollo_people                                 = apollo_future.result()
         web_person, web_source, web_email, web_phone = web_future.result()
+        row["Description"]                           = desc_future.result()
 
     found_person = None
 
@@ -1152,12 +1664,34 @@ def process_single_company(org, specific_niche, strat_code):
             row["Confidence"] = "Medium"
             row["Source"]     = "Web (contact only)"
 
+    # Email guessing: only when we have a CEO name + domain but no verified email
+    if row["Email"] == "N/A" and found_person and domain:
+        fn = found_person.get("first_name", "").strip()
+        ln = found_person.get("last_name", "").strip()
+        if fn and ln:
+            guessed, _pattern = guess_email(fn, ln, domain, comp_name)
+            if guessed:
+                row["Email Estimate"] = guessed
+
     t, u = get_latest_news_link(comp_name, org.get("city"))
     if u: row["Latest News"] = f"{t} | {u}" if t else u
 
     # Final PE/VC gate for Strategy A: check news headline for funding/acquisition signals
     if strat_code == "A" and check_news_for_pe_vc(t):
         return None
+
+    # Strategy A: assess priority, growth, and transaction readiness in parallel
+    if strat_code == "A":
+        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as score_ex:
+            pri_fut    = score_ex.submit(assess_priority, comp_name, row["Description"],
+                                         org.get("state"), org.get("estimated_num_employees"),
+                                         tags, specific_niche)
+            growth_fut = score_ex.submit(assess_growth_score, comp_name, domain, apollo_people)
+            txn_fut    = score_ex.submit(assess_transaction_readiness, comp_name, domain,
+                                         apollo_people, row["Description"])
+            row["Priority"],    _ = pri_fut.result()
+            row["Growth"],      _ = growth_fut.result()
+            row["Txn Readiness"], _ = txn_fut.result()
 
     return row
 
@@ -1229,6 +1763,7 @@ target_geo = r2a.text_input("Geography", value="North Carolina, United States")
 mode = r2b.selectbox("Strategy", [
     "A - Acquire  (Strict: small private operators only)",
     "B - Prospect (Broad: competitors & referral/sales targets, all sizes)",
+    "C - Add-On   (Bolt-on acquisitions for an existing platform company)",
 ])
 apollo_keywords_raw = r2c.text_input(
     "Apollo Keyword Tags",
@@ -1239,6 +1774,44 @@ apollo_keywords_raw = r2c.text_input(
         "Examples: pace program, adult day care, home health"
     ),
 )
+
+# Strategy C: portfolio company context
+if "C -" in mode:
+    st.markdown("##### Add-On Target Configuration")
+    c1, c2 = st.columns(2)
+    platform_name = c1.text_input(
+        "Platform Company Name",
+        placeholder="e.g.  Acme Health Services",
+        help="The existing portfolio company you want to find bolt-on acquisitions for.",
+    )
+    platform_geo = c2.text_input(
+        "Platform HQ State",
+        placeholder="e.g.  NC",
+        help="Used to score geographic proximity of add-on targets.",
+    )
+    st.caption(
+        "**Add-On mode** searches for smaller companies (≤150 employees) in the same niche "
+        "that could serve as bolt-on acquisitions. Results are scored by geographic proximity "
+        "to your platform company and niche alignment."
+    )
+else:
+    platform_name = ""
+    platform_geo  = ""
+
+# History / dedup controls
+with st.expander("Sourcing History"):
+    hist_keys = _load_history()
+    if hist_keys:
+        st.caption(f"**{len(hist_keys)}** unique companies/domains in history ledger.")
+    else:
+        st.caption("No sourcing history yet. Results from each run are saved automatically.")
+    h1, h2 = st.columns(2)
+    skip_prev = h1.checkbox("Skip previously sourced companies", value=False)
+    if h2.button("Clear History"):
+        if _os.path.exists(_HISTORY_FILE):
+            _os.remove(_HISTORY_FILE)
+            hist_keys = set()
+        st.success("History cleared.")
 
 st.caption(
     "**Search strategy:** Each industry is swept up to 1,000 results (no keyword filter) so "
@@ -1253,8 +1826,17 @@ if st.button("🚀 Start Sourcing", type="primary"):
         st.error("Please select at least one industry, or click **Suggest Fields** first.")
         st.stop()
 
-    strat_code   = "A" if "A -" in mode else "B"
+    strat_code = "A" if "A -" in mode else ("C" if "C -" in mode else "B")
+
+    # Strategy C validates platform company input
+    if strat_code == "C" and not (platform_name or "").strip():
+        st.error("Please enter the Platform Company Name for Add-On mode.")
+        st.stop()
+
     keyword_tags = [k.strip() for k in apollo_keywords_raw.split(",") if k.strip()] or None
+
+    # Load history for dedup
+    history_keys = _load_history() if (skip_prev or strat_code in ("A", "C")) else set()
 
     kw_display = f" + keyword sweep ({', '.join(keyword_tags)})" if keyword_tags else ""
     st.info(
@@ -1267,6 +1849,18 @@ if st.button("🚀 Start Sourcing", type="primary"):
     except Exception as e:
         st.error(f"Apollo API error: {e}")
         st.stop()
+
+    # Strategy C: filter to smaller companies suitable as bolt-on acquisitions
+    if strat_code == "C":
+        orgs = [o for o in orgs if (o.get("estimated_num_employees") or 0) <= 150]
+
+    # Skip previously sourced companies if requested
+    if skip_prev and history_keys:
+        before = len(orgs)
+        orgs = [o for o in orgs if not _company_in_history(o, history_keys)]
+        skipped = before - len(orgs)
+        if skipped:
+            st.info(f"Skipped **{skipped}** previously sourced companies.")
 
     # Build dedup sets for Google discovery pass
     seen_domains = set()
@@ -1286,6 +1880,10 @@ if st.button("🚀 Start Sourcing", type="primary"):
         except Exception as e:
             st.warning(f"Web discovery pass failed (continuing with Apollo results): {e}")
     if google_orgs:
+        # Strategy C: filter web discovery results too
+        if strat_code == "C":
+            google_orgs = [o for o in google_orgs
+                           if (o.get("estimated_num_employees") or 0) <= 150]
         orgs.extend(google_orgs)
         st.info(f"🔍 Web discovery added **{len(google_orgs)}** companies not in Apollo.")
 
@@ -1296,8 +1894,11 @@ if st.button("🚀 Start Sourcing", type="primary"):
         )
         st.stop()
 
+    # ── Competitive Density metric ──────────────────────────────────────
+    total_candidates = len(orgs)
+
     st.success(
-        f"Found **{len(orgs)}** unique candidates ({len(orgs) - len(google_orgs) if google_orgs else len(orgs)} "
+        f"Found **{total_candidates}** unique candidates ({total_candidates - len(google_orgs) if google_orgs else total_candidates} "
         f"Apollo + {len(google_orgs) if google_orgs else 0} Google) — "
         f"running AI filter with 5 parallel workers…"
     )
@@ -1305,9 +1906,13 @@ if st.button("🚀 Start Sourcing", type="primary"):
     status_text  = st.empty()
     final_data   = []
 
+    # For Strategy C, use "A" internally (same filters) but pass through as "C"
+    # so process_single_company applies strict ownership filters
+    worker_strat = "A" if strat_code == "C" else strat_code
+
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as ex:
         futures = {
-            ex.submit(process_single_company, org, specific_niche, strat_code): org
+            ex.submit(process_single_company, org, specific_niche, worker_strat, history_keys): org
             for org in orgs
         }
         for i, future in enumerate(concurrent.futures.as_completed(futures)):
@@ -1324,7 +1929,58 @@ if st.button("🚀 Start Sourcing", type="primary"):
     status_text.write("✅ Sourcing complete!")
 
     if final_data:
-        df  = pd.DataFrame(final_data)
+        # Save to history ledger
+        _save_history(final_data)
+
+        df = pd.DataFrame(final_data)
+
+        # Drop internal columns
+        if "_niche" in df.columns:
+            df = df.drop(columns=["_niche"])
+
+        # ── Column ordering ─────────────────────────────────────────
+        lead_cols = ["Company", "Description"]
+        if strat_code in ("A", "C"):
+            lead_cols += ["Priority", "Growth", "Txn Readiness"]
+        lead_cols += ["Est. EBITDA"]
+        lead_cols += ["Website", "City", "State", "LinkedIn", "Employees",
+                      "CEO/Owner Name", "Title", "Email", "Email Estimate",
+                      "Phone", "Source", "Notes", "Confidence", "Latest News",
+                      "Previously Sourced"]
+        ordered = lead_cols
+        df = df[[c for c in ordered if c in df.columns]]
+
+        # ── Competitive Density banner ──────────────────────────────
+        passed = len(final_data)
+        if total_candidates < 10:
+            density_label = "Concentrated"
+        elif total_candidates < 30:
+            density_label = "Moderate"
+        else:
+            density_label = "Fragmented"
+        st.info(
+            f"**Market Density:** {density_label} — "
+            f"**{total_candidates}** candidates found, **{passed}** passed filters "
+            f"({passed * 100 // max(total_candidates, 1)}% pass rate)"
+        )
+
+        # Strategy C: add proximity context
+        if strat_code == "C" and platform_name:
+            st.caption(
+                f"Add-on targets for **{platform_name}** "
+                f"({platform_geo or target_geo}) — "
+                f"sorted by priority and geographic proximity."
+            )
+            # Sort by priority (High first), then by state proximity
+            _pri_order = {"High": 0, "Medium": 1, "Low": 2}
+            plat_st = (platform_geo or "").strip().upper()
+            df["_pri_sort"] = df.get("Priority", "Medium").map(
+                lambda x: _pri_order.get(x, 1))
+            df["_geo_sort"] = df.get("State", "").apply(
+                lambda x: 0 if str(x).strip().upper() == plat_st else 1)
+            df = df.sort_values(["_pri_sort", "_geo_sort"]).drop(
+                columns=["_pri_sort", "_geo_sort"])
+
         st.dataframe(df)
         csv   = df.to_csv(index=False).encode("utf-8")
         fname = (
