@@ -834,6 +834,49 @@ Rules:
     return apollo_desc if apollo_desc else "No description available."
 
 
+def assess_differentiation(company_name, description, niche):
+    """Assess whether a company has a unique value proposition within its niche (High/Medium/Low)."""
+    prompt = f"""You are evaluating whether a company is meaningfully differentiated within its niche market.
+
+Search niche: "{niche}"
+Company: "{company_name}"
+Description: "{description}"
+
+Your job is to determine whether this company has a UNIQUE VALUE PROPOSITION or competitive
+differentiator that sets it apart from the typical operator in the "{niche}" space.
+
+Scoring guidance:
+- HIGH: The company has a clear, specific differentiator within the niche — e.g., proprietary
+  technology or methodology, a highly specialized sub-niche focus, a unique service delivery model,
+  a regulatory or IP-based moat, vertical integration others lack, or a demonstrably novel approach.
+  The differentiator must be WITHIN the niche (not because the company is in a different industry).
+- MEDIUM: The company shows some differentiation (e.g., serves a specific customer segment, has
+  a somewhat specialized approach) but it's not clearly defensible or particularly rare.
+- LOW: The company is a standard/commodity operator in this niche with no obvious unique value
+  proposition — it does essentially what most competitors do.
+
+IMPORTANT: Do NOT rate a company as "High" simply because it seems out of place or unrelated to
+the niche. A company that slipped through filters and doesn't truly belong in this search should
+be rated LOW, not HIGH. True differentiation means excelling or innovating WITHIN the niche.
+
+Return JSON only: {{"differentiation": "High", "reason": "one sentence"}}"""
+
+    try:
+        resp = _openai_create(
+            model=OPENAI_MODEL,
+            messages=[{"role": "user", "content": prompt}],
+            response_format={"type": "json_object"},
+            timeout=20,
+        )
+        data = json.loads(resp.choices[0].message.content)
+        d = (data.get("differentiation") or "Medium").strip().capitalize()
+        if d not in ("High", "Medium", "Low"):
+            d = "Medium"
+        return d, data.get("reason", "")
+    except Exception:
+        return "Medium", "Unable to assess"
+
+
 def assess_priority(company_name, description, state, employees, keywords, niche):
     """Assess acquisition priority (High/Medium/Low) for Strategy A based on NCP criteria."""
     prompt = f"""You are prioritizing acquisition targets for New Capital Partners (NCP).
@@ -1600,6 +1643,7 @@ def process_single_company(org, specific_niche, strat_code, history_keys=None):
         "Confidence":     "Low",
         "Latest News":    "N/A",
         "Previously Sourced": "Yes" if previously_sourced else "No",
+        "Differentiated":  "Medium",
         "_niche":         specific_niche,  # internal — stripped before display
     }
     if strat_code == "A":
@@ -1680,18 +1724,25 @@ def process_single_company(org, specific_niche, strat_code, history_keys=None):
     if strat_code == "A" and check_news_for_pe_vc(t):
         return None
 
-    # Strategy A: assess priority, growth, and transaction readiness in parallel
+    # Strategy A: assess priority, growth, transaction readiness, and differentiation in parallel
     if strat_code == "A":
-        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as score_ex:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as score_ex:
             pri_fut    = score_ex.submit(assess_priority, comp_name, row["Description"],
                                          org.get("state"), org.get("estimated_num_employees"),
                                          tags, specific_niche)
             growth_fut = score_ex.submit(assess_growth_score, comp_name, domain, apollo_people)
             txn_fut    = score_ex.submit(assess_transaction_readiness, comp_name, domain,
                                          apollo_people, row["Description"])
-            row["Priority"],    _ = pri_fut.result()
-            row["Growth"],      _ = growth_fut.result()
+            diff_fut   = score_ex.submit(assess_differentiation, comp_name, row["Description"],
+                                         specific_niche)
+            row["Priority"],      _ = pri_fut.result()
+            row["Growth"],        _ = growth_fut.result()
             row["Txn Readiness"], _ = txn_fut.result()
+            row["Differentiated"], _ = diff_fut.result()
+    else:
+        # Strategy B: still assess differentiation
+        row["Differentiated"], _ = assess_differentiation(comp_name, row["Description"],
+                                                           specific_niche)
 
     return row
 
@@ -1939,7 +1990,7 @@ if st.button("🚀 Start Sourcing", type="primary"):
             df = df.drop(columns=["_niche"])
 
         # ── Column ordering ─────────────────────────────────────────
-        lead_cols = ["Company", "Description"]
+        lead_cols = ["Company", "Description", "Differentiated"]
         if strat_code in ("A", "C"):
             lead_cols += ["Priority", "Growth", "Txn Readiness"]
         lead_cols += ["Est. EBITDA"]
