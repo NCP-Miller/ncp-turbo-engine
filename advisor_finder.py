@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import requests
 import concurrent.futures
-from urllib.parse import quote_plus
 
 st.set_page_config(page_title="NCP Intermediary Sourcing Tool", layout="wide")
 
@@ -43,50 +42,41 @@ except (FileNotFoundError, KeyError):
 # ---------------------------------------------------------------------------
 CATEGORIES = {
     "Private Wealth Advisors": {
-        "titles": [
-            "wealth advisor", "wealth manager", "financial advisor",
-            "financial planner", "private wealth", "private client",
-            "portfolio manager", "investment advisor", "managing director",
-        ],
         "industries": [
             "Financial Services", "Investment Management", "Banking",
             "Investment Banking", "Insurance",
         ],
         "keywords": [
             "wealth management", "private wealth", "financial planning",
-            "financial advisory", "investment advisory",
+            "financial advisory", "investment advisory", "wealth advisor",
+        ],
+        "title_filter": [
+            "wealth", "financial advisor", "financial planner", "portfolio",
+            "investment advisor", "private client", "asset management",
         ],
     },
     "Tax Advisors (High Net Worth)": {
-        "titles": [
-            "tax partner", "tax director", "tax managing director",
-            "tax principal", "tax counsel", "private client tax",
-            "tax manager", "tax senior manager",
-        ],
         "industries": ["Accounting", "Financial Services"],
         "keywords": [
-            "tax advisory", "high net worth", "private client",
-            "tax planning", "tax services", "public accounting",
+            "tax advisory", "tax services", "public accounting",
+            "tax planning", "cpa", "certified public accountant",
+        ],
+        "title_filter": [
+            "tax", "cpa", "accountant", "accounting",
         ],
     },
     "Estate Planning Attorneys": {
-        "titles": [
-            "estate planning", "trusts and estates", "estate attorney",
-            "probate", "wealth transfer", "estate partner",
-            "estate counsel", "elder law",
-        ],
         "industries": ["Law Practice", "Legal Services"],
         "keywords": [
-            "estate planning", "trusts and estates", "wealth transfer",
-            "probate", "elder law", "trust administration",
+            "estate planning", "trusts and estates", "probate",
+            "elder law", "trust administration", "wealth transfer",
+        ],
+        "title_filter": [
+            "estate", "trust", "probate", "elder law", "wealth transfer",
+            "attorney", "counsel", "partner", "lawyer",
         ],
     },
     "Investment Bankers": {
-        "titles": [
-            "investment banker", "investment banking", "managing director",
-            "mergers and acquisitions", "m&a", "capital markets",
-            "corporate finance", "deal advisory",
-        ],
         "industries": [
             "Investment Banking", "Capital Markets", "Financial Services",
             "Venture Capital & Private Equity",
@@ -95,122 +85,146 @@ CATEGORIES = {
             "investment banking", "mergers acquisitions", "capital markets",
             "corporate finance", "m&a advisory",
         ],
+        "title_filter": [
+            "investment bank", "m&a", "mergers", "capital markets",
+            "corporate finance", "deal", "managing director",
+        ],
     },
     "Business Brokers": {
-        "titles": [
-            "business broker", "business intermediary", "m&a advisor",
-            "business sales", "transaction advisor", "deal maker",
-            "business valuation", "merger advisor",
-        ],
         "industries": [
             "Financial Services", "Management Consulting", "Real Estate",
             "Accounting",
         ],
         "keywords": [
-            "business brokerage", "business sales", "business transfer",
-            "business valuation", "buy sell business",
+            "business brokerage", "business broker", "business sales",
+            "business valuation", "business transfer", "business intermediary",
+        ],
+        "title_filter": [
+            "broker", "intermediary", "business sales", "valuation",
+            "transaction", "deal", "m&a",
         ],
     },
 }
 
-# Seniority levels — mid to senior only
 SENIORITY_LEVELS = ["owner", "founder", "c_suite", "partner", "vp", "director"]
 
 # ---------------------------------------------------------------------------
-# APOLLO PEOPLE SEARCH
+# STEP 1: FIND ORGANIZATIONS (proven approach from sourcing engine)
 # ---------------------------------------------------------------------------
-def search_people(category_key, city, max_pages=5):
+def search_organizations(category_key, city, max_pages=5):
     cat = CATEGORIES[category_key]
-    url = "https://api.apollo.io/v1/mixed_people/search"
+    url = "https://api.apollo.io/v1/organizations/search"
     headers = {"Content-Type": "application/json", "X-Api-Key": APOLLO_API_KEY}
 
-    all_people, seen_ids = [], set()
+    all_orgs, seen_ids = [], set()
 
-    def _fetch_pages(payload_base):
+    def _fetch_pages(base_payload):
         for page in range(1, max_pages + 1):
-            payload = {**payload_base, "page": page, "per_page": 100}
+            payload = {**base_payload, "page": page, "per_page": 100}
             try:
                 r = requests.post(url, headers=headers, json=payload, timeout=15)
                 if r.status_code != 200:
                     break
-                people = r.json().get("people", [])
-                if not people:
+                orgs = r.json().get("organizations", [])
+                if not orgs:
                     break
-                for p in people:
-                    pid = p.get("id")
-                    if pid and pid not in seen_ids:
-                        seen_ids.add(pid)
-                        all_people.append(p)
-                if len(people) < 100:
+                for o in orgs:
+                    oid = o.get("id")
+                    if oid and oid not in seen_ids:
+                        seen_ids.add(oid)
+                        all_orgs.append(o)
+                if len(orgs) < 100:
                     break
             except Exception:
                 break
 
-    # Normalize location — Apollo works best with "City, State, Country"
-    loc = city.strip()
-    loc_variants = [loc]
-    # Add full state name variant if user typed abbreviation
-    _state_map = {
-        "AL": "Alabama", "AK": "Alaska", "AZ": "Arizona", "AR": "Arkansas",
-        "CA": "California", "CO": "Colorado", "CT": "Connecticut", "DE": "Delaware",
-        "FL": "Florida", "GA": "Georgia", "HI": "Hawaii", "ID": "Idaho",
-        "IL": "Illinois", "IN": "Indiana", "IA": "Iowa", "KS": "Kansas",
-        "KY": "Kentucky", "LA": "Louisiana", "ME": "Maine", "MD": "Maryland",
-        "MA": "Massachusetts", "MI": "Michigan", "MN": "Minnesota", "MS": "Mississippi",
-        "MO": "Missouri", "MT": "Montana", "NE": "Nebraska", "NV": "Nevada",
-        "NH": "New Hampshire", "NJ": "New Jersey", "NM": "New Mexico", "NY": "New York",
-        "NC": "North Carolina", "ND": "North Dakota", "OH": "Ohio", "OK": "Oklahoma",
-        "OR": "Oregon", "PA": "Pennsylvania", "RI": "Rhode Island", "SC": "South Carolina",
-        "SD": "South Dakota", "TN": "Tennessee", "TX": "Texas", "UT": "Utah",
-        "VT": "Vermont", "VA": "Virginia", "WA": "Washington", "WV": "West Virginia",
-        "WI": "Wisconsin", "WY": "Wyoming",
-    }
-    parts = [p.strip() for p in loc.split(",")]
-    if len(parts) == 2 and parts[1].upper() in _state_map:
-        full_state = _state_map[parts[1].upper()]
-        loc_variants.append(f"{parts[0]}, {full_state}, United States")
-        loc_variants.append(f"{parts[0]}, {full_state}")
-
-    # Pass 1: Industry + seniority + location (broadest — catches everyone
-    # at the right kind of firm regardless of title wording)
+    # Pass 1: Industry sweep by location
     for industry in cat["industries"]:
-        for lv in loc_variants:
-            _fetch_pages({
-                "person_locations": [lv],
-                "person_seniority": SENIORITY_LEVELS,
-                "q_organization_industries": [industry],
-            })
-
-    # Pass 2: Title array + location (catches people at firms
-    # Apollo may have classified in unexpected industries)
-    for lv in loc_variants:
         _fetch_pages({
-            "person_titles": cat["titles"],
-            "person_locations": [lv],
+            "organization_locations": [city],
+            "q_organization_industries": [industry],
         })
 
-    # Pass 3: Organization keyword tags + location + seniority
-    for lv in loc_variants:
-        _fetch_pages({
-            "person_locations": [lv],
+    # Pass 2: Keyword sweep (catches firms in unexpected industries)
+    _fetch_pages({
+        "organization_locations": [city],
+        "q_organization_keyword_tags": cat["keywords"],
+    })
+
+    return all_orgs
+
+
+# ---------------------------------------------------------------------------
+# STEP 2: FIND SENIOR PEOPLE AT EACH ORG
+# ---------------------------------------------------------------------------
+def get_senior_people(org_id, org_name, domain=None):
+    url = "https://api.apollo.io/v1/mixed_people/search"
+    headers = {"Content-Type": "application/json", "X-Api-Key": APOLLO_API_KEY}
+
+    all_people, seen_ids = [], set()
+    attempts = []
+
+    if org_id:
+        attempts.append({
+            "organization_ids": [org_id],
             "person_seniority": SENIORITY_LEVELS,
-            "q_organization_keyword_tags": cat["keywords"],
+            "per_page": 25,
         })
+        # Broader fallback without seniority filter
+        attempts.append({
+            "organization_ids": [org_id],
+            "per_page": 25,
+        })
+
+    if domain:
+        d = domain.lstrip("www.")
+        attempts.append({
+            "q_organization_domains": [d],
+            "person_seniority": SENIORITY_LEVELS,
+            "per_page": 25,
+        })
+
+    for payload in attempts:
+        try:
+            r = requests.post(url, headers=headers, json=payload, timeout=10)
+            if r.status_code == 200:
+                people = r.json().get("people", [])
+                for p in people:
+                    pid = p.get("id")
+                    if pid and pid not in seen_ids and p.get("first_name") and p.get("last_name"):
+                        seen_ids.add(pid)
+                        # Attach org name for display
+                        if not p.get("organization"):
+                            p["organization"] = {"name": org_name}
+                        all_people.append(p)
+                if all_people:
+                    break
+        except Exception:
+            pass
 
     return all_people
 
 
+def clean_domain(url):
+    if not url or not isinstance(url, str):
+        return None
+    try:
+        from urllib.parse import urlparse
+        if not url.startswith("http"):
+            url = "http://" + url
+        d = urlparse(url).netloc
+        return d[4:] if d.startswith("www.") else d
+    except Exception:
+        return None
+
+
+# ---------------------------------------------------------------------------
+# STEP 3: FILTER AND FORMAT
+# ---------------------------------------------------------------------------
 def is_senior_enough(title):
     if not title:
         return False
     t = title.lower()
-    senior_signals = [
-        "partner", "managing director", "principal", "owner", "founder",
-        "president", "ceo", "chief", "director", "vp ", "vice president",
-        "senior vice", "svp", "evp", "head of", "team lead", "group head",
-        "senior managing", "senior advisor", "senior wealth",
-        "senior financial", "of counsel",
-    ]
     junior_signals = [
         "analyst", "associate", "intern", "assistant", "coordinator",
         "junior", "trainee", "entry", "clerk", "receptionist",
@@ -218,49 +232,53 @@ def is_senior_enough(title):
     ]
     if any(j in t for j in junior_signals):
         return False
-    if any(s in t for s in senior_signals):
-        return True
-    # Default: include if seniority filter already applied via API
     return True
 
 
-def format_results(people, category_key):
+def title_matches_category(title, category_key):
+    if not title:
+        return True  # No title — let it through, user can filter in CSV
+    t = title.lower()
+    filters = CATEGORIES[category_key].get("title_filter", [])
+    if not filters:
+        return True
+    return any(f in t for f in filters)
+
+
+def process_org(org, category_key):
+    org_id = org.get("id")
+    org_name = org.get("name", "Unknown")
+    domain = clean_domain(org.get("website_url"))
+
+    people = get_senior_people(org_id, org_name, domain)
     rows = []
+
     for p in people:
         title = p.get("title") or ""
         if not is_senior_enough(title):
             continue
 
         name = f"{p.get('first_name', '')} {p.get('last_name', '')}".strip()
-        if not name or name == "":
+        if not name:
             continue
 
         email = p.get("email") or "N/A"
         phone_nums = p.get("phone_numbers") or []
         phone = phone_nums[0].get("sanitized_number") if phone_nums else "N/A"
-        company = p.get("organization", {}).get("name") if p.get("organization") else "N/A"
+        company = (p.get("organization") or {}).get("name") or org_name
 
         rows.append({
             "Name": name,
             "Title": title,
-            "Company": company or "N/A",
+            "Company": company,
             "Email": email,
             "Phone": phone or "N/A",
-            "City": p.get("city") or "N/A",
-            "State": p.get("state") or "N/A",
+            "City": p.get("city") or org.get("city") or "N/A",
+            "State": p.get("state") or org.get("state") or "N/A",
             "LinkedIn": p.get("linkedin_url") or "N/A",
         })
 
-    # Deduplicate by name + company
-    seen = set()
-    unique = []
-    for r in rows:
-        key = (r["Name"].lower(), r["Company"].lower())
-        if key not in seen:
-            seen.add(key)
-            unique.append(r)
-
-    return unique
+    return rows
 
 
 # ---------------------------------------------------------------------------
@@ -278,26 +296,58 @@ if st.button("Search", type="primary"):
         st.error("Please enter a city.")
         st.stop()
 
-    with st.spinner(f"Searching Apollo for **{category}** in **{city}**..."):
-        people = search_people(category, city)
+    with st.spinner(f"Finding **{category.lower()}** firms in **{city}**..."):
+        orgs = search_organizations(category, city)
 
-    if not people:
+    if not orgs:
         st.warning(
-            f"No results found for {category} in {city}.\n\n"
-            "**Tips:** Try a larger metro area or broader city name (e.g. 'New York' instead of 'Manhattan')."
+            f"No firms found for {category} in {city}.\n\n"
+            "**Tips:** Try a larger metro area or broader city name."
         )
         st.stop()
 
-    st.info(f"Found **{len(people)}** Apollo results. Filtering for senior contacts...")
-    results = format_results(people, category)
+    st.info(f"Found **{len(orgs)}** firms. Now finding senior contacts at each...")
+    progress_bar = st.progress(0)
+    status_text = st.empty()
 
-    if not results:
-        st.warning("No senior-level contacts found after filtering. Try a different city or category.")
+    all_rows = []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as ex:
+        futures = {
+            ex.submit(process_org, org, category): org for org in orgs
+        }
+        for i, future in enumerate(concurrent.futures.as_completed(futures)):
+            try:
+                rows = future.result()
+                if rows:
+                    all_rows.extend(rows)
+            except Exception:
+                pass
+            progress_bar.progress((i + 1) / len(orgs))
+            status_text.caption(
+                f"Processed {i + 1}/{len(orgs)} firms | {len(all_rows)} contacts found..."
+            )
+
+    # Deduplicate by name + company
+    seen = set()
+    unique = []
+    for r in all_rows:
+        key = (r["Name"].lower(), r["Company"].lower())
+        if key not in seen:
+            seen.add(key)
+            unique.append(r)
+
+    status_text.write("Done!")
+
+    if not unique:
+        st.warning(
+            "No senior contacts found.\n\n"
+            "**Tips:** Try a larger city or different category."
+        )
         st.stop()
 
-    st.success(f"**{len(results)}** senior contacts found.")
+    st.success(f"**{len(unique)}** senior contacts found across **{len(orgs)}** firms.")
 
-    df = pd.DataFrame(results)
+    df = pd.DataFrame(unique)
     st.dataframe(df, use_container_width=True)
 
     csv = df.to_csv(index=False).encode("utf-8")
