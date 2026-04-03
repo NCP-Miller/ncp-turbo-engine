@@ -44,43 +44,72 @@ except (FileNotFoundError, KeyError):
 CATEGORIES = {
     "Private Wealth Advisors": {
         "titles": [
-            "wealth advisor", "wealth manager", "private wealth",
-            "financial advisor", "private client", "wealth planning",
+            "wealth advisor", "wealth manager", "financial advisor",
+            "financial planner", "private wealth", "private client",
+            "portfolio manager", "investment advisor", "managing director",
         ],
-        "industries": ["Financial Services", "Investment Management", "Banking"],
-        "keywords": ["wealth management", "private wealth", "financial planning"],
+        "industries": [
+            "Financial Services", "Investment Management", "Banking",
+            "Investment Banking", "Insurance",
+        ],
+        "keywords": [
+            "wealth management", "private wealth", "financial planning",
+            "financial advisory", "investment advisory",
+        ],
     },
     "Tax Advisors (High Net Worth)": {
         "titles": [
             "tax partner", "tax director", "tax managing director",
-            "private client tax", "tax principal", "tax counsel",
+            "tax principal", "tax counsel", "private client tax",
+            "tax manager", "tax senior manager",
         ],
         "industries": ["Accounting", "Financial Services"],
-        "keywords": ["tax advisory", "high net worth", "private client"],
+        "keywords": [
+            "tax advisory", "high net worth", "private client",
+            "tax planning", "tax services", "public accounting",
+        ],
     },
     "Estate Planning Attorneys": {
         "titles": [
             "estate planning", "trusts and estates", "estate attorney",
             "probate", "wealth transfer", "estate partner",
+            "estate counsel", "elder law",
         ],
         "industries": ["Law Practice", "Legal Services"],
-        "keywords": ["estate planning", "trusts and estates", "wealth transfer"],
+        "keywords": [
+            "estate planning", "trusts and estates", "wealth transfer",
+            "probate", "elder law", "trust administration",
+        ],
     },
     "Investment Bankers": {
         "titles": [
-            "investment banker", "managing director", "director of investment banking",
-            "vice president investment banking", "m&a", "mergers and acquisitions",
+            "investment banker", "investment banking", "managing director",
+            "mergers and acquisitions", "m&a", "capital markets",
+            "corporate finance", "deal advisory",
         ],
-        "industries": ["Investment Banking", "Capital Markets", "Financial Services"],
-        "keywords": ["investment banking", "mergers acquisitions", "capital markets"],
+        "industries": [
+            "Investment Banking", "Capital Markets", "Financial Services",
+            "Venture Capital & Private Equity",
+        ],
+        "keywords": [
+            "investment banking", "mergers acquisitions", "capital markets",
+            "corporate finance", "m&a advisory",
+        ],
     },
     "Business Brokers": {
         "titles": [
             "business broker", "business intermediary", "m&a advisor",
-            "deal maker", "business sales", "transaction advisor",
+            "business sales", "transaction advisor", "deal maker",
+            "business valuation", "merger advisor",
         ],
-        "industries": ["Financial Services", "Management Consulting", "Real Estate"],
-        "keywords": ["business brokerage", "business sales", "business transfer"],
+        "industries": [
+            "Financial Services", "Management Consulting", "Real Estate",
+            "Accounting",
+        ],
+        "keywords": [
+            "business brokerage", "business sales", "business transfer",
+            "business valuation", "buy sell business",
+        ],
     },
 }
 
@@ -97,30 +126,9 @@ def search_people(category_key, city, max_pages=5):
 
     all_people, seen_ids = [], set()
 
-    # Build search variations for broader coverage
-    search_configs = []
-
-    # Config 1: Title keywords + location + seniority
-    for title_kw in cat["titles"]:
-        search_configs.append({
-            "q_keywords": title_kw,
-            "person_locations": [city],
-            "person_seniority": SENIORITY_LEVELS,
-            "per_page": 100,
-        })
-
-    # Config 2: Industry + keyword tags + location + seniority
-    search_configs.append({
-        "person_locations": [city],
-        "person_seniority": SENIORITY_LEVELS,
-        "q_organization_industries": cat["industries"],
-        "q_organization_keyword_tags": cat["keywords"],
-        "per_page": 100,
-    })
-
-    for config in search_configs:
+    def _fetch_pages(payload_base):
         for page in range(1, max_pages + 1):
-            payload = {**config, "page": page}
+            payload = {**payload_base, "page": page, "per_page": 100}
             try:
                 r = requests.post(url, headers=headers, json=payload, timeout=15)
                 if r.status_code != 200:
@@ -137,6 +145,30 @@ def search_people(category_key, city, max_pages=5):
                     break
             except Exception:
                 break
+
+    # Pass 1: Industry + seniority + location (broadest — catches everyone
+    # at the right kind of firm regardless of title wording)
+    for industry in cat["industries"]:
+        _fetch_pages({
+            "person_locations": [city],
+            "person_seniority": SENIORITY_LEVELS,
+            "q_organization_industries": [industry],
+        })
+
+    # Pass 2: Title keyword search + location (catches people at firms
+    # Apollo may have classified in unexpected industries)
+    for title_kw in cat["titles"]:
+        _fetch_pages({
+            "q_person_title": title_kw,
+            "person_locations": [city],
+        })
+
+    # Pass 3: Organization keyword tags + location + seniority
+    _fetch_pages({
+        "person_locations": [city],
+        "person_seniority": SENIORITY_LEVELS,
+        "q_organization_keyword_tags": cat["keywords"],
+    })
 
     return all_people
 
