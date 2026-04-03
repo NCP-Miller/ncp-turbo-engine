@@ -146,29 +146,56 @@ def search_people(category_key, city, max_pages=5):
             except Exception:
                 break
 
+    # Normalize location — Apollo works best with "City, State, Country"
+    loc = city.strip()
+    loc_variants = [loc]
+    # Add full state name variant if user typed abbreviation
+    _state_map = {
+        "AL": "Alabama", "AK": "Alaska", "AZ": "Arizona", "AR": "Arkansas",
+        "CA": "California", "CO": "Colorado", "CT": "Connecticut", "DE": "Delaware",
+        "FL": "Florida", "GA": "Georgia", "HI": "Hawaii", "ID": "Idaho",
+        "IL": "Illinois", "IN": "Indiana", "IA": "Iowa", "KS": "Kansas",
+        "KY": "Kentucky", "LA": "Louisiana", "ME": "Maine", "MD": "Maryland",
+        "MA": "Massachusetts", "MI": "Michigan", "MN": "Minnesota", "MS": "Mississippi",
+        "MO": "Missouri", "MT": "Montana", "NE": "Nebraska", "NV": "Nevada",
+        "NH": "New Hampshire", "NJ": "New Jersey", "NM": "New Mexico", "NY": "New York",
+        "NC": "North Carolina", "ND": "North Dakota", "OH": "Ohio", "OK": "Oklahoma",
+        "OR": "Oregon", "PA": "Pennsylvania", "RI": "Rhode Island", "SC": "South Carolina",
+        "SD": "South Dakota", "TN": "Tennessee", "TX": "Texas", "UT": "Utah",
+        "VT": "Vermont", "VA": "Virginia", "WA": "Washington", "WV": "West Virginia",
+        "WI": "Wisconsin", "WY": "Wyoming",
+    }
+    parts = [p.strip() for p in loc.split(",")]
+    if len(parts) == 2 and parts[1].upper() in _state_map:
+        full_state = _state_map[parts[1].upper()]
+        loc_variants.append(f"{parts[0]}, {full_state}, United States")
+        loc_variants.append(f"{parts[0]}, {full_state}")
+
     # Pass 1: Industry + seniority + location (broadest — catches everyone
     # at the right kind of firm regardless of title wording)
     for industry in cat["industries"]:
-        _fetch_pages({
-            "person_locations": [city],
-            "person_seniority": SENIORITY_LEVELS,
-            "q_organization_industries": [industry],
-        })
+        for lv in loc_variants:
+            _fetch_pages({
+                "person_locations": [lv],
+                "person_seniority": SENIORITY_LEVELS,
+                "q_organization_industries": [industry],
+            })
 
-    # Pass 2: Title keyword search + location (catches people at firms
+    # Pass 2: Title array + location (catches people at firms
     # Apollo may have classified in unexpected industries)
-    for title_kw in cat["titles"]:
+    for lv in loc_variants:
         _fetch_pages({
-            "q_person_title": title_kw,
-            "person_locations": [city],
+            "person_titles": cat["titles"],
+            "person_locations": [lv],
         })
 
     # Pass 3: Organization keyword tags + location + seniority
-    _fetch_pages({
-        "person_locations": [city],
-        "person_seniority": SENIORITY_LEVELS,
-        "q_organization_keyword_tags": cat["keywords"],
-    })
+    for lv in loc_variants:
+        _fetch_pages({
+            "person_locations": [lv],
+            "person_seniority": SENIORITY_LEVELS,
+            "q_organization_keyword_tags": cat["keywords"],
+        })
 
     return all_people
 
