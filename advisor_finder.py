@@ -182,8 +182,10 @@ def get_senior_people(org_id, org_name, domain=None):
                 if not p.get("organization"):
                     p["organization"] = {"name": org_name}
             return [p for p in people if p.get("first_name") and p.get("last_name")]
-    except Exception:
-        pass
+        else:
+            return [{"_debug": True, "status": r.status_code, "body": r.text[:200]}]
+    except Exception as e:
+        return [{"_debug": True, "error": str(e)}]
 
     return []
 
@@ -234,8 +236,12 @@ def process_org(org, category_key):
     domain = clean_domain(org.get("website_url"))
 
     people = get_senior_people(org_id, org_name, domain)
-    rows = []
 
+    # Collect debug info
+    debug_msgs = [p for p in people if isinstance(p, dict) and p.get("_debug")]
+    people = [p for p in people if isinstance(p, dict) and not p.get("_debug")]
+
+    rows = []
     for p in people:
         title = p.get("title") or ""
         if not is_senior_enough(title):
@@ -261,7 +267,8 @@ def process_org(org, category_key):
             "LinkedIn": p.get("linkedin_url") or "N/A",
         })
 
-    return rows
+    return {"rows": rows, "debug": debug_msgs, "org_name": org_name,
+            "people_count": len(people)}
 
 
 # ---------------------------------------------------------------------------
@@ -294,15 +301,23 @@ if st.button("Search", type="primary"):
     status_text = st.empty()
 
     all_rows = []
+    debug_samples = []
+    total_people_raw = 0
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as ex:
         futures = {
             ex.submit(process_org, org, category): org for org in orgs
         }
         for i, future in enumerate(concurrent.futures.as_completed(futures)):
             try:
-                rows = future.result()
-                if rows:
-                    all_rows.extend(rows)
+                result = future.result()
+                if result:
+                    all_rows.extend(result["rows"])
+                    total_people_raw += result["people_count"]
+                    if result["debug"] and len(debug_samples) < 5:
+                        debug_samples.append({
+                            "org": result["org_name"],
+                            "debug": result["debug"],
+                        })
             except Exception:
                 pass
             progress_bar.progress((i + 1) / len(orgs))
@@ -320,6 +335,21 @@ if st.button("Search", type="primary"):
             unique.append(r)
 
     status_text.write("Done!")
+
+    # Debug info — always show so we can diagnose issues
+    with st.expander("Debug Info"):
+        st.write(f"Orgs found: {len(orgs)}")
+        st.write(f"Raw people returned by API: {total_people_raw}")
+        st.write(f"Contacts after filtering: {len(all_rows)}")
+        st.write(f"Unique contacts: {len(unique)}")
+        if debug_samples:
+            st.write("API errors from first few orgs:")
+            for d in debug_samples:
+                st.write(f"  **{d['org']}**: {d['debug']}")
+        if orgs[:3]:
+            st.write("Sample orgs found:")
+            for o in orgs[:3]:
+                st.write(f"  - {o.get('name')} (id={o.get('id')}, city={o.get('city')})")
 
     if not unique:
         st.warning(
