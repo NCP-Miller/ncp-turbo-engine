@@ -111,7 +111,9 @@ SENIORITY_LEVELS = ["owner", "founder", "c_suite", "partner", "vp", "director"]
 # ---------------------------------------------------------------------------
 # STEP 1: FIND ORGANIZATIONS (proven approach from sourcing engine)
 # ---------------------------------------------------------------------------
-def search_organizations(category_key, city, max_pages=5):
+MAX_ORGS = 200  # Cap total orgs to keep runtime under 5 minutes
+
+def search_organizations(category_key, city, max_pages=2):
     cat = CATEGORIES[category_key]
     url = "https://api.apollo.io/v1/organizations/search"
     headers = {"Content-Type": "application/json", "X-Api-Key": APOLLO_API_KEY}
@@ -120,9 +122,11 @@ def search_organizations(category_key, city, max_pages=5):
 
     def _fetch_pages(base_payload):
         for page in range(1, max_pages + 1):
+            if len(all_orgs) >= MAX_ORGS:
+                break
             payload = {**base_payload, "page": page, "per_page": 100}
             try:
-                r = requests.post(url, headers=headers, json=payload, timeout=15)
+                r = requests.post(url, headers=headers, json=payload, timeout=10)
                 if r.status_code != 200:
                     break
                 orgs = r.json().get("organizations", [])
@@ -140,16 +144,19 @@ def search_organizations(category_key, city, max_pages=5):
 
     # Pass 1: Industry sweep by location
     for industry in cat["industries"]:
+        if len(all_orgs) >= MAX_ORGS:
+            break
         _fetch_pages({
             "organization_locations": [city],
             "q_organization_industries": [industry],
         })
 
     # Pass 2: Keyword sweep (catches firms in unexpected industries)
-    _fetch_pages({
-        "organization_locations": [city],
-        "q_organization_keyword_tags": cat["keywords"],
-    })
+    if len(all_orgs) < MAX_ORGS:
+        _fetch_pages({
+            "organization_locations": [city],
+            "q_organization_keyword_tags": cat["keywords"],
+        })
 
     return all_orgs
 
@@ -161,48 +168,24 @@ def get_senior_people(org_id, org_name, domain=None):
     url = "https://api.apollo.io/v1/mixed_people/search"
     headers = {"Content-Type": "application/json", "X-Api-Key": APOLLO_API_KEY}
 
-    all_people, seen_ids = [], set()
-    attempts = []
+    # Single fast query — org_id + seniority filter
+    payload = {
+        "organization_ids": [org_id],
+        "person_seniority": SENIORITY_LEVELS,
+        "per_page": 10,
+    }
+    try:
+        r = requests.post(url, headers=headers, json=payload, timeout=8)
+        if r.status_code == 200:
+            people = r.json().get("people", [])
+            for p in people:
+                if not p.get("organization"):
+                    p["organization"] = {"name": org_name}
+            return [p for p in people if p.get("first_name") and p.get("last_name")]
+    except Exception:
+        pass
 
-    if org_id:
-        attempts.append({
-            "organization_ids": [org_id],
-            "person_seniority": SENIORITY_LEVELS,
-            "per_page": 25,
-        })
-        # Broader fallback without seniority filter
-        attempts.append({
-            "organization_ids": [org_id],
-            "per_page": 25,
-        })
-
-    if domain:
-        d = domain.lstrip("www.")
-        attempts.append({
-            "q_organization_domains": [d],
-            "person_seniority": SENIORITY_LEVELS,
-            "per_page": 25,
-        })
-
-    for payload in attempts:
-        try:
-            r = requests.post(url, headers=headers, json=payload, timeout=10)
-            if r.status_code == 200:
-                people = r.json().get("people", [])
-                for p in people:
-                    pid = p.get("id")
-                    if pid and pid not in seen_ids and p.get("first_name") and p.get("last_name"):
-                        seen_ids.add(pid)
-                        # Attach org name for display
-                        if not p.get("organization"):
-                            p["organization"] = {"name": org_name}
-                        all_people.append(p)
-                if all_people:
-                    break
-        except Exception:
-            pass
-
-    return all_people
+    return []
 
 
 def clean_domain(url):
@@ -311,7 +294,7 @@ if st.button("Search", type="primary"):
     status_text = st.empty()
 
     all_rows = []
-    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as ex:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as ex:
         futures = {
             ex.submit(process_org, org, category): org for org in orgs
         }
