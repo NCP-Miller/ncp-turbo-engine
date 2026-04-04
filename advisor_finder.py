@@ -165,7 +165,7 @@ def search_organizations(category_key, city, max_pages=2):
 # STEP 2: FIND SENIOR PEOPLE AT EACH ORG
 # ---------------------------------------------------------------------------
 def get_senior_people(org_id, org_name, domain=None):
-    url = "https://api.apollo.io/v1/mixed_people/search"
+    url = "https://api.apollo.io/v1/mixed_people/api_search"
     headers = {"Content-Type": "application/json", "X-Api-Key": APOLLO_API_KEY}
 
     # Single fast query — org_id + seniority filter
@@ -174,18 +174,23 @@ def get_senior_people(org_id, org_name, domain=None):
         "person_seniority": SENIORITY_LEVELS,
         "per_page": 10,
     }
-    try:
-        r = requests.post(url, headers=headers, json=payload, timeout=8)
-        if r.status_code == 200:
-            people = r.json().get("people", [])
-            for p in people:
-                if not p.get("organization"):
-                    p["organization"] = {"name": org_name}
-            return [p for p in people if p.get("first_name") and p.get("last_name")]
-        else:
-            return [{"_debug": True, "status": r.status_code, "body": r.text[:200]}]
-    except Exception as e:
-        return [{"_debug": True, "error": str(e)}]
+    for attempt in range(3):
+        try:
+            r = requests.post(url, headers=headers, json=payload, timeout=10)
+            if r.status_code == 200:
+                people = r.json().get("people", [])
+                for p in people:
+                    if not p.get("organization"):
+                        p["organization"] = {"name": org_name}
+                return [p for p in people if p.get("first_name") and p.get("last_name")]
+            else:
+                return [{"_debug": True, "status": r.status_code, "body": r.text[:200]}]
+        except Exception as e:
+            if attempt < 2:
+                import time
+                time.sleep(1)
+                continue
+            return [{"_debug": True, "error": str(e)}]
 
     return []
 
@@ -303,7 +308,7 @@ if st.button("Search", type="primary"):
     all_rows = []
     debug_samples = []
     total_people_raw = 0
-    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as ex:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as ex:
         futures = {
             ex.submit(process_org, org, category): org for org in orgs
         }
