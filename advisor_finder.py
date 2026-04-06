@@ -297,7 +297,53 @@ def title_matches_category(title, category_key):
     return any(f in t for f in filters)
 
 
-def process_org(org, category_key):
+def _normalize_state(s):
+    """Normalize state name for comparison (handles abbreviations)."""
+    if not s:
+        return ""
+    s = s.strip().lower()
+    # Common abbreviation → full name mapping
+    abbrevs = {
+        "al": "alabama", "ak": "alaska", "az": "arizona", "ar": "arkansas",
+        "ca": "california", "co": "colorado", "ct": "connecticut", "de": "delaware",
+        "fl": "florida", "ga": "georgia", "hi": "hawaii", "id": "idaho",
+        "il": "illinois", "in": "indiana", "ia": "iowa", "ks": "kansas",
+        "ky": "kentucky", "la": "louisiana", "me": "maine", "md": "maryland",
+        "ma": "massachusetts", "mi": "michigan", "mn": "minnesota", "ms": "mississippi",
+        "mo": "missouri", "mt": "montana", "ne": "nebraska", "nv": "nevada",
+        "nh": "new hampshire", "nj": "new jersey", "nm": "new mexico", "ny": "new york",
+        "nc": "north carolina", "nd": "north dakota", "oh": "ohio", "ok": "oklahoma",
+        "or": "oregon", "pa": "pennsylvania", "ri": "rhode island", "sc": "south carolina",
+        "sd": "south dakota", "tn": "tennessee", "tx": "texas", "ut": "utah",
+        "vt": "vermont", "va": "virginia", "wa": "washington", "wv": "west virginia",
+        "wi": "wisconsin", "wy": "wyoming", "dc": "district of columbia",
+    }
+    return abbrevs.get(s, s)
+
+
+def _person_matches_location(person, search_city):
+    """Check if a person is located in or near the searched city/state."""
+    if not search_city:
+        return True
+    # Parse "Birmingham, AL" or "Birmingham, Alabama" from search input
+    parts = [p.strip().lower() for p in search_city.split(",")]
+    search_city_name = parts[0] if parts else ""
+    search_state = _normalize_state(parts[1]) if len(parts) > 1 else ""
+
+    person_city = (person.get("city") or "").strip().lower()
+    person_state = _normalize_state(person.get("state") or "")
+
+    # If we have a state from the search, match on state at minimum
+    if search_state and person_state:
+        return person_state == search_state
+    # Otherwise match on city name
+    if search_city_name and person_city:
+        return search_city_name in person_city or person_city in search_city_name
+    # If person has no location data, let them through (user can filter in CSV)
+    return True
+
+
+def process_org(org, category_key, search_city=None):
     org_id = org.get("id")
     org_name = org.get("name", "Unknown")
     domain = clean_domain(org.get("website_url"))
@@ -312,6 +358,10 @@ def process_org(org, category_key):
     for p in people:
         title = p.get("title") or ""
         if not is_senior_enough(title):
+            continue
+        if not title_matches_category(title, category_key):
+            continue
+        if not _person_matches_location(p, search_city):
             continue
 
         name = f"{p.get('first_name', '')} {p.get('last_name', '')}".strip()
@@ -372,7 +422,7 @@ if st.button("Search", type="primary"):
     total_people_raw = 0
     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as ex:
         futures = {
-            ex.submit(process_org, org, category): org for org in orgs
+            ex.submit(process_org, org, category, city): org for org in orgs
         }
         for i, future in enumerate(concurrent.futures.as_completed(futures)):
             try:
