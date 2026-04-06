@@ -142,16 +142,17 @@ def search_organizations(category_key, city, max_pages=2):
             except Exception:
                 break
 
-    # Pass 1: Industry sweep by location
+    # Pass 1: Industry + keyword sweep (keywords keep results relevant)
     for industry in cat["industries"]:
         if len(all_orgs) >= MAX_ORGS:
             break
         _fetch_pages({
             "organization_locations": [city],
             "q_organization_industries": [industry],
+            "q_organization_keyword_tags": cat["keywords"],
         })
 
-    # Pass 2: Keyword sweep (catches firms in unexpected industries)
+    # Pass 2: Keyword-only sweep (catches firms in unexpected industries)
     if len(all_orgs) < MAX_ORGS:
         _fetch_pages({
             "organization_locations": [city],
@@ -165,40 +166,63 @@ def search_organizations(category_key, city, max_pages=2):
 # STEP 2: FIND SENIOR PEOPLE AT EACH ORG
 # ---------------------------------------------------------------------------
 def get_senior_people(org_id, org_name, domain=None):
-    url = "https://api.apollo.io/api/v1/mixed_people/api_search"
+    search_url = "https://api.apollo.io/api/v1/mixed_people/api_search"
+    enrich_url = "https://api.apollo.io/v1/people/match"
     headers = {"Content-Type": "application/json", "X-Api-Key": APOLLO_API_KEY}
 
-    # Single fast query — org_id + seniority filter
+    # Step 1: Search to get person IDs (returns obfuscated data)
     payload = {
         "organization_ids": [org_id],
-        "person_seniority": SENIORITY_LEVELS,
+        "person_seniorities": SENIORITY_LEVELS,
         "per_page": 10,
     }
+    people_ids = []
     for attempt in range(3):
         try:
-            r = requests.post(url, headers=headers, json=payload, timeout=10)
+            r = requests.post(search_url, headers=headers, json=payload, timeout=10)
             if r.status_code == 200:
-                people = r.json().get("people", [])
-                for p in people:
-                    if not p.get("organization"):
-                        p["organization"] = {"name": org_name}
-                valid = [p for p in people if p.get("first_name") and p.get("last_name")]
-                # Enrich to get emails and phones (search endpoint doesn't return them)
-                if valid and domain:
-                    enriched = bulk_enrich(valid, domain)
-                    if enriched:
-                        return enriched
-                return valid
+                for p in r.json().get("people", []):
+                    pid = p.get("id")
+                    if pid and p.get("first_name"):
+                        people_ids.append({
+                            "id": pid,
+                            "first_name": p.get("first_name"),
+                            "title": p.get("title"),
+                        })
+                break
+            elif r.status_code == 429:
+                import time; time.sleep(1); continue
             else:
                 return [{"_debug": True, "status": r.status_code, "body": r.text[:200]}]
         except Exception as e:
             if attempt < 2:
-                import time
-                time.sleep(1)
-                continue
+                import time; time.sleep(1); continue
             return [{"_debug": True, "error": str(e)}]
 
-    return []
+    if not people_ids:
+        return []
+
+    # Step 2: Enrich each person by ID to get full name, email, phone
+    enriched = []
+    for p in people_ids[:10]:
+        for attempt in range(2):
+            try:
+                r = requests.post(enrich_url, headers=headers, json={"id": p["id"]}, timeout=10)
+                if r.status_code == 200:
+                    person = r.json().get("person")
+                    if person and person.get("first_name") and person.get("last_name"):
+                        if not person.get("organization"):
+                            person["organization"] = {"name": org_name}
+                        enriched.append(person)
+                    break
+                elif r.status_code == 429:
+                    import time; time.sleep(1); continue
+                else:
+                    break
+            except Exception:
+                break
+
+    return enriched if enriched else []
 
 
 def bulk_enrich(people, domain):
