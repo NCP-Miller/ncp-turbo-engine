@@ -165,7 +165,7 @@ def search_organizations(category_key, city, max_pages=2):
 # STEP 2: FIND SENIOR PEOPLE AT EACH ORG
 # ---------------------------------------------------------------------------
 def get_senior_people(org_id, org_name, domain=None):
-    url = "https://api.apollo.io/v1/mixed_people/api_search"
+    url = "https://api.apollo.io/api/v1/mixed_people/api_search"
     headers = {"Content-Type": "application/json", "X-Api-Key": APOLLO_API_KEY}
 
     # Single fast query — org_id + seniority filter
@@ -182,7 +182,13 @@ def get_senior_people(org_id, org_name, domain=None):
                 for p in people:
                     if not p.get("organization"):
                         p["organization"] = {"name": org_name}
-                return [p for p in people if p.get("first_name") and p.get("last_name")]
+                valid = [p for p in people if p.get("first_name") and p.get("last_name")]
+                # Enrich to get emails and phones (search endpoint doesn't return them)
+                if valid and domain:
+                    enriched = bulk_enrich(valid, domain)
+                    if enriched:
+                        return enriched
+                return valid
             else:
                 return [{"_debug": True, "status": r.status_code, "body": r.text[:200]}]
         except Exception as e:
@@ -193,6 +199,38 @@ def get_senior_people(org_id, org_name, domain=None):
             return [{"_debug": True, "error": str(e)}]
 
     return []
+
+
+def bulk_enrich(people, domain):
+    """Enrich people with emails/phones via Apollo bulk_match."""
+    url = "https://api.apollo.io/v1/people/bulk_match"
+    headers = {"Content-Type": "application/json", "X-Api-Key": APOLLO_API_KEY}
+
+    details = []
+    for p in people[:10]:  # bulk_match handles up to 10 at a time
+        details.append({
+            "first_name": p.get("first_name"),
+            "last_name": p.get("last_name"),
+            "domain": domain,
+        })
+
+    try:
+        r = requests.post(url, headers=headers, json={"details": details}, timeout=15)
+        if r.status_code == 200:
+            matches = r.json().get("matches", [])
+            enriched = []
+            for i, match in enumerate(matches):
+                if match:
+                    # Preserve org info from original person
+                    if not match.get("organization") and i < len(people):
+                        match["organization"] = people[i].get("organization")
+                    enriched.append(match)
+                elif i < len(people):
+                    enriched.append(people[i])
+            return enriched
+    except Exception:
+        pass
+    return None
 
 
 def clean_domain(url):
