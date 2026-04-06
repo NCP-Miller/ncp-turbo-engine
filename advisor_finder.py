@@ -54,6 +54,11 @@ CATEGORIES = {
             "wealth", "financial advisor", "financial planner", "portfolio",
             "investment advisor", "private client", "asset management",
         ],
+        "person_titles": [
+            "wealth advisor", "wealth manager", "financial advisor",
+            "financial planner", "private wealth", "investment advisor",
+            "portfolio manager", "private client",
+        ],
     },
     "Tax Advisors (High Net Worth)": {
         "industries": ["Accounting", "Financial Services"],
@@ -63,6 +68,10 @@ CATEGORIES = {
         ],
         "title_filter": [
             "tax", "cpa", "accountant", "accounting",
+        ],
+        "person_titles": [
+            "tax partner", "tax director", "tax advisor",
+            "tax manager", "cpa", "tax principal",
         ],
     },
     "Estate Planning Attorneys": {
@@ -74,6 +83,10 @@ CATEGORIES = {
         "title_filter": [
             "estate", "trust", "probate", "elder law", "wealth transfer",
             "attorney", "counsel", "partner", "lawyer",
+        ],
+        "person_titles": [
+            "estate planning", "trusts and estates", "probate",
+            "elder law", "wealth transfer", "estate attorney",
         ],
     },
     "Investment Bankers": {
@@ -89,6 +102,10 @@ CATEGORIES = {
             "investment bank", "m&a", "mergers", "capital markets",
             "corporate finance", "deal", "managing director",
         ],
+        "person_titles": [
+            "investment banker", "managing director", "m&a",
+            "corporate finance", "capital markets", "mergers",
+        ],
     },
     "Business Brokers": {
         "industries": [
@@ -103,13 +120,81 @@ CATEGORIES = {
             "broker", "intermediary", "business sales", "valuation",
             "transaction", "deal", "m&a",
         ],
+        "person_titles": [
+            "business broker", "business intermediary", "business valuation",
+            "transaction advisor", "deal advisor",
+        ],
     },
 }
 
 SENIORITY_LEVELS = ["owner", "founder", "c_suite", "partner", "vp", "director"]
 
 # ---------------------------------------------------------------------------
-# STEP 1: FIND ORGANIZATIONS (proven approach from sourcing engine)
+# STEP 1A: FIND PEOPLE DIRECTLY BY TITLE + LOCATION
+# ---------------------------------------------------------------------------
+MAX_PEOPLE_DIRECT = 300
+
+def search_people_direct(category_key, city, max_pages=3):
+    """Search Apollo for people by title + location — catches advisors at firms
+    the org search misses (wrong industry tags, no keyword tags, etc.)."""
+    cat = CATEGORIES[category_key]
+    url = "https://api.apollo.io/api/v1/mixed_people/api_search"
+    headers = {"Content-Type": "application/json", "X-Api-Key": APOLLO_API_KEY}
+
+    all_people, seen_ids = [], set()
+
+    for page in range(1, max_pages + 1):
+        if len(all_people) >= MAX_PEOPLE_DIRECT:
+            break
+        payload = {
+            "person_titles": cat["person_titles"],
+            "person_locations": [city],
+            "person_seniorities": SENIORITY_LEVELS,
+            "per_page": 100,
+            "page": page,
+        }
+        try:
+            r = requests.post(url, headers=headers, json=payload, timeout=15)
+            if r.status_code == 200:
+                people = r.json().get("people", [])
+                if not people:
+                    break
+                for p in people:
+                    pid = p.get("id")
+                    if pid and pid not in seen_ids:
+                        seen_ids.add(pid)
+                        all_people.append(p)
+                if len(people) < 100:
+                    break
+            elif r.status_code == 429:
+                import time; time.sleep(1); continue
+            else:
+                break
+        except Exception:
+            break
+
+    return all_people
+
+
+def enrich_person(person_id, headers):
+    """Enrich a single person by ID to get full name, email, phone."""
+    url = "https://api.apollo.io/v1/people/match"
+    for attempt in range(2):
+        try:
+            r = requests.post(url, headers=headers, json={"id": person_id}, timeout=10)
+            if r.status_code == 200:
+                return r.json().get("person")
+            elif r.status_code == 429:
+                import time; time.sleep(1); continue
+            else:
+                return None
+        except Exception:
+            return None
+    return None
+
+
+# ---------------------------------------------------------------------------
+# STEP 1B: FIND ORGANIZATIONS (catches additional firms)
 # ---------------------------------------------------------------------------
 MAX_ORGS = 200  # Cap total orgs to keep runtime under 5 minutes
 
@@ -403,44 +488,86 @@ if st.button("Search", type="primary"):
         st.error("Please enter a city.")
         st.stop()
 
-    with st.spinner(f"Finding **{category.lower()}** firms in **{city}**..."):
-        orgs = search_organizations(category, city)
+    headers = {"Content-Type": "application/json", "X-Api-Key": APOLLO_API_KEY}
+    all_rows = []
+    seen_person_ids = set()  # Dedup across both passes
 
-    if not orgs:
-        st.warning(
-            f"No firms found for {category} in {city}.\n\n"
-            "**Tips:** Try a larger metro area or broader city name."
-        )
-        st.stop()
+    # ── Pass 1: People-direct search (primary — most exhaustive) ──────────
+    with st.spinner(f"Searching for **{category.lower()}** by title in **{city}**..."):
+        direct_people = search_people_direct(category, city)
 
-    st.info(f"Found **{len(orgs)}** firms. Now finding senior contacts at each...")
+    st.info(f"Pass 1: Found **{len(direct_people)}** people by title. Enriching contacts...")
     progress_bar = st.progress(0)
     status_text = st.empty()
 
-    all_rows = []
-    debug_samples = []
-    total_people_raw = 0
-    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as ex:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as ex:
         futures = {
-            ex.submit(process_org, org, category, city): org for org in orgs
+            ex.submit(enrich_person, p["id"], headers): p
+            for p in direct_people
         }
         for i, future in enumerate(concurrent.futures.as_completed(futures)):
             try:
-                result = future.result()
-                if result:
-                    all_rows.extend(result["rows"])
-                    total_people_raw += result["people_count"]
-                    if result["debug"] and len(debug_samples) < 5:
-                        debug_samples.append({
-                            "org": result["org_name"],
-                            "debug": result["debug"],
-                        })
+                person = future.result()
+                if person and person.get("first_name") and person.get("last_name"):
+                    pid = person.get("id")
+                    if pid:
+                        seen_person_ids.add(pid)
+
+                    title = person.get("title") or ""
+                    if not is_senior_enough(title):
+                        continue
+                    if not _person_matches_location(person, city):
+                        continue
+
+                    name = f"{person.get('first_name', '')} {person.get('last_name', '')}".strip()
+                    email = person.get("email") or "N/A"
+                    phone_nums = person.get("phone_numbers") or []
+                    phone = phone_nums[0].get("sanitized_number") if phone_nums else "N/A"
+                    company = (person.get("organization") or {}).get("name") or "N/A"
+
+                    all_rows.append({
+                        "Name": name,
+                        "Title": title,
+                        "Company": company,
+                        "Email": email,
+                        "Phone": phone or "N/A",
+                        "City": person.get("city") or "N/A",
+                        "State": person.get("state") or "N/A",
+                        "LinkedIn": person.get("linkedin_url") or "N/A",
+                    })
             except Exception:
                 pass
-            progress_bar.progress((i + 1) / len(orgs))
+            progress_bar.progress((i + 1) / len(direct_people))
             status_text.caption(
-                f"Processed {i + 1}/{len(orgs)} firms | {len(all_rows)} contacts found..."
+                f"Enriched {i + 1}/{len(direct_people)} | {len(all_rows)} contacts so far..."
             )
+
+    pass1_count = len(all_rows)
+
+    # ── Pass 2: Org-based search (supplementary — catches different firms) ─
+    with st.spinner(f"Pass 2: Searching firms in **{city}** for additional contacts..."):
+        orgs = search_organizations(category, city)
+
+    if orgs:
+        status_text.caption(f"Found {len(orgs)} firms. Checking for new contacts...")
+        progress_bar.progress(0)
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as ex:
+            futures = {
+                ex.submit(process_org, org, category, city): org for org in orgs
+            }
+            for i, future in enumerate(concurrent.futures.as_completed(futures)):
+                try:
+                    result = future.result()
+                    if result:
+                        for r in result["rows"]:
+                            all_rows.append(r)
+                except Exception:
+                    pass
+                progress_bar.progress((i + 1) / len(orgs))
+                status_text.caption(
+                    f"Processed {i + 1}/{len(orgs)} firms | {len(all_rows)} total contacts..."
+                )
 
     # Deduplicate by name + company
     seen = set()
@@ -453,20 +580,12 @@ if st.button("Search", type="primary"):
 
     status_text.write("Done!")
 
-    # Debug info — always show so we can diagnose issues
+    # Debug info
     with st.expander("Debug Info"):
-        st.write(f"Orgs found: {len(orgs)}")
-        st.write(f"Raw people returned by API: {total_people_raw}")
-        st.write(f"Contacts after filtering: {len(all_rows)}")
+        st.write(f"Pass 1 (people-direct): {pass1_count} contacts")
+        st.write(f"Pass 2 (org-based): {len(all_rows) - pass1_count} additional contacts")
+        st.write(f"Total before dedup: {len(all_rows)}")
         st.write(f"Unique contacts: {len(unique)}")
-        if debug_samples:
-            st.write("API errors from first few orgs:")
-            for d in debug_samples:
-                st.write(f"  **{d['org']}**: {d['debug']}")
-        if orgs[:3]:
-            st.write("Sample orgs found:")
-            for o in orgs[:3]:
-                st.write(f"  - {o.get('name')} (id={o.get('id')}, city={o.get('city')})")
 
     if not unique:
         st.warning(
@@ -475,7 +594,7 @@ if st.button("Search", type="primary"):
         )
         st.stop()
 
-    st.success(f"**{len(unique)}** senior contacts found across **{len(orgs)}** firms.")
+    st.success(f"**{len(unique)}** unique contacts found.")
 
     df = pd.DataFrame(unique)
     st.dataframe(df, use_container_width=True)
