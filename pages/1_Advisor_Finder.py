@@ -5,7 +5,7 @@ import concurrent.futures
 import threading
 import time as _time
 
-st.set_page_config(page_title="NCP Intermediary Sourcing Tool", layout="wide")
+st.set_page_config(page_title="NCP Intermediary Sourcing Tool", page_icon="🔍", layout="wide")
 
 # ---------------------------------------------------------------------------
 # RATE LIMITER  — prevents Apollo 429 avalanche
