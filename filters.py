@@ -7,6 +7,25 @@ def is_buyable_structure(org, mode):
     emp    = org.get("estimated_num_employees", 0) or 0
     status = str(org.get("ownership_status") or "").strip().lower()
     tags   = [t.lower() for t in (org.get("keywords") or [])]
+    name   = (org.get("name") or "").lower()
+    desc   = (org.get("short_description") or "").lower()
+    industry = (org.get("industry") or "").lower()
+
+    # ── Universal: non-acquirable entity types ──
+    # Name-level government signals (safe — these indicate the org IS a govt body)
+    _govt_name_signals = ["federal commission", "federal agency",
+                          "department of", "bureau of", "office of the"]
+    for sig in _govt_name_signals:
+        if sig in name:                                         return False, "Government Entity"
+    # Status-level checks
+    if status in ("government",):                               return False, "Government Entity"
+    if status in ("non-profit", "nonprofit"):                   return False, f"Non-Acquirable ({status})"
+    # Description-level nonprofit signals
+    _np_signals = ["non-profit organization", "nonprofit organization", "501(c)"]
+    for sig in _np_signals:
+        if sig in desc:                                         return False, "Non-Profit"
+    if "non-profit organization management" in industry:        return False, "Non-Profit"
+    if "government administration" in industry and emp > 50:    return False, "Government Entity"
 
     if mode == "A":
         if status == "public":                                  return False, "Publicly Traded"
@@ -30,14 +49,23 @@ _UNIVERSAL_BLOCKS = [
     "eurest", "aramark", "sodexo", "compass group", "canteen",
 ]
 _MODE_A_BLOCKS = [
+    # Non-acquirable entity types
+    " hospital", "medical center", "health system",
+    "law firm", " pllc", " llp",
+    " forum", " blog", " news", " magazine", " journal", " media",
+    " alliance", " coalition", " association", " society", " council",
+    " consortium", " observatory", " institute", " foundation",
+    "center of excellence",
+    "federal ",
+    # Original blocks
     "consulting group", "advisory group", " billing services",
     "software inc", "software llc",
-    # Tech firms that slip through on healthcare-adjacent keywords
-    "healthtech", " technologies", "tech solutions", " it services",
+    "healthtech",
 ]
 
 def is_obvious_mismatch(org, target_niche, mode):
     name = (org.get("name") or "").lower()
+    desc = (org.get("short_description") or "").lower()
     for f in _UNIVERSAL_BLOCKS:
         if f in name: return True, f"Block: '{f}'"
     if mode == "B": return False, "Pass"
@@ -46,6 +74,14 @@ def is_obvious_mismatch(org, target_niche, mode):
         extras += ["realty", "real estate", "lumber", "golf course"]
     for f in extras:
         if f in name: return True, f"Mode-A block: '{f}'"
+    # Description-level blocks for Strategy A — catch entities the name alone misses
+    _desc_blocks = ["non-profit", "nonprofit", "government agency",
+                    "trade association", "professional organization",
+                    "advocacy organization", "blog that", "media outlet",
+                    "news outlet", "law firm", "staffing agency",
+                    "recruitment and staffing", "recruiting agency"]
+    for f in _desc_blocks:
+        if f in desc: return True, f"Desc block: '{f}'"
     return False, "Pass"
 
 
@@ -58,23 +94,28 @@ Company: "{company_name}"
 Description: "{description}"
 Keywords: {keywords}
 
-PASS if the company fits ONE of these:
-1. A direct operator or service provider in the exact niche described above.
-2. A highly adjacent operator serving the same core customer base in a directly related vertical.
-3. Description is vague, but the company name and keywords strongly align with the target niche.
+PASS only if the company's PRIMARY business is directly operating in or providing services
+within the exact niche described above. The company must be a realistic private acquisition
+target — a small-to-mid-size privately held operator or service provider.
 
-FAIL if any of these apply:
-- Software, SaaS, analytics, HealthTech, or pure technology vendor — even if health-adjacent
-- IT services, digital health platform, or software development firm
-- Consulting, billing, staffing, marketing, or outsourced services firm
-- Training, education, or coaching organization with no direct patient/client care operations
-- Medical transportation, non-emergency medical transport (NEMT), or logistics company
-- Large national chain or massive enterprise not suitable for acquisition
-- Completely unrelated industry
+FAIL if ANY of these apply:
+- Government agency, department, commission, or publicly funded body
+- Non-profit, trade association, professional society, advocacy org, or coalition
+- Hospital, health system, or large medical institution (unless that IS the target niche)
+- Law firm, legal practice, or PLLC (unless that IS the target niche)
+- Blog, newsletter, news outlet, media company, podcast, or publishing platform
+- Online forum, community, Discord server, or educational resource site
+- Research institute, think tank, or academic institution
+- The company merely WRITES ABOUT, REPORTS ON, or ADVOCATES for the niche rather than operating in it
+- Staffing, recruiting, or temp agency
+- Large national chain or enterprise not suitable for PE acquisition
+- Completely unrelated industry — the company must actually DO what the niche describes,
+  not just have a tangential keyword overlap
 - "PACE" in the niche means Program for All-Inclusive Care for the Elderly — NOT fitness/pace
 
-If the company appears to be a legitimate local or regional operator in the target niche, PASS them.
-Do not over-filter if the description is brief.
+Be STRICT. A cybersecurity company is not a match for "managed IT services" and vice versa.
+A company that merely mentions a keyword in its description is not a match if its primary
+business is something else.
 Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
 
     else:
@@ -90,14 +131,15 @@ PASS if the company fits ONE of these:
    clients to, partner with, or purchase services from companies in this niche.
 
 FAIL if any of these apply:
-- Insurance company, managed care payer, financial services firm, or health insurer
+- Government agency, department, commission, or publicly funded body
+- Non-profit, trade association, professional society, advocacy org, or coalition
+- Blog, newsletter, news outlet, media company, or publishing platform
+- Research institute, think tank, or academic institution
+- The company merely writes about or advocates for the niche rather than operating in it
+- Staffing, recruiting, or temp agency
 - Large institutional network, national chain, or conglomerate with 10,000+ employees, UNLESS
   it is a direct competitor operating in the exact same niche as the target
-- Technology company, IT firm, HealthTech, software developer, or digital health platform —
-  even if their product serves the healthcare sector
-- Medical transportation, non-emergency medical transport (NEMT), or logistics company
-- Consulting, billing, staffing, training, or outsourced services firm
-- Completely unrelated industry (manufacturing, finance, retail, food service, etc.)
+- Completely unrelated industry (manufacturing, unrelated finance, retail, food service, etc.)
 
 Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
 
