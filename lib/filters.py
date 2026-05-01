@@ -176,6 +176,87 @@ def is_obvious_mismatch(org, target_niche, mode):
 
 
 # ---------------------------------------------------------------------------
+# CHEAP NICHE PRE-FILTER (zero API cost)
+# ---------------------------------------------------------------------------
+_CIVIC_PREFIXES = [
+    "city of ", "county of ", "state of ", "town of ", "village of ",
+    "borough of ", "township of ", "municipality of ",
+    "mayor", "sheriff", "police department", "fire department",
+    "school district", "school board", "public school",
+    "chamber of commerce",
+]
+
+_WELL_KNOWN_NON_TARGETS = [
+    "coca-cola", "coca cola", "pepsi", "pepsico",
+    "walmart", "target corporation", "costco", "kroger", "publix",
+    "amazon.com", "google llc", "microsoft", "apple inc", "meta platforms",
+    "mcdonald's", "mcdonalds", "starbucks", "chick-fil-a",
+    "hibbett", "dollar general", "dollar tree", "family dollar",
+    "home depot", "lowe's", "lowes",
+    "at&t", "verizon", "t-mobile", "sprint",
+    "wells fargo", "bank of america", "jpmorgan", "regions bank",
+    "blue cross", "blue shield", "unitedhealth", "cigna", "aetna",
+    "fedex", "ups ", "usps",
+]
+
+
+def quick_niche_prefilter(org, target_niche, niche_keywords=None):
+    """Zero-cost pre-filter: reject orgs with no niche relevance signal.
+
+    Runs BEFORE the expensive GPT-4o relevance check. Rejects companies
+    whose Apollo metadata has zero overlap with niche-related terms.
+    Companies with sparse metadata pass through to the AI check.
+
+    Args:
+        org: Apollo organization dict.
+        target_niche: e.g. "vet clinics".
+        niche_keywords: list of keyword strings from suggest_search_params().
+
+    Returns:
+        (passes: bool, reason: str)
+    """
+    name = (org.get("name") or "").lower()
+    desc = (org.get("short_description") or org.get("headline") or "").lower()
+    industry = (org.get("industry") or "").lower()
+    tags = [t.lower() for t in (org.get("keywords") or [])]
+
+    # --- Block well-known non-targets by name ---
+    for prefix in _CIVIC_PREFIXES:
+        if name.startswith(prefix):
+            return False, f"Civic entity: '{prefix}'"
+    for term in _WELL_KNOWN_NON_TARGETS:
+        if term in name:
+            return False, f"Well-known non-target: '{term}'"
+
+    # --- If no metadata to check, let the AI decide ---
+    has_metadata = bool(desc.strip()) or bool(industry.strip()) or bool(tags)
+    if not has_metadata:
+        return True, "Sparse metadata — passing to AI check"
+
+    combined = f"{name} {desc} {industry} {' '.join(tags)}"
+
+    # --- Check niche keywords (from suggest_search_params) ---
+    if niche_keywords:
+        for kw in niche_keywords:
+            kw_lower = kw.strip().lower()
+            if len(kw_lower) >= 3 and kw_lower in combined:
+                return True, f"Keyword match: '{kw_lower}'"
+
+    # --- Check individual words from the niche name ---
+    niche_words = set()
+    for word in target_niche.lower().split():
+        cleaned = word.strip(",.;:-()\"'")
+        if len(cleaned) >= 4:
+            niche_words.add(cleaned)
+
+    for word in niche_words:
+        if word in combined:
+            return True, f"Niche word match: '{word}'"
+
+    return False, "No niche relevance signal in metadata"
+
+
+# ---------------------------------------------------------------------------
 # AI RELEVANCE CHECK
 # ---------------------------------------------------------------------------
 def check_relevance_gpt4o(client, company_name, description, keywords, target_niche, mode):

@@ -14,6 +14,7 @@ from lib.api_clients import load_api_keys, make_openai_client
 from lib.ai_params import suggest_search_params
 from lib.apollo_search import search_organizations, web_discovery_pass
 from lib.contacts import firecrawl_scrape, clean_domain
+from lib.filters import is_buyable_structure, is_obvious_mismatch, quick_niche_prefilter
 from lib.worker import process_single_company
 from lib.ncp_portfolio import check_portfolio_conflict
 from lib.constants import OPENAI_MODEL
@@ -439,24 +440,54 @@ def _run_loop():
                     org = state.pop_candidate()
                     if org:
                         comp_name = org.get("name", "Unknown")
+                        skip_analysis = False
 
-                        # Apply per-run size overrides if configured
+                        # ----- CHEAP PRE-FILTERS (zero API cost) -----
+                        # These run BEFORE any expensive API calls to save
+                        # time and credits on obviously irrelevant companies.
+
+                        # 1. Per-run size overrides
                         override_max = config.get("override_size_max")
                         override_min = config.get("override_size_min")
                         emp = org.get("estimated_num_employees", 0) or 0
-                        skip_analysis = False
                         if override_max is not None and emp > override_max:
-                            state.set_event("filtered_oversize", f"Filtered out {comp_name}: {emp} employees > override max {override_max}", "info")
-                            print(f"[Analysis Bot] Filtered out: {comp_name} (size > override max {override_max})")
-                            analysis_final = "idle"
+                            print(f"[Analysis Bot] Pre-filtered: {comp_name} (size {emp} > max {override_max})")
                             skip_analysis = True
                         elif override_min is not None and emp < override_min:
-                            state.set_event("filtered_undersize", f"Filtered out {comp_name}: {emp} employees < override min {override_min}", "info")
-                            print(f"[Analysis Bot] Filtered out: {comp_name} (size < override min {override_min})")
-                            analysis_final = "idle"
+                            print(f"[Analysis Bot] Pre-filtered: {comp_name} (size {emp} < min {override_min})")
                             skip_analysis = True
 
+                        # 2. Structural filter (gov, nonprofit, public, too large)
                         if not skip_analysis:
+                            buyable, reason = is_buyable_structure(org, strategy)
+                            if not buyable:
+                                print(f"[Analysis Bot] Pre-filtered: {comp_name} ({reason})")
+                                skip_analysis = True
+
+                        # 3. Name/description blocklist
+                        if not skip_analysis:
+                            mismatch, reason = is_obvious_mismatch(org, niche, strategy)
+                            if mismatch:
+                                print(f"[Analysis Bot] Pre-filtered: {comp_name} ({reason})")
+                                skip_analysis = True
+
+                        # 4. Niche relevance pre-filter (zero-cost keyword check)
+                        if not skip_analysis:
+                            _niche_kw_list = []
+                            if search_params:
+                                _niche_kw_list = [
+                                    k.strip()
+                                    for k in (search_params.get("keywords") or "").split(",")
+                                    if k.strip()
+                                ]
+                            niche_pass, reason = quick_niche_prefilter(org, niche, _niche_kw_list)
+                            if not niche_pass:
+                                print(f"[Analysis Bot] Pre-filtered: {comp_name} ({reason})")
+                                skip_analysis = True
+
+                        if skip_analysis:
+                            analysis_final = "idle"
+                        else:
                             state.set_event("analyzing", f"Analyzing candidate: {comp_name}. {len(state.candidate_queue)} more in queue.", "info")
                             print(f"[Analysis Bot] Processing: {comp_name}")
                             row = process_single_company(
