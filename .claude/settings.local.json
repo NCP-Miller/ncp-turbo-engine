@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python:*)",
+      "Bash(curl -s -L https://docs.apollo.io/reference/people-api-search)",
+      "WebFetch(domain:docs.apollo.io)",
+      "WebFetch(domain:apolloio.readme.io)",
+      "WebFetch(domain:knowledge.apollo.io)",
+      "WebFetch(domain:apolloio.github.io)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(find C:/Users/TreyMiller -maxdepth 3 -name streamlit.app -o -name .streamlit* -type d)",
+      "Bash(grep -r streamlit C:/Users/TreyMiller/ncp-turbo-engine/ --include=*.py --include=*.txt --include=*.toml --include=*.yml --include=*.yaml)",
+      "WebFetch(domain:github.com)"
+    ]
+  }
+}
