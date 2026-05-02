@@ -1,13 +1,23 @@
 """Company enrichment + scoring functions.
 
-Description generation, differentiation/priority/growth/transaction-readiness
-scoring, and revenue/EBITDA estimation. All API clients/keys are passed in.
+Description generation, differentiation/priority/growth/transaction-readiness/
+conviction scoring, and revenue/EBITDA estimation. All API clients/keys passed in.
 """
 
 import json
+import os
 import concurrent.futures
 
 from lib.constants import OPENAI_MODEL
+
+
+def _load_thesis():
+    thesis_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "ncp_thesis.json")
+    try:
+        with open(thesis_path) as f:
+            return json.load(f)
+    except Exception:
+        return {}
 
 
 # ---------------------------------------------------------------------------
@@ -411,3 +421,80 @@ def estimate_revenue_ebitda(employees, apollo_revenue, niche):
         return f"${n / 1_000:.0f}K"
 
     return f"{_fmt(ebitda_low)}–{_fmt(ebitda_high)}"
+
+
+# ---------------------------------------------------------------------------
+# CONVICTION / EXCITEMENT SCORING
+# ---------------------------------------------------------------------------
+def score_conviction(client, company_name, description, niche, scores, thesis=None, feedback_history=None):
+    """Score conviction on a 1-10 scale using NCP's investment thesis.
+
+    Returns:
+        (score: int 1-10, pitch: str, reasoning: str)
+    """
+    if thesis is None:
+        thesis = _load_thesis()
+
+    feedback_section = ""
+    if feedback_history:
+        recent = feedback_history[-10:]
+        lines = [f"- {fb.get('company', '?')}: {fb.get('feedback', '')}" for fb in recent]
+        feedback_section = f"""
+
+IMPORTANT — Trey's recent feedback on past candidates (learn from this):
+{chr(10).join(lines)}
+
+Use this feedback to calibrate. If Trey rejected something for a reason,
+apply that lesson here. If he liked something, recognize similar traits."""
+
+    prompt = f"""You are a senior associate at {thesis.get('firm', 'a PE firm')}.
+
+Investment mandate: {thesis.get('mandate', '')}
+
+What excites us about a deal:
+{chr(10).join(f'- {s}' for s in thesis.get('excitement_signals', []))}
+
+Deal breakers:
+{chr(10).join(f'- {s}' for s in thesis.get('deal_breakers', []))}
+
+Our conviction bar: {thesis.get('conviction_bar', '')}{feedback_section}
+
+---
+
+Evaluate this company:
+
+Company: "{company_name}"
+Description: "{description}"
+Search niche: "{niche}"
+Differentiation: {scores.get('Differentiated', 'Unknown')}
+Priority: {scores.get('Priority', 'Unknown')}
+Growth: {scores.get('Growth', 'Unknown')}
+Txn Readiness: {scores.get('Txn Readiness', 'Unknown')}
+
+Score your conviction from 1 to 10:
+- 1-3: Not worth pursuing. Generic operator, no clear edge.
+- 4-5: Interesting but nothing special. Wouldn't pitch to Trey.
+- 6-7: Solid candidate with at least one standout trait.
+- 8-9: Genuinely exciting. Clear right to win. Pitch with enthusiasm.
+- 10: Exceptional. Rare find.
+
+Write a 2-3 sentence "pitch" as if you're telling Trey why he should look at
+this company. Be specific — what is SPECIAL about this one? If conviction is
+below 6, be honest about what's missing.
+
+Return JSON only:
+{{"conviction": 8, "pitch": "two to three sentences", "reasoning": "one sentence on what drove the score"}}"""
+
+    try:
+        resp = client.chat.completions.create(
+            model=OPENAI_MODEL,
+            messages=[{"role": "user", "content": prompt}],
+            response_format={"type": "json_object"},
+            timeout=25,
+        )
+        data = json.loads(resp.choices[0].message.content)
+        score = int(data.get("conviction", 5))
+        score = max(1, min(10, score))
+        return score, data.get("pitch", ""), data.get("reasoning", "")
+    except Exception:
+        return 5, "", "Unable to assess conviction"

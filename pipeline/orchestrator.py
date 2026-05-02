@@ -16,9 +16,13 @@ from lib.apollo_search import search_organizations, web_discovery_pass
 from lib.contacts import firecrawl_scrape, clean_domain
 from lib.filters import is_buyable_structure, is_obvious_mismatch, quick_niche_prefilter
 from lib.worker import process_single_company
+from lib.enrichment import score_conviction, _load_thesis
+from lib.feedback import load_feedback
 from lib.ncp_portfolio import check_portfolio_conflict
 from lib.constants import OPENAI_MODEL
 from pipeline.state import PipelineState
+
+CONVICTION_THRESHOLD = 6
 
 
 _thread = None
@@ -93,7 +97,7 @@ def _ensure_thread_running():
 # ---------------------------------------------------------------------------
 # INTERNAL — MEMO GENERATION
 # ---------------------------------------------------------------------------
-def _generate_memo(client, row, niche):
+def _generate_memo(client, row, niche, thesis=None):
     """Generate a structured 1-page investment memo for a qualified candidate."""
     company = row.get("Company", "Unknown")
     description = row.get("Description", "")
@@ -104,6 +108,11 @@ def _generate_memo(client, row, niche):
     differentiated = row.get("Differentiated", "")
     priority = row.get("Priority", "")
     growth = row.get("Growth", "")
+    conviction = row.get("Conviction", "")
+    conviction_pitch = row.get("Conviction Pitch", "")
+
+    if thesis is None:
+        thesis = _load_thesis()
 
     ebitda_caveat = (
         f"Estimated {ebitda} EBITDA (heuristic based on employee count; requires confirmation)"
@@ -111,7 +120,10 @@ def _generate_memo(client, row, niche):
         else "EBITDA not available; primary diligence item"
     )
 
-    prompt = f"""Write a concise 1-page investment memo for a lower middle market private equity firm
+    excitement_signals = thesis.get("excitement_signals", [])
+    excitement_text = chr(10).join(f"- {s}" for s in excitement_signals) if excitement_signals else ""
+
+    prompt = f"""Write a concise 1-page investment memo for {thesis.get('firm', 'a lower middle market PE firm')}
 evaluating the following company as a potential acquisition target in the "{niche}" space.
 
 Company: {company}
@@ -119,26 +131,36 @@ Location: {city}, {state_abbr}
 Employees: {employees}
 Est. EBITDA: {ebitda_caveat}
 Description: {description}
-Differentiation Score: {differentiated}
-Priority Score: {priority}
-Growth Score: {growth}
+Conviction Score: {conviction}/10
+Analyst's Initial Pitch: {conviction_pitch}
+Differentiation: {differentiated}
+Priority: {priority}
+Growth: {growth}
 
-CRITICAL — Honesty rules for this memo:
-- The "Est. EBITDA" value above is a heuristic estimate based on employee count, not real financial data. Always present it with the caveat that it requires confirmation via diligence.
-- Do NOT invent ownership status, growth rates, customer concentration, or financial metrics that aren't provided in the input data.
-- If you don't have a fact, write "Not available; primary diligence item" rather than speculating.
-- The memo is a starting point for analyst review, not a final document. Bias toward honest gaps over polished invention.
+What excites NCP about a deal:
+{excitement_text}
 
-Structure the memo with exactly these five sections:
+Conviction bar: {thesis.get('conviction_bar', '')}
 
-1. **Company Overview** — What the company does, where it operates, approximate scale.
-2. **Differentiated Value Proposition** — What makes this company stand out from competitors in the niche.
-3. **Market Opportunity & Growth** — TAM/SAM dynamics, secular tailwinds, growth levers.
-4. **NCP Fit Rationale** — Why this fits NCP's lower middle market, services-oriented thesis.
-5. **Key Risks & Diligence Items** — Top 3-5 risks or open questions for due diligence.
+CRITICAL — Honesty rules:
+- Est. EBITDA is a heuristic. Always caveat it.
+- Do NOT invent ownership, growth rates, financials, or customer data.
+- If you lack a fact, write "Not available; primary diligence item."
+- Bias toward honest gaps over polished invention.
 
-Keep it factual and concise. If information is limited, note what needs further diligence
-rather than speculating. Write in a professional PE memo tone."""
+Structure the memo with exactly these sections:
+
+1. **Why We're Excited** — 2-3 sentences. Lead with the SPECIFIC reason this company
+   stands out. What is the "right to win"? Why should Trey want to take this call?
+   Use the analyst pitch as a starting point but make it sharper and more specific.
+2. **Company Overview** — What they do, where they operate, approximate scale.
+3. **Differentiated Value Proposition** — What moat or advantage they hold.
+4. **Market Opportunity & Growth** — TAM/SAM, secular tailwinds, growth levers.
+5. **NCP Fit Rationale** — Why this fits the lower middle market, services-oriented,
+   founder-owned thesis specifically.
+6. **Key Risks & Diligence Items** — Top 3-5 risks or open questions.
+
+Write in a professional PE memo tone. Factual and concise."""
 
     try:
         resp = client.chat.completions.create(
@@ -167,6 +189,8 @@ def _run_loop():
     apollo_key = keys["APOLLO_API_KEY"]
     firecrawl_key = keys["FIRECRAWL_API_KEY"]
     user_agent = keys["HTTP_USER_AGENT"]
+
+    _thesis = _load_thesis()
 
     # Curried firecrawl scraper for web_discovery_pass
     def _scrape(url):
@@ -514,14 +538,30 @@ def _run_loop():
                                         row.get("Company", ""),
                                         row.get("Description", ""),
                                     )
-                                    diff = row.get("Differentiated", "Low")
-                                    if not conflict.get("conflicts") and diff in ("High", "Medium"):
-                                        state.add_qualified(row)
-                                        state.set_event("qualified", f"Qualified candidate: {comp_name} (Diff={diff}). {len(state.completed_memos)+len(state.qualified_queue)+1}/{target_count} memos so far.", "success")
-                                        print(f"[Analysis Bot] Qualified: {comp_name} (Diff={diff})")
+                                    if conflict.get("conflicts"):
+                                        print(f"[Analysis Bot] Filtered out: {comp_name} (portfolio conflict)")
                                     else:
-                                        reason = "portfolio conflict" if conflict.get("conflicts") else f"Diff={diff}"
-                                        print(f"[Analysis Bot] Filtered out: {comp_name} ({reason})")
+                                        # Conviction scoring — the final gate
+                                        state.batch_update(bot_status={"analysis": "scoring_conviction"})
+                                        feedback_history = load_feedback()
+                                        conv_score, conv_pitch, conv_reason = score_conviction(
+                                            client, comp_name, row.get("Description", ""),
+                                            niche, row, thesis=_thesis, feedback_history=feedback_history,
+                                        )
+                                        row["Conviction"] = conv_score
+                                        row["Conviction Pitch"] = conv_pitch
+                                        row["Conviction Reasoning"] = conv_reason
+
+                                        if conv_score >= CONVICTION_THRESHOLD:
+                                            state.add_qualified(row)
+                                            state.set_event(
+                                                "qualified",
+                                                f"Excited about {comp_name} (conviction {conv_score}/10): {conv_pitch[:120]}",
+                                                "success",
+                                            )
+                                            print(f"[Analysis Bot] Qualified: {comp_name} (conviction={conv_score}/10)")
+                                        else:
+                                            print(f"[Analysis Bot] Below conviction bar: {comp_name} ({conv_score}/10 — {conv_reason})")
                             else:
                                 print(f"[Analysis Bot] Filtered out: {comp_name} (did not pass filters)")
 
@@ -546,7 +586,7 @@ def _run_loop():
                         comp_name = row.get("Company", "Unknown")
                         state.set_event("writing_memo", f"Generating investment memo for {comp_name}.", "info")
                         print(f"[Write-up Bot] Generating memo: {comp_name}")
-                        memo_text = _generate_memo(client, row, niche)
+                        memo_text = _generate_memo(client, row, niche, thesis=_thesis)
                         memo = {
                             "company": comp_name,
                             "row": row,
