@@ -28,10 +28,11 @@ SEARCH_STATUS_LABELS = {
 }
 
 ANALYSIS_STATUS_LABELS = {
-    "idle":              ("⚪", "Idle"),
-    "filtering":         ("🔬", "Filtering Candidate"),
-    "checking_conflict": ("🛡️", "Checking Portfolio Conflict"),
-    "error":             ("⚠️", "Error"),
+    "idle":               ("⚪", "Idle"),
+    "filtering":          ("🔬", "Filtering Candidate"),
+    "checking_conflict":  ("🛡️", "Checking Portfolio Conflict"),
+    "scoring_conviction": ("🎯", "Scoring Conviction"),
+    "error":              ("⚠️", "Error"),
 }
 
 WRITEUP_STATUS_LABELS = {
@@ -275,10 +276,11 @@ with tab_chat:
                     )
                     state.add_chat(
                         "assistant",
-                        f"Got it. I'm starting the search now. I'll work through multiple search "
-                        f"strategies in the background and bring back {target_count} companies that "
-                        f"fit NCP's criteria and are genuinely differentiated. You can give me "
-                        f"feedback at any time and I'll adjust.",
+                        f"Got it. I know what NCP looks for — founder-owned, differentiated, "
+                        f"right to win, growing market, no PE on the cap table. I'll search "
+                        f"multiple channels and only bring you companies I'm genuinely excited "
+                        f"about (conviction 6+/10). You'll get {target_count} with investment "
+                        f"memos. Give me feedback on each one and I'll learn your preferences.",
                     )
                     st.rerun()
     else:
@@ -508,9 +510,16 @@ with tab_memos:
         # Individual memo expanders
         for memo in state.completed_memos:
             row = memo.get("row", {})
+            conv = row.get("Conviction", "")
+            conv_label = f" — Conviction {conv}/10" if conv else ""
             with st.expander(
-                f"{memo['company']} — {row.get('City', '')}, {row.get('State', '')}"
+                f"{memo['company']} — {row.get('City', '')}, {row.get('State', '')}{conv_label}"
             ):
+                # Conviction pitch banner
+                conv_pitch = row.get("Conviction Pitch", "")
+                if conv_pitch:
+                    st.info(f"**Why we're excited:** {conv_pitch}")
+
                 left, right = st.columns(2)
                 with left:
                     st.markdown(f"**City/State:** {row.get('City', 'N/A')}, {row.get('State', 'N/A')}")
@@ -518,6 +527,8 @@ with tab_memos:
                     st.markdown(f"**Est. EBITDA:** {row.get('Est. EBITDA', 'N/A')}")
                     st.markdown(f"**Website:** {row.get('Website', 'N/A')}")
                 with right:
+                    if conv:
+                        st.markdown(f"**Conviction:** {conv}/10")
                     st.markdown(f"**Differentiated:** {row.get('Differentiated', 'N/A')}")
                     st.markdown(f"**Priority:** {row.get('Priority', 'N/A')}")
                     st.markdown(f"**Growth:** {row.get('Growth', 'N/A')}")
@@ -530,6 +541,26 @@ with tab_memos:
                     st.markdown(
                         f"**Contact:** {row.get('CEO/Owner Name', '')} — {row.get('Email')}"
                     )
+
+                # Feedback buttons
+                fb_key = f"fb_{memo['company'].replace(' ', '_')}"
+                fb_cols = st.columns(3)
+                with fb_cols[0]:
+                    if st.button("👍 Interested", key=f"{fb_key}_yes"):
+                        from lib.feedback import save_feedback
+                        save_feedback(memo["company"], "Interested — wants to pursue", niche=cfg.get("niche"), verdict="liked")
+                        st.success("Noted — we'll find more like this.")
+                with fb_cols[1]:
+                    if st.button("👎 Pass", key=f"{fb_key}_no"):
+                        from lib.feedback import save_feedback
+                        save_feedback(memo["company"], "Passed", niche=cfg.get("niche"), verdict="rejected")
+                        st.info("Noted.")
+                with fb_cols[2]:
+                    fb_text = st.text_input("Feedback", key=f"{fb_key}_text", placeholder="e.g., too big, not differentiated enough")
+                    if fb_text:
+                        from lib.feedback import save_feedback
+                        save_feedback(memo["company"], fb_text, niche=cfg.get("niche"), verdict="caveats")
+                        st.info("Feedback saved — future searches will learn from this.")
 
 
 # ---------------------------------------------------------------------------

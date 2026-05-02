@@ -1,0 +1,36 @@
+{
+  "firm": "New Capital Partners (NCP)",
+  "mandate": "Lower middle market private equity — proprietary acquisition of founder-owned service businesses",
+  "size": {
+    "min_employees": 15,
+    "max_employees": 500,
+    "sweet_spot_employees": [20, 200],
+    "ebitda_range": ["$1M", "$5M"]
+  },
+  "geography": "Eastern US preferred (Colorado/Denver and east)",
+  "ownership": {
+    "founder_owned": "required",
+    "pe_backed": "hard_no",
+    "vc_backed": "hard_no",
+    "informal_family_friends_investors": "ok",
+    "public": "hard_no"
+  },
+  "excitement_signals": [
+    "Growing market with secular tailwinds (aging population, pet ownership, cybersecurity mandates, etc.)",
+    "Limited direct competition in the local/regional market",
+    "Clear 'right to win' — something genuinely special about this company",
+    "Defensible moat: accreditation, certification, proprietary process, regulatory license, IP",
+    "Recurring or contractual revenue (wellness plans, subscriptions, retainers, managed services)",
+    "Multi-location operator with whitespace to expand",
+    "Essential/non-cyclical service people can't stop buying",
+    "Founder approaching retirement — natural succession opportunity",
+    "Fragmented market with no dominant player — ripe for buy-and-build"
+  ],
+  "deal_breakers": [
+    "Professional PE or VC investor on the cap table",
+    "Commodity service with no differentiation from competitors",
+    "Declining or shrinking addressable market",
+    "Heavy customer concentration (>30% from one client)"
+  ],
+  "conviction_bar": "Only present companies where you can articulate a specific, compelling reason to be excited. 'Good company in a growing market' is not enough. What makes THIS one special? What is the unfair advantage?"
+}
