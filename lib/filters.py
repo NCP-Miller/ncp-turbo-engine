@@ -200,17 +200,34 @@ _WELL_KNOWN_NON_TARGETS = [
 ]
 
 
+_NICHE_STOPWORDS = {
+    "management", "services", "service", "solutions", "group", "company",
+    "companies", "firm", "firms", "business", "businesses", "money",
+    "institution", "institutions", "provider", "providers", "industry",
+    "focus", "focuses", "focused", "managing", "that", "with", "from",
+    "their", "they", "this", "these", "those", "high", "more", "most",
+    "some", "other", "also", "very", "just", "only", "such", "like",
+    "well", "about", "into", "over", "after", "before", "between",
+    "under", "through", "during", "does", "have", "been", "being",
+    "were", "will", "would", "could", "should", "technology",
+    "technologies", "tech", "platform", "software", "digital",
+    "national", "international", "global", "local", "regional",
+    "north", "south", "east", "west", "carolina", "georgia", "alabama",
+    "florida", "texas", "virginia", "york",
+}
+
+
 def quick_niche_prefilter(org, target_niche, niche_keywords=None):
     """Zero-cost pre-filter: reject orgs with no niche relevance signal.
 
-    Runs BEFORE the expensive GPT-4o relevance check. Rejects companies
-    whose Apollo metadata has zero overlap with niche-related terms.
-    Companies with sparse metadata pass through to the AI check.
+    Matches ONLY against AI-generated multi-word keyword phrases from
+    suggest_search_params(). Single-word niche splitting is disabled
+    because generic words like "management" cause massive false positives.
 
     Args:
         org: Apollo organization dict.
         target_niche: e.g. "vet clinics".
-        niche_keywords: list of keyword strings from suggest_search_params().
+        niche_keywords: list of keyword phrases from suggest_search_params().
 
     Returns:
         (passes: bool, reason: str)
@@ -235,23 +252,28 @@ def quick_niche_prefilter(org, target_niche, niche_keywords=None):
 
     combined = f"{name} {desc} {industry} {' '.join(tags)}"
 
-    # --- Check niche keywords (from suggest_search_params) ---
+    # --- Check AI-generated keyword phrases (multi-word, specific) ---
     if niche_keywords:
         for kw in niche_keywords:
             kw_lower = kw.strip().lower()
             if len(kw_lower) >= 3 and kw_lower in combined:
                 return True, f"Keyword match: '{kw_lower}'"
 
-    # --- Check individual words from the niche name ---
+    # --- Check non-stopword niche words (only specific terms) ---
     niche_words = set()
     for word in target_niche.lower().split():
         cleaned = word.strip(",.;:-()\"'")
-        if len(cleaned) >= 4:
+        if len(cleaned) >= 4 and cleaned not in _NICHE_STOPWORDS:
             niche_words.add(cleaned)
 
-    for word in niche_words:
-        if word in combined:
-            return True, f"Niche word match: '{word}'"
+    if niche_words:
+        for word in niche_words:
+            if word in combined:
+                return True, f"Niche word match: '{word}'"
+    else:
+        # All niche words were stopwords — rely entirely on keyword phrases.
+        # If keywords also didn't match, this org is irrelevant.
+        pass
 
     return False, "No niche relevance signal in metadata"
 
