@@ -241,7 +241,7 @@ with st.sidebar:
 # ---------------------------------------------------------------------------
 # MAIN AREA — Tabs
 # ---------------------------------------------------------------------------
-tab_chat, tab_memos = st.tabs(["💬 Chat with Boss Bot", "📄 Investment Memos"])
+tab_chat, tab_memos, tab_overview = st.tabs(["💬 Chat with Boss Bot", "📄 Investment Memos", "🔍 Search Overview"])
 
 # ---------------------------------------------------------------------------
 # Tab: Chat with Boss Bot
@@ -561,6 +561,77 @@ with tab_memos:
                         from lib.feedback import save_feedback
                         save_feedback(memo["company"], fb_text, niche=cfg.get("niche"), verdict="caveats")
                         st.info("Feedback saved — future searches will learn from this.")
+
+
+# ---------------------------------------------------------------------------
+# Tab: Search Overview (filtration funnel)
+# ---------------------------------------------------------------------------
+with tab_overview:
+    try:
+        fs = state.filter_stats
+    except (AttributeError, KeyError):
+        fs = {}
+
+    total = fs.get("total_sourced", 0)
+
+    if total == 0:
+        st.info("No candidates analyzed yet. Start a search to see the filtration funnel.")
+    else:
+        st.subheader("Filtration Funnel")
+
+        pf_size = fs.get("pre_filtered_size", 0)
+        pf_struct = fs.get("pre_filtered_structural", 0)
+        pf_block = fs.get("pre_filtered_blocklist", 0)
+        pf_niche = fs.get("pre_filtered_niche", 0)
+        pf_total = pf_size + pf_struct + pf_block + pf_niche
+
+        deep_failed = fs.get("deep_analysis_failed", 0)
+        pe = fs.get("pe_backed", 0)
+        conflict = fs.get("portfolio_conflict", 0)
+        low_diff = fs.get("low_differentiation", 0)
+        qualified = fs.get("qualified", 0)
+        memos = len(state.completed_memos or [])
+
+        sent_to_deep = total - pf_total
+        remaining_queue = len(state.candidate_queue or [])
+
+        st.markdown(f"""
+| Stage | Count | % of Total |
+|-------|------:|----------:|
+| **Candidates Sourced** | **{total}** | 100% |
+| Pre-filtered *(zero API cost)* | {pf_total} | {pf_total*100//max(total,1)}% |
+| &nbsp;&nbsp;&nbsp;&nbsp;Size caps | {pf_size} | |
+| &nbsp;&nbsp;&nbsp;&nbsp;Gov / nonprofit / public | {pf_struct} | |
+| &nbsp;&nbsp;&nbsp;&nbsp;Name blocklist | {pf_block} | |
+| &nbsp;&nbsp;&nbsp;&nbsp;No niche signal | {pf_niche} | |
+| Sent to deep analysis | {sent_to_deep} | {sent_to_deep*100//max(total,1)}% |
+| &nbsp;&nbsp;&nbsp;&nbsp;Failed AI relevance / filters | {deep_failed} | |
+| &nbsp;&nbsp;&nbsp;&nbsp;PE-backed | {pe} | |
+| &nbsp;&nbsp;&nbsp;&nbsp;Portfolio conflict | {conflict} | |
+| &nbsp;&nbsp;&nbsp;&nbsp;Low conviction | {low_diff} | |
+| **Qualified** | **{qualified}** | {qualified*100//max(total,1)}% |
+| **Memos Generated** | **{memos}** | |
+| Still in queue | {remaining_queue} | |
+""")
+
+        st.divider()
+
+        if pf_total > 0:
+            st.caption("Pre-filter effectiveness")
+            cols = st.columns(4)
+            cols[0].metric("Size", pf_size)
+            cols[1].metric("Structural", pf_struct)
+            cols[2].metric("Blocklist", pf_block)
+            cols[3].metric("No Niche Signal", pf_niche)
+
+            savings_pct = pf_total * 100 // max(total, 1)
+            st.success(
+                f"Pre-filters saved {pf_total} API calls ({savings_pct}% of candidates blocked at zero cost)."
+            )
+
+        if sent_to_deep > 0 and qualified > 0:
+            hit_rate = qualified * 100 // max(sent_to_deep, 1)
+            st.info(f"Deep analysis hit rate: {hit_rate}% ({qualified} qualified out of {sent_to_deep} analyzed)")
 
 
 # ---------------------------------------------------------------------------

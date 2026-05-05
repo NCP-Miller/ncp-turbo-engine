@@ -469,10 +469,9 @@ def _run_loop():
                     if org:
                         comp_name = org.get("name", "Unknown")
                         skip_analysis = False
+                        state.increment_filter_stat("total_sourced")
 
                         # ----- CHEAP PRE-FILTERS (zero API cost) -----
-                        # These run BEFORE any expensive API calls to save
-                        # time and credits on obviously irrelevant companies.
 
                         # 1. Per-run size overrides
                         override_max = config.get("override_size_max")
@@ -480,9 +479,11 @@ def _run_loop():
                         emp = org.get("estimated_num_employees", 0) or 0
                         if override_max is not None and emp > override_max:
                             print(f"[Analysis Bot] Pre-filtered: {comp_name} (size {emp} > max {override_max})")
+                            state.increment_filter_stat("pre_filtered_size")
                             skip_analysis = True
                         elif override_min is not None and emp < override_min:
                             print(f"[Analysis Bot] Pre-filtered: {comp_name} (size {emp} < min {override_min})")
+                            state.increment_filter_stat("pre_filtered_size")
                             skip_analysis = True
 
                         # 2. Structural filter (gov, nonprofit, public, too large)
@@ -490,6 +491,7 @@ def _run_loop():
                             buyable, reason = is_buyable_structure(org, strategy)
                             if not buyable:
                                 print(f"[Analysis Bot] Pre-filtered: {comp_name} ({reason})")
+                                state.increment_filter_stat("pre_filtered_structural")
                                 skip_analysis = True
 
                         # 3. Name/description blocklist
@@ -497,6 +499,7 @@ def _run_loop():
                             mismatch, reason = is_obvious_mismatch(org, niche, strategy)
                             if mismatch:
                                 print(f"[Analysis Bot] Pre-filtered: {comp_name} ({reason})")
+                                state.increment_filter_stat("pre_filtered_blocklist")
                                 skip_analysis = True
 
                         # 4. Niche relevance pre-filter (zero-cost keyword check)
@@ -511,6 +514,7 @@ def _run_loop():
                             niche_pass, reason = quick_niche_prefilter(org, niche, _niche_kw_list)
                             if not niche_pass:
                                 print(f"[Analysis Bot] Pre-filtered: {comp_name} ({reason})")
+                                state.increment_filter_stat("pre_filtered_niche")
                                 skip_analysis = True
 
                         if skip_analysis:
@@ -534,6 +538,7 @@ def _run_loop():
                                 if pe_check.get("is_pe_backed"):
                                     evidence = pe_check.get("evidence", "PE-backed")
                                     print(f"[Analysis Bot] Filtered out: {comp_name} ({evidence})")
+                                    state.increment_filter_stat("pe_backed")
                                 else:
                                     # Portfolio conflict check
                                     state.batch_update(bot_status={"analysis": "checking_conflict"})
@@ -544,6 +549,7 @@ def _run_loop():
                                     )
                                     if conflict.get("conflicts"):
                                         print(f"[Analysis Bot] Filtered out: {comp_name} (portfolio conflict)")
+                                        state.increment_filter_stat("portfolio_conflict")
                                     else:
                                         # Conviction scoring — the final gate
                                         state.batch_update(bot_status={"analysis": "scoring_conviction"})
@@ -558,6 +564,7 @@ def _run_loop():
 
                                         if conv_score >= CONVICTION_THRESHOLD:
                                             state.add_qualified(row)
+                                            state.increment_filter_stat("qualified")
                                             state.set_event(
                                                 "qualified",
                                                 f"Excited about {comp_name} (conviction {conv_score}/10): {conv_pitch[:120]}",
@@ -565,8 +572,10 @@ def _run_loop():
                                             )
                                             print(f"[Analysis Bot] Qualified: {comp_name} (conviction={conv_score}/10)")
                                         else:
+                                            state.increment_filter_stat("low_differentiation")
                                             print(f"[Analysis Bot] Below conviction bar: {comp_name} ({conv_score}/10 — {conv_reason})")
                             else:
+                                state.increment_filter_stat("deep_analysis_failed")
                                 print(f"[Analysis Bot] Filtered out: {comp_name} (did not pass filters)")
 
                     analysis_final = "idle"

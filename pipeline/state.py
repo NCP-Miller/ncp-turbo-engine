@@ -22,6 +22,18 @@ def _default_state():
         "user_feedback": [],
         "seen_domains": [],
         "seen_names": [],
+        "filter_stats": {
+            "total_sourced": 0,
+            "pre_filtered_size": 0,
+            "pre_filtered_structural": 0,
+            "pre_filtered_blocklist": 0,
+            "pre_filtered_niche": 0,
+            "deep_analysis_failed": 0,
+            "pe_backed": 0,
+            "portfolio_conflict": 0,
+            "low_differentiation": 0,
+            "qualified": 0,
+        },
         "last_event": {
             "type": "idle",
             "message": "Pipeline ready. Configure and click Start.",
@@ -186,6 +198,35 @@ class PipelineState:
             except sqlite3.OperationalError:
                 self._conn.execute("ROLLBACK")
                 raise
+            except Exception:
+                self._conn.execute("ROLLBACK")
+                raise
+
+    def increment_filter_stat(self, key, amount=1):
+        """Thread-safe increment of a filter_stats counter."""
+        with self._lock:
+            self._conn.execute("BEGIN IMMEDIATE")
+            try:
+                stats = self._get("filter_stats")
+                stats[key] = stats.get(key, 0) + amount
+                self._set("filter_stats", stats)
+                self._conn.execute("COMMIT")
+            except KeyError:
+                self._conn.execute("ROLLBACK")
+                defaults = {
+                    "total_sourced": 0, "pre_filtered_size": 0,
+                    "pre_filtered_structural": 0, "pre_filtered_blocklist": 0,
+                    "pre_filtered_niche": 0, "deep_analysis_failed": 0,
+                    "pe_backed": 0, "portfolio_conflict": 0,
+                    "low_differentiation": 0, "qualified": 0,
+                }
+                defaults[key] = amount
+                self._conn.execute("BEGIN IMMEDIATE")
+                self._conn.execute(
+                    "INSERT OR REPLACE INTO pipeline_state (key, value) VALUES (?, ?)",
+                    ("filter_stats", json.dumps(defaults)),
+                )
+                self._conn.execute("COMMIT")
             except Exception:
                 self._conn.execute("ROLLBACK")
                 raise
