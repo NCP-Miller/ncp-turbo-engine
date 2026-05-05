@@ -314,6 +314,8 @@ def _run_loop():
                 if search_exhausted:
                     search_final = "exhausted"
                 elif len(state.candidate_queue) >= 20:
+                    if len(state.candidate_queue) > 200:
+                        print(f"[Search Bot] Queue capped at {len(state.candidate_queue)}. Waiting for analysis to drain.")
                     search_final = "idle"
                 else:
                     # First iteration: ask AI for Apollo search params
@@ -327,16 +329,14 @@ def _run_loop():
                         if t.strip()
                     ]
 
-                    # Determine max_pages and keyword behavior based on round
+                    # Determine max_pages based on round; keyword tags always active
                     if _search_round == 1:
                         round_max_pages = 3
-                        round_keyword_tags = keyword_tags
                     elif _search_round == 2:
                         round_max_pages = 6
-                        round_keyword_tags = keyword_tags
                     else:
                         round_max_pages = 10
-                        round_keyword_tags = None  # broaden search
+                    round_keyword_tags = keyword_tags
 
                     seen_domains = set(state.seen_domains)
                     seen_names = set(state.seen_names)
@@ -351,15 +351,18 @@ def _run_loop():
                             apollo_key,
                             industries=[industry],
                             location_input=geography,
-                            keyword_tags=round_keyword_tags if industry_index == 0 else None,
+                            keyword_tags=round_keyword_tags,
                             max_pages=round_max_pages,
                         )
 
-                        # Accumulate new orgs and seen-set additions, then batch-write once
+                        # Accumulate new orgs, capping to prevent queue bloat
+                        max_new = max(0, 200 - len(state.candidate_queue))
                         new_orgs = []
                         new_domains = []
                         new_names = []
                         for org in orgs:
+                            if len(new_orgs) >= max_new:
+                                break
                             domain = clean_domain(org.get("website_url"))
                             name_lower = (org.get("name") or "").strip().lower()
                             if domain and domain in seen_domains:
@@ -376,6 +379,7 @@ def _run_loop():
 
                         if new_orgs:
                             state.add_candidates_batch(new_orgs, new_domains, new_names)
+                            print(f"[Search Bot] Added {len(new_orgs)} candidates (queue: {len(state.candidate_queue)+len(new_orgs)})")
 
                         industry_index += 1
                         if industry_index >= len(industries):
