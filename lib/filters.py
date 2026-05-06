@@ -217,17 +217,18 @@ _NICHE_STOPWORDS = {
 }
 
 
-def quick_niche_prefilter(org, target_niche, niche_keywords=None):
+def quick_niche_prefilter(org, target_niche, niche_keywords=None, niche_industries=None):
     """Zero-cost pre-filter: reject orgs with no niche relevance signal.
 
-    Matches ONLY against AI-generated multi-word keyword phrases from
-    suggest_search_params(). Single-word niche splitting is disabled
-    because generic words like "management" cause massive false positives.
+    Matches against AI-generated keyword phrases and industry classifications.
+    Companies in a matching Apollo industry are passed to the AI check even
+    without an exact keyword match (Apollo tagging is inconsistent).
 
     Args:
         org: Apollo organization dict.
         target_niche: e.g. "vet clinics".
         niche_keywords: list of keyword phrases from suggest_search_params().
+        niche_industries: list of Apollo industry names from suggest_search_params().
 
     Returns:
         (passes: bool, reason: str)
@@ -270,10 +271,13 @@ def quick_niche_prefilter(org, target_niche, niche_keywords=None):
         for word in niche_words:
             if word in combined:
                 return True, f"Niche word match: '{word}'"
-    else:
-        # All niche words were stopwords — rely entirely on keyword phrases.
-        # If keywords also didn't match, this org is irrelevant.
-        pass
+
+    # --- Industry match: if Apollo's industry classification matches,
+    #     let the AI relevance check make the final call ---
+    if niche_industries and industry:
+        for ni in niche_industries:
+            if ni.lower() == industry:
+                return True, f"Industry match: '{ni}'"
 
     return False, "No niche relevance signal in metadata"
 

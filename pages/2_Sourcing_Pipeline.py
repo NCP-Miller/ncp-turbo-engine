@@ -511,10 +511,22 @@ with tab_memos:
         for memo in state.completed_memos:
             row = memo.get("row", {})
             conv = row.get("Conviction", "")
+            is_closest_fit = memo.get("closest_fit", False)
             conv_label = f" — Conviction {conv}/10" if conv else ""
+            if is_closest_fit:
+                conv_label += " ⚠️ CLOSEST FIT"
             with st.expander(
                 f"{memo['company']} — {row.get('City', '')}, {row.get('State', '')}{conv_label}"
             ):
+                # Closest-fit warning banner
+                if is_closest_fit:
+                    cf_reason = memo.get("closest_fit_reason", "Below conviction threshold")
+                    st.warning(
+                        f"**Closest Fit — Not a recommendation.** This company came closest to qualifying "
+                        f"but didn't clear the conviction bar. Reason: {cf_reason}. "
+                        f"Review it to help calibrate whether the bar is too high or the niche is too narrow."
+                    )
+
                 # Conviction pitch banner
                 conv_pitch = row.get("Conviction Pitch", "")
                 if conv_pitch:

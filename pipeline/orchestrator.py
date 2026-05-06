@@ -433,15 +433,44 @@ def _run_loop():
                             state.reload_from_disk()
                             if not state.candidate_queue and len(state.completed_memos) < target_count:
                                 search_exhausted = True
-                                state.set_event("exhausted", f"Search exhausted after 4 rounds. Found {len(state.completed_memos)}/{target_count} memos. Try broadening niche or geography, or lowering target count.", "warning")
+
+                                # --- Closest-fit memo: if 0 memos, surface the best near-miss ---
+                                try:
+                                    near_misses = state.near_misses
+                                except (AttributeError, KeyError):
+                                    near_misses = []
+
+                                if len(state.completed_memos) == 0 and near_misses:
+                                    best = max(near_misses, key=lambda m: m.get("row", {}).get("Conviction", 0))
+                                    best_row = best.get("row", {})
+                                    best_reason = best.get("reason", "")
+                                    best_name = best_row.get("Company", "Unknown")
+                                    print(f"[Search Bot] Generating closest-fit memo for: {best_name}")
+                                    state.set_event("writing_closest_fit", f"No companies met the conviction bar. Generating closest-fit memo for {best_name}.", "warning")
+                                    memo_text = _generate_memo(client, best_row, niche)
+                                    memo = {
+                                        "company": best_name,
+                                        "row": best_row,
+                                        "memo": memo_text,
+                                        "closest_fit": True,
+                                        "closest_fit_reason": best_reason,
+                                    }
+                                    state.add_memo(memo)
+                                    state.set_event(
+                                        "exhausted",
+                                        f"Search exhausted. No companies met conviction bar. Closest fit: {best_name} ({best_reason}). Review in Investment Memos tab.",
+                                        "warning",
+                                    )
+                                else:
+                                    state.set_event("exhausted", f"Search exhausted after 4 rounds. Found {len(state.completed_memos)}/{target_count} memos. Try broadening niche or geography, or lowering target count.", "warning")
+
                                 state.batch_update(
                                     bot_status={"search": "exhausted"},
                                     status="stopped",
                                 )
                                 print(
                                     f"[Search Bot] Exhausted all 4 search rounds. "
-                                    f"Only {len(state.completed_memos)}/{target_count} memos completed. "
-                                    f"Could not find enough qualified companies. Stopping pipeline."
+                                    f"{len(state.completed_memos)}/{target_count} memos completed."
                                 )
                                 search_final = "exhausted"
                             else:
@@ -502,16 +531,20 @@ def _run_loop():
                                 state.increment_filter_stat("pre_filtered_blocklist")
                                 skip_analysis = True
 
-                        # 4. Niche relevance pre-filter (zero-cost keyword check)
+                        # 4. Niche relevance pre-filter (zero-cost keyword + industry check)
                         if not skip_analysis:
                             _niche_kw_list = []
+                            _niche_ind_list = []
                             if search_params:
                                 _niche_kw_list = [
                                     k.strip()
                                     for k in (search_params.get("keywords") or "").split(",")
                                     if k.strip()
                                 ]
-                            niche_pass, reason = quick_niche_prefilter(org, niche, _niche_kw_list)
+                                _niche_ind_list = search_params.get("industries") or []
+                            niche_pass, reason = quick_niche_prefilter(
+                                org, niche, _niche_kw_list, _niche_ind_list,
+                            )
                             if not niche_pass:
                                 print(f"[Analysis Bot] Pre-filtered: {comp_name} ({reason})")
                                 state.increment_filter_stat("pre_filtered_niche")
@@ -573,6 +606,7 @@ def _run_loop():
                                             print(f"[Analysis Bot] Qualified: {comp_name} (conviction={conv_score}/10)")
                                         else:
                                             state.increment_filter_stat("low_differentiation")
+                                            state.add_near_miss(row, f"Conviction {conv_score}/10: {conv_reason}")
                                             print(f"[Analysis Bot] Below conviction bar: {comp_name} ({conv_score}/10 — {conv_reason})")
                             else:
                                 state.increment_filter_stat("deep_analysis_failed")
