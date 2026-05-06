@@ -22,6 +22,7 @@ def _default_state():
         "user_feedback": [],
         "seen_domains": [],
         "seen_names": [],
+        "near_misses": [],
         "filter_stats": {
             "total_sourced": 0,
             "pre_filtered_size": 0,
@@ -226,6 +227,29 @@ class PipelineState:
                     "INSERT OR REPLACE INTO pipeline_state (key, value) VALUES (?, ?)",
                     ("filter_stats", json.dumps(defaults)),
                 )
+                self._conn.execute("COMMIT")
+            except Exception:
+                self._conn.execute("ROLLBACK")
+                raise
+
+    def add_near_miss(self, row, reason):
+        """Save a company that came close but didn't qualify."""
+        entry = {"row": row, "reason": reason}
+        with self._lock:
+            self._conn.execute("BEGIN IMMEDIATE")
+            try:
+                try:
+                    misses = self._get("near_misses")
+                except KeyError:
+                    misses = []
+                    self._conn.execute(
+                        "INSERT INTO pipeline_state (key, value) VALUES (?, ?)",
+                        ("near_misses", "[]"),
+                    )
+                misses.append(entry)
+                if len(misses) > 10:
+                    misses = misses[-10:]
+                self._set("near_misses", misses)
                 self._conn.execute("COMMIT")
             except Exception:
                 self._conn.execute("ROLLBACK")
