@@ -53,6 +53,20 @@ except (FileNotFoundError, KeyError):
 
 client = OpenAI(api_key=OPENAI_API_KEY, timeout=30.0)
 
+# ---------------------------------------------------------------------------
+# SALESFORCE SECRETS (optional — app works without them)
+# ---------------------------------------------------------------------------
+_SF_CONFIGURED = False
+try:
+    SF_USERNAME        = st.secrets["SF_USERNAME"]
+    SF_PASSWORD        = st.secrets["SF_PASSWORD"]
+    SF_CONSUMER_KEY    = st.secrets["SF_CONSUMER_KEY"]
+    SF_CONSUMER_SECRET = st.secrets["SF_CONSUMER_SECRET"]
+    SF_SECURITY_TOKEN  = st.secrets.get("SF_SECURITY_TOKEN", "")
+    _SF_CONFIGURED = True
+except (FileNotFoundError, KeyError):
+    SF_USERNAME = SF_PASSWORD = SF_CONSUMER_KEY = SF_CONSUMER_SECRET = SF_SECURITY_TOKEN = ""
+
 
 # ---------------------------------------------------------------------------
 # RATE LIMITING
@@ -2082,6 +2096,156 @@ if st.button("🚀 Start Sourcing", type="primary"):
         st.download_button(
             "Download CSV", data=csv, file_name=fname, mime="text/csv", type="primary"
         )
+
+        # ── Salesforce + Outreach Actions ──────────────────────────────
+        st.divider()
+        st.markdown("### Actions")
+
+        # Store results in session state for action buttons
+        st.session_state["_sourcing_results"] = final_data
+        st.session_state["_sourcing_df"] = df
+
+        company_names = df["Company"].tolist()
+        selected_company = st.selectbox(
+            "Select a company",
+            options=company_names,
+            key="action_company_select",
+        )
+
+        if selected_company:
+            sel_row = next(
+                (r for r in final_data if r.get("Company") == selected_company),
+                None,
+            )
+            if sel_row:
+                # Show company summary
+                _contact = sel_row.get("CEO/Owner Name", "N/A")
+                _email = sel_row.get("Email", "N/A")
+                _email_est = sel_row.get("Email Estimate", "")
+                _display_email = _email if _email != "N/A" else (_email_est or "N/A")
+                st.caption(
+                    f"**{selected_company}** — {_contact} "
+                    f"({sel_row.get('Title', 'N/A')}) — {_display_email}"
+                )
+
+                b1, b2, b3 = st.columns(3)
+
+                # ── Button 1: Add to Salesforce ────────────────────────
+                with b1:
+                    sf_clicked = st.button(
+                        "Add to Salesforce",
+                        key=f"sf_{selected_company}",
+                        type="primary",
+                        use_container_width=True,
+                    )
+                if sf_clicked:
+                    if not _SF_CONFIGURED:
+                        st.error(
+                            "Salesforce not configured. Add SF_USERNAME, SF_PASSWORD, "
+                            "SF_CONSUMER_KEY, and SF_CONSUMER_SECRET to "
+                            "`.streamlit/secrets.toml`."
+                        )
+                    else:
+                        with st.spinner("Connecting to Salesforce…"):
+                            try:
+                                from lib.salesforce import (
+                                    sf_login,
+                                    push_to_salesforce,
+                                    find_existing_account,
+                                )
+                                sf = sf_login(
+                                    SF_USERNAME, SF_PASSWORD,
+                                    SF_CONSUMER_KEY, SF_CONSUMER_SECRET,
+                                    SF_SECURITY_TOKEN,
+                                )
+                                existing = find_existing_account(sf, selected_company)
+                                if existing:
+                                    st.warning(
+                                        f"**{selected_company}** already exists "
+                                        f"in Salesforce (Account ID: {existing})."
+                                    )
+                                else:
+                                    acct_id, contact_id = push_to_salesforce(sf, sel_row)
+                                    st.success(
+                                        f"Created **{selected_company}** in Salesforce.\n\n"
+                                        f"Account ID: `{acct_id}` | "
+                                        f"Contact ID: `{contact_id}`"
+                                    )
+                            except Exception as e:
+                                st.error(f"Salesforce error: {e}")
+
+                # ── Button 2: Draft Outreach Email ─────────────────────
+                with b2:
+                    draft_clicked = st.button(
+                        "Draft Outreach",
+                        key=f"draft_{selected_company}",
+                        use_container_width=True,
+                    )
+                if draft_clicked:
+                    with st.spinner("AI drafting outreach email…"):
+                        try:
+                            from lib.outreach import draft_cold_email
+                            _thesis = {}
+                            try:
+                                with open("ncp_thesis.json") as f:
+                                    _thesis = json.load(f)
+                            except Exception:
+                                pass
+                            enriched_row = {**sel_row, "_niche": specific_niche}
+                            email_draft = draft_cold_email(
+                                client, enriched_row, _thesis
+                            )
+                            st.session_state["_draft_subject"] = email_draft["subject"]
+                            st.session_state["_draft_body"] = email_draft["body"]
+                            st.session_state["_draft_company"] = selected_company
+                        except Exception as e:
+                            st.error(f"Email drafting error: {e}")
+
+                # ── Button 3: Open in Outlook ──────────────────────────
+                with b3:
+                    if (st.session_state.get("_draft_company") == selected_company
+                            and st.session_state.get("_draft_body")):
+                        from lib.outreach import make_mailto_url
+                        to_addr = (
+                            _email if _email != "N/A"
+                            else (_email_est if _email_est else "")
+                        )
+                        mailto = make_mailto_url(
+                            to_addr,
+                            st.session_state["_draft_subject"],
+                            st.session_state["_draft_body"],
+                        )
+                        st.link_button(
+                            "Open in Outlook",
+                            url=mailto,
+                            use_container_width=True,
+                        )
+                    else:
+                        st.button(
+                            "Open in Outlook",
+                            key=f"outlook_{selected_company}",
+                            disabled=True,
+                            help="Draft an email first",
+                            use_container_width=True,
+                        )
+
+                # Show draft email if available for this company
+                if (st.session_state.get("_draft_company") == selected_company
+                        and st.session_state.get("_draft_body")):
+                    st.markdown("---")
+                    st.markdown(f"**Subject:** {st.session_state['_draft_subject']}")
+                    st.text_area(
+                        "Email Draft (edit before sending)",
+                        value=st.session_state["_draft_body"],
+                        height=250,
+                        key="draft_email_editor",
+                    )
+                    st.caption(
+                        "Edit the draft above, then click **Open in Outlook** to "
+                        "send. The mailto link uses the original draft — copy your "
+                        "edits manually if you've changed the text above."
+                    )
+
     else:
         st.warning(
             "No targets passed the filters.\n\n"
