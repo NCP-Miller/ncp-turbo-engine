@@ -2098,251 +2098,257 @@ if _run_next_batch or st.button("🚀 Start Sourcing", type="primary"):
     status_text.write("✅ Sourcing complete!")
 
     if final_data:
-        # Save to history ledger
         _save_history(final_data)
 
-        df = pd.DataFrame(final_data)
+        # Accumulate results across batches
+        prev = st.session_state.get("_sourcing_results", [])
+        st.session_state["_sourcing_results"] = prev + final_data
+        st.session_state["_sourcing_strat"] = strat_code
+        st.session_state["_sourcing_total"] = total_candidates
 
-        # Drop internal columns
-        if "_niche" in df.columns:
-            df = df.drop(columns=["_niche"])
-
-        # ── Column ordering ─────────────────────────────────────────
-        lead_cols = ["Company", "Description", "Differentiated"]
-        if strat_code in ("A", "C"):
-            lead_cols += ["Priority", "Growth", "Txn Readiness"]
-        lead_cols += ["Est. EBITDA"]
-        lead_cols += ["Website", "City", "State", "LinkedIn", "Employees",
-                      "CEO/Owner Name", "Title", "Email", "Email Estimate",
-                      "Phone", "Source", "Notes", "Confidence", "Latest News",
-                      "Previously Sourced"]
-        ordered = lead_cols
-        df = df[[c for c in ordered if c in df.columns]]
-
-        # ── Competitive Density banner ──────────────────────────────
-        passed = len(final_data)
-        if total_candidates < 10:
-            density_label = "Concentrated"
-        elif total_candidates < 30:
-            density_label = "Moderate"
-        else:
-            density_label = "Fragmented"
-        st.info(
-            f"**Market Density:** {density_label} — "
-            f"**{total_candidates}** candidates found, **{passed}** passed filters "
-            f"({passed * 100 // max(total_candidates, 1)}% pass rate)"
-        )
-
-        # Strategy C: add proximity context
-        if strat_code == "C" and platform_name:
-            st.caption(
-                f"Add-on targets for **{platform_name}** "
-                f"({platform_geo or target_geo}) — "
-                f"sorted by priority and geographic proximity."
+    else:
+        if not st.session_state.get("_sourcing_results"):
+            st.warning(
+                "No targets passed the filters.\n\n"
+                "**Tips:**\n"
+                "- Clear the Keywords field and retry (keywords narrow Apollo results)\n"
+                "- Click **Suggest Fields** for AI-recommended parameters\n"
+                "- Switch to **Mode B** for a broader sweep\n"
+                "- Add more industry categories"
             )
-            # Sort by priority (High first), then by state proximity
-            _pri_order = {"High": 0, "Medium": 1, "Low": 2}
-            plat_st = (platform_geo or "").strip().upper()
-            df["_pri_sort"] = df.get("Priority", "Medium").map(
-                lambda x: _pri_order.get(x, 1))
-            df["_geo_sort"] = df.get("State", "").apply(
-                lambda x: 0 if str(x).strip().upper() == plat_st else 1)
-            df = df.sort_values(["_pri_sort", "_geo_sort"]).drop(
-                columns=["_pri_sort", "_geo_sort"])
 
-        st.dataframe(df)
-        csv   = df.to_csv(index=False).encode("utf-8")
-        fname = (
-            f"NCP_{'_'.join(industries[:2])}_{target_geo}.csv"
-            .replace(" ", "_").replace(",", "")
+# ---------------------------------------------------------------------------
+# PERSISTENT RESULTS DISPLAY (survives widget reruns)
+# ---------------------------------------------------------------------------
+_display_results = st.session_state.get("_sourcing_results")
+if _display_results:
+    _d_strat = st.session_state.get("_sourcing_strat", strat_code)
+    _d_total = st.session_state.get("_sourcing_total", len(_display_results))
+
+    df = pd.DataFrame(_display_results)
+    if "_niche" in df.columns:
+        df = df.drop(columns=["_niche"])
+
+    lead_cols = ["Company", "Description", "Differentiated"]
+    if _d_strat in ("A", "C"):
+        lead_cols += ["Priority", "Growth", "Txn Readiness"]
+    lead_cols += ["Est. EBITDA"]
+    lead_cols += ["Website", "City", "State", "LinkedIn", "Employees",
+                  "CEO/Owner Name", "Title", "Email", "Email Estimate",
+                  "Phone", "Source", "Notes", "Confidence", "Latest News",
+                  "Previously Sourced"]
+    df = df[[c for c in lead_cols if c in df.columns]]
+
+    passed = len(_display_results)
+    if _d_total < 10:
+        density_label = "Concentrated"
+    elif _d_total < 30:
+        density_label = "Moderate"
+    else:
+        density_label = "Fragmented"
+    st.info(
+        f"**Market Density:** {density_label} — "
+        f"**{_d_total}** candidates found, **{passed}** passed filters "
+        f"({passed * 100 // max(_d_total, 1)}% pass rate)"
+    )
+
+    if _d_strat == "C" and platform_name:
+        st.caption(
+            f"Add-on targets for **{platform_name}** "
+            f"({platform_geo or target_geo}) — "
+            f"sorted by priority and geographic proximity."
         )
+        _pri_order = {"High": 0, "Medium": 1, "Low": 2}
+        plat_st = (platform_geo or "").strip().upper()
+        df["_pri_sort"] = df.get("Priority", "Medium").map(
+            lambda x: _pri_order.get(x, 1))
+        df["_geo_sort"] = df.get("State", "").apply(
+            lambda x: 0 if str(x).strip().upper() == plat_st else 1)
+        df = df.sort_values(["_pri_sort", "_geo_sort"]).drop(
+            columns=["_pri_sort", "_geo_sort"])
+
+    st.dataframe(df)
+    csv = df.to_csv(index=False).encode("utf-8")
+    fname = (
+        f"NCP_{'_'.join(industries[:2])}_{target_geo}.csv"
+        .replace(" ", "_").replace(",", "")
+    )
+    _dl_col, _clear_col = st.columns([3, 1])
+    with _dl_col:
         st.download_button(
             "Download CSV", data=csv, file_name=fname, mime="text/csv", type="primary"
         )
+    with _clear_col:
+        if st.button("Clear Results"):
+            for k in ["_sourcing_results", "_sourcing_strat", "_sourcing_total",
+                       "_overflow_orgs", "_overflow_total", "_overflow_batch_num",
+                       "_draft_subject", "_draft_body", "_draft_company"]:
+                st.session_state.pop(k, None)
+            st.rerun()
 
-        # ── Salesforce + Outreach Actions ──────────────────────────────
-        st.divider()
-        st.markdown("### Actions")
+    # ── Salesforce + Outreach Actions ──────────────────────────────
+    st.divider()
+    st.markdown("### Actions")
 
-        # Store results in session state for action buttons
-        st.session_state["_sourcing_results"] = final_data
-        st.session_state["_sourcing_df"] = df
+    company_names = df["Company"].tolist()
+    selected_company = st.selectbox(
+        "Select a company",
+        options=company_names,
+        key="action_company_select",
+    )
 
-        company_names = df["Company"].tolist()
-        selected_company = st.selectbox(
-            "Select a company",
-            options=company_names,
-            key="action_company_select",
+    if selected_company:
+        sel_row = next(
+            (r for r in _display_results if r.get("Company") == selected_company),
+            None,
         )
-
-        if selected_company:
-            sel_row = next(
-                (r for r in final_data if r.get("Company") == selected_company),
-                None,
+        if sel_row:
+            _contact = sel_row.get("CEO/Owner Name", "N/A")
+            _email = sel_row.get("Email", "N/A")
+            _email_est = sel_row.get("Email Estimate", "")
+            _display_email = _email if _email != "N/A" else (_email_est or "N/A")
+            st.caption(
+                f"**{selected_company}** — {_contact} "
+                f"({sel_row.get('Title', 'N/A')}) — {_display_email}"
             )
-            if sel_row:
-                # Show company summary
-                _contact = sel_row.get("CEO/Owner Name", "N/A")
-                _email = sel_row.get("Email", "N/A")
-                _email_est = sel_row.get("Email Estimate", "")
-                _display_email = _email if _email != "N/A" else (_email_est or "N/A")
-                st.caption(
-                    f"**{selected_company}** — {_contact} "
-                    f"({sel_row.get('Title', 'N/A')}) — {_display_email}"
+
+            b1, b2, b3 = st.columns(3)
+
+            with b1:
+                sf_clicked = st.button(
+                    "Add to Salesforce",
+                    key=f"sf_{selected_company}",
+                    type="primary",
+                    use_container_width=True,
                 )
-
-                b1, b2, b3 = st.columns(3)
-
-                # ── Button 1: Add to Salesforce ────────────────────────
-                with b1:
-                    sf_clicked = st.button(
-                        "Add to Salesforce",
-                        key=f"sf_{selected_company}",
-                        type="primary",
-                        use_container_width=True,
+            if sf_clicked:
+                if not _SF_CONFIGURED:
+                    st.error(
+                        "Salesforce not configured. Add SF_USERNAME, SF_PASSWORD, "
+                        "SF_CONSUMER_KEY, and SF_CONSUMER_SECRET to "
+                        "`.streamlit/secrets.toml`."
                     )
-                if sf_clicked:
-                    if not _SF_CONFIGURED:
-                        st.error(
-                            "Salesforce not configured. Add SF_USERNAME, SF_PASSWORD, "
-                            "SF_CONSUMER_KEY, and SF_CONSUMER_SECRET to "
-                            "`.streamlit/secrets.toml`."
-                        )
-                    else:
-                        with st.spinner("Connecting to Salesforce…"):
-                            try:
-                                from lib.salesforce import (
-                                    sf_login,
-                                    push_to_salesforce,
-                                    find_existing_account,
-                                )
-                                sf = sf_login(
-                                    SF_USERNAME, SF_PASSWORD,
-                                    SF_CONSUMER_KEY, SF_CONSUMER_SECRET,
-                                    SF_SECURITY_TOKEN,
-                                )
-                                existing = find_existing_account(sf, selected_company)
-                                if existing:
-                                    st.warning(
-                                        f"**{selected_company}** already exists "
-                                        f"in Salesforce (Account ID: {existing})."
-                                    )
-                                else:
-                                    acct_id, contact_id = push_to_salesforce(sf, sel_row)
-                                    st.success(
-                                        f"Created **{selected_company}** in Salesforce.\n\n"
-                                        f"Account ID: `{acct_id}` | "
-                                        f"Contact ID: `{contact_id}`"
-                                    )
-                            except Exception as e:
-                                st.error(f"Salesforce error: {e}")
-
-                # ── Button 2: Draft Outreach Email ─────────────────────
-                with b2:
-                    draft_clicked = st.button(
-                        "Draft Outreach",
-                        key=f"draft_{selected_company}",
-                        use_container_width=True,
-                    )
-                if draft_clicked:
-                    with st.spinner("AI drafting outreach email…"):
+                else:
+                    with st.spinner("Connecting to Salesforce…"):
                         try:
-                            from lib.outreach import draft_cold_email
-                            _thesis = {}
-                            try:
-                                with open("ncp_thesis.json") as f:
-                                    _thesis = json.load(f)
-                            except Exception:
-                                pass
-                            enriched_row = {**sel_row, "_niche": specific_niche}
-                            email_draft = draft_cold_email(
-                                client, enriched_row, _thesis
+                            from lib.salesforce import (
+                                sf_login,
+                                push_to_salesforce,
+                                find_existing_account,
                             )
-                            st.session_state["_draft_subject"] = email_draft["subject"]
-                            st.session_state["_draft_body"] = email_draft["body"]
-                            st.session_state["_draft_company"] = selected_company
+                            sf = sf_login(
+                                SF_USERNAME, SF_PASSWORD,
+                                SF_CONSUMER_KEY, SF_CONSUMER_SECRET,
+                                SF_SECURITY_TOKEN,
+                            )
+                            existing = find_existing_account(sf, selected_company)
+                            if existing:
+                                st.warning(
+                                    f"**{selected_company}** already exists "
+                                    f"in Salesforce (Account ID: {existing})."
+                                )
+                            else:
+                                acct_id, contact_id = push_to_salesforce(sf, sel_row)
+                                st.success(
+                                    f"Created **{selected_company}** in Salesforce.\n\n"
+                                    f"Account ID: `{acct_id}` | "
+                                    f"Contact ID: `{contact_id}`"
+                                )
                         except Exception as e:
-                            st.error(f"Email drafting error: {e}")
+                            st.error(f"Salesforce error: {e}")
 
-                # ── Button 3: Open in Outlook ──────────────────────────
-                with b3:
-                    if (st.session_state.get("_draft_company") == selected_company
-                            and st.session_state.get("_draft_body")):
-                        from lib.outreach import make_mailto_url
-                        to_addr = (
-                            _email if _email != "N/A"
-                            else (_email_est if _email_est else "")
+            with b2:
+                draft_clicked = st.button(
+                    "Draft Outreach",
+                    key=f"draft_{selected_company}",
+                    use_container_width=True,
+                )
+            if draft_clicked:
+                with st.spinner("AI drafting outreach email…"):
+                    try:
+                        from lib.outreach import draft_cold_email
+                        _thesis = {}
+                        try:
+                            with open("ncp_thesis.json") as f:
+                                _thesis = json.load(f)
+                        except Exception:
+                            pass
+                        enriched_row = {**sel_row, "_niche": specific_niche}
+                        email_draft = draft_cold_email(
+                            client, enriched_row, _thesis
                         )
-                        mailto = make_mailto_url(
-                            to_addr,
-                            st.session_state["_draft_subject"],
-                            st.session_state["_draft_body"],
-                        )
-                        st.link_button(
-                            "Open in Outlook",
-                            url=mailto,
-                            use_container_width=True,
-                        )
-                    else:
-                        st.button(
-                            "Open in Outlook",
-                            key=f"outlook_{selected_company}",
-                            disabled=True,
-                            help="Draft an email first",
-                            use_container_width=True,
-                        )
+                        st.session_state["_draft_subject"] = email_draft["subject"]
+                        st.session_state["_draft_body"] = email_draft["body"]
+                        st.session_state["_draft_company"] = selected_company
+                    except Exception as e:
+                        st.error(f"Email drafting error: {e}")
 
-                # Show draft email if available for this company
+            with b3:
                 if (st.session_state.get("_draft_company") == selected_company
                         and st.session_state.get("_draft_body")):
-                    st.markdown("---")
-                    st.markdown(f"**Subject:** {st.session_state['_draft_subject']}")
-                    st.text_area(
-                        "Email Draft (edit before sending)",
-                        value=st.session_state["_draft_body"],
-                        height=250,
-                        key="draft_email_editor",
+                    from lib.outreach import make_mailto_url
+                    to_addr = (
+                        _email if _email != "N/A"
+                        else (_email_est if _email_est else "")
                     )
-                    st.caption(
-                        "Edit the draft above, then click **Open in Outlook** to "
-                        "send. The mailto link uses the original draft — copy your "
-                        "edits manually if you've changed the text above."
+                    mailto = make_mailto_url(
+                        to_addr,
+                        st.session_state["_draft_subject"],
+                        st.session_state["_draft_body"],
+                    )
+                    st.link_button(
+                        "Open in Outlook",
+                        url=mailto,
+                        use_container_width=True,
+                    )
+                else:
+                    st.button(
+                        "Open in Outlook",
+                        key=f"outlook_{selected_company}",
+                        disabled=True,
+                        help="Draft an email first",
+                        use_container_width=True,
                     )
 
-        # ── Run Next Batch button (inside results) ──────────────────
-        _overflow_remaining = st.session_state.get("_overflow_orgs")
-        if _overflow_remaining:
-            st.divider()
-            _next_size = min(BATCH_SIZE, len(_overflow_remaining))
-            st.markdown(
-                f"### 📦 {len(_overflow_remaining)} candidates remaining"
-            )
-            st.caption(
-                "Lower-ranked candidates by estimated fit. "
-                "Run the next batch to continue processing."
-            )
-            if st.button(
-                f"▶ Run Next Batch ({_next_size} candidates)",
-                type="secondary",
-                use_container_width=True,
-            ):
-                st.session_state["_run_next_batch"] = True
-                st.rerun()
+            if (st.session_state.get("_draft_company") == selected_company
+                    and st.session_state.get("_draft_body")):
+                st.markdown("---")
+                st.markdown(f"**Subject:** {st.session_state['_draft_subject']}")
+                st.text_area(
+                    "Email Draft (edit before sending)",
+                    value=st.session_state["_draft_body"],
+                    height=250,
+                    key="draft_email_editor",
+                )
+                st.caption(
+                    "Edit the draft above, then click **Open in Outlook** to "
+                    "send. The mailto link uses the original draft — copy your "
+                    "edits manually if you've changed the text above."
+                )
 
-    else:
-        st.warning(
-            "No targets passed the filters.\n\n"
-            "**Tips:**\n"
-            "- Clear the Keywords field and retry (keywords narrow Apollo results)\n"
-            "- Click **Suggest Fields** for AI-recommended parameters\n"
-            "- Switch to **Mode B** for a broader sweep\n"
-            "- Add more industry categories"
+    # ── Run Next Batch button ──────────────────────────────────────
+    _overflow_remaining = st.session_state.get("_overflow_orgs")
+    if _overflow_remaining:
+        st.divider()
+        _next_size = min(BATCH_SIZE, len(_overflow_remaining))
+        st.markdown(
+            f"### 📦 {len(_overflow_remaining)} candidates remaining"
         )
+        st.caption(
+            "Lower-ranked candidates by estimated fit. "
+            "Run the next batch to continue processing."
+        )
+        if st.button(
+            f"▶ Run Next Batch ({_next_size} candidates)",
+            type="secondary",
+            use_container_width=True,
+        ):
+            st.session_state["_run_next_batch"] = True
+            st.rerun()
 
-# ── Persistent "Run Next Batch" outside the search block ──────────────
-# Shown when the page reloads and overflow candidates remain from a prior run.
-_idle_overflow = st.session_state.get("_overflow_orgs")
-if _idle_overflow and not _run_next_batch:
+# ── Persistent "Run Next Batch" when no results are displayed ─────────
+elif st.session_state.get("_overflow_orgs") and not _run_next_batch:
+    _idle_overflow = st.session_state["_overflow_orgs"]
     st.divider()
     _idle_next = min(BATCH_SIZE, len(_idle_overflow))
     st.markdown(f"### 📦 {len(_idle_overflow)} candidates remaining from previous search")
