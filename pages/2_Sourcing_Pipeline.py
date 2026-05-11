@@ -554,6 +554,143 @@ with tab_memos:
                         f"**Contact:** {row.get('CEO/Owner Name', '')} — {row.get('Email')}"
                     )
 
+                # ── Salesforce + Outreach Actions ─────────────────────
+                _co_key = memo['company'].replace(' ', '_')
+                act_cols = st.columns(3)
+
+                with act_cols[0]:
+                    if st.button(
+                        "Add to Salesforce",
+                        key=f"sf_{_co_key}",
+                        type="primary",
+                        use_container_width=True,
+                    ):
+                        try:
+                            from lib.salesforce import (
+                                sf_login, push_to_salesforce,
+                                find_existing_account,
+                            )
+                            from lib.api_clients import get_secret
+                            sf = sf_login(
+                                get_secret("SF_USERNAME"),
+                                get_secret("SF_PASSWORD"),
+                                get_secret("SF_CONSUMER_KEY"),
+                                get_secret("SF_CONSUMER_SECRET"),
+                                get_secret("SF_SECURITY_TOKEN", ""),
+                            )
+                            existing = find_existing_account(sf, memo["company"])
+                            if existing:
+                                st.warning(
+                                    f"**{memo['company']}** already exists "
+                                    f"in Salesforce (Account: `{existing}`)."
+                                )
+                            else:
+                                acct_id, contact_id = push_to_salesforce(sf, row)
+                                st.success(
+                                    f"Created in Salesforce — "
+                                    f"Account: `{acct_id}` | Contact: `{contact_id}`"
+                                )
+                        except Exception as e:
+                            st.error(f"Salesforce error: {e}")
+
+                with act_cols[1]:
+                    if st.button(
+                        "Draft Outreach",
+                        key=f"draft_{_co_key}",
+                        use_container_width=True,
+                    ):
+                        try:
+                            from lib.outreach import draft_cold_email
+                            from lib.api_clients import load_api_keys, make_openai_client
+                            _keys = load_api_keys()
+                            _oc = make_openai_client(api_key=_keys["OPENAI_API_KEY"])
+                            _thesis = {}
+                            try:
+                                import json as _json2
+                                with open("ncp_thesis.json") as f:
+                                    _thesis = _json2.load(f)
+                            except Exception:
+                                pass
+                            enriched = {**row, "_niche": cfg.get("niche", "")}
+                            draft = draft_cold_email(_oc, enriched, _thesis)
+                            st.session_state[f"_pipe_draft_subj_{_co_key}"] = draft["subject"]
+                            st.session_state[f"_pipe_draft_body_{_co_key}"] = draft["body"]
+                            st.rerun()
+                        except Exception as e:
+                            st.error(f"Email drafting error: {e}")
+
+                with act_cols[2]:
+                    _has_draft = st.session_state.get(f"_pipe_draft_body_{_co_key}")
+                    if _has_draft:
+                        from lib.outreach import make_mailto_url
+                        _to = row.get("Email", "")
+                        if _to == "N/A":
+                            _to = row.get("Email Estimate", "")
+                        _mailto = make_mailto_url(
+                            _to,
+                            st.session_state.get(f"_pipe_draft_subj_{_co_key}", ""),
+                            st.session_state.get(f"_pipe_draft_body_{_co_key}", ""),
+                        )
+                        st.link_button(
+                            "Open in Outlook",
+                            url=_mailto,
+                            use_container_width=True,
+                        )
+                    else:
+                        st.button(
+                            "Open in Outlook",
+                            key=f"outlook_{_co_key}",
+                            disabled=True,
+                            help="Draft an email first",
+                            use_container_width=True,
+                        )
+
+                # Show draft + log-to-SF if available
+                _draft_body = st.session_state.get(f"_pipe_draft_body_{_co_key}")
+                if _draft_body:
+                    st.markdown("---")
+                    st.markdown(f"**Subject:** {st.session_state.get(f'_pipe_draft_subj_{_co_key}', '')}")
+                    st.text_area(
+                        "Email Draft (edit before sending)",
+                        value=_draft_body,
+                        height=200,
+                        key=f"draft_editor_{_co_key}",
+                    )
+                    _log_col, _log_info = st.columns([1, 3])
+                    with _log_col:
+                        if st.button("Log to Salesforce", key=f"log_sf_{_co_key}", use_container_width=True):
+                            try:
+                                from lib.salesforce import (
+                                    sf_login, find_existing_account,
+                                    find_contact_for_account,
+                                    log_outreach_activity,
+                                )
+                                from lib.api_clients import get_secret
+                                sf = sf_login(
+                                    get_secret("SF_USERNAME"),
+                                    get_secret("SF_PASSWORD"),
+                                    get_secret("SF_CONSUMER_KEY"),
+                                    get_secret("SF_CONSUMER_SECRET"),
+                                    get_secret("SF_SECURITY_TOKEN", ""),
+                                )
+                                acct_id = find_existing_account(sf, memo["company"])
+                                if not acct_id:
+                                    st.warning("Add to Salesforce first.")
+                                else:
+                                    contact_id = find_contact_for_account(sf, acct_id)
+                                    task_id = log_outreach_activity(
+                                        sf, acct_id, contact_id,
+                                        st.session_state.get(f"_pipe_draft_subj_{_co_key}", ""),
+                                        _draft_body,
+                                    )
+                                    st.success(f"Outreach logged (Task: `{task_id}`).")
+                            except Exception as e:
+                                st.error(f"Salesforce logging error: {e}")
+                    with _log_info:
+                        st.caption("Send via Outlook, then log the activity to Salesforce.")
+
+                st.markdown("---")
+
                 # Feedback buttons
                 fb_key = f"fb_{memo['company'].replace(' ', '_')}"
                 fb_cols = st.columns(3)
