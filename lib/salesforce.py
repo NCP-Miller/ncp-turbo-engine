@@ -90,3 +90,33 @@ def find_existing_account(sf, company_name):
     if result["totalSize"] > 0:
         return result["records"][0]["Id"]
     return None
+
+
+def find_contact_for_account(sf, account_id):
+    """Find the first Contact linked to an Account. Returns Contact Id or None."""
+    result = sf.query(
+        f"SELECT Id FROM Contact WHERE AccountId = '{account_id}' LIMIT 1"
+    )
+    if result["totalSize"] > 0:
+        return result["records"][0]["Id"]
+    return None
+
+
+def log_outreach_activity(sf, account_id, contact_id, subject, body):
+    """Create a completed Task on the Account/Contact to log outreach.
+
+    Returns the new Task Id.
+    """
+    payload = {
+        "WhatId": account_id,
+        "WhoId": contact_id,
+        "Subject": f"Email: {subject}" if subject else "Outreach Email Sent",
+        "Description": body or "",
+        "Status": "Completed",
+        "Priority": "Normal",
+        "Type": "Email",
+        "ActivityDate": None,
+    }
+    payload = {k: v for k, v in payload.items() if v is not None}
+    result = sf.Task.create(payload)
+    return result["id"]

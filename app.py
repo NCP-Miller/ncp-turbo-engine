@@ -2320,11 +2320,54 @@ if _display_results:
                     height=250,
                     key="draft_email_editor",
                 )
-                st.caption(
-                    "Edit the draft above, then click **Open in Outlook** to "
-                    "send. The mailto link uses the original draft — copy your "
-                    "edits manually if you've changed the text above."
-                )
+
+                _log_col, _info_col = st.columns([1, 3])
+                with _log_col:
+                    _log_sf_clicked = st.button(
+                        "Log to Salesforce",
+                        key=f"log_sf_{selected_company}",
+                        use_container_width=True,
+                    )
+                with _info_col:
+                    st.caption(
+                        "Send via Outlook, then click **Log to Salesforce** to "
+                        "record the outreach as a completed activity on the contact."
+                    )
+
+                if _log_sf_clicked:
+                    if not _SF_CONFIGURED:
+                        st.error("Salesforce not configured.")
+                    else:
+                        with st.spinner("Logging to Salesforce…"):
+                            try:
+                                from lib.salesforce import (
+                                    sf_login, find_existing_account,
+                                    find_contact_for_account,
+                                    log_outreach_activity,
+                                )
+                                sf = sf_login(
+                                    SF_USERNAME, SF_PASSWORD,
+                                    SF_CONSUMER_KEY, SF_CONSUMER_SECRET,
+                                    SF_SECURITY_TOKEN,
+                                )
+                                acct_id = find_existing_account(sf, selected_company)
+                                if not acct_id:
+                                    st.warning(
+                                        f"**{selected_company}** not found in Salesforce. "
+                                        f"Add to Salesforce first."
+                                    )
+                                else:
+                                    contact_id = find_contact_for_account(sf, acct_id)
+                                    task_id = log_outreach_activity(
+                                        sf, acct_id, contact_id,
+                                        st.session_state.get("_draft_subject", ""),
+                                        st.session_state.get("_draft_body", ""),
+                                    )
+                                    st.success(
+                                        f"Outreach logged to Salesforce (Task ID: `{task_id}`)."
+                                    )
+                            except Exception as e:
+                                st.error(f"Salesforce logging error: {e}")
 
     # ── Run Next Batch button ──────────────────────────────────────
     _overflow_remaining = st.session_state.get("_overflow_orgs")
