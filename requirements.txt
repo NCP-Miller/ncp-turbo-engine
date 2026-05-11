@@ -3,3 +3,4 @@ pandas
 requests
 openai
 openpyxl
+simple-salesforce

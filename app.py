@@ -53,6 +53,20 @@ except (FileNotFoundError, KeyError):
 
 client = OpenAI(api_key=OPENAI_API_KEY, timeout=30.0)
 
+# ---------------------------------------------------------------------------
+# SALESFORCE SECRETS (optional — app works without them)
+# ---------------------------------------------------------------------------
+_SF_CONFIGURED = False
+try:
+    SF_USERNAME        = st.secrets["SF_USERNAME"]
+    SF_PASSWORD        = st.secrets["SF_PASSWORD"]
+    SF_CONSUMER_KEY    = st.secrets["SF_CONSUMER_KEY"]
+    SF_CONSUMER_SECRET = st.secrets["SF_CONSUMER_SECRET"]
+    SF_SECURITY_TOKEN  = st.secrets.get("SF_SECURITY_TOKEN", "")
+    _SF_CONFIGURED = True
+except (FileNotFoundError, KeyError):
+    SF_USERNAME = SF_PASSWORD = SF_CONSUMER_KEY = SF_CONSUMER_SECRET = SF_SECURITY_TOKEN = ""
+
 
 # ---------------------------------------------------------------------------
 # RATE LIMITING
@@ -82,6 +96,7 @@ _firecrawl_limiter = RateLimiter(calls_per_second=3)  # ~180/min
 # CONSTANTS
 # ---------------------------------------------------------------------------
 OPENAI_MODEL = "gpt-4o"  # Change here if model rotates or you upgrade
+BATCH_SIZE   = 500       # Max candidates per processing batch
 
 
 def _openai_create(**kwargs):
@@ -1692,13 +1707,12 @@ def process_single_company(org, specific_niche, strat_code, history_keys=None):
         row["Growth"]      = "Low"
         row["Txn Readiness"] = "Low"
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as inner:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as inner:
         apollo_future = inner.submit(get_people_apollo_robust, comp_name, domain, org_id)
         web_future    = inner.submit(spider_for_contact, comp_name, domain)
-        desc_future   = inner.submit(generate_company_description, comp_name, domain, desc, tags)
         apollo_people                                 = apollo_future.result()
         web_person, web_source, web_email, web_phone = web_future.result()
-        row["Description"]                           = desc_future.result()
+    row["Description"] = generate_company_description(comp_name, domain, desc, tags)
 
     found_person = None
 
@@ -1767,25 +1781,64 @@ def process_single_company(org, specific_niche, strat_code, history_keys=None):
 
     # Strategy A: assess priority, growth, transaction readiness, and differentiation in parallel
     if strat_code == "A":
-        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as score_ex:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as score_ex:
             pri_fut    = score_ex.submit(assess_priority, comp_name, row["Description"],
                                          org.get("state"), org.get("estimated_num_employees"),
                                          tags, specific_niche)
-            growth_fut = score_ex.submit(assess_growth_score, comp_name, domain, apollo_people)
-            txn_fut    = score_ex.submit(assess_transaction_readiness, comp_name, domain,
-                                         apollo_people, row["Description"])
             diff_fut   = score_ex.submit(assess_differentiation, comp_name, row["Description"],
                                          specific_niche)
             row["Priority"],      _ = pri_fut.result()
+            row["Differentiated"], _ = diff_fut.result()
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as score_ex2:
+            growth_fut = score_ex2.submit(assess_growth_score, comp_name, domain, apollo_people)
+            txn_fut    = score_ex2.submit(assess_transaction_readiness, comp_name, domain,
+                                         apollo_people, row["Description"])
             row["Growth"],        _ = growth_fut.result()
             row["Txn Readiness"], _ = txn_fut.result()
-            row["Differentiated"], _ = diff_fut.result()
     else:
         # Strategy B: still assess differentiation
         row["Differentiated"], _ = assess_differentiation(comp_name, row["Description"],
                                                            specific_niche)
 
     return row
+
+
+def _rank_candidate_fit(org, niche_text):
+    """Lightweight fit score using Apollo metadata only (no API calls).
+
+    Higher score = more likely to be a good PE acquisition candidate in-niche.
+    """
+    score = 0
+    emp = org.get("estimated_num_employees") or 0
+
+    # Employee count sweet spot for PE acquisition
+    if 20 <= emp <= 500:
+        score += 30
+    elif 10 <= emp <= 1000:
+        score += 15
+    elif 1 <= emp <= 10:
+        score += 5
+
+    # Keyword overlap with niche
+    niche_tokens = [w.lower() for w in niche_text.split() if len(w) > 3]
+    name = (org.get("name") or "").lower()
+    desc = (org.get("short_description") or "").lower()
+    tags = " ".join(t.lower() for t in (org.get("keywords") or []))
+    combined = f"{name} {desc} {tags}"
+    keyword_hits = sum(1 for w in niche_tokens if w in combined)
+    score += min(keyword_hits * 10, 40)
+
+    if org.get("website_url"):
+        score += 10
+
+    if desc.strip():
+        score += 10
+
+    status = (org.get("ownership_status") or "").lower()
+    if "private" in status:
+        score += 10
+
+    return score
 
 
 # ---------------------------------------------------------------------------
@@ -1913,94 +1966,118 @@ st.caption(
     "Apollo doesn't have at all. The AI filter screens every candidate for true niche relevance."
 )
 
-if st.button("🚀 Start Sourcing", type="primary"):
-    if not industries:
-        st.error("Please select at least one industry, or click **Suggest Fields** first.")
-        st.stop()
+strat_code = "A" if "A -" in mode else ("C" if "C -" in mode else "B")
+worker_strat = "A" if strat_code == "C" else strat_code
+_run_next_batch = st.session_state.pop("_run_next_batch", False)
 
-    strat_code = "A" if "A -" in mode else ("C" if "C -" in mode else "B")
+if _run_next_batch or st.button("🚀 Start Sourcing", type="primary"):
 
-    # Strategy C validates platform company input
-    if strat_code == "C" and not (platform_name or "").strip():
-        st.error("Please enter the Platform Company Name for Add-On mode.")
-        st.stop()
-
-    keyword_tags = [k.strip() for k in apollo_keywords_raw.split(",") if k.strip()] or None
-
-    # Load history for dedup
-    history_keys = _load_history() if (skip_prev or strat_code in ("A", "C")) else set()
-
-    kw_display = f" + keyword sweep ({', '.join(keyword_tags)})" if keyword_tags else ""
-    st.info(
-        f"🔎 Searching **{len(industries)} industries**{kw_display} "
-        f"in **{target_geo}** (up to 1,000 results per industry)…"
-    )
-
-    try:
-        orgs = search_organizations(industries, target_geo, keyword_tags=keyword_tags)
-    except Exception as e:
-        st.error(f"Apollo API error: {e}")
-        st.stop()
-
-    # Strategy C: filter to smaller companies suitable as bolt-on acquisitions
-    if strat_code == "C":
-        orgs = [o for o in orgs if (o.get("estimated_num_employees") or 0) <= 150]
-
-    # Skip previously sourced companies if requested
-    if skip_prev and history_keys:
-        before = len(orgs)
-        orgs = [o for o in orgs if not _company_in_history(o, history_keys)]
-        skipped = before - len(orgs)
-        if skipped:
-            st.info(f"Skipped **{skipped}** previously sourced companies.")
-
-    # Build dedup sets for Google discovery pass
-    seen_domains = set()
-    seen_names   = set()
-    for o in orgs:
-        d = clean_domain(o.get("website_url"))
-        if d: seen_domains.add(d)
-        n = (o.get("name") or "").strip().lower()
-        if n: seen_names.add(n)
-
-    # Pass 3: Web scrape to catch companies Apollo missed
-    google_orgs = []
-    with st.spinner("Checking Google/DuckDuckGo/Bing for companies Apollo may have missed…"):
-        try:
-            google_orgs = web_discovery_pass(specific_niche, target_geo,
-                                             seen_domains, seen_names)
-        except Exception as e:
-            st.warning(f"Web discovery pass failed (continuing with Apollo results): {e}")
-    if google_orgs:
-        # Strategy C: filter web discovery results too
-        if strat_code == "C":
-            google_orgs = [o for o in google_orgs
-                           if (o.get("estimated_num_employees") or 0) <= 150]
-        orgs.extend(google_orgs)
-        st.info(f"🔍 Web discovery added **{len(google_orgs)}** companies not in Apollo.")
-
-    if not orgs:
-        st.error(
-            "No companies found in Apollo or Google. "
-            "Try broadening the industry selection or clearing the Keywords field."
+    # ── Next-batch mode: pull orgs from overflow ──────────────────────
+    if _run_next_batch:
+        _overflow = st.session_state.pop("_overflow_orgs", [])
+        orgs = _overflow[:BATCH_SIZE]
+        remaining_overflow = _overflow[BATCH_SIZE:]
+        if remaining_overflow:
+            st.session_state["_overflow_orgs"] = remaining_overflow
+        total_candidates = st.session_state.get("_overflow_total", len(orgs))
+        batch_num = st.session_state.get("_overflow_batch_num", 2)
+        st.session_state["_overflow_batch_num"] = batch_num + 1
+        history_keys = _load_history() if strat_code in ("A", "C") else set()
+        st.info(
+            f"Processing batch {batch_num}: **{len(orgs)}** candidates "
+            f"({len(remaining_overflow)} still remaining)…"
         )
-        st.stop()
 
-    # ── Competitive Density metric ──────────────────────────────────────
-    total_candidates = len(orgs)
+    # ── Fresh search mode ─────────────────────────────────────────────
+    else:
+        if not industries:
+            st.error("Please select at least one industry, or click **Suggest Fields** first.")
+            st.stop()
 
+        if strat_code == "C" and not (platform_name or "").strip():
+            st.error("Please enter the Platform Company Name for Add-On mode.")
+            st.stop()
+
+        keyword_tags = [k.strip() for k in apollo_keywords_raw.split(",") if k.strip()] or None
+        history_keys = _load_history() if (skip_prev or strat_code in ("A", "C")) else set()
+
+        kw_display = f" + keyword sweep ({', '.join(keyword_tags)})" if keyword_tags else ""
+        st.info(
+            f"🔎 Searching **{len(industries)} industries**{kw_display} "
+            f"in **{target_geo}** (up to 1,000 results per industry)…"
+        )
+
+        try:
+            orgs = search_organizations(industries, target_geo, keyword_tags=keyword_tags)
+        except Exception as e:
+            st.error(f"Apollo API error: {e}")
+            st.stop()
+
+        if strat_code == "C":
+            orgs = [o for o in orgs if (o.get("estimated_num_employees") or 0) <= 150]
+
+        if skip_prev and history_keys:
+            before = len(orgs)
+            orgs = [o for o in orgs if not _company_in_history(o, history_keys)]
+            skipped = before - len(orgs)
+            if skipped:
+                st.info(f"Skipped **{skipped}** previously sourced companies.")
+
+        seen_domains = set()
+        seen_names   = set()
+        for o in orgs:
+            d = clean_domain(o.get("website_url"))
+            if d: seen_domains.add(d)
+            n = (o.get("name") or "").strip().lower()
+            if n: seen_names.add(n)
+
+        google_orgs = []
+        with st.spinner("Checking Google/DuckDuckGo/Bing for companies Apollo may have missed…"):
+            try:
+                google_orgs = web_discovery_pass(specific_niche, target_geo,
+                                                 seen_domains, seen_names)
+            except Exception as e:
+                st.warning(f"Web discovery pass failed (continuing with Apollo results): {e}")
+        if google_orgs:
+            if strat_code == "C":
+                google_orgs = [o for o in google_orgs
+                               if (o.get("estimated_num_employees") or 0) <= 150]
+            orgs.extend(google_orgs)
+            st.info(f"🔍 Web discovery added **{len(google_orgs)}** companies not in Apollo.")
+
+        if not orgs:
+            st.error(
+                "No companies found in Apollo or Google. "
+                "Try broadening the industry selection or clearing the Keywords field."
+            )
+            st.stop()
+
+        total_candidates = len(orgs)
+
+        # Prioritize by fit and batch if too many candidates
+        if len(orgs) > BATCH_SIZE:
+            orgs.sort(key=lambda o: _rank_candidate_fit(o, specific_niche), reverse=True)
+            overflow = orgs[BATCH_SIZE:]
+            orgs = orgs[:BATCH_SIZE]
+            st.session_state["_overflow_orgs"] = overflow
+            st.session_state["_overflow_total"] = total_candidates
+            st.session_state["_overflow_batch_num"] = 2
+            st.info(
+                f"Found **{total_candidates}** candidates — processing top **{BATCH_SIZE}** "
+                f"by estimated fit. **{len(overflow)}** queued for next batch."
+            )
+        else:
+            st.session_state.pop("_overflow_orgs", None)
+            st.session_state.pop("_overflow_total", None)
+            st.session_state.pop("_overflow_batch_num", None)
+
+    # ── Shared: process batch with 5 parallel workers ─────────────────
     st.success(
-        f"Found **{total_candidates}** unique candidates ({total_candidates - len(google_orgs) if google_orgs else total_candidates} "
-        f"Apollo + {len(google_orgs) if google_orgs else 0} Google) — "
-        f"running AI filter with 5 parallel workers…"
+        f"Running AI filter on **{len(orgs)}** candidates with 5 parallel workers…"
     )
     progress_bar = st.progress(0)
     status_text  = st.empty()
     final_data   = []
-
-    # For Strategy C, use "A" internally (same filters) but pass through as "C"
-    # so process_single_company applies strict ownership filters
-    worker_strat = "A" if strat_code == "C" else strat_code
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as ex:
         futures = {
@@ -2012,7 +2089,7 @@ if st.button("🚀 Start Sourcing", type="primary"):
                 result = future.result()
                 if result: final_data.append(result)
             except Exception:
-                pass  # skip companies that error out
+                pass
             progress_bar.progress((i + 1) / len(orgs))
             status_text.caption(
                 f"Processed {i+1}/{len(orgs)} | {len(final_data)} passed so far…"
@@ -2082,6 +2159,176 @@ if st.button("🚀 Start Sourcing", type="primary"):
         st.download_button(
             "Download CSV", data=csv, file_name=fname, mime="text/csv", type="primary"
         )
+
+        # ── Salesforce + Outreach Actions ──────────────────────────────
+        st.divider()
+        st.markdown("### Actions")
+
+        # Store results in session state for action buttons
+        st.session_state["_sourcing_results"] = final_data
+        st.session_state["_sourcing_df"] = df
+
+        company_names = df["Company"].tolist()
+        selected_company = st.selectbox(
+            "Select a company",
+            options=company_names,
+            key="action_company_select",
+        )
+
+        if selected_company:
+            sel_row = next(
+                (r for r in final_data if r.get("Company") == selected_company),
+                None,
+            )
+            if sel_row:
+                # Show company summary
+                _contact = sel_row.get("CEO/Owner Name", "N/A")
+                _email = sel_row.get("Email", "N/A")
+                _email_est = sel_row.get("Email Estimate", "")
+                _display_email = _email if _email != "N/A" else (_email_est or "N/A")
+                st.caption(
+                    f"**{selected_company}** — {_contact} "
+                    f"({sel_row.get('Title', 'N/A')}) — {_display_email}"
+                )
+
+                b1, b2, b3 = st.columns(3)
+
+                # ── Button 1: Add to Salesforce ────────────────────────
+                with b1:
+                    sf_clicked = st.button(
+                        "Add to Salesforce",
+                        key=f"sf_{selected_company}",
+                        type="primary",
+                        use_container_width=True,
+                    )
+                if sf_clicked:
+                    if not _SF_CONFIGURED:
+                        st.error(
+                            "Salesforce not configured. Add SF_USERNAME, SF_PASSWORD, "
+                            "SF_CONSUMER_KEY, and SF_CONSUMER_SECRET to "
+                            "`.streamlit/secrets.toml`."
+                        )
+                    else:
+                        with st.spinner("Connecting to Salesforce…"):
+                            try:
+                                from lib.salesforce import (
+                                    sf_login,
+                                    push_to_salesforce,
+                                    find_existing_account,
+                                )
+                                sf = sf_login(
+                                    SF_USERNAME, SF_PASSWORD,
+                                    SF_CONSUMER_KEY, SF_CONSUMER_SECRET,
+                                    SF_SECURITY_TOKEN,
+                                )
+                                existing = find_existing_account(sf, selected_company)
+                                if existing:
+                                    st.warning(
+                                        f"**{selected_company}** already exists "
+                                        f"in Salesforce (Account ID: {existing})."
+                                    )
+                                else:
+                                    acct_id, contact_id = push_to_salesforce(sf, sel_row)
+                                    st.success(
+                                        f"Created **{selected_company}** in Salesforce.\n\n"
+                                        f"Account ID: `{acct_id}` | "
+                                        f"Contact ID: `{contact_id}`"
+                                    )
+                            except Exception as e:
+                                st.error(f"Salesforce error: {e}")
+
+                # ── Button 2: Draft Outreach Email ─────────────────────
+                with b2:
+                    draft_clicked = st.button(
+                        "Draft Outreach",
+                        key=f"draft_{selected_company}",
+                        use_container_width=True,
+                    )
+                if draft_clicked:
+                    with st.spinner("AI drafting outreach email…"):
+                        try:
+                            from lib.outreach import draft_cold_email
+                            _thesis = {}
+                            try:
+                                with open("ncp_thesis.json") as f:
+                                    _thesis = json.load(f)
+                            except Exception:
+                                pass
+                            enriched_row = {**sel_row, "_niche": specific_niche}
+                            email_draft = draft_cold_email(
+                                client, enriched_row, _thesis
+                            )
+                            st.session_state["_draft_subject"] = email_draft["subject"]
+                            st.session_state["_draft_body"] = email_draft["body"]
+                            st.session_state["_draft_company"] = selected_company
+                        except Exception as e:
+                            st.error(f"Email drafting error: {e}")
+
+                # ── Button 3: Open in Outlook ──────────────────────────
+                with b3:
+                    if (st.session_state.get("_draft_company") == selected_company
+                            and st.session_state.get("_draft_body")):
+                        from lib.outreach import make_mailto_url
+                        to_addr = (
+                            _email if _email != "N/A"
+                            else (_email_est if _email_est else "")
+                        )
+                        mailto = make_mailto_url(
+                            to_addr,
+                            st.session_state["_draft_subject"],
+                            st.session_state["_draft_body"],
+                        )
+                        st.link_button(
+                            "Open in Outlook",
+                            url=mailto,
+                            use_container_width=True,
+                        )
+                    else:
+                        st.button(
+                            "Open in Outlook",
+                            key=f"outlook_{selected_company}",
+                            disabled=True,
+                            help="Draft an email first",
+                            use_container_width=True,
+                        )
+
+                # Show draft email if available for this company
+                if (st.session_state.get("_draft_company") == selected_company
+                        and st.session_state.get("_draft_body")):
+                    st.markdown("---")
+                    st.markdown(f"**Subject:** {st.session_state['_draft_subject']}")
+                    st.text_area(
+                        "Email Draft (edit before sending)",
+                        value=st.session_state["_draft_body"],
+                        height=250,
+                        key="draft_email_editor",
+                    )
+                    st.caption(
+                        "Edit the draft above, then click **Open in Outlook** to "
+                        "send. The mailto link uses the original draft — copy your "
+                        "edits manually if you've changed the text above."
+                    )
+
+        # ── Run Next Batch button (inside results) ──────────────────
+        _overflow_remaining = st.session_state.get("_overflow_orgs")
+        if _overflow_remaining:
+            st.divider()
+            _next_size = min(BATCH_SIZE, len(_overflow_remaining))
+            st.markdown(
+                f"### 📦 {len(_overflow_remaining)} candidates remaining"
+            )
+            st.caption(
+                "Lower-ranked candidates by estimated fit. "
+                "Run the next batch to continue processing."
+            )
+            if st.button(
+                f"▶ Run Next Batch ({_next_size} candidates)",
+                type="secondary",
+                use_container_width=True,
+            ):
+                st.session_state["_run_next_batch"] = True
+                st.rerun()
+
     else:
         st.warning(
             "No targets passed the filters.\n\n"
@@ -2091,3 +2338,23 @@ if st.button("🚀 Start Sourcing", type="primary"):
             "- Switch to **Mode B** for a broader sweep\n"
             "- Add more industry categories"
         )
+
+# ── Persistent "Run Next Batch" outside the search block ──────────────
+# Shown when the page reloads and overflow candidates remain from a prior run.
+_idle_overflow = st.session_state.get("_overflow_orgs")
+if _idle_overflow and not _run_next_batch:
+    st.divider()
+    _idle_next = min(BATCH_SIZE, len(_idle_overflow))
+    st.markdown(f"### 📦 {len(_idle_overflow)} candidates remaining from previous search")
+    st.caption(
+        "Lower-ranked candidates by estimated fit. "
+        "Run the next batch to continue processing."
+    )
+    if st.button(
+        f"▶ Run Next Batch ({_idle_next} candidates)",
+        type="primary",
+        use_container_width=True,
+        key="idle_next_batch",
+    ):
+        st.session_state["_run_next_batch"] = True
+        st.rerun()
