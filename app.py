@@ -1706,13 +1706,12 @@ def process_single_company(org, specific_niche, strat_code, history_keys=None):
         row["Growth"]      = "Low"
         row["Txn Readiness"] = "Low"
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as inner:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as inner:
         apollo_future = inner.submit(get_people_apollo_robust, comp_name, domain, org_id)
         web_future    = inner.submit(spider_for_contact, comp_name, domain)
-        desc_future   = inner.submit(generate_company_description, comp_name, domain, desc, tags)
         apollo_people                                 = apollo_future.result()
         web_person, web_source, web_email, web_phone = web_future.result()
-        row["Description"]                           = desc_future.result()
+    row["Description"] = generate_company_description(comp_name, domain, desc, tags)
 
     found_person = None
 
@@ -1781,19 +1780,20 @@ def process_single_company(org, specific_niche, strat_code, history_keys=None):
 
     # Strategy A: assess priority, growth, transaction readiness, and differentiation in parallel
     if strat_code == "A":
-        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as score_ex:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as score_ex:
             pri_fut    = score_ex.submit(assess_priority, comp_name, row["Description"],
                                          org.get("state"), org.get("estimated_num_employees"),
                                          tags, specific_niche)
-            growth_fut = score_ex.submit(assess_growth_score, comp_name, domain, apollo_people)
-            txn_fut    = score_ex.submit(assess_transaction_readiness, comp_name, domain,
-                                         apollo_people, row["Description"])
             diff_fut   = score_ex.submit(assess_differentiation, comp_name, row["Description"],
                                          specific_niche)
             row["Priority"],      _ = pri_fut.result()
+            row["Differentiated"], _ = diff_fut.result()
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as score_ex2:
+            growth_fut = score_ex2.submit(assess_growth_score, comp_name, domain, apollo_people)
+            txn_fut    = score_ex2.submit(assess_transaction_readiness, comp_name, domain,
+                                         apollo_people, row["Description"])
             row["Growth"],        _ = growth_fut.result()
             row["Txn Readiness"], _ = txn_fut.result()
-            row["Differentiated"], _ = diff_fut.result()
     else:
         # Strategy B: still assess differentiation
         row["Differentiated"], _ = assess_differentiation(comp_name, row["Description"],
@@ -2003,10 +2003,24 @@ if st.button("🚀 Start Sourcing", type="primary"):
     # ── Competitive Density metric ──────────────────────────────────────
     total_candidates = len(orgs)
 
+    # Cap candidates to avoid memory/thread exhaustion on Streamlit Cloud
+    MAX_CANDIDATES = 500
+    if len(orgs) > MAX_CANDIDATES:
+        import random
+        random.shuffle(orgs)
+        orgs = orgs[:MAX_CANDIDATES]
+        st.warning(
+            f"Found **{total_candidates}** candidates — sampling **{MAX_CANDIDATES}** "
+            f"to stay within resource limits. Narrow your industries or geography "
+            f"for exhaustive coverage."
+        )
+
+    num_workers = 3 if len(orgs) > 300 else 5
+
     st.success(
         f"Found **{total_candidates}** unique candidates ({total_candidates - len(google_orgs) if google_orgs else total_candidates} "
         f"Apollo + {len(google_orgs) if google_orgs else 0} Google) — "
-        f"running AI filter with 5 parallel workers…"
+        f"running AI filter with {num_workers} parallel workers…"
     )
     progress_bar = st.progress(0)
     status_text  = st.empty()
@@ -2016,7 +2030,7 @@ if st.button("🚀 Start Sourcing", type="primary"):
     # so process_single_company applies strict ownership filters
     worker_strat = "A" if strat_code == "C" else strat_code
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as ex:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as ex:
         futures = {
             ex.submit(process_single_company, org, specific_niche, worker_strat, history_keys): org
             for org in orgs
