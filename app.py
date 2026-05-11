@@ -96,6 +96,7 @@ _firecrawl_limiter = RateLimiter(calls_per_second=3)  # ~180/min
 # CONSTANTS
 # ---------------------------------------------------------------------------
 OPENAI_MODEL = "gpt-4o"  # Change here if model rotates or you upgrade
+BATCH_SIZE   = 500       # Max candidates per processing batch
 
 
 def _openai_create(**kwargs):
@@ -1802,6 +1803,44 @@ def process_single_company(org, specific_niche, strat_code, history_keys=None):
     return row
 
 
+def _rank_candidate_fit(org, niche_text):
+    """Lightweight fit score using Apollo metadata only (no API calls).
+
+    Higher score = more likely to be a good PE acquisition candidate in-niche.
+    """
+    score = 0
+    emp = org.get("estimated_num_employees") or 0
+
+    # Employee count sweet spot for PE acquisition
+    if 20 <= emp <= 500:
+        score += 30
+    elif 10 <= emp <= 1000:
+        score += 15
+    elif 1 <= emp <= 10:
+        score += 5
+
+    # Keyword overlap with niche
+    niche_tokens = [w.lower() for w in niche_text.split() if len(w) > 3]
+    name = (org.get("name") or "").lower()
+    desc = (org.get("short_description") or "").lower()
+    tags = " ".join(t.lower() for t in (org.get("keywords") or []))
+    combined = f"{name} {desc} {tags}"
+    keyword_hits = sum(1 for w in niche_tokens if w in combined)
+    score += min(keyword_hits * 10, 40)
+
+    if org.get("website_url"):
+        score += 10
+
+    if desc.strip():
+        score += 10
+
+    status = (org.get("ownership_status") or "").lower()
+    if "private" in status:
+        score += 10
+
+    return score
+
+
 # ---------------------------------------------------------------------------
 # UI
 # ---------------------------------------------------------------------------
@@ -1927,110 +1966,120 @@ st.caption(
     "Apollo doesn't have at all. The AI filter screens every candidate for true niche relevance."
 )
 
-if st.button("🚀 Start Sourcing", type="primary"):
-    if not industries:
-        st.error("Please select at least one industry, or click **Suggest Fields** first.")
-        st.stop()
+strat_code = "A" if "A -" in mode else ("C" if "C -" in mode else "B")
+worker_strat = "A" if strat_code == "C" else strat_code
+_run_next_batch = st.session_state.pop("_run_next_batch", False)
 
-    strat_code = "A" if "A -" in mode else ("C" if "C -" in mode else "B")
+if _run_next_batch or st.button("🚀 Start Sourcing", type="primary"):
 
-    # Strategy C validates platform company input
-    if strat_code == "C" and not (platform_name or "").strip():
-        st.error("Please enter the Platform Company Name for Add-On mode.")
-        st.stop()
+    # ── Next-batch mode: pull orgs from overflow ──────────────────────
+    if _run_next_batch:
+        _overflow = st.session_state.pop("_overflow_orgs", [])
+        orgs = _overflow[:BATCH_SIZE]
+        remaining_overflow = _overflow[BATCH_SIZE:]
+        if remaining_overflow:
+            st.session_state["_overflow_orgs"] = remaining_overflow
+        total_candidates = st.session_state.get("_overflow_total", len(orgs))
+        batch_num = st.session_state.get("_overflow_batch_num", 2)
+        st.session_state["_overflow_batch_num"] = batch_num + 1
+        history_keys = _load_history() if strat_code in ("A", "C") else set()
+        st.info(
+            f"Processing batch {batch_num}: **{len(orgs)}** candidates "
+            f"({len(remaining_overflow)} still remaining)…"
+        )
 
-    keyword_tags = [k.strip() for k in apollo_keywords_raw.split(",") if k.strip()] or None
+    # ── Fresh search mode ─────────────────────────────────────────────
+    else:
+        if not industries:
+            st.error("Please select at least one industry, or click **Suggest Fields** first.")
+            st.stop()
 
-    # Load history for dedup
-    history_keys = _load_history() if (skip_prev or strat_code in ("A", "C")) else set()
+        if strat_code == "C" and not (platform_name or "").strip():
+            st.error("Please enter the Platform Company Name for Add-On mode.")
+            st.stop()
 
-    kw_display = f" + keyword sweep ({', '.join(keyword_tags)})" if keyword_tags else ""
-    st.info(
-        f"🔎 Searching **{len(industries)} industries**{kw_display} "
-        f"in **{target_geo}** (up to 1,000 results per industry)…"
-    )
+        keyword_tags = [k.strip() for k in apollo_keywords_raw.split(",") if k.strip()] or None
+        history_keys = _load_history() if (skip_prev or strat_code in ("A", "C")) else set()
 
-    try:
-        orgs = search_organizations(industries, target_geo, keyword_tags=keyword_tags)
-    except Exception as e:
-        st.error(f"Apollo API error: {e}")
-        st.stop()
+        kw_display = f" + keyword sweep ({', '.join(keyword_tags)})" if keyword_tags else ""
+        st.info(
+            f"🔎 Searching **{len(industries)} industries**{kw_display} "
+            f"in **{target_geo}** (up to 1,000 results per industry)…"
+        )
 
-    # Strategy C: filter to smaller companies suitable as bolt-on acquisitions
-    if strat_code == "C":
-        orgs = [o for o in orgs if (o.get("estimated_num_employees") or 0) <= 150]
-
-    # Skip previously sourced companies if requested
-    if skip_prev and history_keys:
-        before = len(orgs)
-        orgs = [o for o in orgs if not _company_in_history(o, history_keys)]
-        skipped = before - len(orgs)
-        if skipped:
-            st.info(f"Skipped **{skipped}** previously sourced companies.")
-
-    # Build dedup sets for Google discovery pass
-    seen_domains = set()
-    seen_names   = set()
-    for o in orgs:
-        d = clean_domain(o.get("website_url"))
-        if d: seen_domains.add(d)
-        n = (o.get("name") or "").strip().lower()
-        if n: seen_names.add(n)
-
-    # Pass 3: Web scrape to catch companies Apollo missed
-    google_orgs = []
-    with st.spinner("Checking Google/DuckDuckGo/Bing for companies Apollo may have missed…"):
         try:
-            google_orgs = web_discovery_pass(specific_niche, target_geo,
-                                             seen_domains, seen_names)
+            orgs = search_organizations(industries, target_geo, keyword_tags=keyword_tags)
         except Exception as e:
-            st.warning(f"Web discovery pass failed (continuing with Apollo results): {e}")
-    if google_orgs:
-        # Strategy C: filter web discovery results too
+            st.error(f"Apollo API error: {e}")
+            st.stop()
+
         if strat_code == "C":
-            google_orgs = [o for o in google_orgs
-                           if (o.get("estimated_num_employees") or 0) <= 150]
-        orgs.extend(google_orgs)
-        st.info(f"🔍 Web discovery added **{len(google_orgs)}** companies not in Apollo.")
+            orgs = [o for o in orgs if (o.get("estimated_num_employees") or 0) <= 150]
 
-    if not orgs:
-        st.error(
-            "No companies found in Apollo or Google. "
-            "Try broadening the industry selection or clearing the Keywords field."
-        )
-        st.stop()
+        if skip_prev and history_keys:
+            before = len(orgs)
+            orgs = [o for o in orgs if not _company_in_history(o, history_keys)]
+            skipped = before - len(orgs)
+            if skipped:
+                st.info(f"Skipped **{skipped}** previously sourced companies.")
 
-    # ── Competitive Density metric ──────────────────────────────────────
-    total_candidates = len(orgs)
+        seen_domains = set()
+        seen_names   = set()
+        for o in orgs:
+            d = clean_domain(o.get("website_url"))
+            if d: seen_domains.add(d)
+            n = (o.get("name") or "").strip().lower()
+            if n: seen_names.add(n)
 
-    # Cap candidates to avoid memory/thread exhaustion on Streamlit Cloud
-    MAX_CANDIDATES = 500
-    if len(orgs) > MAX_CANDIDATES:
-        import random
-        random.shuffle(orgs)
-        orgs = orgs[:MAX_CANDIDATES]
-        st.warning(
-            f"Found **{total_candidates}** candidates — sampling **{MAX_CANDIDATES}** "
-            f"to stay within resource limits. Narrow your industries or geography "
-            f"for exhaustive coverage."
-        )
+        google_orgs = []
+        with st.spinner("Checking Google/DuckDuckGo/Bing for companies Apollo may have missed…"):
+            try:
+                google_orgs = web_discovery_pass(specific_niche, target_geo,
+                                                 seen_domains, seen_names)
+            except Exception as e:
+                st.warning(f"Web discovery pass failed (continuing with Apollo results): {e}")
+        if google_orgs:
+            if strat_code == "C":
+                google_orgs = [o for o in google_orgs
+                               if (o.get("estimated_num_employees") or 0) <= 150]
+            orgs.extend(google_orgs)
+            st.info(f"🔍 Web discovery added **{len(google_orgs)}** companies not in Apollo.")
 
-    num_workers = 3 if len(orgs) > 300 else 5
+        if not orgs:
+            st.error(
+                "No companies found in Apollo or Google. "
+                "Try broadening the industry selection or clearing the Keywords field."
+            )
+            st.stop()
 
+        total_candidates = len(orgs)
+
+        # Prioritize by fit and batch if too many candidates
+        if len(orgs) > BATCH_SIZE:
+            orgs.sort(key=lambda o: _rank_candidate_fit(o, specific_niche), reverse=True)
+            overflow = orgs[BATCH_SIZE:]
+            orgs = orgs[:BATCH_SIZE]
+            st.session_state["_overflow_orgs"] = overflow
+            st.session_state["_overflow_total"] = total_candidates
+            st.session_state["_overflow_batch_num"] = 2
+            st.info(
+                f"Found **{total_candidates}** candidates — processing top **{BATCH_SIZE}** "
+                f"by estimated fit. **{len(overflow)}** queued for next batch."
+            )
+        else:
+            st.session_state.pop("_overflow_orgs", None)
+            st.session_state.pop("_overflow_total", None)
+            st.session_state.pop("_overflow_batch_num", None)
+
+    # ── Shared: process batch with 5 parallel workers ─────────────────
     st.success(
-        f"Found **{total_candidates}** unique candidates ({total_candidates - len(google_orgs) if google_orgs else total_candidates} "
-        f"Apollo + {len(google_orgs) if google_orgs else 0} Google) — "
-        f"running AI filter with {num_workers} parallel workers…"
+        f"Running AI filter on **{len(orgs)}** candidates with 5 parallel workers…"
     )
     progress_bar = st.progress(0)
     status_text  = st.empty()
     final_data   = []
 
-    # For Strategy C, use "A" internally (same filters) but pass through as "C"
-    # so process_single_company applies strict ownership filters
-    worker_strat = "A" if strat_code == "C" else strat_code
-
-    with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as ex:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as ex:
         futures = {
             ex.submit(process_single_company, org, specific_niche, worker_strat, history_keys): org
             for org in orgs
@@ -2040,7 +2089,7 @@ if st.button("🚀 Start Sourcing", type="primary"):
                 result = future.result()
                 if result: final_data.append(result)
             except Exception:
-                pass  # skip companies that error out
+                pass
             progress_bar.progress((i + 1) / len(orgs))
             status_text.caption(
                 f"Processed {i+1}/{len(orgs)} | {len(final_data)} passed so far…"
@@ -2260,6 +2309,26 @@ if st.button("🚀 Start Sourcing", type="primary"):
                         "edits manually if you've changed the text above."
                     )
 
+        # ── Run Next Batch button (inside results) ──────────────────
+        _overflow_remaining = st.session_state.get("_overflow_orgs")
+        if _overflow_remaining:
+            st.divider()
+            _next_size = min(BATCH_SIZE, len(_overflow_remaining))
+            st.markdown(
+                f"### 📦 {len(_overflow_remaining)} candidates remaining"
+            )
+            st.caption(
+                "Lower-ranked candidates by estimated fit. "
+                "Run the next batch to continue processing."
+            )
+            if st.button(
+                f"▶ Run Next Batch ({_next_size} candidates)",
+                type="secondary",
+                use_container_width=True,
+            ):
+                st.session_state["_run_next_batch"] = True
+                st.rerun()
+
     else:
         st.warning(
             "No targets passed the filters.\n\n"
@@ -2269,3 +2338,23 @@ if st.button("🚀 Start Sourcing", type="primary"):
             "- Switch to **Mode B** for a broader sweep\n"
             "- Add more industry categories"
         )
+
+# ── Persistent "Run Next Batch" outside the search block ──────────────
+# Shown when the page reloads and overflow candidates remain from a prior run.
+_idle_overflow = st.session_state.get("_overflow_orgs")
+if _idle_overflow and not _run_next_batch:
+    st.divider()
+    _idle_next = min(BATCH_SIZE, len(_idle_overflow))
+    st.markdown(f"### 📦 {len(_idle_overflow)} candidates remaining from previous search")
+    st.caption(
+        "Lower-ranked candidates by estimated fit. "
+        "Run the next batch to continue processing."
+    )
+    if st.button(
+        f"▶ Run Next Batch ({_idle_next} candidates)",
+        type="primary",
+        use_container_width=True,
+        key="idle_next_batch",
+    ):
+        st.session_state["_run_next_batch"] = True
+        st.rerun()
