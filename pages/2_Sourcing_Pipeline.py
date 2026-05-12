@@ -305,6 +305,7 @@ with tab_chat:
 
                 # ===== PASS 1: Intent classification =====
                 _cfg = state.config or {}
+                _completed = len(state.completed_memos or [])
                 classifier_prompt = f"""You classify the intent of a message sent to a PE sourcing pipeline assistant.
 
 Possible intents:
@@ -327,6 +328,16 @@ If "command", also identify the specific action and arguments. Supported command
    Examples: "broaden", "expand the search", "look more broadly", "this is too narrow".
 7. "narrow_search" — user wants more specific keywords. args: {{"new_keywords": "<comma-separated>"}}.
    Examples: "focus on cybersecurity assessors", "narrow to staffing only".
+8. "find_more" — user wants ADDITIONAL memos, possibly in a new geography. Use
+   when user says "find me X more" or "find me X in [place]" AFTER the pipeline
+   already completed or is idle.
+   args: {{"additional_count": <int>, "new_geography": "<location or null>"}}.
+   Examples: "find me 3 more in Texas", "find one more in Virginia and two more
+   in Maryland" (additional_count=3, new_geography="Virginia, Maryland"),
+   "get me 5 more" (additional_count=5, new_geography=null — keep current).
+   IMPORTANT: additional_count is how many MORE they want on top of the
+   {_completed} already completed. If they say "one more in VA and two more in MD"
+   that is additional_count=3.
 
 User message: "{user_msg}"
 
@@ -335,7 +346,7 @@ Recent pipeline state:
 - Niche: {_cfg.get('niche', 'none')}
 - Geography: {_cfg.get('geography', 'none')}
 - Target: {_cfg.get('target_count', 'none')}
-- Completed memos: {len(state.completed_memos or [])}
+- Completed memos: {_completed}
 
 Return JSON only:
 {{"intent": "command|question|memo_feedback|feedback|smalltalk", "command": {{"action": "...", "args": {{...}}}} or null, "rationale": "one sentence"}}"""
@@ -415,11 +426,15 @@ Be specific. If user said "too big," infer a reasonable new_size_max from the me
                             )
                             pivot_args = _json.loads(pivot_resp.choices[0].message.content or "{}")
                             command_result = state.apply_command({"action": "pivot", "args": pivot_args})
+                            if command_result and command_result.get("restart"):
+                                restart_running_pipeline()
                         except Exception as e:
                             command_result = {"success": False, "message": f"Could not translate feedback into pivot: {e}"}
 
                 if intent == "command" and command:
                     command_result = state.apply_command(command)
+                    if command_result and command_result.get("restart"):
+                        restart_running_pipeline()
 
                 # ===== PASS 2: Conversational response =====
                 def _build_system_prompt(st_obj):
