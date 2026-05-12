@@ -197,7 +197,7 @@ def generate_followup_ics(company, contact_name, phone="", email="",
         UID:{_uid("call")}
         DTSTART:{_fmt(call_start)}
         DTEND:{_fmt(call_end)}
-        SUMMARY:Follow-up call: {contact_name} at {company}
+        SUMMARY:Follow-up call: {contact_name} at {company}{f" — {phone}" if phone else ""}
         DESCRIPTION:Call {contact_name} at {company} to follow up on outreach email sent {send_date.strftime('%b %d')}.{phone_note}{email_note}
         BEGIN:VALARM
         TRIGGER:-PT30M
