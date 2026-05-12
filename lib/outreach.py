@@ -23,13 +23,11 @@ def draft_cold_email(openai_client, row, thesis, sender_name="Trey"):
 
     first_name = contact.split()[0] if contact and contact != "N/A" else ""
 
-    prompt = f"""You are {sender_name} at New Capital Partners (NCP), a lower middle market
-private equity firm that partners with founder-owned service businesses.
+    prompt = f"""You are {sender_name} at New Capital Partners (NCP). You invest in
+founder-owned service businesses. Draft a cold email to get a REPLY from this
+founder. That is your ONLY goal — not to sell, pitch, or make an offer.
 
-Draft a cold outreach email to the owner/CEO of this company. Your ONLY goal is to
-get a reply — not to sell, not to pitch, not to make an offer.
-
-COMPANY INFO:
+COMPANY:
 - Company: {company}
 - Contact: {contact} ({title})
 - Location: {city}, {state}
@@ -39,62 +37,75 @@ COMPANY INFO:
 - Differentiation: {differentiated}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SUBJECT LINE RULES (Jeb Blount method):
+SUBJECT LINE (1-3 words — data says shorter = more opens):
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-- 3-5 words MAX. Shorter = higher open rate
-- Pattern interrupt — NOT "Introduction" or "Partnership Opportunity"
-- Use their first name or company name to feel personal
-- Trigger curiosity without being clickbait
-- Examples of great subject lines:
-  "{first_name or 'Quick'} — quick question"
-  "Noticed {company}"
-  "{company} — impressed"
-  "Question about {company}"
-  "For {first_name}" (ultra-simple, high open rate)
+- 1-3 words ONLY. All lowercase. No title case. No punctuation.
+- Use ONLY their first name, company name, or a 2-word curiosity hook.
+- Pattern interrupt — it should NOT look like a sales email.
+- WINNING examples:
+  "{first_name.lower() if first_name else 'quick question'}"
+  "{company.lower() if company else 'quick question'}"
+  "quick question"
+  "curious"
+  "{first_name.lower() + ', question' if first_name else 'hi'}"
+- NEVER use: "Partnership Opportunity", "Introduction", "Reaching Out",
+  "Business Inquiry", or anything that screams sales/PE email.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-EMAIL BODY RULES (Jeb Blount / Sales Gravy):
+EMAIL BODY — THE FRAMEWORK:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Structure — exactly 3 parts, each 1-2 sentences:
+Write at a 5th grade reading level. Short words. Short sentences. 3-4 sentences
+total. 25-50 words MAXIMUM (excluding sign-off). Every word must earn its place.
 
-1. HOOK (pattern interrupt + personalized observation):
-   - Reference something SPECIFIC you noticed about their company
-   - NOT "I hope this finds you well" — that's an instant delete
-   - Show you did your homework in ONE sentence
-   - Example: "I came across {company} while researching [niche] in [state] —
-     [specific thing from description that impressed you]."
+The email has exactly 3 parts (1 sentence each):
 
-2. BRIDGE (why you're reaching out — make it about THEM, not you):
-   - Briefly say who you are in a way that's relevant to them
-   - Frame it around THEIR world, not yours
-   - Do NOT list your credentials, portfolio, or deal history
-   - Example: "We partner with founders in [niche] who've built something
-     special — and from what I can tell, that's exactly what you've done."
+1. OBSERVATION — "Show me you know me" (Sam McKenna):
+   - Start with "you" or their company name — NEVER start with "I".
+   - Reference ONE specific thing about THEIR business that caught your eye.
+   - Pull from their description, differentiation, location, or website.
+   - This must be real and specific — no generic flattery.
+   - Good: "{{company}} caught my eye — [specific detail from description]."
+   - Bad: "I came across your impressive company." (generic = delete)
 
-3. ASK (micro-commitment, not a meeting request):
-   - Ask for something SMALL — a reply, a thought, a question
-   - "Would you be open to a 15-minute call?" is too big
-   - Better: "Would it be worth a quick conversation?"
-   - Best: "Is this something you'd ever think about?"
-   - Or: "Happy to share what we're seeing in [niche] — worth a quick chat?"
-   - The smaller the ask, the higher the reply rate
+2. RELEVANCE — Make it about their world, not yours (Jeb Blount):
+   - One sentence connecting who you are to why THEY should care.
+   - Frame around their reality as a founder, not your credentials.
+   - Use "we" sparingly. Center the sentence on "you" or "founders like you."
+   - Good: "We back founders in [niche] who've built something hard to copy."
+   - Bad: "We are a PE firm with a proven track record." (nobody cares)
 
-ABSOLUTE DON'TS:
-- No "I hope this email finds you well"
-- No "My name is Trey and I work at..."
-- No jargon: synergies, value creation, strategic partnership, unlock potential
-- No mention of deal terms, valuation, EBITDA, or acquisition price
-- No long paragraphs — 5 sentences TOTAL for the entire email
-- No "We have a proven track record" — nobody cares
-- No bullet points or formatting — plain text only
-- No exclamation marks
-- Sign off with just "{sender_name}" — no title, no phone number, no LinkedIn
+3. MICRO-ASK — Permission-based close (Josh Braun):
+   - Ask the SMALLEST possible question. One question only.
+   - Frame it so saying "no" feels safe — this paradoxically increases replies.
+   - Use "not sure if" / "would it be worth" / "is this even" phrasing.
+   - Best closers:
+     "Not sure if this is even on your radar — would it be worth a quick chat?"
+     "Is this something you'd ever think about?"
+     "Would a 10-minute call be worth it, or am I off base?"
+     "Happy to share what we're seeing in [niche] — worth a conversation?"
+   - NEVER: "Would you be open to a 30-minute call next Tuesday?"
 
-THE EMAIL MUST BE UNDER 75 WORDS (excluding signature). Shorter emails get
-more replies. Every word must earn its place.
+Sign off: just "{sender_name}" — nothing else. No title, phone, or LinkedIn.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ABSOLUTE RULES:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- UNDER 50 WORDS in the body (excluding sign-off). Lavender data: emails under
+  50 words get 2x the reply rate of longer emails. Count them.
+- 5th grade reading level. No SAT words. Write like you talk.
+- NEVER start any sentence with "I" — always lead with "you" or their name.
+- No "I hope this finds you well" or any throat-clearing opener.
+- No "My name is..." — your name is in the sign-off.
+- No jargon: synergies, value creation, strategic partnership, unlock potential,
+  deal flow, portfolio company, platform acquisition.
+- No mention of deal terms, valuation, EBITDA, multiples, or acquisition price.
+- No bullet points, bold, links, or formatting — plain text only.
+- No exclamation marks. One question mark max (the ask).
+- Do NOT sound like a PE firm. Sound like a real person writing a real email.
+- The email should feel like it took 30 seconds to write, even though it didn't.
 
 Return JSON only:
-{{"subject": "3-5 word subject line", "body": "the complete email body including signature"}}"""
+{{"subject": "1-3 word lowercase subject", "body": "the complete email body including sign-off"}}"""
 
     resp = openai_client.chat.completions.create(
         model="gpt-4o",

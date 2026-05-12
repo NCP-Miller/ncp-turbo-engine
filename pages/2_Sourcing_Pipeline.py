@@ -84,8 +84,11 @@ def _check_password():
 if not _check_password():
     st.stop()
 
-# Re-attach background pipeline if one was running
-state = resume_pipeline()
+# Re-attach background pipeline if one was running.
+# restart_running_pipeline() checks if status == "running" and re-spawns the
+# orchestrator thread — this is what makes the pipeline survive browser
+# disconnects, WiFi drops, and laptop sleep/wake cycles.
+state = restart_running_pipeline()
 state.reload_from_disk()
 
 st.title("🤖 NCP Autonomous Sourcing Pipeline")

@@ -1,6 +1,8 @@
 [server]
 headless = true
 runOnSave = true
+enableWebsocketCompression = true
+maxMessageSize = 200
 
 [theme]
 primaryColor = "#1E3A5F"
