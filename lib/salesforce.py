@@ -5,6 +5,7 @@ consumer key/secret, which works with MFA-enabled orgs when the Connected
 App has 'Relax IP restrictions' set.
 """
 
+from datetime import date, timedelta
 from simple_salesforce import Salesforce, SalesforceAuthenticationFailed
 
 
@@ -120,3 +121,48 @@ def log_outreach_activity(sf, account_id, contact_id, subject, body):
     payload = {k: v for k, v in payload.items() if v is not None}
     result = sf.Task.create(payload)
     return result["id"]
+
+
+def create_followup_tasks(sf, account_id, contact_id, company_name):
+    """Create two open follow-up Tasks after initial outreach:
+      1. Phone call — due 1 day from now
+      2. Follow-up email — due 3 days from now
+
+    Returns (call_task_id, email_task_id).
+    """
+    today = date.today()
+
+    call_payload = {
+        "WhatId": account_id,
+        "WhoId": contact_id,
+        "Subject": f"Follow-up call: {company_name}",
+        "Description": (
+            f"Call the contact at {company_name} to follow up on the "
+            f"outreach email sent on {today.isoformat()}."
+        ),
+        "Status": "Not Started",
+        "Priority": "High",
+        "Type": "Call",
+        "ActivityDate": (today + timedelta(days=1)).isoformat(),
+    }
+    call_payload = {k: v for k, v in call_payload.items() if v is not None}
+    call_result = sf.Task.create(call_payload)
+
+    email_payload = {
+        "WhatId": account_id,
+        "WhoId": contact_id,
+        "Subject": f"Follow-up email: {company_name}",
+        "Description": (
+            f"Send a follow-up email to the contact at {company_name}. "
+            f"Initial outreach was sent on {today.isoformat()}, "
+            f"follow-up call was scheduled for {(today + timedelta(days=1)).isoformat()}."
+        ),
+        "Status": "Not Started",
+        "Priority": "Normal",
+        "Type": "Email",
+        "ActivityDate": (today + timedelta(days=3)).isoformat(),
+    }
+    email_payload = {k: v for k, v in email_payload.items() if v is not None}
+    email_result = sf.Task.create(email_payload)
+
+    return call_result["id"], email_result["id"]

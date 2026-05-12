@@ -2321,17 +2321,35 @@ if _display_results:
                     key="draft_email_editor",
                 )
 
-                _log_col, _info_col = st.columns([1, 3])
-                with _log_col:
+                _action_cols = st.columns([1, 1, 2])
+                with _action_cols[0]:
                     _log_sf_clicked = st.button(
                         "Log to Salesforce",
                         key=f"log_sf_{selected_company}",
                         use_container_width=True,
                     )
-                with _info_col:
+                with _action_cols[1]:
+                    from lib.outreach import generate_followup_ics
+                    _contact_name = sel_row.get("CEO/Owner Name", "Contact")
+                    _phone = sel_row.get("Phone", "")
+                    if _phone == "N/A":
+                        _phone = ""
+                    _ics_email = _email if _email != "N/A" else (_email_est or "")
+                    _ics_data = generate_followup_ics(
+                        selected_company, _contact_name,
+                        phone=_phone, email=_ics_email,
+                    )
+                    st.download_button(
+                        "Add Reminders to Calendar",
+                        data=_ics_data,
+                        file_name=f"followup_{selected_company.replace(' ', '_')}.ics",
+                        mime="text/calendar",
+                        use_container_width=True,
+                    )
+                with _action_cols[2]:
                     st.caption(
-                        "Send via Outlook, then click **Log to Salesforce** to "
-                        "record the outreach as a completed activity on the contact."
+                        "**1)** Send via Outlook **2)** Add follow-up reminders "
+                        "to your calendar **3)** Log to Salesforce"
                     )
 
                 if _log_sf_clicked:
@@ -2344,6 +2362,7 @@ if _display_results:
                                     sf_login, find_existing_account,
                                     find_contact_for_account,
                                     log_outreach_activity,
+                                    create_followup_tasks,
                                 )
                                 sf = sf_login(
                                     SF_USERNAME, SF_PASSWORD,
@@ -2363,8 +2382,13 @@ if _display_results:
                                         st.session_state.get("_draft_subject", ""),
                                         st.session_state.get("_draft_body", ""),
                                     )
+                                    call_id, fu_email_id = create_followup_tasks(
+                                        sf, acct_id, contact_id, selected_company,
+                                    )
                                     st.success(
-                                        f"Outreach logged to Salesforce (Task ID: `{task_id}`)."
+                                        f"Logged to Salesforce — Email: `{task_id}` | "
+                                        f"Call follow-up (tomorrow): `{call_id}` | "
+                                        f"Email follow-up (day 3): `{fu_email_id}`"
                                     )
                             except Exception as e:
                                 st.error(f"Salesforce logging error: {e}")

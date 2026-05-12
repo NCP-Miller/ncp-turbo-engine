@@ -1,7 +1,9 @@
-"""AI-powered outreach email drafting and mailto link generation."""
+"""AI-powered outreach email drafting, mailto link, and follow-up calendar generation."""
 
 import json
+from datetime import datetime, timedelta, timezone
 from urllib.parse import quote
+from textwrap import dedent
 
 
 def draft_cold_email(openai_client, row, thesis, sender_name="Trey"):
@@ -23,6 +25,14 @@ def draft_cold_email(openai_client, row, thesis, sender_name="Trey"):
 
     first_name = contact.split()[0] if contact and contact != "N/A" else ""
 
+    # Build buyer-angle context from thesis
+    excitement = thesis.get("excitement_signals", [])
+    excitement_text = "\n".join(f"  - {s}" for s in excitement) if excitement else "  (none provided)"
+    deal_breakers = thesis.get("deal_breakers", [])
+    breakers_text = "\n".join(f"  - {s}" for s in deal_breakers) if deal_breakers else "  (none provided)"
+    conviction_bar = thesis.get("conviction_bar", "")
+    firm_mandate = thesis.get("mandate", "lower middle market PE — founder-owned service businesses")
+
     prompt = f"""You are {sender_name} at New Capital Partners (NCP). You invest in
 founder-owned service businesses. Draft a cold email to get a REPLY from this
 founder. That is your ONLY goal — not to sell, pitch, or make an offer.
@@ -35,6 +45,21 @@ COMPANY:
 - Description: {description}
 - Website: {website}
 - Differentiation: {differentiated}
+
+YOUR BUYER ANGLE (use this to craft WHY you're reaching out to THIS company):
+- NCP Mandate: {firm_mandate}
+- What excites NCP about a deal:
+{excitement_text}
+- What NCP avoids:
+{breakers_text}
+- Conviction bar: {conviction_bar}
+
+Read the company info above and identify which of NCP's excitement signals this
+company triggers. Use that SPECIFIC angle in the relevance sentence — don't be
+generic. If they have a defensible moat, say that. If they're in a growing
+market with tailwinds, reference the tailwind. If they have recurring revenue,
+note it. The email should make it obvious you understand WHY their company is
+interesting, not just THAT it is.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 SUBJECT LINE (1-3 words — data says shorter = more opens):
@@ -131,3 +156,66 @@ def make_mailto_url(to_email, subject, body):
     query = "&".join(params)
     addr = to_email or ""
     return f"mailto:{addr}?{query}" if query else f"mailto:{addr}"
+
+
+def generate_followup_ics(company, contact_name, phone="", email="",
+                          send_date=None):
+    """Generate an .ics file with two follow-up reminders:
+      1. Phone call — 1 day after send_date (9:00 AM, 15 min)
+      2. Follow-up email — 3 days after send_date (9:00 AM, 15 min)
+
+    Returns the .ics content as a string.
+    """
+    if send_date is None:
+        send_date = datetime.now(timezone.utc)
+
+    call_date = send_date + timedelta(days=1)
+    email_date = send_date + timedelta(days=3)
+
+    def _fmt(dt):
+        return dt.strftime("%Y%m%dT%H%M%S")
+
+    def _uid(suffix):
+        ts = int(send_date.timestamp())
+        safe = company.replace(" ", "").replace("'", "")[:20]
+        return f"ncp-{safe}-{ts}-{suffix}@ncpengine"
+
+    call_start = call_date.replace(hour=9, minute=0, second=0, microsecond=0)
+    call_end = call_start + timedelta(minutes=15)
+    email_start = email_date.replace(hour=9, minute=0, second=0, microsecond=0)
+    email_end = email_start + timedelta(minutes=15)
+
+    phone_note = f"\\nPhone: {phone}" if phone else ""
+    email_note = f"\\nEmail: {email}" if email else ""
+
+    ics = dedent(f"""\
+        BEGIN:VCALENDAR
+        VERSION:2.0
+        PRODID:-//NCP//Sourcing Engine//EN
+        METHOD:PUBLISH
+        BEGIN:VEVENT
+        UID:{_uid("call")}
+        DTSTART:{_fmt(call_start)}
+        DTEND:{_fmt(call_end)}
+        SUMMARY:Follow-up call: {contact_name} at {company}
+        DESCRIPTION:Call {contact_name} at {company} to follow up on outreach email sent {send_date.strftime('%b %d')}.{phone_note}{email_note}
+        BEGIN:VALARM
+        TRIGGER:-PT30M
+        ACTION:DISPLAY
+        DESCRIPTION:Follow-up call with {contact_name} in 30 minutes
+        END:VALARM
+        END:VEVENT
+        BEGIN:VEVENT
+        UID:{_uid("email2")}
+        DTSTART:{_fmt(email_start)}
+        DTEND:{_fmt(email_end)}
+        SUMMARY:Follow-up email: {contact_name} at {company}
+        DESCRIPTION:Send follow-up email to {contact_name} at {company}. Reference your initial outreach from {send_date.strftime('%b %d')}.{email_note}
+        BEGIN:VALARM
+        TRIGGER:-PT30M
+        ACTION:DISPLAY
+        DESCRIPTION:Follow-up email to {contact_name} in 30 minutes
+        END:VALARM
+        END:VEVENT
+        END:VCALENDAR""")
+    return ics
