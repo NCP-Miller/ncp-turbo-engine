@@ -136,9 +136,107 @@ if last_event and last_event.get("message"):
 
 
 # ---------------------------------------------------------------------------
-# SIDEBAR — Pipeline Status
+# SIDEBAR — Projects + Pipeline Status
 # ---------------------------------------------------------------------------
 with st.sidebar:
+    # ── Project Manager ──────────────────────────────────────────
+    from pipeline.projects import (
+        list_projects, save_project, load_project, new_project,
+        delete_project, current_project_name, update_active_meta,
+    )
+
+    st.subheader("Projects")
+    _projects = list_projects()
+    _active_name = current_project_name()
+
+    if _active_name:
+        st.caption(f"Active: **{_active_name}**")
+    else:
+        st.caption("No project saved yet.")
+
+    with st.expander("Manage Projects", expanded=False):
+        # Save current search
+        _save_name = st.text_input(
+            "Project name",
+            value=_active_name or "",
+            placeholder="e.g., CMMC Cybersecurity VA",
+            key="_proj_save_name",
+        )
+        if st.button("Save Current Search", use_container_width=True, key="_proj_save"):
+            if _save_name.strip():
+                if state.status == "running":
+                    stop_pipeline()
+                save_project(_save_name.strip())
+                st.success(f"Saved: **{_save_name.strip()}**")
+                st.rerun()
+            else:
+                st.warning("Enter a project name.")
+
+        st.markdown("---")
+
+        # Load a previous project
+        if _projects:
+            _proj_names = [p["name"] for p in _projects]
+            _selected_proj = st.selectbox(
+                "Load a saved project",
+                options=_proj_names,
+                index=None,
+                placeholder="Select a project...",
+                key="_proj_select",
+            )
+            if _selected_proj:
+                _sel_meta = next((p for p in _projects if p["name"] == _selected_proj), {})
+                _niche_display = _sel_meta.get("niche", "")[:60]
+                _geo_display = _sel_meta.get("geography", "")
+                _memo_display = _sel_meta.get("memo_count", 0)
+                st.caption(
+                    f"Niche: {_niche_display or 'N/A'}  \n"
+                    f"Geography: {_geo_display or 'N/A'}  \n"
+                    f"Memos: {_memo_display}"
+                )
+                _rc1, _rc2 = st.columns(2)
+                with _rc1:
+                    if st.button("Resume", key="_proj_load", use_container_width=True):
+                        if _active_name and _active_name != _selected_proj:
+                            save_project(_active_name)
+                        if state.status == "running":
+                            stop_pipeline()
+                            import time as _t; _t.sleep(1)
+                        load_project(_selected_proj)
+                        st.rerun()
+                with _rc2:
+                    if st.button("Delete", key="_proj_del", use_container_width=True):
+                        if _selected_proj != _active_name:
+                            delete_project(_selected_proj)
+                            st.success(f"Deleted: {_selected_proj}")
+                            st.rerun()
+                        else:
+                            st.warning("Can't delete the active project.")
+
+        st.markdown("---")
+
+        # New project
+        _new_name = st.text_input(
+            "New project name",
+            placeholder="e.g., IT Staffing Southeast",
+            key="_proj_new_name",
+        )
+        if st.button("Start New Project", use_container_width=True, key="_proj_new", type="primary"):
+            if _new_name.strip():
+                if _active_name:
+                    save_project(_active_name)
+                if state.status == "running":
+                    stop_pipeline()
+                    import time as _t2; _t2.sleep(1)
+                new_project(_new_name.strip())
+                st.success(f"New project: **{_new_name.strip()}**")
+                st.rerun()
+            else:
+                st.warning("Enter a name for the new project.")
+
+    st.divider()
+
+    # ── Pipeline Status ──────────────────────────────────────────
     st.subheader("Pipeline Status")
     icon, label = _label(PIPELINE_STATUS_LABELS, state.status)
     st.markdown(f"**{icon} {label}**")
@@ -305,6 +403,7 @@ with tab_chat:
 
                 # ===== PASS 1: Intent classification =====
                 _cfg = state.config or {}
+                _completed = len(state.completed_memos or [])
                 classifier_prompt = f"""You classify the intent of a message sent to a PE sourcing pipeline assistant.
 
 Possible intents:
@@ -327,6 +426,16 @@ If "command", also identify the specific action and arguments. Supported command
    Examples: "broaden", "expand the search", "look more broadly", "this is too narrow".
 7. "narrow_search" — user wants more specific keywords. args: {{"new_keywords": "<comma-separated>"}}.
    Examples: "focus on cybersecurity assessors", "narrow to staffing only".
+8. "find_more" — user wants ADDITIONAL memos, possibly in a new geography. Use
+   when user says "find me X more" or "find me X in [place]" AFTER the pipeline
+   already completed or is idle.
+   args: {{"additional_count": <int>, "new_geography": "<location or null>"}}.
+   Examples: "find me 3 more in Texas", "find one more in Virginia and two more
+   in Maryland" (additional_count=3, new_geography="Virginia, Maryland"),
+   "get me 5 more" (additional_count=5, new_geography=null — keep current).
+   IMPORTANT: additional_count is how many MORE they want on top of the
+   {_completed} already completed. If they say "one more in VA and two more in MD"
+   that is additional_count=3.
 
 User message: "{user_msg}"
 
@@ -335,7 +444,7 @@ Recent pipeline state:
 - Niche: {_cfg.get('niche', 'none')}
 - Geography: {_cfg.get('geography', 'none')}
 - Target: {_cfg.get('target_count', 'none')}
-- Completed memos: {len(state.completed_memos or [])}
+- Completed memos: {_completed}
 
 Return JSON only:
 {{"intent": "command|question|memo_feedback|feedback|smalltalk", "command": {{"action": "...", "args": {{...}}}} or null, "rationale": "one sentence"}}"""
@@ -415,11 +524,15 @@ Be specific. If user said "too big," infer a reasonable new_size_max from the me
                             )
                             pivot_args = _json.loads(pivot_resp.choices[0].message.content or "{}")
                             command_result = state.apply_command({"action": "pivot", "args": pivot_args})
+                            if command_result and command_result.get("restart"):
+                                restart_running_pipeline()
                         except Exception as e:
                             command_result = {"success": False, "message": f"Could not translate feedback into pivot: {e}"}
 
                 if intent == "command" and command:
                     command_result = state.apply_command(command)
+                    if command_result and command_result.get("restart"):
+                        restart_running_pipeline()
 
                 # ===== PASS 2: Conversational response =====
                 def _build_system_prompt(st_obj):
@@ -820,8 +933,11 @@ with tab_overview:
 
 
 # ---------------------------------------------------------------------------
-# AUTO-REFRESH POLLING
+# AUTO-REFRESH POLLING + project metadata sync
 # ---------------------------------------------------------------------------
+if current_project_name():
+    update_active_meta()
+
 if state.status == "running":
     time.sleep(3)
     st.rerun()

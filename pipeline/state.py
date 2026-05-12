@@ -401,21 +401,28 @@ class PipelineState:
             return {"success": True, "message": "Pipeline paused."}
         if action == "resume":
             self.update(status="running")
-            return {"success": True, "message": "Pipeline resumed (will restart on next page interaction)."}
+            return {"success": True, "message": "Pipeline resumed.", "restart": True}
         if action == "change_geography":
             new_geo = args.get("new_geography")
             if not new_geo:
                 return {"success": False, "message": "No new geography provided."}
+            was_idle = self.status in ("idle", "stopped")
             self.batch_update(config={"geography": new_geo})
-            return {"success": True, "message": f"Geography changed to: {new_geo}. New candidates will use this. Existing queue preserved."}
+            if was_idle:
+                self.update(status="running")
+            return {"success": True, "message": f"Geography changed to: {new_geo}. New candidates will use this.", "restart": was_idle}
         if action == "change_target_count":
             try:
                 new_count = int(args.get("new_count"))
             except (TypeError, ValueError):
                 return {"success": False, "message": "Invalid target count."}
+            was_idle = self.status in ("idle", "stopped")
             self.batch_update(config={"target_count": new_count})
-            return {"success": True, "message": f"Target count changed to {new_count}."}
+            if was_idle:
+                self.update(status="running")
+            return {"success": True, "message": f"Target count changed to {new_count}.", "restart": was_idle}
         if action == "broaden_search":
+            was_idle = self.status in ("idle", "stopped")
             with self._lock:
                 self._conn.execute("BEGIN IMMEDIATE")
                 try:
@@ -423,11 +430,13 @@ class PipelineState:
                     current_config = self._get("config")
                     current_config["broaden_signal"] = True
                     self._set("config", current_config)
+                    if was_idle:
+                        self._set("status", "running")
                     self._conn.execute("COMMIT")
                 except Exception:
                     self._conn.execute("ROLLBACK")
                     raise
-            return {"success": True, "message": "Search broadened. Queue cleared; next round will use wider parameters."}
+            return {"success": True, "message": "Search broadened. Queue cleared; next round will use wider parameters.", "restart": was_idle}
         if action == "narrow_search":
             new_keywords = args.get("new_keywords", "")
             if not new_keywords:
@@ -443,6 +452,29 @@ class PipelineState:
                     self._conn.execute("ROLLBACK")
                     raise
             return {"success": True, "message": f"Search narrowed with keywords: {new_keywords}."}
+        if action == "find_more":
+            try:
+                additional = int(args.get("additional_count", 0))
+            except (TypeError, ValueError):
+                additional = 0
+            if additional < 1:
+                return {"success": False, "message": "Could not determine how many more memos to find."}
+            current_target = (self.config or {}).get("target_count", 0)
+            current_completed = len(self.completed_memos or [])
+            new_target = current_completed + additional
+            updates = {"target_count": new_target}
+            new_geo = args.get("new_geography")
+            geo_msg = ""
+            if new_geo:
+                updates["geography"] = new_geo
+                geo_msg = f" Geography updated to: {new_geo}."
+            self.batch_update(config=updates)
+            self.update(status="running")
+            return {
+                "success": True,
+                "message": f"Target updated from {current_target} to {new_target} (+{additional}).{geo_msg} Pipeline restarting.",
+                "restart": True,
+            }
         if action == "pivot":
             pivot = args
             summary = pivot.get("user_facing_summary") or "Pivoting search."
@@ -502,8 +534,11 @@ class PipelineState:
                     self._conn.execute("ROLLBACK")
                     raise
 
+            was_idle = self.status in ("idle", "stopped")
+            if was_idle:
+                self.update(status="running")
             applied_str = "; ".join(applied) if applied else "no changes detected"
-            return {"success": True, "message": f"Pivot applied. {applied_str}. {summary}"}
+            return {"success": True, "message": f"Pivot applied. {applied_str}. {summary}", "restart": was_idle}
 
         return {"success": False, "message": f"Unknown command: {action}"}
 
