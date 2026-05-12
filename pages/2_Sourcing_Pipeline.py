@@ -84,8 +84,11 @@ def _check_password():
 if not _check_password():
     st.stop()
 
-# Re-attach background pipeline if one was running
-state = resume_pipeline()
+# Re-attach background pipeline if one was running.
+# restart_running_pipeline() checks if status == "running" and re-spawns the
+# orchestrator thread — this is what makes the pipeline survive browser
+# disconnects, WiFi drops, and laptop sleep/wake cycles.
+state = restart_running_pipeline()
 state.reload_from_disk()
 
 st.title("🤖 NCP Autonomous Sourcing Pipeline")
@@ -645,7 +648,7 @@ with tab_memos:
                             use_container_width=True,
                         )
 
-                # Show draft + log-to-SF if available
+                # Show draft + log-to-SF + calendar if available
                 _draft_body = st.session_state.get(f"_pipe_draft_body_{_co_key}")
                 if _draft_body:
                     st.markdown("---")
@@ -656,38 +659,71 @@ with tab_memos:
                         height=200,
                         key=f"draft_editor_{_co_key}",
                     )
-                    _log_col, _log_info = st.columns([1, 3])
-                    with _log_col:
-                        if st.button("Log to Salesforce", key=f"log_sf_{_co_key}", use_container_width=True):
-                            try:
-                                from lib.salesforce import (
-                                    sf_login, find_existing_account,
-                                    find_contact_for_account,
-                                    log_outreach_activity,
+                    _act_c1, _act_c2, _act_c3 = st.columns([1, 1, 2])
+                    with _act_c1:
+                        _log_clicked = st.button("Log to Salesforce", key=f"log_sf_{_co_key}", use_container_width=True)
+                    with _act_c2:
+                        from lib.outreach import generate_followup_ics
+                        _cn = row.get("CEO/Owner Name", "Contact")
+                        _ph = row.get("Phone", "")
+                        if _ph == "N/A":
+                            _ph = ""
+                        _em = row.get("Email", "")
+                        if _em == "N/A":
+                            _em = row.get("Email Estimate", "")
+                        _ics = generate_followup_ics(
+                            memo["company"], _cn, phone=_ph, email=_em,
+                        )
+                        st.download_button(
+                            "Add Reminders to Calendar",
+                            data=_ics,
+                            file_name=f"followup_{_co_key}.ics",
+                            mime="text/calendar",
+                            key=f"ics_{_co_key}",
+                            use_container_width=True,
+                        )
+                    with _act_c3:
+                        st.caption(
+                            "**1)** Send via Outlook **2)** Add follow-up reminders "
+                            "to your calendar **3)** Log to Salesforce"
+                        )
+
+                    if _log_clicked:
+                        try:
+                            from lib.salesforce import (
+                                sf_login, find_existing_account,
+                                find_contact_for_account,
+                                log_outreach_activity,
+                                create_followup_tasks,
+                            )
+                            from lib.api_clients import get_secret
+                            sf = sf_login(
+                                get_secret("SF_USERNAME"),
+                                get_secret("SF_PASSWORD"),
+                                get_secret("SF_CONSUMER_KEY"),
+                                get_secret("SF_CONSUMER_SECRET"),
+                                get_secret("SF_SECURITY_TOKEN", ""),
+                            )
+                            acct_id = find_existing_account(sf, memo["company"])
+                            if not acct_id:
+                                st.warning("Add to Salesforce first.")
+                            else:
+                                contact_id = find_contact_for_account(sf, acct_id)
+                                task_id = log_outreach_activity(
+                                    sf, acct_id, contact_id,
+                                    st.session_state.get(f"_pipe_draft_subj_{_co_key}", ""),
+                                    _draft_body,
                                 )
-                                from lib.api_clients import get_secret
-                                sf = sf_login(
-                                    get_secret("SF_USERNAME"),
-                                    get_secret("SF_PASSWORD"),
-                                    get_secret("SF_CONSUMER_KEY"),
-                                    get_secret("SF_CONSUMER_SECRET"),
-                                    get_secret("SF_SECURITY_TOKEN", ""),
+                                call_id, fu_id = create_followup_tasks(
+                                    sf, acct_id, contact_id, memo["company"],
                                 )
-                                acct_id = find_existing_account(sf, memo["company"])
-                                if not acct_id:
-                                    st.warning("Add to Salesforce first.")
-                                else:
-                                    contact_id = find_contact_for_account(sf, acct_id)
-                                    task_id = log_outreach_activity(
-                                        sf, acct_id, contact_id,
-                                        st.session_state.get(f"_pipe_draft_subj_{_co_key}", ""),
-                                        _draft_body,
-                                    )
-                                    st.success(f"Outreach logged (Task: `{task_id}`).")
-                            except Exception as e:
-                                st.error(f"Salesforce logging error: {e}")
-                    with _log_info:
-                        st.caption("Send via Outlook, then log the activity to Salesforce.")
+                                st.success(
+                                    f"Logged — Email: `{task_id}` | "
+                                    f"Call follow-up (tomorrow): `{call_id}` | "
+                                    f"Email follow-up (day 3): `{fu_id}`"
+                                )
+                        except Exception as e:
+                            st.error(f"Salesforce logging error: {e}")
 
                 st.markdown("---")
 
