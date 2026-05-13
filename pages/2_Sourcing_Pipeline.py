@@ -347,11 +347,24 @@ with tab_chat:
     if state.status == "idle" and not state.chat_history:
         # Startup form
         with st.form("start_form"):
+            from lib.constants import NCP_PRIORITY_LABEL
             niche = st.text_area(
                 "What kind of companies are you looking for?",
                 placeholder="e.g., independent CMMC-focused cybersecurity assessor staffing firms in the eastern US",
             )
-            geography = st.text_input("Geography", value="United States")
+            geo_mode = st.radio(
+                "Geography",
+                options=[NCP_PRIORITY_LABEL, "Custom"],
+                index=0,
+                horizontal=True,
+            )
+            custom_geo = ""
+            if geo_mode == "Custom":
+                custom_geo = st.text_input(
+                    "Enter geography",
+                    placeholder="e.g., Virginia, United States",
+                )
+            geography = NCP_PRIORITY_LABEL if geo_mode == NCP_PRIORITY_LABEL else custom_geo.strip()
             target_count = st.number_input(
                 "How many differentiated companies should I find?",
                 min_value=1,
@@ -364,8 +377,10 @@ with tab_chat:
             if submitted:
                 if not niche.strip():
                     st.error("Please describe what kind of companies you're looking for.")
+                elif geo_mode == "Custom" and not geography:
+                    st.error("Enter a geography or select NCP Priority Geography.")
                 else:
-                    start_pipeline(niche.strip(), geography.strip(), "A", int(target_count))
+                    start_pipeline(niche.strip(), geography, "A", int(target_count))
                     state.reload_from_disk()
                     state.add_chat(
                         "user",

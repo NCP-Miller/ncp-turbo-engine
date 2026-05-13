@@ -27,10 +27,15 @@ def search_organizations(
     Pass 1 — Industry sweep (no keyword filter), per industry.
     Pass 2 — Keyword-only sweep (no industry filter).
     Both passes deduplicated by Apollo org ID.
+
+    location_input can be a single string ("Virginia, United States")
+    or a list of strings for multi-state searches.
     """
     url = "https://api.apollo.io/v1/organizations/search"
     headers = {"Content-Type": "application/json", "X-Api-Key": apollo_api_key}
     all_orgs, seen_ids = [], set()
+
+    locations = location_input if isinstance(location_input, list) else [location_input]
 
     def _fetch_pages(base_payload):
         for page in range(1, max_pages + 1):
@@ -54,7 +59,7 @@ def search_organizations(
 
     # Pass 1: broad industry sweeps
     for industry in (industries or [None]):
-        base = {"organization_locations": [location_input]}
+        base = {"organization_locations": locations}
         if industry:
             base["q_organization_industries"] = [industry]
         _fetch_pages(base)
@@ -62,7 +67,7 @@ def search_organizations(
     # Pass 2: keyword-only sweep
     if keyword_tags:
         _fetch_pages({
-            "organization_locations": [location_input],
+            "organization_locations": locations,
             "q_organization_keyword_tags": keyword_tags,
         })
 

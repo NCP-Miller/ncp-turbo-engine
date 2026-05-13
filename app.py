@@ -343,22 +343,16 @@ Return JSON only — no explanation:
 # ---------------------------------------------------------------------------
 def search_organizations(industries, location_input, keyword_tags=None, max_pages=10):
     """
-    Two-pass search for maximum candidate coverage:
+    Two-pass search for maximum candidate coverage.
 
-    Pass 1 — Industry sweep (NO keyword filter):
-      Search each selected industry broadly so we don't miss companies
-      that have the right industry tag but aren't tagged with our keywords.
-      AI filter handles relevance.
-
-    Pass 2 — Keyword-only sweep (NO industry filter):
-      Search by keyword tags across ALL industries so we catch companies
-      that Apollo has classified in an unexpected industry category.
-
-    Both passes are deduplicated by Apollo org ID.
+    location_input can be a single string or a list of strings
+    for multi-state searches (e.g., NCP Priority Geography).
     """
     url     = "https://api.apollo.io/v1/organizations/search"
     headers = {"Content-Type": "application/json", "X-Api-Key": APOLLO_API_KEY}
     all_orgs, seen_ids = [], set()
+
+    locations = location_input if isinstance(location_input, list) else [location_input]
 
     def _fetch_pages(base_payload):
         for page in range(1, max_pages + 1):
@@ -383,7 +377,7 @@ def search_organizations(industries, location_input, keyword_tags=None, max_page
 
     # Pass 1: broad industry sweeps — no keyword restriction
     for industry in (industries or [None]):
-        base = {"organization_locations": [location_input]}
+        base = {"organization_locations": locations}
         if industry:
             base["q_organization_industries"] = [industry]
         _fetch_pages(base)
@@ -391,7 +385,7 @@ def search_organizations(industries, location_input, keyword_tags=None, max_page
     # Pass 2: keyword-only sweep — catches misclassified companies
     if keyword_tags:
         _fetch_pages({
-            "organization_locations":        [location_input],
+            "organization_locations":        locations,
             "q_organization_keyword_tags":   keyword_tags,
         })
 
@@ -1903,7 +1897,13 @@ specific_niche = r1b.text_input(
 )
 
 r2a, r2b, r2c = st.columns(3)
-target_geo = r2a.text_input("Geography", value="North Carolina, United States")
+from lib.constants import NCP_PRIORITY_LABEL
+_geo_options = [NCP_PRIORITY_LABEL, "Custom"]
+_geo_mode = r2a.radio("Geography", _geo_options, index=0, horizontal=True)
+if _geo_mode == "Custom":
+    target_geo = r2a.text_input("Enter geography", value="North Carolina, United States")
+else:
+    target_geo = NCP_PRIORITY_LABEL
 mode = r2b.selectbox("Strategy", [
     "A - Acquire  (Strict: small private operators only)",
     "B - Prospect (Broad: competitors & referral/sales targets, all sizes)",
@@ -2007,7 +2007,9 @@ if _run_next_batch or st.button("🚀 Start Sourcing", type="primary"):
         )
 
         try:
-            orgs = search_organizations(industries, target_geo, keyword_tags=keyword_tags)
+            from lib.constants import NCP_PRIORITY_APOLLO_LOCATIONS
+            _search_geo = NCP_PRIORITY_APOLLO_LOCATIONS if target_geo == NCP_PRIORITY_LABEL else target_geo
+            orgs = search_organizations(industries, _search_geo, keyword_tags=keyword_tags)
         except Exception as e:
             st.error(f"Apollo API error: {e}")
             st.stop()

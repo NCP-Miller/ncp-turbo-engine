@@ -240,6 +240,14 @@ def _run_loop():
             strategy = config.get("strategy", "A")
             target_count = config["target_count"]
 
+            from lib.constants import NCP_PRIORITY_LABEL, NCP_PRIORITY_APOLLO_LOCATIONS
+            if geography == NCP_PRIORITY_LABEL:
+                apollo_locations = NCP_PRIORITY_APOLLO_LOCATIONS
+                web_geography = "Eastern United States"
+            else:
+                apollo_locations = geography
+                web_geography = geography
+
             # --- Detect mid-flight config changes ---
             # If pivot_signal was set, force search params to recompute
             if config.get("pivot_signal"):
@@ -350,7 +358,7 @@ def _run_loop():
                         orgs = search_organizations(
                             apollo_key,
                             industries=[industry],
-                            location_input=geography,
+                            location_input=apollo_locations,
                             keyword_tags=round_keyword_tags,
                             max_pages=round_max_pages,
                         )
@@ -397,7 +405,7 @@ def _run_loop():
                             _scrape,
                             clean_domain,
                             niche,
-                            geography,
+                            web_geography,
                             seen_domains,
                             seen_names,
                             user_agent=user_agent,
