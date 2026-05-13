@@ -22,20 +22,19 @@ def check_password():
         app_password = "NCP2026"
 
     def password_entered():
-        if st.session_state["password"] == app_password:
+        if st.session_state.get("password") == app_password:
             st.session_state["password_correct"] = True
-            del st.session_state["password"]
         else:
             st.session_state["password_correct"] = False
+            st.session_state["password_attempted"] = True
 
-    if "password_correct" not in st.session_state:
-        st.text_input("Enter Password", type="password", on_change=password_entered, key="password")
-        return False
-    elif not st.session_state["password_correct"]:
-        st.text_input("Enter Password", type="password", on_change=password_entered, key="password")
+    if st.session_state.get("password_correct"):
+        return True
+
+    st.text_input("Enter Password", type="password", on_change=password_entered, key="password")
+    if st.session_state.get("password_attempted"):
         st.error("Password incorrect")
-        return False
-    return True
+    return False
 
 if not check_password():
     st.stop()
