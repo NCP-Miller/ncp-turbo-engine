@@ -663,6 +663,29 @@ def _run_loop():
             if final_update:
                 state.batch_update(bot_status=final_update)
 
+            # =======================================================================
+            # STALL DETECTION — stop if nothing left to do but target isn't met
+            # =======================================================================
+            if (search_exhausted
+                    and not state.candidate_queue
+                    and not state.qualified_queue
+                    and len(state.completed_memos) < target_count):
+                state.set_event(
+                    "exhausted",
+                    f"Search exhausted — found {len(state.completed_memos)}/{target_count} memos. "
+                    f"Try broadening niche or geography, or ask for more in a different region.",
+                    "warning",
+                )
+                state.batch_update(
+                    bot_status={"search": "exhausted"},
+                    status="stopped",
+                )
+                print(
+                    f"[Orchestrator] Stall detected: search exhausted, queues empty, "
+                    f"{len(state.completed_memos)}/{target_count}. Stopping."
+                )
+                break
+
         except Exception as e:
             state.set_event("error", f"Pipeline error: {e}. Attempting to continue.", "error")
             print(f"[Orchestrator] Iteration error: {e}")
