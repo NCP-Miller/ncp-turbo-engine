@@ -452,6 +452,58 @@ class PipelineState:
                     self._conn.execute("ROLLBACK")
                     raise
             return {"success": True, "message": f"Search narrowed with keywords: {new_keywords}."}
+        if action == "find_similar":
+            target_company = args.get("memo_company", "")
+            memos = self.completed_memos or []
+            target_memo = None
+            for m in memos:
+                if m.get("company") == target_company:
+                    target_memo = m
+                    break
+            if target_memo is None:
+                return {"success": False, "message": f"Memo for {target_company} not found."}
+
+            row = target_memo.get("row") or {}
+            seed = {
+                "description": (row.get("Description") or "")[:500],
+                "differentiated": (row.get("Differentiated") or "")[:300],
+                "industry": row.get("Industry") or "",
+                "employees": row.get("Employees") or "",
+                "state": row.get("State") or "",
+            }
+            current_config = self.config or {}
+            current_niche = current_config.get("niche", "")
+            similar_hint = (
+                f" Find more companies similar to {target_company}. "
+                f"Anchor traits: {seed['description']} | "
+                f"Differentiated: {seed['differentiated']} | "
+                f"Industry: {seed['industry']} | "
+                f"Size: {seed['employees']} employees."
+            )
+            new_niche = f"{current_niche}.{similar_hint}"
+            current_memo_count = len(memos)
+            new_target = current_memo_count + 3
+
+            with self._lock:
+                self._conn.execute("BEGIN IMMEDIATE")
+                try:
+                    cfg = self._get("config")
+                    cfg["niche"] = new_niche
+                    cfg["target_count"] = new_target
+                    cfg["pivot_signal"] = True
+                    self._set("config", cfg)
+                    self._set("status", "running")
+                    self._conn.execute("COMMIT")
+                except Exception:
+                    self._conn.execute("ROLLBACK")
+                    raise
+
+            return {
+                "success": True,
+                "message": f"Searching for 3 more like {target_company}. Pipeline restarting.",
+                "restart": True,
+            }
+
         if action == "find_more":
             try:
                 additional = int(args.get("additional_count", 0))

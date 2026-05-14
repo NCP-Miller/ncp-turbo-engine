@@ -11,7 +11,7 @@ import re
 import concurrent.futures
 
 from lib.api_clients import load_api_keys, make_openai_client
-from lib.ai_params import suggest_search_params
+from lib.ai_params import suggest_search_params, refine_search_params
 from lib.apollo_search import search_organizations, web_discovery_pass
 from lib.contacts import firecrawl_scrape, clean_domain
 from lib.filters import is_buyable_structure, is_obvious_mismatch, quick_niche_prefilter
@@ -23,6 +23,7 @@ from lib.constants import OPENAI_MODEL
 from pipeline.state import PipelineState
 
 CONVICTION_THRESHOLD = 6
+ANALYSIS_WORKERS = 3   # candidates processed in parallel by the analysis bot
 
 
 _thread = None
@@ -174,6 +175,177 @@ Write in a professional PE memo tone. Factual and concise."""
 
 
 # ---------------------------------------------------------------------------
+# INTERNAL — PARALLEL ANALYSIS HELPERS
+# ---------------------------------------------------------------------------
+def _analyze_single(org, niche, strategy, config, search_params,
+                    client, apollo_key, firecrawl_key, user_agent, thesis):
+    """Analyze a single candidate end-to-end (pre-filters + deep + scoring).
+
+    Returns a result dict the orchestrator uses to update state safely
+    from the main thread. Keys:
+      - "outcome": one of "pre_filtered_size", "pre_filtered_structural",
+        "pre_filtered_blocklist", "pre_filtered_niche", "deep_analysis_failed",
+        "pe_backed", "portfolio_conflict", "qualified", "near_miss"
+      - "company": company name
+      - "row": enriched row dict (when applicable)
+      - "reason": human-readable reason string
+      - "score": conviction score (when applicable)
+    """
+    comp_name = org.get("name", "Unknown")
+
+    # 1. Per-run size overrides
+    override_max = config.get("override_size_max")
+    override_min = config.get("override_size_min")
+    emp = org.get("estimated_num_employees", 0) or 0
+    if override_max is not None and emp > override_max:
+        return {"outcome": "pre_filtered_size", "company": comp_name,
+                "reason": f"size {emp} > max {override_max}"}
+    if override_min is not None and emp < override_min:
+        return {"outcome": "pre_filtered_size", "company": comp_name,
+                "reason": f"size {emp} < min {override_min}"}
+
+    # 2. Structural filter
+    buyable, reason = is_buyable_structure(org, strategy)
+    if not buyable:
+        return {"outcome": "pre_filtered_structural", "company": comp_name,
+                "reason": reason}
+
+    # 3. Name/description blocklist
+    mismatch, reason = is_obvious_mismatch(org, niche, strategy)
+    if mismatch:
+        return {"outcome": "pre_filtered_blocklist", "company": comp_name,
+                "reason": reason}
+
+    # 4. Niche relevance pre-filter
+    _niche_kw_list = []
+    _niche_ind_list = []
+    if search_params:
+        _niche_kw_list = [
+            k.strip()
+            for k in (search_params.get("keywords") or "").split(",")
+            if k.strip()
+        ]
+        _niche_ind_list = search_params.get("industries") or []
+    niche_pass, reason = quick_niche_prefilter(
+        org, niche, _niche_kw_list, _niche_ind_list,
+    )
+    if not niche_pass:
+        return {"outcome": "pre_filtered_niche", "company": comp_name,
+                "reason": reason}
+
+    # 5. Deep analysis
+    row = process_single_company(
+        org, niche, strategy,
+        openai_client=client,
+        apollo_api_key=apollo_key,
+        firecrawl_api_key=firecrawl_key,
+        user_agent=user_agent,
+    )
+    if not row:
+        return {"outcome": "deep_analysis_failed", "company": comp_name,
+                "reason": "did not pass filters"}
+
+    # 6. PE-backed check
+    from lib.filters import check_pe_backed
+    pe_check = check_pe_backed(client, row.get("Company", ""))
+    if pe_check.get("is_pe_backed"):
+        return {"outcome": "pe_backed", "company": comp_name,
+                "reason": pe_check.get("evidence", "PE-backed"), "row": row}
+
+    # 7. Portfolio conflict check
+    conflict = check_portfolio_conflict(
+        client, row.get("Company", ""), row.get("Description", ""),
+    )
+    if conflict.get("conflicts"):
+        return {"outcome": "portfolio_conflict", "company": comp_name,
+                "reason": "portfolio conflict", "row": row}
+
+    # 8. Conviction scoring — the final gate
+    feedback_history = load_feedback()
+    conv_score, conv_pitch, conv_reason = score_conviction(
+        client, comp_name, row.get("Description", ""),
+        niche, row, thesis=thesis, feedback_history=feedback_history,
+    )
+    row["Conviction"] = conv_score
+    row["Conviction Pitch"] = conv_pitch
+    row["Conviction Reasoning"] = conv_reason
+
+    if conv_score >= CONVICTION_THRESHOLD:
+        return {"outcome": "qualified", "company": comp_name,
+                "row": row, "score": conv_score, "pitch": conv_pitch}
+    return {"outcome": "near_miss", "company": comp_name,
+            "row": row, "score": conv_score, "reason": conv_reason}
+
+
+def _process_candidate_batch(batch, niche, strategy, config, search_params,
+                             client, apollo_key, firecrawl_key, user_agent,
+                             thesis, state):
+    """Run _analyze_single on a batch of candidates in parallel.
+
+    All state updates happen in the main thread after results come back
+    to avoid SQLite write contention.
+    """
+    results = []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=ANALYSIS_WORKERS) as ex:
+        futures = [
+            ex.submit(
+                _analyze_single, org, niche, strategy, config, search_params,
+                client, apollo_key, firecrawl_key, user_agent, thesis,
+            )
+            for org in batch
+        ]
+        for fut in concurrent.futures.as_completed(futures):
+            try:
+                results.append(fut.result())
+            except Exception as e:
+                print(f"[Analysis Bot] Worker error: {e}")
+
+    # Apply results to state sequentially (single-threaded writes)
+    for r in results:
+        outcome = r.get("outcome")
+        comp_name = r.get("company", "Unknown")
+        state.increment_filter_stat("total_sourced")
+
+        if outcome == "pre_filtered_size":
+            state.increment_filter_stat("pre_filtered_size")
+            print(f"[Analysis Bot] Pre-filtered: {comp_name} ({r['reason']})")
+        elif outcome == "pre_filtered_structural":
+            state.increment_filter_stat("pre_filtered_structural")
+            print(f"[Analysis Bot] Pre-filtered: {comp_name} ({r['reason']})")
+        elif outcome == "pre_filtered_blocklist":
+            state.increment_filter_stat("pre_filtered_blocklist")
+            print(f"[Analysis Bot] Pre-filtered: {comp_name} ({r['reason']})")
+        elif outcome == "pre_filtered_niche":
+            state.increment_filter_stat("pre_filtered_niche")
+            print(f"[Analysis Bot] Pre-filtered: {comp_name} ({r['reason']})")
+        elif outcome == "deep_analysis_failed":
+            state.increment_filter_stat("deep_analysis_failed")
+            print(f"[Analysis Bot] Filtered out: {comp_name} (deep analysis failed)")
+        elif outcome == "pe_backed":
+            state.increment_filter_stat("pe_backed")
+            print(f"[Analysis Bot] Filtered out: {comp_name} ({r['reason']})")
+        elif outcome == "portfolio_conflict":
+            state.increment_filter_stat("portfolio_conflict")
+            print(f"[Analysis Bot] Filtered out: {comp_name} (portfolio conflict)")
+        elif outcome == "qualified":
+            state.add_qualified(r["row"])
+            state.increment_filter_stat("qualified")
+            state.set_event(
+                "qualified",
+                f"Excited about {comp_name} (conviction {r['score']}/10): {r['pitch'][:120]}",
+                "success",
+            )
+            print(f"[Analysis Bot] Qualified: {comp_name} (conviction={r['score']}/10)")
+        elif outcome == "near_miss":
+            state.increment_filter_stat("low_differentiation")
+            state.add_near_miss(
+                r["row"],
+                f"Conviction {r['score']}/10: {r['reason']}",
+            )
+            print(f"[Analysis Bot] Below conviction bar: {comp_name} ({r['score']}/10)")
+
+
+# ---------------------------------------------------------------------------
 # INTERNAL — MAIN LOOP
 # ---------------------------------------------------------------------------
 def _run_loop():
@@ -226,6 +398,11 @@ def _run_loop():
     search_exhausted = False
     _search_round = 1
     _last_known_geography = None  # detect mid-flight geography changes
+
+    # Per-round metrics for adaptive refinement
+    _round_start_total_sourced = 0
+    _round_start_qualified = 0
+    _round_start_memo_count = 0
 
     # Create state once, reuse across iterations (mtime-cached reload)
     state = PipelineState()
@@ -329,6 +506,10 @@ def _run_loop():
                     # First iteration: ask AI for Apollo search params
                     if search_params is None:
                         search_params = suggest_search_params(client, niche)
+                        # Snapshot baseline metrics for round 1 evaluation
+                        _round_start_total_sourced = state.filter_stats.get("total_sourced", 0)
+                        _round_start_qualified = state.filter_stats.get("qualified", 0)
+                        _round_start_memo_count = len(state.completed_memos or [])
 
                     industries = search_params.get("industries", [])
                     keyword_tags = [
@@ -430,6 +611,66 @@ def _run_loop():
 
                         # Reset for next round
                         if _search_round < 4:
+                            # --- ADAPTIVE REFINEMENT: refine params before next round ---
+                            state.reload_from_disk()
+                            current_total = state.filter_stats.get("total_sourced", 0)
+                            current_qualified = state.filter_stats.get("qualified", 0)
+                            sourced_this_round = current_total - _round_start_total_sourced
+                            qualified_this_round = current_qualified - _round_start_qualified
+
+                            # Top descriptions from this round's qualified memos
+                            top_descs = []
+                            recent_memos = (state.completed_memos or [])[_round_start_memo_count:]
+                            for m in recent_memos[-5:]:
+                                d = (m.get("row") or {}).get("Description") or ""
+                                if d:
+                                    top_descs.append(d)
+
+                            # Common pre-filter reasons (heuristic)
+                            fs = state.filter_stats
+                            common_reasons = []
+                            if fs.get("pre_filtered_niche", 0) > 5:
+                                common_reasons.append(f"{fs['pre_filtered_niche']} candidates filtered for not matching niche signal")
+                            if fs.get("pre_filtered_structural", 0) > 5:
+                                common_reasons.append(f"{fs['pre_filtered_structural']} filtered as government/nonprofit/public")
+                            if fs.get("pe_backed", 0) > 3:
+                                common_reasons.append(f"{fs['pe_backed']} filtered as PE-backed")
+                            if fs.get("low_differentiation", 0) > 3:
+                                common_reasons.append(f"{fs['low_differentiation']} scored too low on conviction")
+
+                            try:
+                                refined = refine_search_params(
+                                    client, niche, search_params,
+                                    {
+                                        "prev_round": _search_round,
+                                        "candidates_found": sourced_this_round,
+                                        "candidates_qualified": qualified_this_round,
+                                        "top_qualified_descriptions": top_descs,
+                                        "common_filter_reasons": common_reasons,
+                                    },
+                                )
+                                if refined:
+                                    search_params = {
+                                        "industries": refined["industries"],
+                                        "keywords": refined["keywords"],
+                                    }
+                                    state.set_event(
+                                        "refined",
+                                        f"Round {_search_round + 1} refined: {refined.get('rationale', '')}",
+                                        "info",
+                                    )
+                                    print(
+                                        f"[Search Bot] Refined for round {_search_round + 1}: "
+                                        f"industries={refined['industries']}, keywords='{refined['keywords']}'"
+                                    )
+                            except Exception as e:
+                                print(f"[Search Bot] Refinement step failed: {e}")
+
+                            # Snapshot metrics for next round
+                            _round_start_total_sourced = current_total
+                            _round_start_qualified = current_qualified
+                            _round_start_memo_count = len(state.completed_memos or [])
+
                             _search_round += 1
                             industry_index = 0
                             industries_done = False
@@ -493,7 +734,7 @@ def _run_loop():
                 search_final = "error"
 
             # =======================================================================
-            # ANALYSIS BOT
+            # ANALYSIS BOT — parallel processing
             # =======================================================================
             try:
                 state.reload_from_disk()
@@ -502,123 +743,25 @@ def _run_loop():
                 else:
                     state.batch_update(bot_status={"analysis": "filtering"})
 
-                    org = state.pop_candidate()
-                    if org:
-                        comp_name = org.get("name", "Unknown")
-                        skip_analysis = False
-                        state.increment_filter_stat("total_sourced")
+                    # Pop a batch of candidates for parallel processing
+                    batch = []
+                    for _ in range(ANALYSIS_WORKERS):
+                        org = state.pop_candidate()
+                        if org is None:
+                            break
+                        batch.append(org)
 
-                        # ----- CHEAP PRE-FILTERS (zero API cost) -----
-
-                        # 1. Per-run size overrides
-                        override_max = config.get("override_size_max")
-                        override_min = config.get("override_size_min")
-                        emp = org.get("estimated_num_employees", 0) or 0
-                        if override_max is not None and emp > override_max:
-                            print(f"[Analysis Bot] Pre-filtered: {comp_name} (size {emp} > max {override_max})")
-                            state.increment_filter_stat("pre_filtered_size")
-                            skip_analysis = True
-                        elif override_min is not None and emp < override_min:
-                            print(f"[Analysis Bot] Pre-filtered: {comp_name} (size {emp} < min {override_min})")
-                            state.increment_filter_stat("pre_filtered_size")
-                            skip_analysis = True
-
-                        # 2. Structural filter (gov, nonprofit, public, too large)
-                        if not skip_analysis:
-                            buyable, reason = is_buyable_structure(org, strategy)
-                            if not buyable:
-                                print(f"[Analysis Bot] Pre-filtered: {comp_name} ({reason})")
-                                state.increment_filter_stat("pre_filtered_structural")
-                                skip_analysis = True
-
-                        # 3. Name/description blocklist
-                        if not skip_analysis:
-                            mismatch, reason = is_obvious_mismatch(org, niche, strategy)
-                            if mismatch:
-                                print(f"[Analysis Bot] Pre-filtered: {comp_name} ({reason})")
-                                state.increment_filter_stat("pre_filtered_blocklist")
-                                skip_analysis = True
-
-                        # 4. Niche relevance pre-filter (zero-cost keyword + industry check)
-                        if not skip_analysis:
-                            _niche_kw_list = []
-                            _niche_ind_list = []
-                            if search_params:
-                                _niche_kw_list = [
-                                    k.strip()
-                                    for k in (search_params.get("keywords") or "").split(",")
-                                    if k.strip()
-                                ]
-                                _niche_ind_list = search_params.get("industries") or []
-                            niche_pass, reason = quick_niche_prefilter(
-                                org, niche, _niche_kw_list, _niche_ind_list,
-                            )
-                            if not niche_pass:
-                                print(f"[Analysis Bot] Pre-filtered: {comp_name} ({reason})")
-                                state.increment_filter_stat("pre_filtered_niche")
-                                skip_analysis = True
-
-                        if skip_analysis:
-                            analysis_final = "idle"
-                        else:
-                            state.set_event("analyzing", f"Analyzing candidate: {comp_name}. {len(state.candidate_queue)} more in queue.", "info")
-                            print(f"[Analysis Bot] Processing: {comp_name}")
-                            row = process_single_company(
-                                org,
-                                niche,
-                                strategy,
-                                openai_client=client,
-                                apollo_api_key=apollo_key,
-                                firecrawl_api_key=firecrawl_key,
-                                user_agent=user_agent,
-                            )
-                            if row:
-                                # PE-backed check via portfolio cache (cache-first, news fallback)
-                                from lib.filters import check_pe_backed
-                                pe_check = check_pe_backed(client, row.get("Company", ""))
-                                if pe_check.get("is_pe_backed"):
-                                    evidence = pe_check.get("evidence", "PE-backed")
-                                    print(f"[Analysis Bot] Filtered out: {comp_name} ({evidence})")
-                                    state.increment_filter_stat("pe_backed")
-                                else:
-                                    # Portfolio conflict check
-                                    state.batch_update(bot_status={"analysis": "checking_conflict"})
-                                    conflict = check_portfolio_conflict(
-                                        client,
-                                        row.get("Company", ""),
-                                        row.get("Description", ""),
-                                    )
-                                    if conflict.get("conflicts"):
-                                        print(f"[Analysis Bot] Filtered out: {comp_name} (portfolio conflict)")
-                                        state.increment_filter_stat("portfolio_conflict")
-                                    else:
-                                        # Conviction scoring — the final gate
-                                        state.batch_update(bot_status={"analysis": "scoring_conviction"})
-                                        feedback_history = load_feedback()
-                                        conv_score, conv_pitch, conv_reason = score_conviction(
-                                            client, comp_name, row.get("Description", ""),
-                                            niche, row, thesis=_thesis, feedback_history=feedback_history,
-                                        )
-                                        row["Conviction"] = conv_score
-                                        row["Conviction Pitch"] = conv_pitch
-                                        row["Conviction Reasoning"] = conv_reason
-
-                                        if conv_score >= CONVICTION_THRESHOLD:
-                                            state.add_qualified(row)
-                                            state.increment_filter_stat("qualified")
-                                            state.set_event(
-                                                "qualified",
-                                                f"Excited about {comp_name} (conviction {conv_score}/10): {conv_pitch[:120]}",
-                                                "success",
-                                            )
-                                            print(f"[Analysis Bot] Qualified: {comp_name} (conviction={conv_score}/10)")
-                                        else:
-                                            state.increment_filter_stat("low_differentiation")
-                                            state.add_near_miss(row, f"Conviction {conv_score}/10: {conv_reason}")
-                                            print(f"[Analysis Bot] Below conviction bar: {comp_name} ({conv_score}/10 — {conv_reason})")
-                            else:
-                                state.increment_filter_stat("deep_analysis_failed")
-                                print(f"[Analysis Bot] Filtered out: {comp_name} (did not pass filters)")
+                    if batch:
+                        state.set_event(
+                            "analyzing",
+                            f"Analyzing {len(batch)} candidates in parallel. {len(state.candidate_queue)} more in queue.",
+                            "info",
+                        )
+                        _process_candidate_batch(
+                            batch, niche, strategy, config, search_params,
+                            client, apollo_key, firecrawl_key, user_agent,
+                            _thesis, state,
+                        )
 
                     analysis_final = "idle"
 
