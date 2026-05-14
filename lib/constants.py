@@ -87,3 +87,22 @@ _CONTACT_PATHS = [
 DEFAULT_HTTP_USER_AGENT = (
     "Mozilla/5.0 (compatible; NCPSourcingBot/1.0; +https://newcapitalpartners.com)"
 )
+
+# ---------------------------------------------------------------------------
+# NCP PRIORITY GEOGRAPHY — Eastern US from Colorado east, minus exclusions
+# ---------------------------------------------------------------------------
+NCP_PRIORITY_STATES = [
+    "Colorado", "Texas", "Oklahoma", "Kansas", "Minnesota", "Wisconsin",
+    "Michigan", "Illinois", "Indiana", "Ohio", "Missouri", "Arkansas",
+    "Louisiana", "Mississippi", "Alabama", "Tennessee", "Kentucky",
+    "West Virginia", "Virginia", "North Carolina", "South Carolina",
+    "Georgia", "Florida", "Pennsylvania", "New York", "New Jersey",
+    "Delaware", "Maryland", "Connecticut", "Rhode Island", "Massachusetts",
+    "Washington DC",
+]
+
+NCP_PRIORITY_LABEL = "NCP Priority Geography (Eastern US)"
+
+NCP_PRIORITY_APOLLO_LOCATIONS = [
+    f"{state}, United States" for state in NCP_PRIORITY_STATES
+]
