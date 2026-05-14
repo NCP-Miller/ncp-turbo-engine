@@ -338,7 +338,12 @@ with st.sidebar:
 # ---------------------------------------------------------------------------
 # MAIN AREA — Tabs
 # ---------------------------------------------------------------------------
-tab_chat, tab_memos, tab_overview = st.tabs(["💬 Chat with Boss Bot", "📄 Investment Memos", "🔍 Search Overview"])
+tab_chat, tab_memos, tab_near, tab_overview = st.tabs([
+    "💬 Chat with Boss Bot",
+    "📄 Investment Memos",
+    "🔍 Worth a Second Look",
+    "📊 Search Overview",
+])
 
 # ---------------------------------------------------------------------------
 # Tab: Chat with Boss Bot
@@ -851,7 +856,7 @@ with tab_memos:
 
                 # Feedback buttons
                 fb_key = f"fb_{memo['company'].replace(' ', '_')}"
-                fb_cols = st.columns(3)
+                fb_cols = st.columns(4)
                 with fb_cols[0]:
                     if st.button("👍 Interested", key=f"{fb_key}_yes"):
                         from lib.feedback import save_feedback
@@ -863,11 +868,105 @@ with tab_memos:
                         save_feedback(memo["company"], "Passed", niche=cfg.get("niche"), verdict="rejected")
                         st.info("Noted.")
                 with fb_cols[2]:
-                    fb_text = st.text_input("Feedback", key=f"{fb_key}_text", placeholder="e.g., too big, not differentiated enough")
+                    if st.button("🔁 Find More Like This", key=f"{fb_key}_more"):
+                        result = state.apply_command({
+                            "action": "find_similar",
+                            "args": {"memo_company": memo["company"]},
+                        })
+                        if result and result.get("restart"):
+                            restart_running_pipeline()
+                        if result and result.get("success"):
+                            st.success(result.get("message", "Searching for similar companies."))
+                        else:
+                            st.error(result.get("message", "Could not start similar search."))
+                        st.rerun()
+                with fb_cols[3]:
+                    fb_text = st.text_input("Feedback", key=f"{fb_key}_text", placeholder="e.g., too big")
                     if fb_text:
                         from lib.feedback import save_feedback
                         save_feedback(memo["company"], fb_text, niche=cfg.get("niche"), verdict="caveats")
-                        st.info("Feedback saved — future searches will learn from this.")
+                        st.info("Feedback saved.")
+
+
+# ---------------------------------------------------------------------------
+# Tab: Worth a Second Look (near-misses)
+# ---------------------------------------------------------------------------
+with tab_near:
+    try:
+        near_misses = state.near_misses or []
+    except (AttributeError, KeyError):
+        near_misses = []
+
+    if not near_misses:
+        st.info(
+            "No near-misses yet. Companies that scored 4-5 on conviction "
+            "(just below the qualification threshold) will appear here so "
+            "you can review whether the bar is too high for this niche."
+        )
+    else:
+        # Sort by conviction descending so the closest fits appear first
+        near_sorted = sorted(
+            near_misses,
+            key=lambda m: (m.get("row") or {}).get("Conviction", 0),
+            reverse=True,
+        )
+        st.caption(
+            f"{len(near_sorted)} companies came close but didn't clear the conviction bar of 6. "
+            "Review them to spot ones the AI was too conservative on."
+        )
+
+        for nm in near_sorted[:30]:
+            row = nm.get("row") or {}
+            conv = row.get("Conviction", 0)
+            reason = nm.get("reason", "Below conviction threshold")
+            company = row.get("Company", "Unknown")
+            city = row.get("City", "")
+            state_abbr = row.get("State", "")
+            with st.expander(f"{company} — {city}, {state_abbr} (Conviction {conv}/10)"):
+                st.warning(f"**Why it didn't qualify:** {reason}")
+
+                left, right = st.columns(2)
+                with left:
+                    st.markdown(f"**Employees:** {row.get('Employees', 'N/A')}")
+                    st.markdown(f"**Est. EBITDA:** {row.get('Est. EBITDA', 'N/A')}")
+                    st.markdown(f"**Website:** {row.get('Website', 'N/A')}")
+                with right:
+                    st.markdown(f"**Differentiated:** {row.get('Differentiated', 'N/A')}")
+                    st.markdown(f"**Priority:** {row.get('Priority', 'N/A')}")
+                    st.markdown(f"**Growth:** {row.get('Growth', 'N/A')}")
+
+                desc = row.get("Description", "")
+                if desc:
+                    st.markdown(f"**Description:** {desc[:600]}")
+
+                pitch = row.get("Conviction Pitch", "")
+                if pitch:
+                    st.info(f"**Analyst pitch:** {pitch}")
+
+                # Promote to memo button
+                _nm_key = company.replace(" ", "_")
+                _pc, _pf = st.columns([1, 3])
+                with _pc:
+                    if st.button("Promote to Memo", key=f"promote_{_nm_key}", use_container_width=True):
+                        try:
+                            from lib.api_clients import load_api_keys, make_openai_client
+                            from pipeline.orchestrator import _generate_memo
+                            _keys = load_api_keys()
+                            _oc = make_openai_client(api_key=_keys["OPENAI_API_KEY"])
+                            _niche = (state.config or {}).get("niche", "")
+                            memo_text = _generate_memo(_oc, row, _niche)
+                            state.add_memo({
+                                "company": company,
+                                "row": row,
+                                "memo": memo_text,
+                                "promoted_from_near_miss": True,
+                            })
+                            st.success(f"Memo created for {company}.")
+                            st.rerun()
+                        except Exception as e:
+                            st.error(f"Failed to generate memo: {e}")
+                with _pf:
+                    st.caption("Promote this near-miss to a full investment memo.")
 
 
 # ---------------------------------------------------------------------------

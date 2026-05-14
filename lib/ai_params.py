@@ -341,3 +341,108 @@ def suggest_search_params(client, niche_description: str) -> dict:
             return _simple_tag_generation(client, niche_description)
     else:
         return _simple_tag_generation(client, niche_description)
+
+
+# ---------------------------------------------------------------------------
+# ADAPTIVE REFINEMENT — adjusts search params between rounds based on results
+# ---------------------------------------------------------------------------
+def refine_search_params(client, niche, current_params, round_stats):
+    """Refine Apollo search params based on results from the previous round.
+
+    Args:
+        client: OpenAI client.
+        niche: The niche description.
+        current_params: dict with current "industries" and "keywords".
+        round_stats: dict with:
+            - prev_round: int, the round that just finished
+            - candidates_found: int (raw count from Apollo + web)
+            - candidates_qualified: int (passed all filters, scored >= 6)
+            - top_qualified_descriptions: list of strings (descriptions of
+              highest-scoring qualified companies)
+            - common_filter_reasons: list of strings (top reasons candidates
+              were filtered out)
+
+    Returns:
+        dict with refined "industries" and "keywords", or None if no
+        changes recommended.
+    """
+    candidates_found = round_stats.get("candidates_found", 0)
+    qualified = round_stats.get("candidates_qualified", 0)
+    prev_round = round_stats.get("prev_round", 1)
+    top_descriptions = round_stats.get("top_qualified_descriptions", []) or []
+    filter_reasons = round_stats.get("common_filter_reasons", []) or []
+
+    # Compose feedback context for the AI
+    if candidates_found == 0:
+        signal = "ZERO candidates were found. The current industries and keywords are not matching anything in Apollo. We must pivot — try DIFFERENT industries and broader, more common keyword tags."
+    elif candidates_found < 20:
+        signal = f"Only {candidates_found} candidates found — search is too narrow. Broaden the keywords and consider adding adjacent industry categories."
+    elif qualified == 0 and candidates_found > 20:
+        signal = f"{candidates_found} candidates found but NONE qualified. The search is finding the wrong companies. Tighten keywords to be more specific to the actual operator type, and pick more accurate industry categories."
+    elif qualified > 0:
+        signal = f"{qualified} qualified out of {candidates_found} candidates. Sharpen the search to find MORE like the qualified ones — use their actual descriptions to identify shared keywords."
+    else:
+        signal = f"{candidates_found} candidates found. Continue searching with slight refinements."
+
+    top_desc_text = "\n".join(f"  - {d[:200]}" for d in top_descriptions[:5]) or "  (none qualified yet)"
+    filter_reasons_text = "\n".join(f"  - {r}" for r in filter_reasons[:5]) or "  (none recorded)"
+
+    prompt = f"""You are refining an Apollo.io B2B company search based on results from the previous round.
+
+NICHE: "{niche}"
+
+PREVIOUS ROUND (round {prev_round}):
+- Industries used: {current_params.get('industries', [])}
+- Keywords used: "{current_params.get('keywords', '')}"
+
+RESULTS SIGNAL: {signal}
+
+Top descriptions of qualified companies (use these to find more like them):
+{top_desc_text}
+
+Top reasons candidates were filtered out:
+{filter_reasons_text}
+
+YOUR JOB: Refine the industries and keywords for the NEXT round of search.
+
+Apollo industry list (pick from this exact list):
+{json.dumps(APOLLO_INDUSTRIES)}
+
+RULES:
+1. If ZERO candidates were found, you MUST change BOTH industries AND keywords substantially — the current ones aren't matching Apollo.
+2. If qualified candidates exist, lean into keywords/industries that resemble them.
+3. If too narrow, ADD industries and broaden keywords.
+4. If too broad (many filtered out for irrelevance), TIGHTEN keywords.
+5. Keywords MUST be 1-4 words each. Longer phrases match nothing.
+6. Return 3-5 industries and 3-6 keyword tags.
+7. Aim for DIFFERENT industries/keywords than the previous round when results were poor — don't just shuffle.
+
+Return JSON only:
+{{"industries": ["Industry A", "Industry B", ...],
+  "keywords": "tag one, tag two, tag three",
+  "rationale": "one sentence explaining what you changed and why"}}"""
+
+    try:
+        resp = client.chat.completions.create(
+            model=OPENAI_MODEL,
+            messages=[{"role": "user", "content": prompt}],
+            response_format={"type": "json_object"},
+            temperature=0.3,
+            timeout=25,
+        )
+        data = json.loads(resp.choices[0].message.content or "{}")
+        new_industries = [i for i in (data.get("industries") or []) if i in APOLLO_INDUSTRIES]
+        new_keywords = (data.get("keywords") or "").strip()
+        rationale = data.get("rationale", "")
+
+        if new_industries and new_keywords:
+            print(f"[AI Params] Round {prev_round + 1} refinement: {rationale}")
+            return {
+                "industries": new_industries,
+                "keywords": new_keywords,
+                "rationale": rationale,
+            }
+    except Exception as e:
+        print(f"[AI Params] Refinement failed: {e}")
+
+    return None

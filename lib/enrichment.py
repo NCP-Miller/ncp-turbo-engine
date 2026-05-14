@@ -437,15 +437,41 @@ def score_conviction(client, company_name, description, niche, scores, thesis=No
 
     feedback_section = ""
     if feedback_history:
-        recent = feedback_history[-10:]
-        lines = [f"- {fb.get('company', '?')}: {fb.get('feedback', '')}" for fb in recent]
-        feedback_section = f"""
+        recent = feedback_history[-15:]
 
-IMPORTANT — Trey's recent feedback on past candidates (learn from this):
-{chr(10).join(lines)}
+        liked, rejected, caveats = [], [], []
+        for fb in recent:
+            verdict = (fb.get("verdict") or "").lower()
+            company = fb.get("company", "?")
+            text = fb.get("feedback", "")
+            if verdict == "liked":
+                liked.append(f"  - {company}: {text}")
+            elif verdict == "rejected":
+                rejected.append(f"  - {company}: {text}")
+            elif verdict == "caveats":
+                caveats.append(f"  - {company}: {text}")
 
-Use this feedback to calibrate. If Trey rejected something for a reason,
-apply that lesson here. If he liked something, recognize similar traits."""
+        sections = []
+        if liked:
+            sections.append("THUMBS-UP (find more like these — match their traits):\n" + "\n".join(liked))
+        if rejected:
+            sections.append("THUMBS-DOWN (avoid traits like these):\n" + "\n".join(rejected))
+        if caveats:
+            sections.append("SPECIFIC CRITIQUES (calibrate scoring against these):\n" + "\n".join(caveats))
+
+        if sections:
+            feedback_section = f"""
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CALIBRATION FROM PAST FEEDBACK (heavily weight these patterns):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+{chr(10) + chr(10).join(sections)}
+
+Apply these lessons directly to THIS company:
+- If this company shares traits with the THUMBS-DOWN list, score it lower.
+- If this company shares traits with the THUMBS-UP list, score it higher.
+- If a CRITIQUE applies (e.g., "too big," "no recurring revenue"), penalize for it.
+- The user's history is more reliable than any abstract framework. Trust it."""
 
     prompt = f"""You are a senior associate at {thesis.get('firm', 'a PE firm')}.
 
