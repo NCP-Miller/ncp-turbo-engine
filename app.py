@@ -19,7 +19,8 @@ def check_password():
     try:
         app_password = st.secrets["APP_PASSWORD"]
     except (FileNotFoundError, KeyError):
-        app_password = "NCP2026"
+        st.error("APP_PASSWORD is not configured. Add it to .streamlit/secrets.toml.")
+        return False
 
     def password_entered():
         if st.session_state.get("password") == app_password:

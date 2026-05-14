@@ -8,6 +8,7 @@ import json
 import requests
 from urllib.parse import urlparse, urljoin
 
+from lib import cache
 from lib.constants import OPENAI_MODEL, _TITLE_SCORES, _CONTACT_PATHS, DEFAULT_HTTP_USER_AGENT
 
 
@@ -55,6 +56,10 @@ def _title_score(title):
 # ---------------------------------------------------------------------------
 def firecrawl_scrape(firecrawl_api_key, url):
     """Scrape a URL via Firecrawl and return markdown content (up to 50KB)."""
+    cached = cache.get("firecrawl", url)
+    if cached is not None:
+        return cached
+
     try:
         r = requests.post(
             "https://api.firecrawl.dev/v1/scrape",
@@ -68,8 +73,11 @@ def firecrawl_scrape(firecrawl_api_key, url):
         if r.status_code == 200:
             data = r.json()
             md = (data.get("data") or {}).get("markdown") or data.get("markdown")
-            return md[:50000] if md else None
-    except Exception:
+            result = md[:50000] if md else None
+            if result:
+                cache.put("firecrawl", url, value=result)
+            return result
+    except (requests.RequestException, ValueError, KeyError):
         pass
     return None
 
@@ -130,7 +138,6 @@ Text:
                 data[k] = None
         return data
 
-    # Attempt 1 — structured JSON output
     try:
         resp = client.chat.completions.create(
             model=OPENAI_MODEL,
@@ -141,10 +148,9 @@ Text:
         return _parse_contact(resp.choices[0].message.content)
     except Exception as e:
         msg = str(e).lower()
-        if "content" not in msg and "filter" not in msg and "400" not in msg:
+        if "content" in msg or "filter" in msg or "400" in msg:
             return None
 
-    # Attempt 2 — retry without response_format
     try:
         resp = client.chat.completions.create(
             model=OPENAI_MODEL,
@@ -187,7 +193,7 @@ def spider_for_contact(client, firecrawl_api_key, company_name, domain, user_age
             )
             if r.status_code == 200 and len(r.text) > 200:
                 return r.text[:40000]
-        except Exception:
+        except (requests.RequestException, OSError):
             pass
         return None
 
@@ -303,7 +309,7 @@ def get_people_apollo_robust(apollo_api_key, company_name, domain, org_id=None):
                 all_people.extend(new)
                 if any(_title_score(p.get("title")) >= 80 for p in all_people):
                     break
-        except Exception:
+        except (requests.RequestException, ValueError, KeyError):
             pass
 
     all_people.sort(
@@ -365,5 +371,5 @@ def bulk_enrich_names(apollo_api_key, people_list, domain):
             timeout=15,
         )
         return r.json().get("matches", [])
-    except Exception:
+    except (requests.RequestException, ValueError, KeyError):
         return []

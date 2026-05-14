@@ -13,6 +13,7 @@ All API clients/keys are passed in. No Streamlit, no globals.
 import json
 import re
 
+from lib import cache
 from lib.constants import OPENAI_MODEL
 from lib.portfolio_cache import load_pe_firms, is_pe_backed_via_cache
 
@@ -287,6 +288,14 @@ def quick_niche_prefilter(org, target_niche, niche_keywords=None, niche_industri
 # ---------------------------------------------------------------------------
 def check_relevance_gpt4o(client, company_name, description, keywords, target_niche, mode):
     """Use GPT-4o to score whether a company is relevant to the target niche."""
+    cached = cache.get("relevance", company_name, description, target_niche, mode)
+    if cached is not None:
+        return tuple(cached)
+
+    _json_schema = """{{"match": true/false, "category": "<primary_operator|vendor|consultant|media|nonprofit|government|unrelated>", "confidence": "<high|medium|low>", "reason": "one sentence with specific evidence from the description", "disqualifier": "<code or null>"}}
+
+For "disqualifier", use one of: "government", "nonprofit", "media", "staffing", "too_large", "pe_backed", "unrelated", "writes_about_not_operates", or null if match is true."""
+
     if mode == "A":
         prompt = f"""You are an acquisition filter for a private equity investor.
 Target niche: "{target_niche}"
@@ -317,7 +326,7 @@ FAIL if ANY of these apply:
 Be STRICT. A cybersecurity company is not a match for "managed IT services" and vice versa.
 A company that merely mentions a keyword in its description is not a match if its primary
 business is something else.
-Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
+Return JSON only: {_json_schema}"""
     else:
         prompt = f"""You are identifying realistic sales prospects and direct competitors for companies in: "{target_niche}"
 
@@ -341,11 +350,27 @@ FAIL if any of these apply:
   it is a direct competitor operating in the exact same niche as the target
 - Completely unrelated industry (manufacturing, unrelated finance, retail, food service, etc.)
 
-Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
+Return JSON only: {_json_schema}"""
+
+    _cache_args = (company_name, description, target_niche, mode)
 
     def _parse_relevance(content):
         data = json.loads(content)
-        return data.get("match"), data.get("reason")
+        parts = [data.get("reason", "")]
+        cat = data.get("category")
+        conf = data.get("confidence")
+        disq = data.get("disqualifier")
+        if cat:
+            parts.append(f"[{cat}]")
+        if conf:
+            parts.append(f"({conf} confidence)")
+        if disq:
+            parts.append(f"disqualifier={disq}")
+        return data.get("match"), " ".join(parts)
+
+    def _cache_and_return(result):
+        cache.put("relevance", *_cache_args, value=list(result))
+        return result
 
     try:
         resp = client.chat.completions.create(
@@ -354,11 +379,11 @@ Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
             response_format={"type": "json_object"},
             timeout=20,
         )
-        return _parse_relevance(resp.choices[0].message.content)
+        return _cache_and_return(_parse_relevance(resp.choices[0].message.content))
     except Exception as e:
         msg = str(e).lower()
-        if "content" not in msg and "filter" not in msg and "400" not in msg:
-            return True, "AI Error"
+        if "content" in msg or "filter" in msg or "400" in msg:
+            return False, "Content filter triggered"
 
     try:
         resp = client.chat.completions.create(
@@ -369,11 +394,11 @@ Return JSON only: {{"match": true/false, "reason": "one sentence"}}"""
         raw = resp.choices[0].message.content or ""
         match = re.search(r"\{.*\}", raw, re.DOTALL)
         if match:
-            return _parse_relevance(match.group())
+            return _cache_and_return(_parse_relevance(match.group()))
     except Exception:
         pass
 
-    return True, "AI Error"
+    return False, "AI check failed — skipped"
 
 
 # ---------------------------------------------------------------------------
@@ -393,6 +418,10 @@ def check_pe_vc_web(client, firecrawl_scrape_fn, company_name, domain):
     Returns:
         (is_pe_vc: bool, reason: str). Conservative on failure.
     """
+    cached = cache.get("pe_vc_web", company_name, domain)
+    if cached is not None:
+        return tuple(cached)
+
     snippets = []
 
     # 1. Company's own about/investor pages
@@ -419,7 +448,9 @@ def check_pe_vc_web(client, firecrawl_scrape_fn, company_name, domain):
                 snippets.append(f"PE FIRM PORTFOLIO ({firm_name}):\n{content[:8000]}")
 
     if not snippets:
-        return False, "No web data"
+        result = (False, "No web data")
+        cache.put("pe_vc_web", company_name, domain, value=list(result))
+        return result
 
     combined = "\n---\n".join(snippets)
     prompt = f"""Determine whether "{company_name}" is owned by or has received significant
@@ -452,7 +483,9 @@ Return JSON only:
             timeout=20,
         )
         data = json.loads(resp.choices[0].message.content)
-        return data.get("pe_vc_owned", False), data.get("evidence", "")
+        result = (data.get("pe_vc_owned", False), data.get("evidence", ""))
+        cache.put("pe_vc_web", company_name, domain, value=list(result))
+        return result
     except Exception:
         pass
 
@@ -466,7 +499,9 @@ Return JSON only:
         match = re.search(r"\{.*\}", raw, re.DOTALL)
         if match:
             data = json.loads(match.group())
-            return data.get("pe_vc_owned", False), data.get("evidence", "")
+            result = (data.get("pe_vc_owned", False), data.get("evidence", ""))
+            cache.put("pe_vc_web", company_name, domain, value=list(result))
+            return result
     except Exception:
         pass
 
