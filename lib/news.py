@@ -8,7 +8,10 @@ import requests
 import xml.etree.ElementTree as ET
 from urllib.parse import quote_plus
 
+from lib import cache
 from lib.constants import DEFAULT_HTTP_USER_AGENT
+
+_NEWS_TTL = 3 * 24 * 3600  # 3 days — news goes stale faster
 
 
 def get_latest_news_link(company_name, city=None, user_agent=None):
@@ -16,6 +19,10 @@ def get_latest_news_link(company_name, city=None, user_agent=None):
 
     Returns (None, None) on any error or empty result.
     """
+    cached = cache.get("news", company_name, city)
+    if cached is not None:
+        return tuple(cached)
+
     ua = user_agent or DEFAULT_HTTP_USER_AGENT
     q = f"{company_name} {city}" if city else company_name
     rss = (
@@ -32,6 +39,7 @@ def get_latest_news_link(company_name, city=None, user_agent=None):
             return None, None
         title = (items[0].findtext("title") or "").strip()
         link = (items[0].findtext("link") or "").strip()
+        cache.put("news", company_name, city, value=[title, link], ttl=_NEWS_TTL)
         return title, link
-    except Exception:
+    except (requests.RequestException, ET.ParseError):
         return None, None

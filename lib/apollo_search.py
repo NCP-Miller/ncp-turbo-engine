@@ -54,7 +54,7 @@ def search_organizations(
                         all_orgs.append(o)
                 if len(orgs) < 100:
                     break
-            except Exception:
+            except requests.RequestException:
                 break
 
     # Pass 1: broad industry sweeps
@@ -125,7 +125,7 @@ def web_discovery_pass(
             r = requests.get(url, headers={"User-Agent": ua}, timeout=15)
             if r.status_code == 200 and len(r.text) > 500:
                 return r.text[:30000]
-        except Exception:
+        except requests.RequestException:
             pass
         return ""
 
@@ -171,7 +171,7 @@ Search content:
         companies = data.get("companies") or []
     except Exception as e:
         msg = str(e).lower()
-        if "content" not in msg and "filter" not in msg and "400" not in msg:
+        if "content" in msg or "filter" in msg or "400" in msg:
             return []
         try:
             resp = client.chat.completions.create(
