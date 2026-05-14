@@ -358,12 +358,10 @@ with tab_chat:
                 index=0,
                 horizontal=True,
             )
-            custom_geo = ""
-            if geo_mode == "Custom":
-                custom_geo = st.text_input(
-                    "Enter geography",
-                    placeholder="e.g., Virginia, United States",
-                )
+            custom_geo = st.text_input(
+                "Custom geography (only used when 'Custom' is selected above)",
+                placeholder="e.g., Virginia, United States",
+            )
             geography = NCP_PRIORITY_LABEL if geo_mode == NCP_PRIORITY_LABEL else custom_geo.strip()
             target_count = st.number_input(
                 "How many differentiated companies should I find?",

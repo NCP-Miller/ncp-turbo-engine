@@ -1900,10 +1900,11 @@ r2a, r2b, r2c = st.columns(3)
 from lib.constants import NCP_PRIORITY_LABEL
 _geo_options = [NCP_PRIORITY_LABEL, "Custom"]
 _geo_mode = r2a.radio("Geography", _geo_options, index=0, horizontal=True)
-if _geo_mode == "Custom":
-    target_geo = r2a.text_input("Enter geography", value="North Carolina, United States")
-else:
-    target_geo = NCP_PRIORITY_LABEL
+_custom_geo = r2a.text_input(
+    "Custom geography (used when 'Custom' is selected)",
+    value="North Carolina, United States",
+)
+target_geo = NCP_PRIORITY_LABEL if _geo_mode == NCP_PRIORITY_LABEL else _custom_geo.strip()
 mode = r2b.selectbox("Strategy", [
     "A - Acquire  (Strict: small private operators only)",
     "B - Prospect (Broad: competitors & referral/sales targets, all sizes)",
