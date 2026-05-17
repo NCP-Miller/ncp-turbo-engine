@@ -286,15 +286,15 @@ def quick_niche_prefilter(org, target_niche, niche_keywords=None, niche_industri
 # ---------------------------------------------------------------------------
 # AI RELEVANCE CHECK
 # ---------------------------------------------------------------------------
+_RELEVANCE_CACHE_VERSION = 2
+
 def check_relevance_gpt4o(client, company_name, description, keywords, target_niche, mode):
     """Use GPT-4o to score whether a company is relevant to the target niche."""
-    cached = cache.get("relevance", company_name, description, target_niche, mode)
+    cached = cache.get("relevance", _RELEVANCE_CACHE_VERSION, company_name, description, target_niche, mode)
     if cached is not None:
         return tuple(cached)
 
-    _json_schema = """{{"match": true/false, "category": "<primary_operator|vendor|consultant|media|nonprofit|government|unrelated>", "confidence": "<high|medium|low>", "reason": "one sentence with specific evidence from the description", "disqualifier": "<code or null>"}}
-
-For "disqualifier", use one of: "government", "nonprofit", "media", "staffing", "too_large", "pe_backed", "unrelated", "writes_about_not_operates", or null if match is true."""
+    _json_schema = '{"match": true/false, "category": "<primary_operator|vendor|consultant|media|nonprofit|government|unrelated>", "confidence": "<high|medium|low>", "reason": "one sentence with specific evidence from the description", "disqualifier": "<code or null>"}\n\nFor "disqualifier", use one of: "government", "nonprofit", "media", "staffing", "too_large", "pe_backed", "unrelated", "writes_about_not_operates", or null if match is true.'
 
     if mode == "A":
         prompt = f"""You are an acquisition filter for a private equity investor.
@@ -304,9 +304,12 @@ Company: "{company_name}"
 Description: "{description}"
 Keywords: {keywords}
 
-PASS only if the company's PRIMARY business is directly operating in or providing services
-within the exact niche described above. The company must be a realistic private acquisition
-target — a small-to-mid-size privately held operator or service provider.
+PASS if the company's products, services, or operations are relevant to the described
+niche. Include companies that:
+- Directly operate in the niche
+- Provide technology, software, or platforms that serve this niche
+- Operate in a closely adjacent sub-segment a PE buyer would plausibly consider
+- Could reasonably compete with or sell to companies in this niche
 
 FAIL if ANY of these apply:
 - Government agency, department, commission, or publicly funded body
@@ -319,13 +322,13 @@ FAIL if ANY of these apply:
 - The company merely WRITES ABOUT, REPORTS ON, or ADVOCATES for the niche rather than operating in it
 - Staffing, recruiting, or temp agency
 - Large national chain or enterprise not suitable for PE acquisition
-- Completely unrelated industry — the company must actually DO what the niche describes,
-  not just have a tangential keyword overlap
+- Completely unrelated industry with no plausible connection to the niche
 - "PACE" in the niche means Program for All-Inclusive Care for the Elderly — NOT fitness/pace
 
-Be STRICT. A cybersecurity company is not a match for "managed IT services" and vice versa.
-A company that merely mentions a keyword in its description is not a match if its primary
-business is something else.
+When the niche is very specific (e.g., "compliance tech for specialty lending"), be GENEROUS
+with adjacent companies. A regtech company serving financial services IS relevant even if it
+doesn't specifically mention the exact sub-segment. It's better to let a borderline company
+through for deeper analysis than to miss a real target.
 Return JSON only: {_json_schema}"""
     else:
         prompt = f"""You are identifying realistic sales prospects and direct competitors for companies in: "{target_niche}"
@@ -352,7 +355,7 @@ FAIL if any of these apply:
 
 Return JSON only: {_json_schema}"""
 
-    _cache_args = (company_name, description, target_niche, mode)
+    _cache_args = (_RELEVANCE_CACHE_VERSION, company_name, description, target_niche, mode)
 
     def _parse_relevance(content):
         data = json.loads(content)
