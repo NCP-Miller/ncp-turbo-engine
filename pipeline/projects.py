@@ -3,6 +3,9 @@
 Each project is a named snapshot of the pipeline state DB. The active
 pipeline always runs from ``pipeline_data/state.db``. When saving or
 switching projects, the DB file is copied to/from a project-specific file.
+
+Projects are automatically backed up to a GitHub 'data' branch so they
+survive Streamlit Community Cloud restarts/hibernation.
 """
 
 import json
@@ -12,16 +15,44 @@ import shutil
 from datetime import datetime, timezone
 
 from pipeline.state import STATE_DIR, DB_PATH, PipelineState
+from lib.github_backup import (
+    is_configured as _gh_configured,
+    backup_project as _gh_backup_project,
+    backup_projects_index as _gh_backup_index,
+    backup_feedback as _gh_backup_feedback,
+    restore_all as _gh_restore_all,
+)
 
 PROJECTS_FILE = os.path.join(STATE_DIR, "projects.json")
+
+_restore_attempted = False
 
 
 def _ensure_dir():
     os.makedirs(STATE_DIR, exist_ok=True)
 
 
+def ensure_restored():
+    """On first call, restore projects from GitHub if local data is missing."""
+    global _restore_attempted
+    if _restore_attempted:
+        return
+    _restore_attempted = True
+    if os.path.exists(PROJECTS_FILE):
+        return
+    if not _gh_configured():
+        return
+    try:
+        count = _gh_restore_all()
+        if count > 0:
+            print(f"[Projects] Restored {count} project(s) from GitHub backup.")
+    except Exception as e:
+        print(f"[Projects] GitHub restore failed: {e}")
+
+
 def _load_index():
     _ensure_dir()
+    ensure_restored()
     if not os.path.exists(PROJECTS_FILE):
         return []
     with open(PROJECTS_FILE, "r", encoding="utf-8") as f:
@@ -103,6 +134,14 @@ def save_project(name):
         p["active"] = False
     projects.append(entry)
     _save_index(projects)
+
+    if _gh_configured():
+        try:
+            _gh_backup_project(slug, db_dest)
+            _gh_backup_index(projects)
+        except Exception as e:
+            print(f"[Projects] GitHub backup failed for '{name}': {e}")
+
     return entry
 
 
