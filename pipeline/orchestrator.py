@@ -4,6 +4,7 @@ Runs three bot stages (Search, Analysis, Write-up) in a loop,
 persisting all state to disk via PipelineState.
 """
 
+import os
 import threading
 import time
 import json
@@ -18,6 +19,7 @@ from lib.filters import is_buyable_structure, is_obvious_mismatch, quick_niche_p
 from lib.worker import process_single_company
 from lib.enrichment import score_conviction, _load_thesis
 from lib.feedback import load_feedback
+from lib.github_backup import is_configured as _gh_configured, backup_project as _gh_backup
 from lib.ncp_portfolio import check_portfolio_conflict
 from lib.constants import OPENAI_MODEL
 from pipeline.state import PipelineState
@@ -28,6 +30,23 @@ ANALYSIS_WORKERS = 3   # candidates processed in parallel by the analysis bot
 
 _thread = None
 _thread_lock = threading.Lock()
+
+
+def _auto_backup():
+    """Push the active project to GitHub if configured."""
+    if not _gh_configured():
+        return
+    try:
+        from pipeline.projects import current_project_name, _slugify, _db_path_for
+        name = current_project_name()
+        if name:
+            slug = _slugify(name)
+            db_path = _db_path_for(slug)
+            if os.path.exists(db_path):
+                _gh_backup(slug, db_path)
+                print(f"[Orchestrator] Auto-backed up project '{name}' to GitHub.")
+    except Exception as e:
+        print(f"[Orchestrator] Auto-backup failed: {e}")
 
 
 # ---------------------------------------------------------------------------
@@ -485,6 +504,7 @@ def _run_loop():
                 state.set_event("done", f"Pipeline complete! All {target_count} memos generated. Click 'Investment Memos' tab to review.", "success")
                 state.update(status="idle")
                 print(f"[Orchestrator] Reached target of {target_count} memos. Done.")
+                _auto_backup()
                 break
 
             # Track final statuses for end-of-iteration reconciliation
@@ -721,6 +741,7 @@ def _run_loop():
                                     f"[Search Bot] Exhausted all 4 search rounds. "
                                     f"{len(state.completed_memos)}/{target_count} memos completed."
                                 )
+                                _auto_backup()
                                 search_final = "exhausted"
                             else:
                                 search_exhausted = True

@@ -1,0 +1,238 @@
+"""GitHub-based persistent backup for pipeline projects and feedback.
+
+Stores project state as JSON files on an orphan 'data' branch in the
+same GitHub repo. Survives Streamlit Community Cloud hibernation/restarts.
+
+Requires GITHUB_TOKEN and GITHUB_REPO in Streamlit secrets or environment.
+"""
+
+import base64
+import json
+import os
+import sqlite3
+import time
+
+import requests
+
+_BRANCH = "data"
+_API = "https://api.github.com"
+
+
+def _get_credentials():
+    token = os.environ.get("GITHUB_TOKEN")
+    repo = os.environ.get("GITHUB_REPO")
+    if not token or not repo:
+        try:
+            import streamlit as st
+            token = token or st.secrets.get("GITHUB_TOKEN")
+            repo = repo or st.secrets.get("GITHUB_REPO")
+        except Exception:
+            pass
+    return token, repo
+
+
+def _headers(token):
+    return {
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+
+
+def is_configured():
+    token, repo = _get_credentials()
+    return bool(token and repo)
+
+
+def _ensure_branch(token, repo):
+    url = f"{_API}/repos/{repo}/git/refs/heads/{_BRANCH}"
+    r = requests.get(url, headers=_headers(token), timeout=10)
+    if r.status_code == 200:
+        return True
+    commit_url = f"{_API}/repos/{repo}/git/commits"
+    commit_resp = requests.post(
+        commit_url,
+        headers=_headers(token),
+        json={
+            "message": "Initialize data branch",
+            "tree": "4b825dc642cb6eb9a060e54bf8d69288fbee4904",
+            "parents": [],
+        },
+        timeout=10,
+    )
+    if commit_resp.status_code not in (200, 201):
+        return False
+    commit_sha = commit_resp.json()["sha"]
+    ref_url = f"{_API}/repos/{repo}/git/refs"
+    ref_resp = requests.post(
+        ref_url,
+        headers=_headers(token),
+        json={"ref": f"refs/heads/{_BRANCH}", "sha": commit_sha},
+        timeout=10,
+    )
+    return ref_resp.status_code in (200, 201)
+
+
+def _read_file(token, repo, path):
+    url = f"{_API}/repos/{repo}/contents/{path}"
+    r = requests.get(url, headers=_headers(token), params={"ref": _BRANCH}, timeout=15)
+    if r.status_code != 200:
+        return None, None
+    data = r.json()
+    content = base64.b64decode(data["content"]).decode("utf-8")
+    return content, data["sha"]
+
+
+def _write_file(token, repo, path, content, message="Update backup"):
+    url = f"{_API}/repos/{repo}/contents/{path}"
+    encoded = base64.b64encode(content.encode("utf-8")).decode("ascii")
+    _, existing_sha = _read_file(token, repo, path)
+    payload = {
+        "message": message,
+        "content": encoded,
+        "branch": _BRANCH,
+    }
+    if existing_sha:
+        payload["sha"] = existing_sha
+    r = requests.put(url, headers=_headers(token), json=payload, timeout=20)
+    return r.status_code in (200, 201)
+
+
+# ---------------------------------------------------------------------------
+# STATE EXPORT / IMPORT
+# ---------------------------------------------------------------------------
+
+def export_db_to_json(db_path):
+    if not os.path.exists(db_path):
+        return None
+    conn = sqlite3.connect(db_path, timeout=10)
+    rows = conn.execute("SELECT key, value FROM pipeline_state").fetchall()
+    conn.close()
+    state = {}
+    for key, value in rows:
+        try:
+            state[key] = json.loads(value)
+        except (json.JSONDecodeError, TypeError):
+            state[key] = value
+    return state
+
+
+def import_json_to_db(db_path, state_dict):
+    os.makedirs(os.path.dirname(db_path), exist_ok=True)
+    conn = sqlite3.connect(db_path, timeout=10)
+    conn.execute("PRAGMA journal_mode=WAL")
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS pipeline_state (key TEXT PRIMARY KEY, value TEXT NOT NULL)"
+    )
+    conn.execute("BEGIN IMMEDIATE")
+    try:
+        conn.execute("DELETE FROM pipeline_state")
+        for key, value in state_dict.items():
+            conn.execute(
+                "INSERT INTO pipeline_state (key, value) VALUES (?, ?)",
+                (key, json.dumps(value)),
+            )
+        conn.execute("COMMIT")
+    except Exception:
+        conn.execute("ROLLBACK")
+        raise
+    finally:
+        conn.close()
+
+
+# ---------------------------------------------------------------------------
+# PUBLIC API — backup / restore
+# ---------------------------------------------------------------------------
+
+def backup_project(slug, db_path):
+    token, repo = _get_credentials()
+    if not token or not repo:
+        return False
+    _ensure_branch(token, repo)
+    state = export_db_to_json(db_path)
+    if state is None:
+        return False
+    content = json.dumps(state, indent=2, default=str)
+    return _write_file(
+        token, repo, f"projects/{slug}.json", content,
+        message=f"Backup project: {slug}",
+    )
+
+
+def backup_projects_index(projects_list):
+    token, repo = _get_credentials()
+    if not token or not repo:
+        return False
+    _ensure_branch(token, repo)
+    content = json.dumps(projects_list, indent=2)
+    return _write_file(token, repo, "projects.json", content, message="Update project index")
+
+
+def backup_feedback(feedback_entries):
+    token, repo = _get_credentials()
+    if not token or not repo:
+        return False
+    _ensure_branch(token, repo)
+    content = json.dumps(feedback_entries, indent=2)
+    return _write_file(token, repo, "feedback_log.json", content, message="Update feedback log")
+
+
+def restore_all():
+    """Pull all projects and feedback from GitHub into pipeline_data/.
+
+    Call this on app startup if pipeline_data/ is empty.
+    Returns number of projects restored, or -1 if not configured.
+    """
+    token, repo = _get_credentials()
+    if not token or not repo:
+        return -1
+
+    from pipeline.state import STATE_DIR, DB_PATH
+
+    os.makedirs(STATE_DIR, exist_ok=True)
+    restored = 0
+
+    index_content, _ = _read_file(token, repo, "projects.json")
+    if not index_content:
+        return 0
+
+    try:
+        projects = json.loads(index_content)
+    except (json.JSONDecodeError, TypeError):
+        return 0
+
+    projects_file = os.path.join(STATE_DIR, "projects.json")
+    with open(projects_file, "w", encoding="utf-8") as f:
+        json.dump(projects, f, indent=2)
+
+    active_slug = None
+    for p in projects:
+        slug = p.get("slug")
+        if not slug:
+            continue
+        if p.get("active"):
+            active_slug = slug
+        project_content, _ = _read_file(token, repo, f"projects/{slug}.json")
+        if not project_content:
+            continue
+        try:
+            state_dict = json.loads(project_content)
+        except (json.JSONDecodeError, TypeError):
+            continue
+        db_dest = os.path.join(STATE_DIR, f"project_{slug}.db")
+        import_json_to_db(db_dest, state_dict)
+        restored += 1
+
+    if active_slug:
+        active_db = os.path.join(STATE_DIR, f"project_{active_slug}.db")
+        if os.path.exists(active_db):
+            import shutil
+            shutil.copy2(active_db, DB_PATH)
+
+    feedback_content, _ = _read_file(token, repo, "feedback_log.json")
+    if feedback_content:
+        feedback_path = os.path.join(STATE_DIR, "feedback_log.json")
+        with open(feedback_path, "w", encoding="utf-8") as f:
+            f.write(feedback_content)
+
+    return restored

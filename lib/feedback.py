@@ -45,3 +45,10 @@ def save_feedback(company_name, feedback_text, niche=None, verdict=None):
     })
     with open(_FEEDBACK_PATH, "w") as f:
         json.dump(entries, f, indent=2)
+
+    from lib.github_backup import is_configured, backup_feedback
+    if is_configured():
+        try:
+            backup_feedback(entries)
+        except Exception:
+            pass
