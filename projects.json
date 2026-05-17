@@ -7,6 +7,27 @@
     "niche": "I am looking for a technology company or tech-enabled services company that provides compliance solutions to the specialty finance sector including sectors such as HVAC, medical/dental, fertility, ABL/factoring, equipment finance or construction draw management sectors.",
     "geography": "NCP Priority Geography (Eastern US)",
     "memo_count": 0,
+    "active": false
+  },
+  {
+    "name": "Specialty Lending Serv and IT - Compliance2",
+    "slug": "specialty_lending_serv_and_it_compliance2",
+    "db_file": "project_specialty_lending_serv_and_it_compliance2.db",
+    "created_at": "2026-05-17T22:24:11.369133+00:00",
+    "niche": "I am looking for a technology or tech-enabled services company that provides compliance solutions to the specialty lending sector (not mortgage).",
+    "geography": "NCP Priority Geography (Eastern US)",
+    "memo_count": 0,
+    "active": false,
+    "status": "running"
+  },
+  {
+    "name": "Speciality Lending Serv & IT - Compliance2",
+    "slug": "speciality_lending_serv_it_compliance2",
+    "db_file": "project_speciality_lending_serv_it_compliance2.db",
+    "created_at": "2026-05-17T22:25:12.587821+00:00",
+    "niche": "I am looking for a technology or tech-enabled services company that provides compliance solutions to the specialty lending sector (not mortgage).",
+    "geography": "NCP Priority Geography (Eastern US)",
+    "memo_count": 0,
     "active": true
   }
 ]
