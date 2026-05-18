@@ -23,6 +23,7 @@ from lib.github_backup import is_configured as _gh_configured, backup_project as
 from lib.ncp_portfolio import check_portfolio_conflict
 from lib.constants import OPENAI_MODEL
 from pipeline.state import PipelineState
+from pipeline.qa_bot import diagnose as qa_diagnose, recommend_action as qa_recommend
 
 CONVICTION_THRESHOLD = 6
 ANALYSIS_WORKERS = 3   # candidates processed in parallel by the analysis bot
@@ -803,6 +804,48 @@ def _run_loop():
                         )
 
                     analysis_final = "idle"
+
+                    # --- QA Bot: check funnel health after each batch ---
+                    try:
+                        qa_findings = qa_diagnose(
+                            state.filter_stats,
+                            len(state.completed_memos or []),
+                            target_count,
+                        )
+                        qa_action, qa_finding = qa_recommend(qa_findings)
+                        if qa_finding:
+                            print(f"[QA Bot] {qa_finding['severity'].upper()}: {qa_finding['message']}")
+                            state.add_chat("assistant", f"[QA Bot] {qa_finding['message']}")
+
+                        if qa_action == "pivot_search":
+                            state.set_event(
+                                "qa_pivot",
+                                f"QA Bot detected search mismatch — forcing parameter pivot. {qa_finding['message']}",
+                                "warning",
+                            )
+                            cfg = state.config or {}
+                            cfg["pivot_signal"] = True
+                            state.batch_update(config=cfg)
+                            search_params = None
+
+                        elif qa_action == "refine_params":
+                            state.set_event(
+                                "qa_refine",
+                                f"QA Bot detected suboptimal search — refining parameters. {qa_finding['message']}",
+                                "warning",
+                            )
+                            cfg = state.config or {}
+                            cfg["broaden_signal"] = True
+                            state.batch_update(config=cfg)
+
+                        elif qa_action == "broaden_niche":
+                            state.set_event(
+                                "qa_broaden",
+                                f"QA Bot: {qa_finding['message']}",
+                                "warning",
+                            )
+                    except Exception as e:
+                        print(f"[QA Bot] Error: {e}")
 
             except Exception as e:
                 print(f"[Analysis Bot] Error: {e}")
