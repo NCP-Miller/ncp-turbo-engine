@@ -15,12 +15,20 @@ from lib.constants import OPENAI_MODEL, DEFAULT_HTTP_USER_AGENT
 # ---------------------------------------------------------------------------
 # APOLLO — TWO-PASS ORGANIZATION SEARCH
 # ---------------------------------------------------------------------------
+_EXCLUDED_OWNERSHIP_STATUSES = [
+    "government_agency",
+    "non_profit",
+    "public_company",
+]
+
+
 def search_organizations(
     apollo_api_key,
     industries,
     location_input,
     keyword_tags=None,
     max_pages=10,
+    exclude_ownership=True,
 ):
     """Two-pass Apollo company search for maximum candidate coverage.
 
@@ -62,14 +70,19 @@ def search_organizations(
         base = {"organization_locations": locations}
         if industry:
             base["q_organization_industries"] = [industry]
+        if exclude_ownership:
+            base["organization_not_ownership_statuses"] = _EXCLUDED_OWNERSHIP_STATUSES
         _fetch_pages(base)
 
     # Pass 2: keyword-only sweep
     if keyword_tags:
-        _fetch_pages({
+        kw_payload = {
             "organization_locations": locations,
             "q_organization_keyword_tags": keyword_tags,
-        })
+        }
+        if exclude_ownership:
+            kw_payload["organization_not_ownership_statuses"] = _EXCLUDED_OWNERSHIP_STATUSES
+        _fetch_pages(kw_payload)
 
     return all_orgs
 
