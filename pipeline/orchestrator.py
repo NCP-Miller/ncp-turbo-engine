@@ -27,6 +27,24 @@ from pipeline.state import PipelineState
 CONVICTION_THRESHOLD = 6
 ANALYSIS_WORKERS = 3   # candidates processed in parallel by the analysis bot
 
+_NICHE_PREAMBLES = [
+    "i am looking for a ", "i am looking for an ", "i'm looking for a ",
+    "i'm looking for an ", "find me a ", "find me an ", "find ",
+    "search for a ", "search for an ", "i want a ", "i want an ",
+    "i need a ", "i need an ", "looking for a ", "looking for an ",
+]
+
+
+def _clean_niche(raw):
+    """Strip conversational preamble from the user's niche description."""
+    if not raw:
+        return raw
+    lower = raw.strip().lower()
+    for pre in _NICHE_PREAMBLES:
+        if lower.startswith(pre):
+            return raw[len(pre):]
+    return raw
+
 
 _thread = None
 _thread_lock = threading.Lock()
@@ -431,7 +449,7 @@ def _run_loop():
             state.reload_from_disk()
 
             config = state.config
-            niche = config["niche"]
+            niche = _clean_niche(config["niche"])
             geography = config["geography"]
             strategy = config.get("strategy", "A")
             target_count = config["target_count"]

@@ -184,6 +184,11 @@ user's niche even if it doesn't match any example exactly:
 - CCA / CCP staffing for cybersecurity → "Staffing and Recruiting",
   "Computer & Network Security"
 - Non-profit care operators → always add "Non-Profit Organization Management"
+- Fintech / regtech / compliance tech → "Financial Services", "Computer Software",
+  "Information Technology and Services", "Banking"
+  (compliance tech companies are often classified as software or IT, not finance)
+- Specialty lending / finance → "Financial Services", "Banking",
+  "Information Technology and Services", "Computer Software"
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 PARAMETER 2 — KEYWORD TAGS (REQUIRED — do not leave blank)
@@ -217,6 +222,11 @@ specific to the user's actual niche:
                        "managed security", "mssp", "soc as a service", "vulnerability assessment",
                        "penetration testing", "compliance auditing", "security operations",
                        "incident response"
+  Fintech / regtech:   "regtech", "compliance software", "regulatory compliance",
+                       "fintech", "loan management", "lending software",
+                       "risk management", "financial compliance"
+  Specialty lending:   "specialty lending", "equipment finance", "factoring",
+                       "commercial lending", "loan origination", "loan servicing"
   Home / trade:        "hvac", "plumbing", "electrical contractor", "facilities management"
   Veterinary:          "veterinary", "animal hospital", "pet care"
 
