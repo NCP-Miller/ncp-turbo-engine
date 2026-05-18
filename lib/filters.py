@@ -99,6 +99,18 @@ def is_buyable_structure(org, mode):
     if "government administration" in industry and emp > 50:
         return False, "Government Entity"
 
+    # Apollo public trading fields (catches companies even when ownership_status is wrong)
+    ticker = org.get("publicly_traded_symbol") or org.get("ticker") or ""
+    exchange = org.get("publicly_traded_exchange") or ""
+    mkt_cap = org.get("market_cap") or 0
+    if ticker or exchange:
+        return False, f"Publicly Traded ({ticker or exchange})"
+    try:
+        if mkt_cap and float(mkt_cap) > 0:
+            return False, "Publicly Traded (has market cap)"
+    except (ValueError, TypeError):
+        pass
+
     if mode == "A":
         if status == "public":
             return False, "Publicly Traded"
@@ -115,6 +127,31 @@ def is_buyable_structure(org, mode):
         for signal in _PE_VC_SIGNALS:
             if signal in combined:
                 return False, f"PE/VC Backed ('{signal}' in Apollo data)"
+
+        # Apollo funding data — institutional investors are a deal killer
+        latest_stage = str(org.get("latest_funding_stage") or "").lower().replace("_", " ")
+        _institutional_stages = [
+            "series a", "series b", "series c", "series d", "series e",
+            "private equity", "debt financing", "ipo", "post ipo",
+            "grant", "secondary market",
+        ]
+        if any(s in latest_stage for s in _institutional_stages):
+            return False, f"Institutional Funding ({latest_stage})"
+
+        total_funding = org.get("total_funding") or 0
+        try:
+            if isinstance(total_funding, (int, float)) and total_funding > 5_000_000:
+                return False, f"Institutional Funding (${total_funding:,.0f} raised)"
+        except (ValueError, TypeError):
+            pass
+
+        num_rounds = org.get("number_of_funding_rounds") or 0
+        try:
+            if isinstance(num_rounds, int) and num_rounds >= 2:
+                return False, f"Institutional Funding ({num_rounds} funding rounds)"
+        except (ValueError, TypeError):
+            pass
+
     else:
         if "public" in status:
             return False, "Publicly Traded"
