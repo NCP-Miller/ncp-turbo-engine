@@ -283,9 +283,14 @@ def _analyze_single(org, niche, strategy, config, search_params,
         return {"outcome": "deep_analysis_failed", "company": comp_name,
                 "reason": "did not pass filters"}
 
-    # 6. PE-backed check
+    # 6. PE-backed check (with news snippets from the worker)
     from lib.filters import check_pe_backed
-    pe_check = check_pe_backed(client, row.get("Company", ""))
+    news_snippets = None
+    news_field = row.get("Latest News", "")
+    if news_field and news_field != "N/A":
+        headline = news_field.split(" | ")[0] if " | " in news_field else news_field
+        news_snippets = [headline]
+    pe_check = check_pe_backed(client, row.get("Company", ""), news_snippets=news_snippets)
     if pe_check.get("is_pe_backed"):
         return {"outcome": "pe_backed", "company": comp_name,
                 "reason": pe_check.get("evidence", "PE-backed"), "row": row}
