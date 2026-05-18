@@ -23,7 +23,7 @@ from lib.github_backup import is_configured as _gh_configured, backup_project as
 from lib.ncp_portfolio import check_portfolio_conflict
 from lib.constants import OPENAI_MODEL
 from pipeline.state import PipelineState
-from pipeline.qa_bot import diagnose as qa_diagnose, recommend_action as qa_recommend
+from pipeline.qa_bot import diagnose as qa_diagnose, recommend_action as qa_recommend, reset as qa_reset
 
 CONVICTION_THRESHOLD = 6
 ANALYSIS_WORKERS = 3   # candidates processed in parallel by the analysis bot
@@ -394,6 +394,8 @@ def _run_loop():
     except RuntimeError as e:
         print(f"[Orchestrator] Failed to load API keys: {e}")
         return
+
+    qa_reset()
 
     client = make_openai_client(api_key=keys["OPENAI_API_KEY"])
     apollo_key = keys["APOLLO_API_KEY"]
