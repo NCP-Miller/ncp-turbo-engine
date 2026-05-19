@@ -281,7 +281,7 @@ with st.sidebar:
             pause_pipeline()
             st.rerun()
     with c2:
-        if st.button("▶ Resume", disabled=state.status != "paused", use_container_width=True):
+        if st.button("▶ Resume", disabled=state.status not in ("paused", "stopped"), use_container_width=True):
             state.update(status="running")
             restart_running_pipeline()
             st.rerun()
