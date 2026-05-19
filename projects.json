@@ -68,6 +68,16 @@
     "niche": null,
     "geography": null,
     "memo_count": 0,
+    "active": false
+  },
+  {
+    "name": "CMMC 26.05.19",
+    "slug": "cmmc_26_05_19",
+    "db_file": "project_cmmc_26_05_19.db",
+    "created_at": "2026-05-19T14:51:28.374385+00:00",
+    "niche": "Help me to find a cybersecurity company that is poised to execute on the growth coming in CMMC but that is also not competitive with ControlCase (which I own). The company must be differentiated. There are many angles to take advantage of such as CMMC Level 1 Self Assessment technology tools etc etc (don't let this example limit your logic).",
+    "geography": "NCP Priority Geography (Eastern US)",
+    "memo_count": 0,
     "active": true
   }
 ]
