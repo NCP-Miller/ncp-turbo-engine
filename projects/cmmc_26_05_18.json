@@ -1,11 +1,11 @@
 {
   "config": {
-    "niche": "Help me to find a cybersecurity company that is poised to execute on the growth coming in CMMC (Cybersecurity Maturity Model Certification) but that is also not competitive with ControlCase (which I own). The company must be differentiated. There are many angles to take advantage of such as staffing and training companies for CCAs/CCPs or CMMC Level 1 Self Assessment technology tools etc etc (don't let these examples limit your logic).",
-    "geography": "NCP Priority Geography (Eastern US)",
-    "strategy": "A",
-    "target_count": 5
+    "niche": null,
+    "geography": null,
+    "strategy": null,
+    "target_count": null
   },
-  "status": "running",
+  "status": "idle",
   "bot_status": {
     "search": "idle",
     "analysis": "idle",
@@ -14,16 +14,7 @@
   "candidate_queue": [],
   "qualified_queue": [],
   "completed_memos": [],
-  "chat_history": [
-    {
-      "role": "user",
-      "content": "Find me 5 differentiated Help me to find a cybersecurity company that is poised to execute on the growth coming in CMMC (Cybersecurity Maturity Model Certification) but that is also not competitive with ControlCase (which I own). The company must be differentiated. There are many angles to take advantage of such as staffing and training companies for CCAs/CCPs or CMMC Level 1 Self Assessment technology tools etc etc (don't let these examples limit your logic). companies in NCP Priority Geography (Eastern US)."
-    },
-    {
-      "role": "assistant",
-      "content": "Got it. I know what NCP looks for \u2014 founder-owned, differentiated, right to win, growing market, no PE on the cap table. I'll search multiple channels and only bring you companies I'm genuinely excited about (conviction 6+/10). You'll get 5 with investment memos. Give me feedback on each one and I'll learn your preferences."
-    }
-  ],
+  "chat_history": [],
   "user_feedback": [],
   "seen_domains": [],
   "seen_names": [],
@@ -46,5 +37,5 @@
     "timestamp": null,
     "severity": "info"
   },
-  "created_at": "2026-05-18T19:04:56.513521+00:00"
+  "created_at": "2026-05-19T13:26:17.361224+00:00"
 }
