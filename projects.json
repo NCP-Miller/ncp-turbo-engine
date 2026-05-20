@@ -84,9 +84,9 @@
     "name": "HITRUST",
     "slug": "hitrust",
     "db_file": "project_hitrust.db",
-    "created_at": "2026-05-19T22:41:40.118433+00:00",
-    "niche": "Help me to find a HITRUST and HIPAA assessment provider",
-    "geography": "NCP Priority Geography (Eastern US)",
+    "created_at": "2026-05-20T12:27:44.406374+00:00",
+    "niche": null,
+    "geography": null,
     "memo_count": 0,
     "active": true
   }
