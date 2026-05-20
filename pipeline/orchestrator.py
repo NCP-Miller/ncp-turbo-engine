@@ -491,12 +491,13 @@ def _run_loop():
     # Create state once, reuse across iterations (mtime-cached reload)
     state = PipelineState()
 
+    global _last_heartbeat
+
     while True:
         if _abort.is_set():
             print("[Orchestrator] Abort signal received. Exiting thread.")
             break
 
-        global _last_heartbeat
         _last_heartbeat = time.time()
 
         try:
