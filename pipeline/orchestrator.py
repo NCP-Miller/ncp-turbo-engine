@@ -50,8 +50,8 @@ def _clean_niche(raw):
 _thread = None
 _thread_lock = threading.Lock()
 _abort = threading.Event()
-_last_heartbeat = None
-_STALE_THRESHOLD_SECONDS = 300  # 5 minutes without a heartbeat = stale
+_health = {"last_heartbeat": None}
+_STALE_THRESHOLD_SECONDS = 300
 
 
 def _auto_backup():
@@ -112,13 +112,13 @@ def force_restart_pipeline():
 
     Use when the pipeline says 'running' but the thread is dead or stuck.
     """
-    global _thread, _last_heartbeat
+    global _thread
     _abort.set()
     with _thread_lock:
         if _thread and _thread.is_alive():
             _thread.join(timeout=5)
         _abort.clear()
-        _last_heartbeat = None
+        _health["last_heartbeat"] = None
         _thread = threading.Thread(target=_run_loop, daemon=True)
         _thread.start()
     return PipelineState()
@@ -135,9 +135,9 @@ def is_pipeline_stale():
     with _thread_lock:
         if _thread is None or not _thread.is_alive():
             return True
-    if _last_heartbeat is None:
+    if _health["last_heartbeat"] is None:
         return False
-    age = (time.time() - _last_heartbeat)
+    age = (time.time() - _health["last_heartbeat"])
     return age > _STALE_THRESHOLD_SECONDS
 
 
@@ -496,8 +496,7 @@ def _run_loop():
             print("[Orchestrator] Abort signal received. Exiting thread.")
             break
 
-        global _last_heartbeat
-        _last_heartbeat = time.time()
+        _health["last_heartbeat"] = time.time()
 
         try:
             state.reload_from_disk()
