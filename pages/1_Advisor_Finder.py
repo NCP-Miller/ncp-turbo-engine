@@ -1,9 +1,11 @@
 import streamlit as st
 import pandas as pd
 import requests
+import re
 import concurrent.futures
 import threading
 import time as _time
+from html.parser import HTMLParser
 
 st.set_page_config(page_title="NCP Intermediary Sourcing Tool", page_icon="🔍", layout="wide")
 
@@ -25,6 +27,85 @@ class _RateLimiter:
             self._last = _time.monotonic()
 
 _apollo_limiter = _RateLimiter(4)  # 4 req/sec — stays under Apollo's 5/sec cap
+
+# ---------------------------------------------------------------------------
+# PHONE SCRAPING — stdlib only (no BeautifulSoup / Firecrawl)
+# ---------------------------------------------------------------------------
+class _HTMLTextExtractor(HTMLParser):
+    """Extract visible text from HTML."""
+    def __init__(self):
+        super().__init__()
+        self._pieces = []
+        self._skip = False
+    def handle_starttag(self, tag, attrs):
+        if tag in ("script", "style", "noscript"):
+            self._skip = True
+    def handle_endtag(self, tag):
+        if tag in ("script", "style", "noscript"):
+            self._skip = False
+    def handle_data(self, data):
+        if not self._skip:
+            self._pieces.append(data)
+    def get_text(self):
+        return " ".join(self._pieces)
+
+_PHONE_RE = re.compile(
+    r"(?<!\d)(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]\d{3}[-.\s]\d{4}(?!\d)"
+)
+
+_ADVISOR_CONTACT_PATHS = [
+    "/team", "/our-team", "/advisors", "/our-advisors", "/people",
+    "/about", "/about-us", "/contact", "/contact-us", "/professionals",
+    "/staff", "/leadership", "/our-people", "/wealth-advisors",
+    "/financial-advisors",
+]
+
+def _scrape_page(url):
+    """Fetch a page and return visible text, or empty string on failure."""
+    try:
+        r = requests.get(url, timeout=8, headers={
+            "User-Agent": "Mozilla/5.0 (compatible; NCPBot/1.0)"
+        })
+        if r.status_code != 200:
+            return ""
+        extractor = _HTMLTextExtractor()
+        extractor.feed(r.text)
+        return extractor.get_text()
+    except Exception:
+        return ""
+
+def _find_phone_for_person(name, domain):
+    """Scrape employer website to find a phone number for a specific person.
+    Falls back to the company's main phone number if person-specific not found."""
+    if not domain:
+        return "N/A"
+    last_name = name.split()[-1].lower() if name.strip() else ""
+    base = f"https://{domain}"
+    company_phone = None
+
+    pages_to_try = [base + path for path in _ADVISOR_CONTACT_PATHS]
+    pages_to_try.append(base)  # homepage as last resort
+
+    for page_url in pages_to_try:
+        text = _scrape_page(page_url)
+        if not text:
+            continue
+        phones = _PHONE_RE.findall(text)
+        if not phones:
+            continue
+        if company_phone is None:
+            company_phone = phones[0]
+        if last_name:
+            text_lower = text.lower()
+            idx = text_lower.find(last_name)
+            if idx != -1:
+                # Look for phones within ~300 chars of the name
+                nearby = text[max(0, idx - 150): idx + 300]
+                nearby_phones = _PHONE_RE.findall(nearby)
+                if nearby_phones:
+                    return nearby_phones[0]
+
+    return company_phone or "N/A"
 
 # ---------------------------------------------------------------------------
 # AUTH
@@ -72,13 +153,29 @@ CATEGORIES = {
             "financial advisory", "investment advisory", "wealth advisor",
         ],
         "title_filter": [
-            "wealth", "financial advisor", "financial planner", "portfolio",
-            "investment advisor", "private client", "asset management",
+            "wealth advisor", "wealth manager", "wealth management",
+            "financial advisor", "financial planner", "financial consultant",
+            "portfolio manager", "investment advisor", "investment consultant",
+            "private client advisor", "private client manager",
+            "private banker", "asset management director",
+            "financial planning", "investment management",
+        ],
+        "title_exclude": [
+            "credit", "lending", "loan", "mortgage", "real estate", "housing",
+            "equipment", "esg", "surveillance", "risk", "compliance", "bsa",
+            "aml", "operations", "martech", "marketing", "recovery",
+            "collections", "data", "product manager", "engineering",
+            "technology", "audit", "insurance underwriting",
+            "client services", "administrative", "hr ", "human resources",
+            "legal", "paralegal", "recruiting", "talent", "facilities",
+            "procurement", "supply chain", "logistics", "it ",
+            "information technology", "software", "developer",
         ],
         "person_titles": [
             "wealth advisor", "wealth manager", "financial advisor",
             "financial planner", "private wealth", "investment advisor",
-            "portfolio manager", "private client",
+            "portfolio manager", "private client advisor",
+            "private client manager", "financial consultant",
         ],
     },
     "Tax Advisors (High Net Worth)": {
@@ -405,7 +502,12 @@ def title_matches_category(title, category_key):
     filters = CATEGORIES[category_key].get("title_filter", [])
     if not filters:
         return True
-    return any(f in t for f in filters)
+    if not any(f in t for f in filters):
+        return False
+    excludes = CATEGORIES[category_key].get("title_exclude", [])
+    if excludes and any(x in t for x in excludes):
+        return False
+    return True
 
 
 def _normalize_state(s):
@@ -493,6 +595,7 @@ def process_org(org, category_key, search_city=None):
             "City": p.get("city") or org.get("city") or "N/A",
             "State": p.get("state") or org.get("state") or "N/A",
             "LinkedIn": p.get("linkedin_url") or "N/A",
+            "_domain": domain or "",
         })
 
     return {"rows": rows, "debug": debug_msgs, "org_name": org_name,
@@ -559,6 +662,9 @@ if st.button("Search", type="primary"):
                     phone = phone_nums[0].get("sanitized_number") if phone_nums else "N/A"
                     company = (person.get("organization") or {}).get("name") or "N/A"
 
+                    org_obj = person.get("organization") or {}
+                    person_domain = clean_domain(org_obj.get("website_url")) or ""
+
                     all_rows.append({
                         "Name": name,
                         "Title": title if not person.get("title") else person.get("title"),
@@ -568,6 +674,7 @@ if st.button("Search", type="primary"):
                         "City": person.get("city") or "N/A",
                         "State": person.get("state") or "N/A",
                         "LinkedIn": person.get("linkedin_url") or "N/A",
+                        "_domain": person_domain,
                     })
             except Exception:
                 pass
@@ -615,7 +722,35 @@ if st.button("Search", type="primary"):
             seen.add(key)
             unique.append(r)
 
+    # ── Pass 3: Scrape employer websites for missing phone numbers ─────────
+    needs_phone = [r for r in unique if r.get("Phone", "N/A") == "N/A" and r.get("_domain")]
+    if needs_phone:
+        status_text.caption(f"Scraping employer websites for {len(needs_phone)} missing phone numbers…")
+        progress_bar.progress(0)
+        phone_total = len(needs_phone) or 1
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=5) as ex:
+            phone_futures = {
+                ex.submit(_find_phone_for_person, r["Name"], r["_domain"]): r
+                for r in needs_phone
+            }
+            for i, fut in enumerate(concurrent.futures.as_completed(phone_futures)):
+                try:
+                    phone = fut.result()
+                    if phone and phone != "N/A":
+                        phone_futures[fut]["Phone"] = phone
+                except Exception:
+                    pass
+                progress_bar.progress((i + 1) / phone_total)
+                status_text.caption(
+                    f"Phone scrape: {i + 1}/{phone_total}…"
+                )
+
     status_text.write("Done!")
+
+    # Strip internal _domain field before display/export
+    for r in unique:
+        r.pop("_domain", None)
 
     # Debug info
     with st.expander("Debug Info"):
@@ -623,6 +758,9 @@ if st.button("Search", type="primary"):
         st.write(f"Pass 2 (org-based): {len(all_rows) - pass1_count} additional contacts")
         st.write(f"Total before dedup: {len(all_rows)}")
         st.write(f"Unique contacts: {len(unique)}")
+        if needs_phone:
+            filled = sum(1 for r in unique if r.get("Phone", "N/A") != "N/A")
+            st.write(f"Phone scrape: {len(needs_phone)} attempted, {filled} total with phones")
 
     if not unique:
         st.warning(
