@@ -49,6 +49,9 @@ def _clean_niche(raw):
 
 _thread = None
 _thread_lock = threading.Lock()
+_abort = threading.Event()
+_last_heartbeat = None
+_STALE_THRESHOLD_SECONDS = 300  # 5 minutes without a heartbeat = stale
 
 
 def _auto_backup():
@@ -102,6 +105,40 @@ def restart_running_pipeline():
     if state.status == "running":
         _ensure_thread_running()
     return state
+
+
+def force_restart_pipeline():
+    """Kill any existing thread and start a fresh one.
+
+    Use when the pipeline says 'running' but the thread is dead or stuck.
+    """
+    global _thread, _last_heartbeat
+    _abort.set()
+    with _thread_lock:
+        if _thread and _thread.is_alive():
+            _thread.join(timeout=5)
+        _abort.clear()
+        _last_heartbeat = None
+        _thread = threading.Thread(target=_run_loop, daemon=True)
+        _thread.start()
+    return PipelineState()
+
+
+def is_pipeline_stale():
+    """Check if the pipeline thread appears stuck or dead.
+
+    Returns True if status is 'running' but no heartbeat for 5+ minutes.
+    """
+    state = PipelineState()
+    if state.status != "running":
+        return False
+    with _thread_lock:
+        if _thread is None or not _thread.is_alive():
+            return True
+    if _last_heartbeat is None:
+        return False
+    age = (time.time() - _last_heartbeat)
+    return age > _STALE_THRESHOLD_SECONDS
 
 
 def pause_pipeline():
@@ -337,9 +374,11 @@ def _process_candidate_batch(batch, niche, strategy, config, search_params,
             )
             for org in batch
         ]
-        for fut in concurrent.futures.as_completed(futures):
+        for fut in concurrent.futures.as_completed(futures, timeout=180):
             try:
-                results.append(fut.result())
+                results.append(fut.result(timeout=10))
+            except concurrent.futures.TimeoutError:
+                print("[Analysis Bot] Worker timed out on result collection")
             except Exception as e:
                 print(f"[Analysis Bot] Worker error: {e}")
 
@@ -453,6 +492,13 @@ def _run_loop():
     state = PipelineState()
 
     while True:
+        if _abort.is_set():
+            print("[Orchestrator] Abort signal received. Exiting thread.")
+            break
+
+        global _last_heartbeat
+        _last_heartbeat = time.time()
+
         try:
             state.reload_from_disk()
 

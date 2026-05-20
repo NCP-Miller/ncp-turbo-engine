@@ -5,6 +5,7 @@ from pipeline.state import PipelineState
 from pipeline.orchestrator import (
     start_pipeline, resume_pipeline, restart_running_pipeline,
     pause_pipeline, stop_pipeline, add_user_feedback,
+    force_restart_pipeline, is_pipeline_stale,
 )
 
 
@@ -87,6 +88,11 @@ if not _check_password():
 # disconnects, WiFi drops, and laptop sleep/wake cycles.
 state = restart_running_pipeline()
 state.reload_from_disk()
+
+# Auto-detect and recover from stale/dead pipeline threads
+if state.status == "running" and is_pipeline_stale():
+    force_restart_pipeline()
+    state.reload_from_disk()
 
 st.title("🤖 NCP Autonomous Sourcing Pipeline")
 st.caption(
@@ -281,18 +287,30 @@ with st.sidebar:
             pause_pipeline()
             st.rerun()
     with c2:
-        if st.button("▶ Resume", disabled=state.status not in ("paused", "stopped"), use_container_width=True):
+        _can_resume = state.status in ("paused", "stopped")
+        if st.button("▶ Resume", disabled=not _can_resume, use_container_width=True):
             state.update(status="running")
-            restart_running_pipeline()
+            force_restart_pipeline()
             st.rerun()
 
-    if st.button(
-        "🛑 Stop",
-        disabled=state.status in ("idle", "stopped"),
-        use_container_width=True,
-    ):
-        stop_pipeline()
-        st.rerun()
+    c3, c4 = st.columns(2)
+    with c3:
+        if st.button(
+            "🛑 Stop",
+            disabled=state.status in ("idle", "stopped"),
+            use_container_width=True,
+        ):
+            stop_pipeline()
+            st.rerun()
+    with c4:
+        if st.button(
+            "🔄 Force Restart",
+            disabled=state.status != "running",
+            use_container_width=True,
+            help="Use if pipeline shows Running but isn't making progress",
+        ):
+            force_restart_pipeline()
+            st.rerun()
 
     with st.expander("⚠️ Reset Pipeline"):
         st.warning("This deletes all current progress, memos, and chat history.")
