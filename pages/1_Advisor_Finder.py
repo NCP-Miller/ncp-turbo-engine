@@ -305,6 +305,7 @@ CATEGORIES = {
             "estate planning", "trusts and estates", "probate",
             "elder law", "trust administration", "wealth transfer",
         ],
+        "auto_org_search": True,
         "title_filter": [
             "estate planning", "estate attorney", "estate lawyer",
             "trusts and estates", "trust attorney", "trust counsel",
@@ -312,6 +313,9 @@ CATEGORIES = {
             "probate attorney", "probate lawyer", "probate counsel",
             "elder law", "wealth transfer",
             "wills and estates", "estate counsel",
+            "partner", "shareholder", "of counsel", "counsel",
+            "managing associate", "managing partner", "member",
+            "principal", "director",
         ],
         "title_exclude": [
             "real estate", "property", "housing",
@@ -542,7 +546,7 @@ def search_organizations(category_key, city, max_pages=2):
 # ---------------------------------------------------------------------------
 # STEP 2: FIND SENIOR PEOPLE AT EACH ORG
 # ---------------------------------------------------------------------------
-def get_senior_people(org_id, org_name, domain=None):
+def get_senior_people(org_id, org_name, domain=None, city=None):
     search_url = "https://api.apollo.io/api/v1/mixed_people/api_search"
     enrich_url = "https://api.apollo.io/v1/people/match"
     headers = {"Content-Type": "application/json", "X-Api-Key": APOLLO_API_KEY}
@@ -551,8 +555,10 @@ def get_senior_people(org_id, org_name, domain=None):
     payload = {
         "organization_ids": [org_id],
         "person_seniorities": SENIORITY_LEVELS,
-        "per_page": 10,
+        "per_page": 25,
     }
+    if city:
+        payload["person_locations"] = [city]
     people_ids = []
     for attempt in range(3):
         try:
@@ -582,7 +588,7 @@ def get_senior_people(org_id, org_name, domain=None):
 
     # Step 2: Enrich each person by ID to get full name, email, phone
     enriched = []
-    for p in people_ids[:10]:
+    for p in people_ids[:25]:
         for attempt in range(2):
             try:
                 _apollo_limiter.wait()
@@ -747,7 +753,7 @@ def process_org(org, category_key, search_city=None):
     if not _org_passes_industry_check(org, category_key):
         return {"rows": [], "debug": [], "org_name": org_name, "people_count": 0}
 
-    people = get_senior_people(org_id, org_name, domain)
+    people = get_senior_people(org_id, org_name, domain, city=search_city)
 
     # Collect debug info
     debug_msgs = [p for p in people if isinstance(p, dict) and p.get("_debug")]
@@ -876,7 +882,8 @@ if st.button("Search", type="primary"):
     pass1_count = len(all_rows)
 
     # ── Pass 2: Org-based search (supplementary — catches different firms) ─
-    if not include_pass2:
+    run_pass2 = include_pass2 or CATEGORIES[category].get("auto_org_search", False)
+    if not run_pass2:
         orgs = []
     else:
         with st.spinner(f"Pass 2: Searching firms in **{city}** for additional contacts..."):
