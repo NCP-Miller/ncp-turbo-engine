@@ -112,16 +112,18 @@ def _find_phone_for_person(name, domain):
 # ---------------------------------------------------------------------------
 # AI VERIFICATION — double-checks geography + industry fit
 # ---------------------------------------------------------------------------
-_VERIFY_SYSTEM = """You are a quality-control bot for a professional contacts database.
-You will receive a contact record and the search criteria. Determine whether the
-contact is a GOOD match by checking TWO things:
+_VERIFY_SYSTEM = """You are a strict quality-control bot for a professional contacts database.
+You will receive a contact record, the search criteria, and specific rules about which
+companies/organizations are valid. Determine whether the contact is a GOOD match by
+checking TWO things:
 
 1. GEOGRAPHY — Is the person located in or very near the searched city/metro area?
    (e.g., Hoover and Vestavia Hills are part of the Birmingham, AL metro.)
-2. INDUSTRY FIT — Does the person's title AND company clearly indicate they work as
-   the type of professional being searched for? Internal corporate roles at unrelated
-   companies do NOT count. For example, a "Tax Director" at a coal mining company is
-   NOT a tax advisor; a "Wealth Manager" at an actual wealth management firm IS.
+2. INDUSTRY FIT — Does the person's title AND company match the category rules below?
+   You MUST apply the VALID/REJECT rules strictly. If the company is a type listed
+   under REJECT, the contact FAILS regardless of their title. Internal corporate
+   roles (e.g., "Tax Director" at a law firm or coal company) always FAIL.
+   When in doubt, REJECT — false positives are worse than false negatives.
 
 Respond with ONLY a JSON object: {"pass": true} or {"pass": false, "reason": "<short reason>"}"""
 
@@ -129,8 +131,14 @@ def _ai_verify_contact(row, category_key, search_city):
     """Ask GPT to verify a single contact's geography and industry fit."""
     if not _oai_client:
         return True, None
+    cat = CATEGORIES[category_key]
+    ai_context = cat.get("ai_context", "")
     prompt = (
         f"Search criteria: {category_key} in {search_city}\n\n"
+    )
+    if ai_context:
+        prompt += f"Category rules:\n{ai_context}\n\n"
+    prompt += (
         f"Contact:\n"
         f"  Name: {row.get('Name', 'N/A')}\n"
         f"  Title: {row.get('Title', 'N/A')}\n"
@@ -235,6 +243,13 @@ CATEGORIES = {
             "portfolio manager", "private client advisor",
             "private client manager", "financial consultant",
         ],
+        "ai_context": (
+            "VALID: wealth management firms, RIAs, financial advisory firms, "
+            "private banks, family offices, independent broker-dealers. "
+            "REJECT: law firms, accounting firms, insurance companies, banks "
+            "(unless private banking division), healthcare, technology, "
+            "industrial, retail, or any non-advisory company."
+        ),
     },
     "Tax Advisors (High Net Worth)": {
         "industries": ["Accounting", "Financial Services"],
@@ -250,7 +265,7 @@ CATEGORIES = {
             "audit partner", "assurance partner",
         ],
         "title_exclude": [
-            "attorney", "lawyer", "law ", "legal",
+            "attorney", "lawyer", "law ", "legal", "corporate and",
             "surgery", "surgical", "healthcare", "medical", "clinical",
             "nurse", "physician", "hospital", "pharma",
             "property", "real estate", "leasing", "construction",
@@ -272,6 +287,17 @@ CATEGORIES = {
             "accounting", "financial services", "management consulting",
             "investment management",
         ],
+        "ai_context": (
+            "VALID: CPA firms, public accounting firms (Big 4, regional, local), "
+            "tax advisory boutiques, financial advisory firms with tax practices. "
+            "REJECT: law firms (even if they have a tax practice group — law firm "
+            "tax attorneys are NOT tax advisors), healthcare companies, industrial/"
+            "manufacturing companies, insurance companies, real estate companies, "
+            "retail companies, coal/mining/energy companies, media companies, "
+            "technology companies, and ANY other non-accounting/non-advisory "
+            "organization. A 'Tax Director' at a non-accounting company is an "
+            "internal corporate role, NOT a tax advisor."
+        ),
     },
     "Estate Planning Attorneys": {
         "industries": ["Law Practice", "Legal Services"],
@@ -307,6 +333,14 @@ CATEGORIES = {
             "estate attorney", "estate planning counsel",
             "trust attorney", "estate planning",
         ],
+        "ai_context": (
+            "VALID: law firms with estate planning / trusts & estates practices, "
+            "elder law firms, estate planning boutiques. "
+            "REJECT: universities, nonprofits, court systems, mental health "
+            "organizations, real estate companies, healthcare, corporate legal "
+            "departments, and anyone whose role is not practicing estate "
+            "planning law."
+        ),
     },
     "Investment Bankers": {
         "industries": [
@@ -335,6 +369,13 @@ CATEGORIES = {
             "investment banker", "managing director", "m&a",
             "corporate finance", "capital markets", "mergers",
         ],
+        "ai_context": (
+            "VALID: investment banks, M&A advisory firms, boutique advisory "
+            "firms, capital markets firms. "
+            "REJECT: commercial banks (unless IB division), insurance, "
+            "healthcare, technology, retail, industrial, real estate, and "
+            "any non-financial-services company."
+        ),
     },
     "Business Brokers": {
         "industries": [
@@ -365,6 +406,13 @@ CATEGORIES = {
             "business broker", "business intermediary", "business valuation",
             "transaction advisor", "deal advisor", "m&a advisor",
         ],
+        "ai_context": (
+            "VALID: business brokerage firms, M&A advisory boutiques, "
+            "business valuation firms, transaction advisory firms. "
+            "REJECT: real estate brokerages, insurance brokerages, freight "
+            "brokers, stock brokers, and any company that is not in the "
+            "business of selling/brokering businesses."
+        ),
     },
 }
 
@@ -803,6 +851,8 @@ if st.button("Search", type="primary"):
                     company = (person.get("organization") or {}).get("name") or "N/A"
 
                     org_obj = person.get("organization") or {}
+                    if not _org_passes_industry_check(org_obj, category):
+                        continue
                     person_domain = clean_domain(org_obj.get("website_url")) or ""
 
                     all_rows.append({
