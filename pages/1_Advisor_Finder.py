@@ -210,6 +210,10 @@ CATEGORIES = {
             "tax partner", "tax director", "tax advisor",
             "tax manager", "cpa", "tax principal",
         ],
+        "org_industries_allowed": [
+            "accounting", "financial services", "management consulting",
+            "investment management",
+        ],
     },
     "Estate Planning Attorneys": {
         "industries": ["Law Practice", "Legal Services"],
@@ -571,6 +575,18 @@ def title_matches_category(title, category_key):
     return True
 
 
+def _org_passes_industry_check(org_info, category_key):
+    """Check if an organization's industry is relevant to the search category.
+    Only applies when the category defines org_industries_allowed."""
+    allowed = CATEGORIES[category_key].get("org_industries_allowed")
+    if not allowed:
+        return True
+    industry = (org_info.get("industry") or "").lower()
+    if not industry:
+        return True  # no industry data — benefit of the doubt
+    return any(a in industry for a in allowed)
+
+
 def _normalize_state(s):
     """Normalize state name for comparison (handles abbreviations)."""
     if not s:
@@ -621,6 +637,9 @@ def process_org(org, category_key, search_city=None):
     org_id = org.get("id")
     org_name = org.get("name", "Unknown")
     domain = clean_domain(org.get("website_url"))
+
+    if not _org_passes_industry_check(org, category_key):
+        return {"rows": [], "debug": [], "org_name": org_name, "people_count": 0}
 
     people = get_senior_people(org_id, org_name, domain)
 
@@ -696,6 +715,8 @@ if st.button("Search", type="primary"):
         if not title_matches_category(title, category):
             continue
         if not _person_matches_location(p, city):
+            continue
+        if not _org_passes_industry_check(p.get("organization") or {}, category):
             continue
         filtered.append(p)
 
