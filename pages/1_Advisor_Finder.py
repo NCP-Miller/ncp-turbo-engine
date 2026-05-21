@@ -2,10 +2,12 @@ import streamlit as st
 import pandas as pd
 import requests
 import re
+import json
 import concurrent.futures
 import threading
 import time as _time
 from html.parser import HTMLParser
+from openai import OpenAI
 
 st.set_page_config(page_title="NCP Intermediary Sourcing Tool", page_icon="🔍", layout="wide")
 
@@ -108,6 +110,57 @@ def _find_phone_for_person(name, domain):
     return company_phone or "N/A"
 
 # ---------------------------------------------------------------------------
+# AI VERIFICATION — double-checks geography + industry fit
+# ---------------------------------------------------------------------------
+_VERIFY_SYSTEM = """You are a quality-control bot for a professional contacts database.
+You will receive a contact record and the search criteria. Determine whether the
+contact is a GOOD match by checking TWO things:
+
+1. GEOGRAPHY — Is the person located in or very near the searched city/metro area?
+   (e.g., Hoover and Vestavia Hills are part of the Birmingham, AL metro.)
+2. INDUSTRY FIT — Does the person's title AND company clearly indicate they work as
+   the type of professional being searched for? Internal corporate roles at unrelated
+   companies do NOT count. For example, a "Tax Director" at a coal mining company is
+   NOT a tax advisor; a "Wealth Manager" at an actual wealth management firm IS.
+
+Respond with ONLY a JSON object: {"pass": true} or {"pass": false, "reason": "<short reason>"}"""
+
+def _ai_verify_contact(row, category_key, search_city):
+    """Ask GPT to verify a single contact's geography and industry fit."""
+    if not _oai_client:
+        return True, None
+    prompt = (
+        f"Search criteria: {category_key} in {search_city}\n\n"
+        f"Contact:\n"
+        f"  Name: {row.get('Name', 'N/A')}\n"
+        f"  Title: {row.get('Title', 'N/A')}\n"
+        f"  Company: {row.get('Company', 'N/A')}\n"
+        f"  City: {row.get('City', 'N/A')}\n"
+        f"  State: {row.get('State', 'N/A')}\n"
+    )
+    try:
+        resp = _oai_client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": _VERIFY_SYSTEM},
+                {"role": "user", "content": prompt},
+            ],
+            temperature=0,
+            max_tokens=100,
+        )
+        text = resp.choices[0].message.content.strip()
+        # Handle markdown-wrapped JSON
+        if text.startswith("```"):
+            text = text.split("```")[1]
+            if text.startswith("json"):
+                text = text[4:]
+            text = text.strip()
+        result = json.loads(text)
+        return result.get("pass", True), result.get("reason")
+    except Exception:
+        return True, None  # fail open — don't discard on API errors
+
+# ---------------------------------------------------------------------------
 # AUTH
 # ---------------------------------------------------------------------------
 def check_password():
@@ -138,6 +191,11 @@ try:
 except (FileNotFoundError, KeyError):
     st.error("APOLLO_API_KEY missing. Set it in `.streamlit/secrets.toml`.")
     st.stop()
+
+try:
+    _oai_client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"], timeout=20.0)
+except (FileNotFoundError, KeyError):
+    _oai_client = None
 
 # ---------------------------------------------------------------------------
 # CATEGORY DEFINITIONS
@@ -804,6 +862,35 @@ if st.button("Search", type="primary"):
             seen.add(key)
             unique.append(r)
 
+    # ── AI Verification — double-check geography + industry fit ─────────
+    ai_rejected = []
+    if _oai_client and unique:
+        status_text.caption(f"AI verification: checking {len(unique)} contacts…")
+        progress_bar.progress(0)
+        verify_total = len(unique)
+
+        def _verify(row):
+            return row, *_ai_verify_contact(row, category, city)
+
+        verified = []
+        with concurrent.futures.ThreadPoolExecutor(max_workers=8) as ex:
+            futs = [ex.submit(_verify, r) for r in unique]
+            for i, fut in enumerate(concurrent.futures.as_completed(futs)):
+                try:
+                    row, passed, reason = fut.result()
+                    if passed:
+                        verified.append(row)
+                    else:
+                        ai_rejected.append({"Name": row["Name"], "Company": row.get("Company", ""),
+                                            "Title": row.get("Title", ""), "Reason": reason or "N/A"})
+                except Exception:
+                    pass
+                progress_bar.progress((i + 1) / verify_total)
+                status_text.caption(
+                    f"AI verify: {i + 1}/{verify_total} | {len(verified)} passed…"
+                )
+        unique = verified
+
     # ── Pass 3: Scrape employer websites for missing phone numbers ─────────
     needs_phone = [r for r in unique if r.get("Phone", "N/A") == "N/A" and r.get("_domain")]
     if needs_phone:
@@ -839,7 +926,12 @@ if st.button("Search", type="primary"):
         st.write(f"Pass 1 (people-direct): {pass1_count} contacts")
         st.write(f"Pass 2 (org-based): {len(all_rows) - pass1_count} additional contacts")
         st.write(f"Total before dedup: {len(all_rows)}")
-        st.write(f"Unique contacts: {len(unique)}")
+        st.write(f"After dedup: {len(unique) + len(ai_rejected)}")
+        if ai_rejected:
+            st.write(f"AI verification: {len(ai_rejected)} rejected, {len(unique)} passed")
+            st.write("**Rejected contacts:**")
+            st.dataframe(pd.DataFrame(ai_rejected), use_container_width=True)
+        st.write(f"Final contacts: {len(unique)}")
         if needs_phone:
             filled = sum(1 for r in unique if r.get("Phone", "N/A") != "N/A")
             st.write(f"Phone scrape: {len(needs_phone)} attempted, {filled} total with phones")
