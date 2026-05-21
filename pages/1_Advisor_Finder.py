@@ -257,7 +257,17 @@ CATEGORIES = {
         ],
         "title_filter": [
             "investment bank", "m&a", "mergers", "capital markets",
-            "corporate finance", "deal", "managing director",
+            "corporate finance", "managing director",
+            "dealmaker", "deal advisory", "deal origination",
+        ],
+        "title_exclude": [
+            "real estate", "property", "mortgage", "lending", "loan",
+            "insurance", "healthcare", "medical", "pharma",
+            "retail", "restaurant", "hospitality",
+            "software", "developer", "engineering", "product manager",
+            "marketing", "human resources", "hr ", "recruiting",
+            "administrative", "legal assistant", "paralegal",
+            "accounting", "bookkeeper", "payroll",
         ],
         "person_titles": [
             "investment banker", "managing director", "m&a",
@@ -266,7 +276,7 @@ CATEGORIES = {
     },
     "Business Brokers": {
         "industries": [
-            "Financial Services", "Management Consulting", "Real Estate",
+            "Financial Services", "Management Consulting",
             "Accounting",
         ],
         "keywords": [
@@ -274,12 +284,24 @@ CATEGORIES = {
             "business valuation", "business transfer", "business intermediary",
         ],
         "title_filter": [
-            "broker", "intermediary", "business sales", "valuation",
-            "transaction", "deal", "m&a",
+            "business broker", "business intermediary", "business valuation",
+            "business sales", "business transfer", "business advisor",
+            "transaction advisor", "deal advisor", "m&a advisor",
+            "m&a consultant", "mergers", "acquisition",
+        ],
+        "title_exclude": [
+            "real estate broker", "real estate agent", "realtor",
+            "insurance broker", "freight broker", "customs broker",
+            "mortgage broker", "loan broker", "stock broker",
+            "healthcare", "medical", "pharma", "surgery",
+            "software", "developer", "engineering", "product manager",
+            "marketing", "human resources", "hr ", "recruiting",
+            "administrative", "receptionist",
+            "bookkeeper", "payroll", "billing",
         ],
         "person_titles": [
             "business broker", "business intermediary", "business valuation",
-            "transaction advisor", "deal advisor",
+            "transaction advisor", "deal advisor", "m&a advisor",
         ],
     },
 }
