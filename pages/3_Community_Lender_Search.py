@@ -199,10 +199,8 @@ def _search_fdic(state_code, city=None):
             return []
         data = r.json()
         items = data.get("data", [])
-        if items:
-            first = items[0].get("data", items[0])
-            _fdic_debug_keys = list(first.keys())[:15]
-            st.caption(f"FDIC fields: {_fdic_debug_keys}")
+        if not items:
+            return []
         results = []
         for item in items:
             d = item.get("data", item)
@@ -427,10 +425,63 @@ def _ncua_from_hifld(state_code, city=None):
         return []
 
 
+def _search_credit_unions_apollo(state_code, city=None):
+    """Find credit unions via Apollo organization search."""
+    url = "https://api.apollo.io/v1/organizations/search"
+    headers = {"Content-Type": "application/json", "X-Api-Key": APOLLO_API_KEY}
+    state_name = _STATES.get(state_code, state_code)
+    location = f"{city}, {state_name}" if city else state_name
+    results = []
+    seen = set()
+    for keyword in ["credit union", "federal credit union"]:
+        _apollo_limiter.wait()
+        try:
+            r = requests.post(url, headers=headers, json={
+                "q_organization_name": keyword,
+                "organization_locations": [location],
+                "per_page": 100,
+            }, timeout=15)
+            if r.status_code != 200:
+                continue
+            orgs = r.json().get("organizations", [])
+            for org in orgs:
+                name = (org.get("name") or "").strip()
+                if not name:
+                    continue
+                name_lower = name.lower()
+                if "credit union" not in name_lower:
+                    continue
+                org_id = org.get("id", "")
+                if org_id in seen:
+                    continue
+                seen.add(org_id)
+                domain = org.get("primary_domain") or org.get("website_url") or ""
+                org_city = org.get("city") or (city or "")
+                org_state = org.get("state") or state_code
+                emp = org.get("estimated_num_employees") or 0
+                results.append({
+                    "name": name,
+                    "city": org_city,
+                    "state": org_state if len(str(org_state)) == 2 else state_code,
+                    "website": domain,
+                    "assets_thousands": 0,
+                    "cert": org_id,
+                    "type": "Credit Union",
+                    "_apollo_org_id": org_id,
+                    "_employees": emp,
+                })
+        except Exception:
+            continue
+    return results
+
+
 @st.cache_data(ttl=3600, show_spinner=False)
 def _search_ncua(state_code, city=None):
-    """Search NCUA for credit unions.
-    Tries: 1) NCUA mapping API  2) quarterly list download  3) HIFLD ArcGIS."""
+    """Search for credit unions. Primary: Apollo org search. Fallback: NCUA API,
+    quarterly list, HIFLD ArcGIS."""
+    cu = _search_credit_unions_apollo(state_code, city)
+    if cu:
+        return cu
     api_results = _ncua_from_api(state_code, city)
     if api_results:
         return api_results
@@ -656,7 +707,13 @@ def _enrich_institution_contacts(institution, role_titles, search_city=None):
     fdic_name = institution["name"]
     domain = _clean_domain(institution.get("website"))
     label = fdic_name or domain or "Unknown"
-    org = _find_apollo_org(label, domain)
+
+    pre_resolved_id = institution.get("_apollo_org_id")
+    if pre_resolved_id:
+        org = {"id": pre_resolved_id, "name": fdic_name}
+        _alog(f"  {label}: using pre-resolved Apollo org ID")
+    else:
+        org = _find_apollo_org(label, domain)
     if not org:
         _alog(f"  {label}: ORG NOT FOUND — skipping")
         return []
