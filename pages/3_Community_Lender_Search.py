@@ -188,7 +188,6 @@ def _search_fdic(state_code, city=None):
     filters = f"STALP:{state_code} AND ACTIVE:1"
     params = {
         "filters": filters,
-        "fields": "CERT,INSTNAME,CITY,STALP,WEBADDR,ASSET",
         "limit": 5000,
         "sort_by": "ASSET",
         "sort_order": "DESC",
@@ -200,19 +199,27 @@ def _search_fdic(state_code, city=None):
             return []
         data = r.json()
         items = data.get("data", [])
+        if items:
+            first = items[0].get("data", items[0])
+            _fdic_debug_keys = list(first.keys())[:15]
+            st.caption(f"FDIC fields: {_fdic_debug_keys}")
         results = []
         for item in items:
             d = item.get("data", item)
-            inst_city = (d.get("CITY") or "").strip()
+            inst_name = (
+                d.get("INSTNAME") or d.get("NAME") or d.get("INSCOML")
+                or d.get("REPNM") or d.get("name") or ""
+            ).strip()
+            inst_city = (d.get("CITY") or d.get("city") or "").strip()
             if city and city.upper() not in inst_city.upper():
                 continue
             results.append({
-                "name": (d.get("INSTNAME") or "").strip(),
+                "name": inst_name,
                 "city": inst_city,
-                "state": d.get("STALP", state_code),
-                "website": (d.get("WEBADDR") or "").strip(),
-                "assets_thousands": d.get("ASSET") or 0,
-                "cert": d.get("CERT", ""),
+                "state": d.get("STALP") or d.get("stalp") or state_code,
+                "website": (d.get("WEBADDR") or d.get("webaddr") or "").strip(),
+                "assets_thousands": d.get("ASSET") or d.get("asset") or 0,
+                "cert": d.get("CERT") or d.get("cert") or "",
                 "type": "Bank",
             })
         return results
@@ -603,16 +610,18 @@ def _enrich_person(person_id):
 
 
 def _enrich_institution_contacts(institution, role_titles, search_city=None):
-    inst_name = institution["name"] or "Unknown"
+    fdic_name = institution["name"]
     domain = _clean_domain(institution.get("website"))
-    org = _find_apollo_org(inst_name, domain)
+    label = fdic_name or domain or "Unknown"
+    org = _find_apollo_org(label, domain)
     if not org:
-        _alog(f"  {inst_name}: ORG NOT FOUND — skipping")
+        _alog(f"  {label}: ORG NOT FOUND — skipping")
         return []
     org_id = org.get("id")
     if not org_id:
-        _alog(f"  {inst_name}: org has no ID")
+        _alog(f"  {label}: org has no ID")
         return []
+    inst_name = fdic_name or org.get("name") or domain or "Unknown"
 
     # Attempt 1: titles + city
     people = _search_people_at_org(org_id, role_titles, search_city)
@@ -821,7 +830,7 @@ if st.button("Search", type="primary"):
     progress.progress(0)
 
     all_contacts = []
-    inst_with_contacts = set()
+    inst_domains_with_contacts = set()
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as ex:
         futures = {
@@ -832,7 +841,11 @@ if st.button("Search", type="primary"):
             try:
                 contacts = fut.result()
                 if contacts:
-                    inst_with_contacts.add(contacts[0]["Institution"])
+                    orig_inst = futures[fut]
+                    inst_key = _clean_domain(orig_inst.get("website")) or contacts[0]["Institution"]
+                    inst_domains_with_contacts.add(inst_key)
+                    if not orig_inst.get("name") and contacts[0].get("Institution"):
+                        orig_inst["name"] = contacts[0]["Institution"]
                 all_contacts.extend(contacts)
             except Exception:
                 pass
@@ -861,7 +874,7 @@ if st.button("Search", type="primary"):
             "Assets": _fmt_assets(q.get("assets_thousands", 0)),
             "IB Status": q["ib_status"],
             "IB Evidence": q.get("ib_evidence", ""),
-            "Contacts Found": "Yes" if q["name"] in inst_with_contacts else "No",
+            "Contacts Found": "Yes" if (_clean_domain(q.get("website")) or q["name"]) in inst_domains_with_contacts else "No",
         } for q in qualified])
         st.dataframe(inst_df, use_container_width=True)
 
@@ -874,7 +887,7 @@ if st.button("Search", type="primary"):
 
     st.success(
         f"**{len(all_contacts)}** contacts found at "
-        f"**{len(inst_with_contacts)}** institutions."
+        f"**{len(inst_domains_with_contacts)}** institutions."
     )
 
     df = pd.DataFrame(all_contacts)
