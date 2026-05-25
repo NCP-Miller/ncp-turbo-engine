@@ -232,9 +232,14 @@ def _search_fdic(state_code, city=None):
 # STAGE 1B: NCUA CREDIT UNION DISCOVERY
 # ---------------------------------------------------------------------------
 _NCUA_LIST_QUARTERS = [
-    "march-2026", "december-2025", "september-2025", "june-2025",
-    "march-2025", "december-2024", "september-2024",
+    "december-2025", "september-2025", "june-2025",
+    "march-2025", "december-2024", "september-2024", "june-2024",
 ]
+
+_BROWSER_UA = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+)
 
 
 @st.cache_data(ttl=86400, show_spinner=False)
@@ -248,10 +253,7 @@ def _download_ncua_cu_list():
             f"federally-insured-credit-union-list-{quarter}.zip"
         )
         try:
-            r = requests.get(
-                url, timeout=30,
-                headers={"User-Agent": "Mozilla/5.0 (NCP-Sourcing-Engine)"},
-            )
+            r = requests.get(url, timeout=30, headers={"User-Agent": _BROWSER_UA})
             if r.status_code != 200:
                 errors.append(f"{quarter}: HTTP {r.status_code}")
                 continue
@@ -325,76 +327,117 @@ def _ncua_from_list(state_code, city=None):
 
 
 def _ncua_from_api(state_code, city=None):
-    """Query the NCUA mapping API (radius-based, best for city searches)."""
+    """Query the NCUA mapping API (radius-based). Expects JSON request body."""
     address = f"{city}, {state_code}" if city else _STATES.get(state_code, state_code)
-    urls_to_try = [
-        "https://mapping.ncua.gov/api/findByRadius",
-        "https://mapping.ncua.gov/findCUByRadius.aspx",
-    ]
-    for api_url in urls_to_try:
-        try:
-            r = requests.post(
-                api_url,
-                data={"address": address, "type": "address", "radius": "60"},
-                headers={"Content-Type": "application/x-www-form-urlencoded"},
-                timeout=20,
+    try:
+        r = requests.post(
+            "https://mapping.ncua.gov/findCUByRadius.aspx",
+            json={"address": address, "type": "address", "radius": "100"},
+            headers={
+                "Content-Type": "application/json",
+                "User-Agent": _BROWSER_UA,
+            },
+            timeout=20,
+        )
+        if r.status_code != 200:
+            return None
+        data = r.json()
+        if not isinstance(data, list) or not data:
+            return None
+        results = []
+        for item in data:
+            cu_state = (item.get("State") or item.get("state") or "").upper()
+            if cu_state != state_code:
+                continue
+            cu_city_val = item.get("City") or item.get("city") or ""
+            if city and city.lower() not in cu_city_val.lower():
+                continue
+            cu_name = (
+                item.get("CU_NAME") or item.get("CreditUnionName")
+                or item.get("Name") or item.get("name") or ""
             )
-            if r.status_code != 200:
-                continue
-            ct = r.headers.get("content-type", "")
-            if "json" not in ct and "javascript" not in ct:
-                continue
-            data = r.json()
-            if not isinstance(data, list) or not data:
-                continue
-            results = []
-            for item in data:
-                cu_state = (item.get("State") or item.get("state") or "").upper()
-                if cu_state != state_code:
-                    continue
-                cu_city_val = item.get("City") or item.get("city") or ""
-                if city and city.lower() not in cu_city_val.lower():
-                    continue
-                cu_name = (
-                    item.get("CreditUnionName") or item.get("Name")
-                    or item.get("CU_NAME") or item.get("name") or ""
-                )
-                cu_website = (
-                    item.get("Website") or item.get("URL") or item.get("url") or ""
-                )
-                raw_assets = item.get("TotalAssets") or item.get("Assets") or 0
-                try:
-                    cu_assets = float(str(raw_assets).replace(",", ""))
-                except (ValueError, TypeError):
-                    cu_assets = 0
-                cu_id = (
-                    item.get("CU_NUMBER") or item.get("CharterNumber")
-                    or item.get("ID") or ""
-                )
-                results.append({
-                    "name": str(cu_name).strip(),
-                    "city": str(cu_city_val).strip(),
-                    "state": state_code,
-                    "website": str(cu_website).strip(),
-                    "assets_thousands": cu_assets,
-                    "cert": str(cu_id).strip(),
-                    "type": "Credit Union",
-                })
-            if results:
-                return results
-        except Exception:
-            continue
-    return None
+            cu_website = (
+                item.get("URL") or item.get("Website") or item.get("url") or ""
+            )
+            raw_assets = item.get("TotalAssets") or item.get("Assets") or 0
+            try:
+                cu_assets = float(str(raw_assets).replace(",", ""))
+            except (ValueError, TypeError):
+                cu_assets = 0
+            cu_id = (
+                item.get("CU_NUMBER") or item.get("CharterNumber")
+                or item.get("ID") or ""
+            )
+            results.append({
+                "name": str(cu_name).strip(),
+                "city": str(cu_city_val).strip(),
+                "state": state_code,
+                "website": str(cu_website).strip(),
+                "assets_thousands": cu_assets,
+                "cert": str(cu_id).strip(),
+                "type": "Credit Union",
+            })
+        return results if results else None
+    except Exception:
+        return None
+
+
+def _ncua_from_hifld(state_code, city=None):
+    """Query HIFLD ArcGIS Feature Service for credit union locations (public)."""
+    where = f"STATE='{state_code}'"
+    if city:
+        where += f" AND UPPER(CITY) LIKE '%{city.upper()}%'"
+    try:
+        r = requests.get(
+            "https://services1.arcgis.com/Hp6G80Pky0om6HgQ/arcgis/rest/services"
+            "/NCUA_Insured_Credit_Unions/FeatureServer/0/query",
+            params={
+                "where": where,
+                "outFields": "*",
+                "f": "json",
+                "resultRecordCount": 2000,
+            },
+            headers={"User-Agent": _BROWSER_UA},
+            timeout=30,
+        )
+        if r.status_code != 200:
+            return []
+        data = r.json()
+        features = data.get("features", [])
+        if not features:
+            return []
+        results = []
+        for feat in features:
+            a = feat.get("attributes", {})
+            cu_name = (a.get("CU_NAME") or a.get("NAME") or a.get("name") or "").strip()
+            cu_city = (a.get("CITY") or a.get("city") or "").strip()
+            cu_website = (a.get("URL") or a.get("WEBSITE") or "").strip()
+            cu_number = a.get("CU_NUMBER") or a.get("cu_number") or ""
+            results.append({
+                "name": cu_name,
+                "city": cu_city,
+                "state": state_code,
+                "website": cu_website,
+                "assets_thousands": 0,
+                "cert": str(cu_number).strip(),
+                "type": "Credit Union",
+            })
+        return results
+    except Exception:
+        return []
 
 
 @st.cache_data(ttl=3600, show_spinner=False)
 def _search_ncua(state_code, city=None):
-    """Search NCUA for credit unions. Tries mapping API first, falls back to
-    quarterly credit union list download."""
+    """Search NCUA for credit unions.
+    Tries: 1) NCUA mapping API  2) quarterly list download  3) HIFLD ArcGIS."""
     api_results = _ncua_from_api(state_code, city)
     if api_results:
         return api_results
-    return _ncua_from_list(state_code, city)
+    list_results = _ncua_from_list(state_code, city)
+    if list_results:
+        return list_results
+    return _ncua_from_hifld(state_code, city)
 
 
 # ---------------------------------------------------------------------------
