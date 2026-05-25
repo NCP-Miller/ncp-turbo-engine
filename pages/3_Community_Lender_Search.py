@@ -122,10 +122,22 @@ ROLE_BUCKETS = {
 }
 
 _IB_SCAN_PATHS = [
-    "/investment-banking", "/capital-markets", "/corporate-finance",
-    "/services", "/our-services", "/what-we-do",
-    "/about", "/about-us",
+    "/investment-banking",
+    "/commercial-banking/investment-banking",
+    "/corporate-banking/investment-banking",
+    "/businesses/investment-banking",
+    "/capital-markets",
+    "/corporate-finance",
+    "/commercial-banking",
+    "/corporate-banking",
+    "/services",
+    "/our-services",
+    "/what-we-do",
+    "/about",
+    "/about-us",
 ]
+
+_COMMUNITY_BANK_MAX_ASSETS = 50_000_000  # $50B in thousands — above this, not community/regional
 
 # ---------------------------------------------------------------------------
 # LOCATION PARSING
@@ -229,7 +241,10 @@ def _download_ncua_cu_list():
             f"federally-insured-credit-union-list-{quarter}.zip"
         )
         try:
-            r = requests.get(url, timeout=30)
+            r = requests.get(
+                url, timeout=30,
+                headers={"User-Agent": "Mozilla/5.0 (NCP-Sourcing-Engine)"},
+            )
             if r.status_code != 200:
                 errors.append(f"{quarter}: HTTP {r.status_code}")
                 continue
@@ -406,23 +421,22 @@ def _firecrawl_scrape(url):
 
 
 def _scrape_institution(institution):
-    """Scrape key pages from an institution's website."""
+    """Scrape homepage + key IB-related pages from an institution's website."""
     domain = _clean_domain(institution.get("website"))
     if not domain:
         return ""
     base = f"https://{domain}"
     combined = []
+    homepage = _firecrawl_scrape(base)
+    if homepage:
+        combined.append(f"--- PAGE: / ---\n{homepage}")
     for path in _IB_SCAN_PATHS:
         content = _firecrawl_scrape(base + path)
         if content:
             combined.append(f"--- PAGE: {path} ---\n{content}")
-        if len(combined) >= 4:
+        if len(combined) >= 5:
             break
-    if not combined:
-        content = _firecrawl_scrape(base)
-        if content:
-            combined.append(f"--- PAGE: / ---\n{content}")
-    return "\n\n".join(combined)[:12000]
+    return "\n\n".join(combined)[:15000]
 
 
 _IB_CLASSIFY_SYSTEM = """You analyze bank and credit union website content to determine
@@ -496,6 +510,14 @@ def _check_institution_ib(institution):
 # ---------------------------------------------------------------------------
 # STAGE 3: APOLLO ENRICHMENT
 # ---------------------------------------------------------------------------
+_apollo_log = []  # collect debug info across threads
+_apollo_log_lock = threading.Lock()
+
+def _alog(msg):
+    with _apollo_log_lock:
+        _apollo_log.append(msg)
+
+
 def _find_apollo_org(name, domain=None):
     url = "https://api.apollo.io/v1/organizations/search"
     headers = {"Content-Type": "application/json", "X-Api-Key": APOLLO_API_KEY}
@@ -509,9 +531,12 @@ def _find_apollo_org(name, domain=None):
             if r.status_code == 200:
                 orgs = r.json().get("organizations", [])
                 if orgs:
+                    _alog(f"  {name}: found org via domain '{domain}' → {orgs[0].get('name')}")
                     return orgs[0]
-        except Exception:
-            pass
+            else:
+                _alog(f"  {name}: domain search HTTP {r.status_code}")
+        except Exception as e:
+            _alog(f"  {name}: domain search error: {e}")
 
     _apollo_limiter.wait()
     try:
@@ -525,22 +550,31 @@ def _find_apollo_org(name, domain=None):
                 for org in orgs:
                     org_name = (org.get("name") or "").lower()
                     if name_lower in org_name or org_name in name_lower:
+                        _alog(f"  {name}: found org via name → {org.get('name')}")
                         return org
+                _alog(f"  {name}: name search returned {len(orgs)} orgs, using first: {orgs[0].get('name')}")
                 return orgs[0]
-    except Exception:
-        pass
+            else:
+                _alog(f"  {name}: name search returned 0 orgs")
+        else:
+            _alog(f"  {name}: name search HTTP {r.status_code}")
+    except Exception as e:
+        _alog(f"  {name}: name search error: {e}")
     return None
 
 
-def _search_people_at_org(org_id, role_titles, city=None):
+def _search_people_at_org(org_id, role_titles=None, city=None, seniorities=None):
     url = "https://api.apollo.io/api/v1/mixed_people/api_search"
     headers = {"Content-Type": "application/json", "X-Api-Key": APOLLO_API_KEY}
     payload = {
         "organization_ids": [org_id],
-        "person_titles": role_titles,
-        "person_seniorities": ["owner", "founder", "c_suite", "partner", "vp", "director"],
+        "person_seniorities": seniorities or [
+            "owner", "founder", "c_suite", "partner", "vp", "director",
+        ],
         "per_page": 25,
     }
+    if role_titles:
+        payload["person_titles"] = role_titles
     if city:
         payload["person_locations"] = [city]
 
@@ -549,8 +583,9 @@ def _search_people_at_org(org_id, role_titles, city=None):
         r = requests.post(url, headers=headers, json=payload, timeout=10)
         if r.status_code == 200:
             return r.json().get("people", [])
-    except Exception:
-        pass
+        _alog(f"    people search HTTP {r.status_code}")
+    except Exception as e:
+        _alog(f"    people search error: {e}")
     return []
 
 
@@ -568,15 +603,36 @@ def _enrich_person(person_id):
 
 
 def _enrich_institution_contacts(institution, role_titles, search_city=None):
+    inst_name = institution["name"] or "Unknown"
     domain = _clean_domain(institution.get("website"))
-    org = _find_apollo_org(institution["name"], domain)
+    org = _find_apollo_org(inst_name, domain)
     if not org:
+        _alog(f"  {inst_name}: ORG NOT FOUND — skipping")
         return []
     org_id = org.get("id")
     if not org_id:
+        _alog(f"  {inst_name}: org has no ID")
         return []
 
+    # Attempt 1: titles + city
     people = _search_people_at_org(org_id, role_titles, search_city)
+    _alog(f"  {inst_name}: titles+city → {len(people)} people")
+
+    # Attempt 2: titles only (no city filter)
+    if not people and search_city:
+        people = _search_people_at_org(org_id, role_titles, city=None)
+        _alog(f"  {inst_name}: titles only → {len(people)} people")
+
+    # Attempt 3: seniority only (no title filter), with city
+    if not people:
+        people = _search_people_at_org(org_id, role_titles=None, city=search_city)
+        _alog(f"  {inst_name}: seniority+city → {len(people)} people")
+
+    # Attempt 4: seniority only, no city
+    if not people and search_city:
+        people = _search_people_at_org(org_id, role_titles=None, city=None)
+        _alog(f"  {inst_name}: seniority only → {len(people)} people")
+
     if not people:
         return []
 
@@ -592,7 +648,7 @@ def _enrich_institution_contacts(institution, role_titles, search_city=None):
         phone_nums = enriched.get("phone_numbers") or []
         phone = phone_nums[0].get("sanitized_number") if phone_nums else "N/A"
         contacts.append({
-            "Institution": institution["name"],
+            "Institution": inst_name,
             "Inst. Type": institution["type"],
             "Name": name,
             "Title": enriched.get("title") or "N/A",
@@ -602,7 +658,20 @@ def _enrich_institution_contacts(institution, role_titles, search_city=None):
             "City": enriched.get("city") or institution.get("city", "N/A"),
             "State": enriched.get("state") or institution.get("state", "N/A"),
         })
+    _alog(f"  {inst_name}: {len(contacts)} contacts enriched")
     return contacts
+
+
+def _fmt_assets(val_thousands):
+    if not val_thousands:
+        return "N/A"
+    try:
+        v = float(val_thousands)
+    except (ValueError, TypeError):
+        return "N/A"
+    if v >= 1_000_000:
+        return f"${v / 1_000_000:,.1f}B"
+    return f"${v / 1_000:,.0f}M"
 
 
 # ---------------------------------------------------------------------------
@@ -648,11 +717,11 @@ if st.button("Search", type="primary"):
     loc_label = f"{city}, {state_code}" if city else state_name
 
     # ── Stage 1: Institution Discovery ────────────────────────
-    institutions = []
+    raw_institutions = []
     with st.spinner(f"Searching for institutions in **{loc_label}**…"):
         if "Banks" in inst_types:
             banks = _search_fdic(state_code, city)
-            institutions.extend(banks)
+            raw_institutions.extend(banks)
         if "Credit Unions" in inst_types:
             cus = _search_ncua(state_code, city)
             if not cus:
@@ -660,19 +729,36 @@ if st.button("Search", type="primary"):
                     "Credit union search returned 0 results — "
                     "the NCUA endpoint may need adjustment. Banks unaffected."
                 )
-            institutions.extend(cus)
+            raw_institutions.extend(cus)
 
-    if not institutions:
+    if not raw_institutions:
         st.warning("No institutions found for this location.")
         st.stop()
 
+    institutions = []
+    too_large = []
+    for inst in raw_institutions:
+        assets = inst.get("assets_thousands") or 0
+        if isinstance(assets, (int, float)) and assets > _COMMUNITY_BANK_MAX_ASSETS:
+            too_large.append(inst)
+        else:
+            institutions.append(inst)
+
     bank_ct = sum(1 for i in institutions if i["type"] == "Bank")
     cu_ct = sum(1 for i in institutions if i["type"] == "Credit Union")
+    size_note = ""
+    if too_large:
+        names = ", ".join(i["name"] for i in too_large if i["name"])
+        size_note = f" Excluded {len(too_large)} mega-bank(s) over $50B assets ({names})."
     st.info(
-        f"**Stage 1 — Discovery:** {len(institutions)} institutions "
-        f"({bank_ct} banks, {cu_ct} credit unions). "
+        f"**Stage 1 — Discovery:** {len(institutions)} community/regional institutions "
+        f"({bank_ct} banks, {cu_ct} credit unions).{size_note} "
         "Now checking for investment banking services…"
     )
+
+    if not institutions:
+        st.warning("No community/regional institutions found (all exceeded $50B asset ceiling).")
+        st.stop()
 
     # ── Stage 2: IB Classification ────────────────────────────
     progress = st.progress(0)
@@ -712,9 +798,10 @@ if st.button("Search", type="primary"):
     if disqualified:
         with st.expander(f"Disqualified — In-House IB ({len(disqualified)})"):
             for d in sorted(disqualified, key=lambda x: x["name"]):
+                dname = d["name"] or f"CERT#{d.get('cert', '?')}"
                 st.markdown(
-                    f"**{d['name']}** ({d['city']}, {d['state']}) — "
-                    f"_{d.get('ib_evidence', 'N/A')}_"
+                    f"- **{dname}** ({d['city']}, {d['state']}) — "
+                    f"{d.get('ib_evidence', 'N/A')}"
                 )
 
     if not qualified:
@@ -757,6 +844,11 @@ if st.button("Search", type="primary"):
 
     status.write("Done!")
 
+    if _apollo_log:
+        with st.expander("Apollo Debug Log"):
+            st.code("\n".join(_apollo_log))
+        _apollo_log.clear()
+
     # ── Results ───────────────────────────────────────────────
     # Always show institution summary
     with st.expander("Institution Summary", expanded=not all_contacts):
@@ -766,8 +858,7 @@ if st.button("Search", type="primary"):
             "City": q["city"],
             "State": q["state"],
             "Website": q.get("website") or "N/A",
-            "Assets ($K)": f"{q.get('assets_thousands', 0):,.0f}"
-                if q.get("assets_thousands") else "N/A",
+            "Assets": _fmt_assets(q.get("assets_thousands", 0)),
             "IB Status": q["ib_status"],
             "IB Evidence": q.get("ib_evidence", ""),
             "Contacts Found": "Yes" if q["name"] in inst_with_contacts else "No",
