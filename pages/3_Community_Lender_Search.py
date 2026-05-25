@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 import requests
 import json
+import csv
+import io
+import zipfile
 import concurrent.futures
 import threading
 import time as _time
@@ -205,97 +208,150 @@ def _search_fdic(state_code, city=None):
 # ---------------------------------------------------------------------------
 # STAGE 1B: NCUA CREDIT UNION DISCOVERY
 # ---------------------------------------------------------------------------
+_NCUA_LIST_QUARTERS = [
+    "december-2025", "september-2025", "june-2025", "march-2025",
+    "december-2024", "september-2024",
+]
+
+
+@st.cache_data(ttl=86400, show_spinner=False)
+def _download_ncua_cu_list():
+    """Download the NCUA Federally Insured Credit Union List (quarterly ZIP).
+    Returns a list of dicts with raw CSV rows, or empty list on failure."""
+    for quarter in _NCUA_LIST_QUARTERS:
+        url = (
+            f"https://ncua.gov/files/publications/analysis/"
+            f"federally-insured-credit-union-list-{quarter}.zip"
+        )
+        try:
+            r = requests.get(url, timeout=30)
+            if r.status_code != 200:
+                continue
+            with zipfile.ZipFile(io.BytesIO(r.content)) as zf:
+                for name in zf.namelist():
+                    if name.lower().endswith((".csv", ".txt")):
+                        with zf.open(name) as f:
+                            raw = f.read()
+                            for enc in ("utf-8", "latin-1", "cp1252"):
+                                try:
+                                    text = raw.decode(enc)
+                                    break
+                                except UnicodeDecodeError:
+                                    continue
+                            else:
+                                text = raw.decode("utf-8", errors="replace")
+                            reader = csv.DictReader(io.StringIO(text))
+                            return list(reader)
+        except Exception:
+            continue
+    return []
+
+
+def _ncua_from_list(state_code, city=None):
+    """Filter the cached NCUA credit union list by state/city."""
+    all_cus = _download_ncua_cu_list()
+    if not all_cus:
+        return []
+    results = []
+    for cu in all_cus:
+        cu_state = (
+            cu.get("PhyState") or cu.get("State") or cu.get("STATE") or ""
+        ).strip().upper()
+        if cu_state != state_code:
+            continue
+        cu_city = (
+            cu.get("PhyCity") or cu.get("City") or cu.get("CITY") or ""
+        ).strip()
+        if city and city.lower() not in cu_city.lower():
+            continue
+        cu_name = (
+            cu.get("CU_NAME") or cu.get("CUName") or cu.get("Name") or ""
+        ).strip()
+        cu_website = (
+            cu.get("Website") or cu.get("URL") or cu.get("WEBSITE") or ""
+        ).strip()
+        raw_assets = cu.get("TotalAssets") or cu.get("TOTAL ASSETS") or cu.get("Assets") or "0"
+        try:
+            cu_assets = float(str(raw_assets).replace(",", ""))
+        except (ValueError, TypeError):
+            cu_assets = 0
+        cu_number = (
+            cu.get("CU_NUMBER") or cu.get("CU Number") or cu.get("Charter") or ""
+        )
+        results.append({
+            "name": cu_name,
+            "city": cu_city,
+            "state": state_code,
+            "website": cu_website,
+            "assets_thousands": cu_assets,
+            "cert": str(cu_number).strip(),
+            "type": "Credit Union",
+        })
+    return results
+
+
+def _ncua_from_api(state_code, city=None):
+    """Query the NCUA mapping API (radius-based, best for city searches)."""
+    address = f"{city}, {state_code}" if city else _STATES.get(state_code, state_code)
+    try:
+        r = requests.post(
+            "https://mapping.ncua.gov/findCUByRadius.aspx",
+            data={"address": address, "type": "address", "radius": "60"},
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+            timeout=20,
+        )
+        if r.status_code != 200:
+            return None
+        data = r.json()
+        if not isinstance(data, list) or not data:
+            return None
+        results = []
+        for item in data:
+            cu_state = (item.get("State") or item.get("state") or "").upper()
+            if cu_state != state_code:
+                continue
+            cu_city_val = item.get("City") or item.get("city") or ""
+            if city and city.lower() not in cu_city_val.lower():
+                continue
+            cu_name = (
+                item.get("CreditUnionName") or item.get("Name")
+                or item.get("CU_NAME") or item.get("name") or ""
+            )
+            cu_website = (
+                item.get("Website") or item.get("URL") or item.get("url") or ""
+            )
+            raw_assets = item.get("TotalAssets") or item.get("Assets") or 0
+            try:
+                cu_assets = float(str(raw_assets).replace(",", ""))
+            except (ValueError, TypeError):
+                cu_assets = 0
+            cu_id = (
+                item.get("CU_NUMBER") or item.get("CharterNumber")
+                or item.get("ID") or ""
+            )
+            results.append({
+                "name": str(cu_name).strip(),
+                "city": str(cu_city_val).strip(),
+                "state": state_code,
+                "website": str(cu_website).strip(),
+                "assets_thousands": cu_assets,
+                "cert": str(cu_id).strip(),
+                "type": "Credit Union",
+            })
+        return results if results else None
+    except Exception:
+        return None
+
+
 @st.cache_data(ttl=3600, show_spinner=False)
 def _search_ncua(state_code, city=None):
-    """Query NCUA for credit unions. Endpoint is best-effort."""
-    endpoints = [
-        "https://mapping.ncua.gov/api/CreditUnionLocator",
-        "https://mapping.ncua.gov/api/CreditUnion/Search",
-    ]
-    params_options = [
-        {"StateCode": state_code},
-        {"State": state_code},
-    ]
-
-    for base_url in endpoints:
-        for params in params_options:
-            if city:
-                params_with_city = {**params, "CityName": city, "City": city}
-            else:
-                params_with_city = params
-            try:
-                r = requests.get(
-                    base_url, params=params_with_city, timeout=15,
-                    headers={"Accept": "application/json"},
-                )
-                if r.status_code != 200:
-                    continue
-                data = r.json()
-                if isinstance(data, list):
-                    items = data
-                elif isinstance(data, dict):
-                    items = (
-                        data.get("data")
-                        or data.get("results")
-                        or data.get("creditUnions")
-                        or data.get("list")
-                        or []
-                    )
-                else:
-                    continue
-
-                if not items:
-                    continue
-
-                results = []
-                for item in items:
-                    cu_name = (
-                        item.get("CUName")
-                        or item.get("Name")
-                        or item.get("name")
-                        or item.get("CreditUnionName")
-                        or ""
-                    )
-                    cu_city = (
-                        item.get("City")
-                        or item.get("city")
-                        or item.get("PhysicalAddressCity")
-                        or ""
-                    )
-                    cu_website = (
-                        item.get("Website")
-                        or item.get("URL")
-                        or item.get("url")
-                        or item.get("WebsiteAddress")
-                        or ""
-                    )
-                    cu_assets = (
-                        item.get("TotalAssets")
-                        or item.get("Assets")
-                        or item.get("assets")
-                        or 0
-                    )
-                    cu_id = (
-                        item.get("CUNumber")
-                        or item.get("CharterNumber")
-                        or item.get("ID")
-                        or ""
-                    )
-                    if city and city.lower() not in cu_city.lower():
-                        continue
-                    results.append({
-                        "name": cu_name.strip(),
-                        "city": cu_city.strip(),
-                        "state": state_code,
-                        "website": cu_website.strip(),
-                        "assets_thousands": cu_assets,
-                        "cert": cu_id,
-                        "type": "Credit Union",
-                    })
-                return results
-            except Exception:
-                continue
-    return []
+    """Search NCUA for credit unions. Tries mapping API first, falls back to
+    quarterly credit union list download."""
+    if city:
+        api_results = _ncua_from_api(state_code, city)
+        if api_results is not None:
+            return api_results
+    return _ncua_from_list(state_code, city)
 
 
 # ---------------------------------------------------------------------------
