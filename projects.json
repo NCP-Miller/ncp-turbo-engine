@@ -95,9 +95,9 @@
     "name": "ICHRA 26.05.26",
     "slug": "ichra_26_05_26",
     "db_file": "project_ichra_26_05_26.db",
-    "created_at": "2026-05-26T15:59:33.922908+00:00",
-    "niche": "ICHRA benefit plan administration",
-    "geography": "NCP Priority Geography (Eastern US)",
+    "created_at": "2026-05-27T13:38:40.142429+00:00",
+    "niche": null,
+    "geography": null,
     "memo_count": 0,
     "active": true
   }
