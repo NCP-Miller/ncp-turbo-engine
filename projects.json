@@ -88,9 +88,9 @@
     "created_at": "2026-05-27T13:38:40.142429+00:00",
     "niche": "Pleasen find employee benefit administrators with ICHRA (Individual Coverage Health Reimbursement Arrangement) service offerings",
     "geography": "NCP Priority Geography (Eastern US)",
-    "memo_count": 1,
+    "memo_count": 3,
     "active": true,
-    "status": "running"
+    "status": "stopped"
   },
   {
     "name": "Specialty Lending Serv and IT - Compliance2",
