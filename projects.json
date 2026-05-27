@@ -90,7 +90,7 @@
     "geography": "NCP Priority Geography (Eastern US)",
     "memo_count": 3,
     "active": true,
-    "status": "running"
+    "status": "stopped"
   },
   {
     "name": "Specialty Lending Serv and IT - Compliance2",
