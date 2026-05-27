@@ -916,6 +916,13 @@ with tab_near:
     except (AttributeError, KeyError):
         near_misses = []
 
+    if "reviewed_near_misses" not in st.session_state:
+        try:
+            st.session_state["reviewed_near_misses"] = set(state._get("reviewed_near_misses"))
+        except (AttributeError, KeyError):
+            st.session_state["reviewed_near_misses"] = set()
+    _reviewed = st.session_state["reviewed_near_misses"]
+
     if not near_misses:
         st.info(
             "No near-misses yet. Companies that scored 4-5 on conviction "
@@ -923,25 +930,55 @@ with tab_near:
             "you can review whether the bar is too high for this niche."
         )
     else:
-        # Sort by conviction descending so the closest fits appear first
         near_sorted = sorted(
             near_misses,
-            key=lambda m: (m.get("row") or {}).get("Conviction", 0),
-            reverse=True,
+            key=lambda m: (
+                (m.get("row") or {}).get("Company", "") in _reviewed,
+                -(m.get("row") or {}).get("Conviction", 0),
+            ),
         )
+        reviewed_ct = sum(1 for m in near_misses if (m.get("row") or {}).get("Company", "") in _reviewed)
         st.caption(
             f"{len(near_sorted)} companies came close but didn't clear the conviction bar of 6. "
-            "Review them to spot ones the AI was too conservative on."
+            f"**{reviewed_ct} reviewed**, {len(near_sorted) - reviewed_ct} remaining."
         )
 
-        for nm in near_sorted[:30]:
+        for nm in near_sorted:
             row = nm.get("row") or {}
             conv = row.get("Conviction", 0)
             reason = nm.get("reason", "Below conviction threshold")
             company = row.get("Company", "Unknown")
             city = row.get("City", "")
             state_abbr = row.get("State", "")
-            with st.expander(f"{company} — {city}, {state_abbr} (Conviction {conv}/10)"):
+            is_reviewed = company in _reviewed
+            label = f"{'~~' if is_reviewed else ''}{company} — {city}, {state_abbr} (Conviction {conv}/10){'~~' if is_reviewed else ''}"
+            if is_reviewed:
+                label = f":white_check_mark: {company} — {city}, {state_abbr} (Conviction {conv}/10)"
+            with st.expander(label):
+                _nm_key = company.replace(" ", "_")
+                _rev_col, _spacer = st.columns([1, 3])
+                with _rev_col:
+                    if st.checkbox(
+                        "Review Complete",
+                        value=is_reviewed,
+                        key=f"rev_{_nm_key}",
+                    ):
+                        if company not in _reviewed:
+                            _reviewed.add(company)
+                            try:
+                                state.update(reviewed_near_misses=list(_reviewed))
+                            except Exception:
+                                pass
+                            st.rerun()
+                    else:
+                        if company in _reviewed:
+                            _reviewed.discard(company)
+                            try:
+                                state.update(reviewed_near_misses=list(_reviewed))
+                            except Exception:
+                                pass
+                            st.rerun()
+
                 st.warning(f"**Why it didn't qualify:** {reason}")
 
                 left, right = st.columns(2)

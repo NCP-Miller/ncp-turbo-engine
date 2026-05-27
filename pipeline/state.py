@@ -23,6 +23,7 @@ def _default_state():
         "seen_domains": [],
         "seen_names": [],
         "near_misses": [],
+        "reviewed_near_misses": [],
         "filter_stats": {
             "total_sourced": 0,
             "pre_filtered_size": 0,
@@ -167,12 +168,10 @@ class PipelineState:
             self._conn.execute("BEGIN IMMEDIATE")
             try:
                 for key, value in kwargs.items():
-                    # Only update keys that exist in the DB
-                    row = self._conn.execute(
-                        "SELECT 1 FROM pipeline_state WHERE key = ?", (key,)
-                    ).fetchone()
-                    if row is not None:
-                        self._set(key, value)
+                    self._conn.execute(
+                        "INSERT OR REPLACE INTO pipeline_state (key, value) VALUES (?, ?)",
+                        (key, json.dumps(value)),
+                    )
                 self._conn.execute("COMMIT")
             except sqlite3.OperationalError:
                 self._conn.execute("ROLLBACK")
@@ -247,8 +246,8 @@ class PipelineState:
                         ("near_misses", "[]"),
                     )
                 misses.append(entry)
-                if len(misses) > 10:
-                    misses = misses[-10:]
+                if len(misses) > 100:
+                    misses = misses[-100:]
                 self._set("near_misses", misses)
                 self._conn.execute("COMMIT")
             except Exception:
