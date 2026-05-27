@@ -657,7 +657,7 @@ with tab_memos:
         )
 
         # Individual memo expanders
-        for memo in state.completed_memos:
+        for _memo_idx, memo in enumerate(state.completed_memos):
             row = memo.get("row", {})
             conv = row.get("Conviction", "")
             is_closest_fit = memo.get("closest_fit", False)
@@ -705,12 +705,13 @@ with tab_memos:
 
                 # ── Salesforce + Outreach Actions ─────────────────────
                 _co_key = memo['company'].replace(' ', '_')
+                _wk = f"{_memo_idx}_{_co_key}"
                 act_cols = st.columns(3)
 
                 with act_cols[0]:
                     if st.button(
                         "Add to Salesforce",
-                        key=f"sf_{_co_key}",
+                        key=f"sf_{_wk}",
                         type="primary",
                         use_container_width=True,
                     ):
@@ -745,7 +746,7 @@ with tab_memos:
                 with act_cols[1]:
                     if st.button(
                         "Draft Outreach",
-                        key=f"draft_{_co_key}",
+                        key=f"draft_{_wk}",
                         use_container_width=True,
                     ):
                         try:
@@ -788,7 +789,7 @@ with tab_memos:
                     else:
                         st.button(
                             "Open in Outlook",
-                            key=f"outlook_{_co_key}",
+                            key=f"outlook_{_wk}",
                             disabled=True,
                             help="Draft an email first",
                             use_container_width=True,
@@ -803,11 +804,11 @@ with tab_memos:
                         "Email Draft (edit before sending)",
                         value=_draft_body,
                         height=200,
-                        key=f"draft_editor_{_co_key}",
+                        key=f"draft_editor_{_wk}",
                     )
                     _act_c1, _act_c2, _act_c3 = st.columns([1, 1, 2])
                     with _act_c1:
-                        _log_clicked = st.button("Log to Salesforce", key=f"log_sf_{_co_key}", use_container_width=True)
+                        _log_clicked = st.button("Log to Salesforce", key=f"log_sf_{_wk}", use_container_width=True)
                     with _act_c2:
                         from lib.outreach import generate_followup_ics
                         _cn = row.get("CEO/Owner Name", "Contact")
@@ -825,7 +826,7 @@ with tab_memos:
                             data=_ics,
                             file_name=f"followup_{_co_key}.ics",
                             mime="text/calendar",
-                            key=f"ics_{_co_key}",
+                            key=f"ics_{_wk}",
                             use_container_width=True,
                         )
                     with _act_c3:
@@ -874,7 +875,7 @@ with tab_memos:
                 st.markdown("---")
 
                 # Feedback buttons
-                fb_key = f"fb_{memo['company'].replace(' ', '_')}"
+                fb_key = f"fb_{_wk}"
                 fb_cols = st.columns(4)
                 with fb_cols[0]:
                     if st.button("👍 Interested", key=f"{fb_key}_yes"):
@@ -943,7 +944,7 @@ with tab_near:
             f"**{reviewed_ct} reviewed**, {len(near_sorted) - reviewed_ct} remaining."
         )
 
-        for nm in near_sorted:
+        for _nm_idx, nm in enumerate(near_sorted):
             row = nm.get("row") or {}
             conv = row.get("Conviction", 0)
             reason = nm.get("reason", "Below conviction threshold")
@@ -955,7 +956,7 @@ with tab_near:
             if is_reviewed:
                 label = f":white_check_mark: {company} — {city}, {state_abbr} (Conviction {conv}/10)"
             with st.expander(label):
-                _nm_key = company.replace(" ", "_")
+                _nm_key = f"{_nm_idx}_{company.replace(' ', '_')}"
                 _rev_col, _spacer = st.columns([1, 3])
                 with _rev_col:
                     if st.checkbox(
@@ -1000,7 +1001,6 @@ with tab_near:
                     st.info(f"**Analyst pitch:** {pitch}")
 
                 # Promote to memo button
-                _nm_key = company.replace(" ", "_")
                 _pc, _pf = st.columns([1, 3])
                 with _pc:
                     if st.button("Promote to Memo", key=f"promote_{_nm_key}", use_container_width=True):
