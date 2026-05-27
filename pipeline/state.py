@@ -246,8 +246,8 @@ class PipelineState:
                         ("near_misses", "[]"),
                     )
                 misses.append(entry)
-                if len(misses) > 10:
-                    misses = misses[-10:]
+                if len(misses) > 100:
+                    misses = misses[-100:]
                 self._set("near_misses", misses)
                 self._conn.execute("COMMIT")
             except Exception:

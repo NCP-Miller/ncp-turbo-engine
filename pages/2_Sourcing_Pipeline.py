@@ -943,7 +943,7 @@ with tab_near:
             f"**{reviewed_ct} reviewed**, {len(near_sorted) - reviewed_ct} remaining."
         )
 
-        for nm in near_sorted[:30]:
+        for nm in near_sorted:
             row = nm.get("row") or {}
             conv = row.get("Conviction", 0)
             reason = nm.get("reason", "Below conviction threshold")
