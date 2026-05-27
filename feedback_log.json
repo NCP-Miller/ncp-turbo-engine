@@ -3750,5 +3750,12 @@
     "niche": "Help me to find a cybersecurity company that is poised to execute on the growth coming in CMMC but that is also not competitive with ControlCase (which I own). The company must be differentiated. There are many angles to take advantage of such as CMMC Level 1 Self Assessment technology tools etc etc (don't let this example limit your logic).",
     "verdict": "caveats",
     "timestamp": "2026-05-20T15:35:58.131599+00:00"
+  },
+  {
+    "company": "CSI Pharmacy",
+    "feedback": "Passed",
+    "niche": "Pleasen find employee benefit administrators with ICHRA (Individual Coverage Health Reimbursement Arrangement) service offerings. Find more companies similar to Leap. Anchor traits: Leap is a healthcare company focused on transforming the specialty infusion care process by eliminating hidden drug markups and enabling at-home treatments. They serve employers and patients by providing a transparent, patient-centered model that integrates directly with health plans to reduce costs and improve access to infusion therapies. Leap operates within the healthcare sector, aiming to simplify and make life-sustaining treatments more affordable and accessible. | Differentiated: Low | Industry:  | Size: 39 employees.",
+    "verdict": "rejected",
+    "timestamp": "2026-05-27T22:40:42.175246+00:00"
   }
 ]
