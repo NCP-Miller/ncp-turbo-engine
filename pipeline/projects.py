@@ -93,8 +93,8 @@ def _snapshot_meta():
         ps = PipelineState()
         cfg = ps.config or {}
         return {
-            "niche": cfg.get("niche", ""),
-            "geography": cfg.get("geography", ""),
+            "niche": cfg.get("niche") or "",
+            "geography": cfg.get("geography") or "",
             "memo_count": len(ps.completed_memos or []),
             "status": ps.status,
         }
@@ -166,8 +166,8 @@ def load_project(name):
     if not os.path.exists(db_src):
         return None
 
-    if os.path.exists(DB_PATH):
-        shutil.copy2(db_src, DB_PATH)
+    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+    shutil.copy2(db_src, DB_PATH)
 
     for p in projects:
         p["active"] = p["slug"] == target["slug"]
@@ -230,15 +230,36 @@ def delete_project(name):
     return True
 
 
+_last_backup_time = 0.0
+_BACKUP_INTERVAL = 120  # seconds between GitHub backups
+
 def update_active_meta():
-    """Refresh the metadata (memo_count, niche, etc.) for the active project."""
+    """Refresh the metadata (memo_count, niche, etc.) for the active project.
+    Periodically backs up the full DB to GitHub so data survives redeploys."""
+    import time as _time
+    global _last_backup_time
     projects = _load_index()
     meta = _snapshot_meta()
+    active_slug = None
     for p in projects:
         if p.get("active"):
             p["niche"] = meta["niche"]
             p["geography"] = meta["geography"]
             p["memo_count"] = meta["memo_count"]
             p["status"] = meta["status"]
+            active_slug = p.get("slug")
             break
     _save_index(projects)
+
+    now = _time.time()
+    if active_slug and _gh_configured() and (now - _last_backup_time) > _BACKUP_INTERVAL:
+        _last_backup_time = now
+        try:
+            db_file = _db_path_for(active_slug)
+            if os.path.exists(DB_PATH):
+                shutil.copy2(DB_PATH, db_file)
+            if os.path.exists(db_file):
+                _gh_backup_project(active_slug, db_file)
+                _gh_backup_index(projects)
+        except Exception as e:
+            print(f"[Projects] Auto-backup failed: {e}")
