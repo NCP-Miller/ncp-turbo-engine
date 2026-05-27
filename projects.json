@@ -109,7 +109,17 @@
     "niche": "Wealth management and RIA compliance services and technology",
     "geography": "NCP Priority Geography (Eastern US)",
     "memo_count": 0,
-    "active": true,
+    "active": false,
     "status": "running"
+  },
+  {
+    "name": "Wealth management and RIA compliance",
+    "slug": "wealth_management_and_ria_compliance",
+    "db_file": "project_wealth_management_and_ria_compliance.db",
+    "created_at": "2026-05-27T23:05:26.399665+00:00",
+    "niche": "Wealth management and RIA compliance services and technology",
+    "geography": "NCP Priority Geography (Eastern US)",
+    "memo_count": 0,
+    "active": true
   }
 ]
