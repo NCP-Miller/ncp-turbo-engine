@@ -189,9 +189,9 @@ with st.sidebar:
             )
             if _selected_proj:
                 _sel_meta = next((p for p in _projects if p["name"] == _selected_proj), {})
-                _niche_display = _sel_meta.get("niche", "")[:60]
-                _geo_display = _sel_meta.get("geography", "")
-                _memo_display = _sel_meta.get("memo_count", 0)
+                _niche_display = (_sel_meta.get("niche") or "")[:60]
+                _geo_display = _sel_meta.get("geography") or ""
+                _memo_display = _sel_meta.get("memo_count") or 0
                 st.caption(
                     f"Niche: {_niche_display or 'N/A'}  \n"
                     f"Geography: {_geo_display or 'N/A'}  \n"
