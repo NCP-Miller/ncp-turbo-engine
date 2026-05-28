@@ -109,7 +109,7 @@
     "niche": "Wealth management and RIA compliance services and technology",
     "geography": "NCP Priority Geography (Eastern US)",
     "memo_count": 0,
-    "active": false,
+    "active": true,
     "status": "running"
   },
   {
@@ -120,6 +120,6 @@
     "niche": "",
     "geography": "",
     "memo_count": 0,
-    "active": true
+    "active": false
   }
 ]
