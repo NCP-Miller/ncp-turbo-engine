@@ -116,11 +116,10 @@
     "name": "Wealth management and RIA compliance",
     "slug": "wealth_management_and_ria_compliance",
     "db_file": "project_wealth_management_and_ria_compliance.db",
-    "created_at": "2026-05-27T23:05:26.399665+00:00",
+    "created_at": "2026-05-28T13:39:20.154145+00:00",
     "niche": "",
     "geography": "",
     "memo_count": 0,
-    "active": true,
-    "status": "idle"
+    "active": true
   }
 ]
