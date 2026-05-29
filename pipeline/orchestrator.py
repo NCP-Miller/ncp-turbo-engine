@@ -596,26 +596,54 @@ def _run_loop():
             # --- Process manually added companies ---
             manual_names = state.pop_manual_companies()
             if manual_names:
-                from lib.apollo_search import search_organization_by_name
+                import re as _re_manual
+                from lib.apollo_search import search_organization_by_name, enrich_organization
+                from lib.contacts import clean_domain
                 state.set_event("manual_add", f"Looking up {len(manual_names)} manually added company/companies...", "info")
                 _manual_added = 0
                 for _mname in manual_names:
-                    _morg = search_organization_by_name(apollo_key, _mname)
+                    _mname = _mname.strip()
+                    _morg = None
+
+                    # Detect if this is a URL or domain (contains a dot + TLD pattern)
+                    _cleaned = _mname.replace("https://", "").replace("http://", "").rstrip("/")
+                    _is_url = "." in _cleaned and " " not in _cleaned and _re_manual.search(r"\.\w{2,}", _cleaned)
+
+                    if _is_url:
+                        _domain = clean_domain(_mname)
+                        if _domain:
+                            _morg = enrich_organization(apollo_key, _domain)
+                            if _morg and _morg.get("name"):
+                                print(f"[Orchestrator] Manual add: enriched '{_domain}' → {_morg.get('name')}")
+                            elif _morg:
+                                _morg["name"] = _domain
+                            else:
+                                _morg = {
+                                    "id": None, "name": _domain,
+                                    "website_url": f"https://{_domain}",
+                                    "city": None, "state": None,
+                                    "linkedin_url": None, "estimated_num_employees": None,
+                                    "short_description": "", "keywords": [],
+                                    "ownership_status": None,
+                                }
+                                print(f"[Orchestrator] Manual add: '{_domain}' not on Apollo — queued with domain only.")
+                    else:
+                        _morg = search_organization_by_name(apollo_key, _mname)
+                        if _morg:
+                            print(f"[Orchestrator] Manual add: found '{_mname}' on Apollo.")
+                        else:
+                            _morg = {
+                                "id": None, "name": _mname,
+                                "website_url": None, "city": None, "state": None,
+                                "linkedin_url": None, "estimated_num_employees": None,
+                                "short_description": "", "keywords": [],
+                                "ownership_status": None,
+                            }
+                            print(f"[Orchestrator] Manual add: '{_mname}' not on Apollo — queued with web-only data.")
+
                     if _morg:
                         state.add_candidate(_morg)
                         _manual_added += 1
-                        print(f"[Orchestrator] Manual add: found '{_mname}' on Apollo — queued for analysis.")
-                    else:
-                        _morg = {
-                            "id": None, "name": _mname.strip(),
-                            "website_url": None, "city": None, "state": None,
-                            "linkedin_url": None, "estimated_num_employees": None,
-                            "short_description": "", "keywords": [],
-                            "ownership_status": None,
-                        }
-                        state.add_candidate(_morg)
-                        _manual_added += 1
-                        print(f"[Orchestrator] Manual add: '{_mname}' not on Apollo — queued with web-only data.")
                 if _manual_added:
                     search_exhausted = False
                     state.set_event("manual_add", f"Queued {_manual_added}/{len(manual_names)} companies for analysis.", "info")
