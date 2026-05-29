@@ -106,6 +106,7 @@ def export_db_to_json(db_path):
     if not os.path.exists(db_path):
         return None
     conn = sqlite3.connect(db_path, timeout=10)
+    conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
     rows = conn.execute("SELECT key, value FROM pipeline_state").fetchall()
     conn.close()
     state = {}
@@ -133,6 +134,7 @@ def import_json_to_db(db_path, state_dict):
                 (key, json.dumps(value)),
             )
         conn.execute("COMMIT")
+        conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
     except Exception:
         conn.execute("ROLLBACK")
         raise
@@ -227,6 +229,9 @@ def restore_all():
         active_db = os.path.join(STATE_DIR, f"project_{active_slug}.db")
         if os.path.exists(active_db):
             import shutil
+            conn = sqlite3.connect(active_db, timeout=10)
+            conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+            conn.close()
             shutil.copy2(active_db, DB_PATH)
 
     feedback_content, _ = _read_file(token, repo, "feedback_log.json")

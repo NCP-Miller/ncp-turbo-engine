@@ -12,6 +12,7 @@ import json
 import os
 import re
 import shutil
+import sqlite3
 from datetime import datetime, timezone
 
 from pipeline.state import STATE_DIR, DB_PATH, PipelineState
@@ -26,6 +27,22 @@ from lib.github_backup import (
 PROJECTS_FILE = os.path.join(STATE_DIR, "projects.json")
 
 _restore_attempted = False
+
+
+def _checkpoint_wal(db_path):
+    """Force a WAL checkpoint so all data is flushed to the main DB file.
+
+    Without this, shutil.copy2 misses recent writes that are still in the
+    WAL, causing data loss when saving or loading projects.
+    """
+    if not os.path.exists(db_path):
+        return
+    try:
+        conn = sqlite3.connect(db_path, timeout=10)
+        conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+        conn.close()
+    except Exception:
+        pass
 
 
 def _ensure_dir():
@@ -113,6 +130,7 @@ def save_project(name):
     db_dest = _db_path_for(slug)
 
     if os.path.exists(DB_PATH):
+        _checkpoint_wal(DB_PATH)
         shutil.copy2(DB_PATH, db_dest)
 
     meta = _snapshot_meta()
@@ -166,6 +184,7 @@ def load_project(name):
     if not os.path.exists(db_src):
         return None
 
+    _checkpoint_wal(db_src)
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
     shutil.copy2(db_src, DB_PATH)
 
@@ -257,6 +276,7 @@ def update_active_meta():
         try:
             db_file = _db_path_for(active_slug)
             if os.path.exists(DB_PATH):
+                _checkpoint_wal(DB_PATH)
                 shutil.copy2(DB_PATH, db_file)
             if os.path.exists(db_file):
                 _gh_backup_project(active_slug, db_file)
