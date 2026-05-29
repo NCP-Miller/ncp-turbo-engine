@@ -88,6 +88,30 @@ def search_organizations(
 
 
 # ---------------------------------------------------------------------------
+# APOLLO — ORGANIZATION ENRICHMENT (detailed funding data)
+# ---------------------------------------------------------------------------
+def enrich_organization(apollo_api_key, domain):
+    """Get detailed org data from Apollo's enrichment endpoint.
+
+    The search endpoint often returns null for funding fields even when
+    the data exists. The enrichment endpoint does a real-time lookup and
+    returns more complete funding, investor, and ownership data.
+    """
+    if not domain:
+        return {}
+    url = "https://api.apollo.io/v1/organizations/enrich"
+    headers = {"Content-Type": "application/json", "X-Api-Key": apollo_api_key}
+    payload = {"domain": domain}
+    try:
+        r = requests.post(url, headers=headers, json=payload, timeout=15)
+        if r.status_code == 200:
+            return r.json().get("organization") or {}
+    except Exception:
+        pass
+    return {}
+
+
+# ---------------------------------------------------------------------------
 # WEB DISCOVERY (multi-engine + AI extraction)
 # ---------------------------------------------------------------------------
 def web_discovery_pass(

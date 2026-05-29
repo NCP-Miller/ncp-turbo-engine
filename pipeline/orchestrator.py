@@ -320,6 +320,40 @@ def _analyze_single(org, niche, strategy, config, search_params,
         return {"outcome": "deep_analysis_failed", "company": comp_name,
                 "reason": "did not pass filters"}
 
+    # 5b. Apollo enrichment — get complete funding data that search results miss
+    from lib.apollo_search import enrich_organization
+    from lib.contacts import clean_domain
+    _enrich_domain = clean_domain(org.get("website_url"))
+    if _enrich_domain:
+        _enriched = enrich_organization(apollo_key, _enrich_domain)
+        if _enriched:
+            _e_funding = _enriched.get("total_funding") or 0
+            try:
+                if isinstance(_e_funding, (int, float)) and _e_funding > 5_000_000:
+                    return {"outcome": "pe_backed", "company": comp_name,
+                            "reason": f"Institutional Funding (${_e_funding:,.0f} raised)",
+                            "row": row}
+            except (ValueError, TypeError):
+                pass
+
+            _e_stage = str(_enriched.get("latest_funding_stage") or "").lower().replace("_", " ")
+            _institutional_stages = [
+                "series a", "series b", "series c", "series d", "series e",
+                "private equity", "growth equity", "debt financing",
+            ]
+            if any(s in _e_stage for s in _institutional_stages):
+                return {"outcome": "pe_backed", "company": comp_name,
+                        "reason": f"Institutional Funding ({_e_stage})", "row": row}
+
+            _e_rounds = _enriched.get("number_of_funding_rounds") or 0
+            try:
+                if isinstance(_e_rounds, int) and _e_rounds >= 2:
+                    return {"outcome": "pe_backed", "company": comp_name,
+                            "reason": f"Institutional Funding ({_e_rounds} rounds)",
+                            "row": row}
+            except (ValueError, TypeError):
+                pass
+
     # 6. PE-backed check (with news snippets from the worker)
     from lib.filters import check_pe_backed
     news_snippets = None
