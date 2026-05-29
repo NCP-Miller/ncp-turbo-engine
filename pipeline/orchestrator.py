@@ -606,11 +606,19 @@ def _run_loop():
                         _manual_added += 1
                         print(f"[Orchestrator] Manual add: found '{_mname}' on Apollo — queued for analysis.")
                     else:
-                        print(f"[Orchestrator] Manual add: '{_mname}' not found on Apollo — skipped.")
+                        _morg = {
+                            "id": None, "name": _mname.strip(),
+                            "website_url": None, "city": None, "state": None,
+                            "linkedin_url": None, "estimated_num_employees": None,
+                            "short_description": "", "keywords": [],
+                            "ownership_status": None,
+                        }
+                        state.add_candidate(_morg)
+                        _manual_added += 1
+                        print(f"[Orchestrator] Manual add: '{_mname}' not on Apollo — queued with web-only data.")
                 if _manual_added:
+                    search_exhausted = False
                     state.set_event("manual_add", f"Queued {_manual_added}/{len(manual_names)} companies for analysis.", "info")
-                else:
-                    state.set_event("manual_add", f"Could not find any of the {len(manual_names)} companies on Apollo.", "warning")
 
             # --- Emit starting event ---
             if state.status == "running" and state.last_event.get("type") not in ("searching_apollo", "discovering_web", "analyzing", "writing_memo", "manual_add"):

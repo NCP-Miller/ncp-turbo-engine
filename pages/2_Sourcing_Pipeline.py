@@ -261,23 +261,24 @@ with st.sidebar:
     _memo_completed = len(state.completed_memos or [])
     _memo_target = cfg.get('target_count') or 0
     st.metric("Memos Completed", f"{_memo_completed} / {_memo_target}")
+    _has_config = bool(cfg.get("niche"))
     _inc_cols = st.columns(3)
     with _inc_cols[0]:
-        if st.button("+3", key="_inc_3", use_container_width=True):
+        if st.button("+3", key="_inc_3", use_container_width=True, disabled=not _has_config):
             state.batch_update(config={"target_count": _memo_target + 3})
             if state.status in ("idle", "stopped", "paused"):
                 state.update(status="running")
                 restart_running_pipeline()
             st.rerun()
     with _inc_cols[1]:
-        if st.button("+5", key="_inc_5", use_container_width=True):
+        if st.button("+5", key="_inc_5", use_container_width=True, disabled=not _has_config):
             state.batch_update(config={"target_count": _memo_target + 5})
             if state.status in ("idle", "stopped", "paused"):
                 state.update(status="running")
                 restart_running_pipeline()
             st.rerun()
     with _inc_cols[2]:
-        if st.button("+10", key="_inc_10", use_container_width=True):
+        if st.button("+10", key="_inc_10", use_container_width=True, disabled=not _has_config):
             state.batch_update(config={"target_count": _memo_target + 10})
             if state.status in ("idle", "stopped", "paused"):
                 state.update(status="running")
