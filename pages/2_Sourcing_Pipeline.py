@@ -670,12 +670,34 @@ RULES:
 # Tab: Investment Memos
 # ---------------------------------------------------------------------------
 with tab_memos:
+    # Load memo verdicts (liked/rejected) from persistent state
+    if "memo_verdicts" not in st.session_state:
+        try:
+            st.session_state["memo_verdicts"] = dict(state._get("memo_verdicts"))
+        except (AttributeError, KeyError):
+            st.session_state["memo_verdicts"] = {}
+    _verdicts = st.session_state["memo_verdicts"]
+
     if not state.completed_memos:
         st.info(
             "No memos yet. The Write-up Bot will populate this as qualified companies "
             "are identified."
         )
     else:
+        # Sort: rejected memos go to the bottom
+        _sorted_memos = sorted(
+            state.completed_memos,
+            key=lambda m: (
+                _verdicts.get(m.get("company", "")) == "rejected",
+                -(m.get("row") or {}).get("Conviction", 0),
+            ),
+        )
+
+        _rejected_ct = sum(1 for m in _sorted_memos if _verdicts.get(m.get("company", "")) == "rejected")
+        _liked_ct = sum(1 for m in _sorted_memos if _verdicts.get(m.get("company", "")) == "liked")
+        if _rejected_ct or _liked_ct:
+            st.caption(f"{len(_sorted_memos)} memos — {_liked_ct} interested, {_rejected_ct} passed")
+
         # Download all memos
         combined_md = ""
         for memo in state.completed_memos:
@@ -688,16 +710,21 @@ with tab_memos:
         )
 
         # Individual memo expanders
-        for _memo_idx, memo in enumerate(state.completed_memos):
+        for _memo_idx, memo in enumerate(_sorted_memos):
             row = memo.get("row", {})
             conv = row.get("Conviction", "")
             is_closest_fit = memo.get("closest_fit", False)
+            _verdict = _verdicts.get(memo.get("company", ""))
             conv_label = f" — Conviction {conv}/10" if conv else ""
             if is_closest_fit:
                 conv_label += " ⚠️ CLOSEST FIT"
-            with st.expander(
-                f"{memo['company']} — {row.get('City', '')}, {row.get('State', '')}{conv_label}"
-            ):
+            if _verdict == "rejected":
+                _expander_label = f"~~{memo['company']} — {row.get('City', '')}, {row.get('State', '')}{conv_label}~~ (Passed)"
+            elif _verdict == "liked":
+                _expander_label = f"{memo['company']} — {row.get('City', '')}, {row.get('State', '')}{conv_label} ✓ Interested"
+            else:
+                _expander_label = f"{memo['company']} — {row.get('City', '')}, {row.get('State', '')}{conv_label}"
+            with st.expander(_expander_label):
                 # Closest-fit warning banner
                 if is_closest_fit:
                     cf_reason = memo.get("closest_fit_reason", "Below conviction threshold")
@@ -912,12 +939,22 @@ with tab_memos:
                     if st.button("👍 Interested", key=f"{fb_key}_yes"):
                         from lib.feedback import save_feedback
                         save_feedback(memo["company"], "Interested — wants to pursue", niche=cfg.get("niche"), verdict="liked")
-                        st.success("Noted — we'll find more like this.")
+                        _verdicts[memo["company"]] = "liked"
+                        try:
+                            state.update(memo_verdicts=dict(_verdicts))
+                        except Exception:
+                            pass
+                        st.rerun()
                 with fb_cols[1]:
                     if st.button("👎 Pass", key=f"{fb_key}_no"):
                         from lib.feedback import save_feedback
                         save_feedback(memo["company"], "Passed", niche=cfg.get("niche"), verdict="rejected")
-                        st.info("Noted.")
+                        _verdicts[memo["company"]] = "rejected"
+                        try:
+                            state.update(memo_verdicts=dict(_verdicts))
+                        except Exception:
+                            pass
+                        st.rerun()
                 with fb_cols[2]:
                     if st.button("🔁 Find More Like This", key=f"{fb_key}_more"):
                         result = state.apply_command({
