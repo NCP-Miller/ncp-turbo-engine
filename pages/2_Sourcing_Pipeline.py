@@ -258,7 +258,32 @@ with st.sidebar:
     st.divider()
     st.caption("Progress")
     cfg = state.config
-    st.metric("Memos Completed", f"{len(state.completed_memos)} / {cfg.get('target_count') or 0}")
+    _memo_completed = len(state.completed_memos or [])
+    _memo_target = cfg.get('target_count') or 0
+    st.metric("Memos Completed", f"{_memo_completed} / {_memo_target}")
+    _has_config = bool(cfg.get("niche"))
+    _inc_cols = st.columns(3)
+    with _inc_cols[0]:
+        if st.button("+3", key="_inc_3", use_container_width=True, disabled=not _has_config):
+            state.batch_update(config={"target_count": _memo_target + 3})
+            if state.status in ("idle", "stopped", "paused"):
+                state.update(status="running")
+                restart_running_pipeline()
+            st.rerun()
+    with _inc_cols[1]:
+        if st.button("+5", key="_inc_5", use_container_width=True, disabled=not _has_config):
+            state.batch_update(config={"target_count": _memo_target + 5})
+            if state.status in ("idle", "stopped", "paused"):
+                state.update(status="running")
+                restart_running_pipeline()
+            st.rerun()
+    with _inc_cols[2]:
+        if st.button("+10", key="_inc_10", use_container_width=True, disabled=not _has_config):
+            state.batch_update(config={"target_count": _memo_target + 10})
+            if state.status in ("idle", "stopped", "paused"):
+                state.update(status="running")
+                restart_running_pipeline()
+            st.rerun()
     st.metric("Candidates in Queue", len(state.candidate_queue))
     st.metric("Qualified Pending Memo", len(state.qualified_queue))
 
@@ -469,6 +494,12 @@ If "command", also identify the specific action and arguments. Supported command
    IMPORTANT: additional_count is how many MORE they want on top of the
    {_completed} already completed. If they say "one more in VA and two more in MD"
    that is additional_count=3.
+9. "add_companies" — user wants to add SPECIFIC companies by name for the pipeline
+   to research and write memos on.
+   args: {{"company_names": ["Company A", "Company B", ...]}}.
+   Examples: "research Practifi, Orion Advisor, and Nitrogen Wealth",
+   "add Acme Corp to the pipeline", "look into these companies: X, Y, Z",
+   "write a memo on Practifi".
 
 User message: "{user_msg}"
 
