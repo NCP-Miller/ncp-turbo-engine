@@ -4611,5 +4611,12 @@
     "niche": "Please find me software and services vendors providing regulatory compliance solutions to RIAs and wealth management firms. I do not want consulting companies.",
     "verdict": "caveats",
     "timestamp": "2026-05-29T21:43:49.706408+00:00"
+  },
+  {
+    "company": "Velocity FinCrime Solutions Suite (Velocity FSS)",
+    "feedback": "Passed",
+    "niche": "Please find me software and services vendors providing regulatory compliance solutions to RIAs and wealth management firms. I do not want consulting companies.",
+    "verdict": "rejected",
+    "timestamp": "2026-05-29T21:43:53.286234+00:00"
   }
 ]
