@@ -494,12 +494,14 @@ If "command", also identify the specific action and arguments. Supported command
    IMPORTANT: additional_count is how many MORE they want on top of the
    {_completed} already completed. If they say "one more in VA and two more in MD"
    that is additional_count=3.
-9. "add_companies" — user wants to add SPECIFIC companies by name for the pipeline
-   to research and write memos on.
-   args: {{"company_names": ["Company A", "Company B", ...]}}.
+9. "add_companies" — user wants to add SPECIFIC companies by name or website URL
+   for the pipeline to research and write memos on.
+   args: {{"company_names": ["Company A", "https://example.com", "acme.com", ...]}}.
+   Accepts company names, full URLs, or bare domains — mix and match.
    Examples: "research Practifi, Orion Advisor, and Nitrogen Wealth",
    "add Acme Corp to the pipeline", "look into these companies: X, Y, Z",
-   "write a memo on Practifi".
+   "write a memo on Practifi", "research practifi.com and orionadvisor.com",
+   "add https://www.acmecorp.com to the pipeline".
 
 User message: "{user_msg}"
 
