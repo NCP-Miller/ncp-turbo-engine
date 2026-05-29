@@ -1071,9 +1071,12 @@ with tab_near:
                     st.info(f"**Analyst pitch:** {pitch}")
 
                 # Promote to memo button
+                _already_memo = any(m.get("company") == company for m in (state.completed_memos or []))
                 _pc, _pf = st.columns([1, 3])
                 with _pc:
-                    if st.button("Promote to Memo", key=f"promote_{_nm_key}", use_container_width=True):
+                    if _already_memo:
+                        st.button("Already in Memos", key=f"promote_{_nm_key}", use_container_width=True, disabled=True)
+                    elif st.button("Promote to Memo", key=f"promote_{_nm_key}", use_container_width=True):
                         try:
                             from lib.api_clients import load_api_keys, make_openai_client
                             from pipeline.orchestrator import _generate_memo
@@ -1092,7 +1095,10 @@ with tab_near:
                         except Exception as e:
                             st.error(f"Failed to generate memo: {e}")
                 with _pf:
-                    st.caption("Promote this near-miss to a full investment memo.")
+                    if _already_memo:
+                        st.caption("This company already has a memo.")
+                    else:
+                        st.caption("Promote this near-miss to a full investment memo.")
 
 
 # ---------------------------------------------------------------------------
