@@ -38,6 +38,11 @@ _PE_VC_SIGNALS = [
     "advent international", "general atlantic", "summit partners",
     "series a", "series b", "series c", "series d", "series e",
     "funding round", "raised $", "investment from",
+    "updata partners", "salesforce ventures", "accel", "andreessen",
+    "sequoia", "bessemer", "battery ventures", "jmi equity",
+    "spectrum equity", "k1 investment", "long ridge equity",
+    "norwest venture", "tiger global", "coatue", "iconiq",
+    "susquehanna growth", "strategic investor",
 ]
 
 _KNOWN_PE_PORTFOLIOS = {
@@ -58,6 +63,14 @@ _KNOWN_PE_PORTFOLIOS = {
     "summit partners":      "https://www.summitpartners.com/companies",
     "new capital partners": "https://www.newcapitalpartners.com/portfolio",
     "bv investment":        "https://www.bvinvestmentpartners.com/portfolio",
+    "updata partners":      "https://www.updata.com/portfolio/",
+    "jmi equity":           "https://jmiequity.com/portfolio/",
+    "spectrum equity":      "https://www.spectrumequity.com/portfolio",
+    "k1 investment":        "https://k1.com/portfolio/",
+    "long ridge equity":    "https://www.longridgeep.com/portfolio",
+    "battery ventures":     "https://www.battery.com/our-portfolio/",
+    "accel":                "https://www.accel.com/portfolio",
+    "norwest venture":      "https://www.nvp.com/portfolio/",
 }
 
 
@@ -466,7 +479,7 @@ def check_pe_vc_web(client, firecrawl_scrape_fn, company_name, domain):
 
     # 1. Company's own about/investor pages
     if domain:
-        for path in ["/about", "/about-us", "/investors", "/company"]:
+        for path in ["/about", "/about-us", "/investors", "/company", "/press"]:
             content = firecrawl_scrape_fn(f"https://{domain}{path}")
             if content and len(content) >= 100:
                 snippets.append(content[:8000])
@@ -478,6 +491,12 @@ def check_pe_vc_web(client, firecrawl_scrape_fn, company_name, domain):
         if content and len(content) >= 200:
             snippets.append(f"CRUNCHBASE PROFILE:\n{content[:10000]}")
             break
+
+    # 2b. Tracxn profile (backup funding source)
+    tracxn_slug = company_name.lower().replace(" ", "-").replace(",", "").replace(".", "")
+    content = firecrawl_scrape_fn(f"https://tracxn.com/d/companies/{tracxn_slug}")
+    if content and len(content) >= 200:
+        snippets.append(f"TRACXN PROFILE:\n{content[:8000]}")
 
     # 3. Cross-check with PE firm portfolio pages if their name appears
     snippet_text = " ".join(snippets).lower()
