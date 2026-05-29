@@ -4289,5 +4289,19 @@
     "niche": "Pleasen find employee benefit administrators with ICHRA (Individual Coverage Health Reimbursement Arrangement) service offerings. Find more companies similar to Leap. Anchor traits: Leap is a healthcare company focused on transforming the specialty infusion care process by eliminating hidden drug markups and enabling at-home treatments. They serve employers and patients by providing a transparent, patient-centered model that integrates directly with health plans to reduce costs and improve access to infusion therapies. Leap operates within the healthcare sector, aiming to simplify and make life-sustaining treatments more affordable and accessible. | Differentiated: Low | Industry:  | Size: 39 employees.. Find more companies similar to myLaurel\u00ae. Anchor traits: myLaurel\u00ae is a healthcare organization that specializes in delivering acute and transitional care at home, aiming to improve patient outcomes and reduce hospital capacity constraints. They work with health systems and payers to provide a hybrid model of hands-on clinical care supported by virtual technology, focusing on high-risk patients to prevent unnecessary hospitalizations and lower healthcare costs. | Differentiated: Low | Industry:  | Size: 71 employees.. Find more companies similar to KSA Insurance. Anchor traits: KSA Insurance is an independent insurance agency headquartered in Charleston, South Carolina, serving clients throughout the South and across the East Coast. The company offers a comprehensive range of personal and commercial insurance products, including property, casualty, health, and life insurance, through an extensive carrier network. | Differentiated: Low | Industry:  | Size: 36 employees.",
     "verdict": "caveats",
     "timestamp": "2026-05-27T23:04:37.433856+00:00"
+  },
+  {
+    "company": "17a-4 LLC",
+    "feedback": "Passed",
+    "niche": "Please find me software and services vendors providing regulatory compliance solutions to RIAs and wealth management firms. I do not want consulting companies.",
+    "verdict": "rejected",
+    "timestamp": "2026-05-29T21:37:16.513819+00:00"
+  },
+  {
+    "company": "17a-4 LLC",
+    "feedback": "Upon further research, this is not very differentiated. Companies like Azure and Office 365 and Smarsh can do similar things",
+    "niche": "Please find me software and services vendors providing regulatory compliance solutions to RIAs and wealth management firms. I do not want consulting companies.",
+    "verdict": "caveats",
+    "timestamp": "2026-05-29T21:37:42.397345+00:00"
   }
 ]
