@@ -119,6 +119,7 @@
     "niche": "Please find companies offering compliance technology and compliance services to RIAs and wealth management firms.",
     "geography": "NCP Priority Geography (Eastern US)",
     "memo_count": 3,
-    "active": true
+    "active": true,
+    "status": "paused"
   }
 ]
