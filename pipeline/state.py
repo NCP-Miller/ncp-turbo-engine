@@ -589,7 +589,56 @@ class PipelineState:
             applied_str = "; ".join(applied) if applied else "no changes detected"
             return {"success": True, "message": f"Pivot applied. {applied_str}. {summary}", "restart": was_idle}
 
+        if action == "add_companies":
+            names = args.get("company_names") or []
+            if not names:
+                return {"success": False, "message": "No company names provided."}
+            with self._lock:
+                self._conn.execute("BEGIN IMMEDIATE")
+                try:
+                    try:
+                        pending = self._get("manual_companies")
+                    except KeyError:
+                        pending = []
+                        self._conn.execute(
+                            "INSERT INTO pipeline_state (key, value) VALUES (?, ?)",
+                            ("manual_companies", "[]"),
+                        )
+                    pending.extend(names)
+                    self._set("manual_companies", pending)
+                    cfg = self._get("config")
+                    current_target = cfg.get("target_count") or 0
+                    cfg["target_count"] = current_target + len(names)
+                    self._set("config", cfg)
+                    self._set("status", "running")
+                    self._conn.execute("COMMIT")
+                except Exception:
+                    self._conn.execute("ROLLBACK")
+                    raise
+            return {
+                "success": True,
+                "message": f"Added {len(names)} company/companies to the pipeline: {', '.join(names)}. Target increased to {current_target + len(names)}.",
+                "restart": True,
+            }
+
         return {"success": False, "message": f"Unknown command: {action}"}
+
+    def pop_manual_companies(self):
+        """Return and clear the list of manually added company names."""
+        with self._lock:
+            self._conn.execute("BEGIN IMMEDIATE")
+            try:
+                try:
+                    pending = self._get("manual_companies")
+                except KeyError:
+                    pending = []
+                if pending:
+                    self._set("manual_companies", [])
+                self._conn.execute("COMMIT")
+                return pending
+            except Exception:
+                self._conn.execute("ROLLBACK")
+                raise
 
     def __getattr__(self, name):
         if name.startswith("_"):

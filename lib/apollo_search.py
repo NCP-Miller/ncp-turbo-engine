@@ -88,6 +88,39 @@ def search_organizations(
 
 
 # ---------------------------------------------------------------------------
+# APOLLO — SEARCH BY COMPANY NAME
+# ---------------------------------------------------------------------------
+def search_organization_by_name(apollo_api_key, company_name):
+    """Find a specific company on Apollo by name.
+
+    Returns the best-matching org dict, or None if not found.
+    """
+    if not company_name:
+        return None
+    url = "https://api.apollo.io/v1/organizations/search"
+    headers = {"Content-Type": "application/json", "X-Api-Key": apollo_api_key}
+    payload = {
+        "q_organization_name": company_name.strip(),
+        "page": 1,
+        "per_page": 5,
+    }
+    try:
+        r = requests.post(url, headers=headers, json=payload, timeout=15)
+        if r.status_code != 200:
+            return None
+        orgs = r.json().get("organizations", [])
+        if not orgs:
+            return None
+        name_lower = company_name.strip().lower()
+        for o in orgs:
+            if (o.get("name") or "").lower() == name_lower:
+                return o
+        return orgs[0]
+    except Exception:
+        return None
+
+
+# ---------------------------------------------------------------------------
 # APOLLO — ORGANIZATION ENRICHMENT (detailed funding data)
 # ---------------------------------------------------------------------------
 def enrich_organization(apollo_api_key, domain):

@@ -593,8 +593,27 @@ def _run_loop():
                 state.batch_update(config={"additional_keywords": ""})
                 state.set_event("narrowed", f"Search narrowed with new keywords: {', '.join(extra)}.", "info")
 
+            # --- Process manually added companies ---
+            manual_names = state.pop_manual_companies()
+            if manual_names:
+                from lib.apollo_search import search_organization_by_name
+                state.set_event("manual_add", f"Looking up {len(manual_names)} manually added company/companies...", "info")
+                _manual_added = 0
+                for _mname in manual_names:
+                    _morg = search_organization_by_name(apollo_key, _mname)
+                    if _morg:
+                        state.add_candidate(_morg)
+                        _manual_added += 1
+                        print(f"[Orchestrator] Manual add: found '{_mname}' on Apollo — queued for analysis.")
+                    else:
+                        print(f"[Orchestrator] Manual add: '{_mname}' not found on Apollo — skipped.")
+                if _manual_added:
+                    state.set_event("manual_add", f"Queued {_manual_added}/{len(manual_names)} companies for analysis.", "info")
+                else:
+                    state.set_event("manual_add", f"Could not find any of the {len(manual_names)} companies on Apollo.", "warning")
+
             # --- Emit starting event ---
-            if state.status == "running" and state.last_event.get("type") not in ("searching_apollo", "discovering_web", "analyzing", "writing_memo"):
+            if state.status == "running" and state.last_event.get("type") not in ("searching_apollo", "discovering_web", "analyzing", "writing_memo", "manual_add"):
                 state.set_event("starting", f"Pipeline starting. Niche: {niche}, geography: {geography}, target: {target_count} memos.", "info")
 
             # --- Check stop/pause/complete conditions ---
