@@ -33491,12 +33491,12 @@
     }
   ],
   "filter_stats": {
-    "total_sourced": 2916,
+    "total_sourced": 2919,
     "pre_filtered_size": 0,
     "pre_filtered_structural": 2122,
     "pre_filtered_blocklist": 57,
     "pre_filtered_niche": 50,
-    "deep_analysis_failed": 586,
+    "deep_analysis_failed": 589,
     "pe_backed": 24,
     "portfolio_conflict": 7,
     "low_differentiation": 69,
