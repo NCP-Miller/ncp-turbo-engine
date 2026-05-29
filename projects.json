@@ -119,6 +119,7 @@
     "niche": "Please find me software and services vendors providing regulatory compliance solutions to RIAs and wealth management firms. I do not want consulting companies.",
     "geography": "NCP Priority Geography (Eastern US)",
     "memo_count": 6,
-    "active": true
+    "active": true,
+    "status": "stopped"
   }
 ]
