@@ -102,20 +102,20 @@
     "active": false
   },
   {
-    "name": "Wealth management and RIA compliance",
-    "slug": "wealth_management_and_ria_compliance",
-    "db_file": "project_wealth_management_and_ria_compliance.db",
-    "created_at": "2026-05-29T17:47:59.209016+00:00",
+    "name": "Wealth management compliance",
+    "slug": "wealth_management_compliance",
+    "db_file": "project_wealth_management_compliance.db",
+    "created_at": "2026-05-29T17:48:10.073068+00:00",
     "niche": "",
     "geography": "",
     "memo_count": 0,
     "active": false
   },
   {
-    "name": "Wealth management compliance",
-    "slug": "wealth_management_compliance",
-    "db_file": "project_wealth_management_compliance.db",
-    "created_at": "2026-05-29T17:48:10.073068+00:00",
+    "name": "Wealth management and RIA compliance",
+    "slug": "wealth_management_and_ria_compliance",
+    "db_file": "project_wealth_management_and_ria_compliance.db",
+    "created_at": "2026-05-29T17:48:17.672163+00:00",
     "niche": "",
     "geography": "",
     "memo_count": 0,
