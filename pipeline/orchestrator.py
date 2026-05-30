@@ -13,7 +13,7 @@ import concurrent.futures
 
 from lib.api_clients import load_api_keys, make_openai_client
 from lib.ai_params import suggest_search_params, refine_search_params
-from lib.apollo_search import search_organizations, web_discovery_pass
+from lib.apollo_search import search_organizations, web_discovery_pass, search_organization_by_name, enrich_organization
 from lib.contacts import firecrawl_scrape, clean_domain
 from lib.filters import is_buyable_structure, is_obvious_mismatch, quick_niche_prefilter
 from lib.worker import process_single_company
@@ -596,9 +596,6 @@ def _run_loop():
             # --- Process manually added companies ---
             manual_names = state.pop_manual_companies()
             if manual_names:
-                import re as _re_manual
-                from lib.apollo_search import search_organization_by_name, enrich_organization
-                from lib.contacts import clean_domain
                 state.set_event("manual_add", f"Looking up {len(manual_names)} manually added company/companies...", "info")
                 _manual_added = 0
                 for _mname in manual_names:
@@ -607,7 +604,7 @@ def _run_loop():
 
                     # Detect if this is a URL or domain (contains a dot + TLD pattern)
                     _cleaned = _mname.replace("https://", "").replace("http://", "").rstrip("/")
-                    _is_url = "." in _cleaned and " " not in _cleaned and _re_manual.search(r"\.\w{2,}", _cleaned)
+                    _is_url = "." in _cleaned and " " not in _cleaned and re.search(r"\.\w{2,}", _cleaned)
 
                     if _is_url:
                         _domain = clean_domain(_mname)
