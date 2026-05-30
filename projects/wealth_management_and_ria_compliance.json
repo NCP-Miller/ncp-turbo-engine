@@ -1,7 +1,7 @@
 {
   "bot_status": {
-    "search": "searching_apollo",
-    "analysis": "filtering",
+    "search": "idle",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -52651,19 +52651,50 @@
         "Conviction Reasoning": "The company does not align well with our investment mandate due to its lack of specialization and competitive edge, similar to past thumbs-down examples like 17a-4 LLC."
       },
       "reason": "Conviction 3/10: The company does not align well with our investment mandate due to its lack of specialization and competitive edge, similar to past thumbs-down examples like 17a-4 LLC."
+    },
+    {
+      "row": {
+        "Company": "naztech Inc",
+        "Description": "Naztech Inc. is an IT services and consulting company specializing in digital transformation, business process automation, and application development. They provide solutions such as cloud computing, data analytics, and financial services technology to enhance business agility and productivity. Operating globally, Naztech serves various industries, including banking and finance, with a focus on integrating advanced technologies like AI and machine learning.",
+        "Website": "http://www.naztech.io",
+        "City": "New York",
+        "State": "New York",
+        "LinkedIn": "http://www.linkedin.com/company/naztech-inc-ltd",
+        "Employees": 51,
+        "Est. EBITDA": "$1.5M\u2013$2.5M",
+        "CEO/Owner Name": "Stephen Mearsley",
+        "Title": "President & CEO",
+        "Email": "info@naztech.us.com",
+        "Email Estimate": "",
+        "Phone": "+880 1708 492 988",
+        "Source": "Web Path (/team)",
+        "Notes": "",
+        "Confidence": "Medium",
+        "Latest News": "N/A",
+        "Previously Sourced": "No",
+        "Differentiated": "Low",
+        "_niche": "I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.",
+        "Priority": "Medium",
+        "Growth": "High",
+        "Txn Readiness": "Low",
+        "Conviction": 4,
+        "Conviction Pitch": "Naztech Inc. offers a range of IT services focused on digital transformation and application development, catering primarily to sectors like banking and finance. However, there is limited differentiation in their offerings, as their capabilities in cloud computing and AI integration are services provided by numerous other firms. Without a unique edge or specialized compliance solutions specifically for RIAs and private wealth advisors, this company doesn't align strongly with our investment mandate, especially considering the competitive landscape.",
+        "Conviction Reasoning": "Low differentiation and a lack of specialized compliance solutions make it less compelling."
+      },
+      "reason": "Conviction 4/10: Low differentiation and a lack of specialized compliance solutions make it less compelling."
     }
   ],
   "reviewed_near_misses": [],
   "filter_stats": {
-    "total_sourced": 2940,
+    "total_sourced": 2943,
     "pre_filtered_size": 0,
-    "pre_filtered_structural": 1996,
+    "pre_filtered_structural": 1997,
     "pre_filtered_blocklist": 59,
     "pre_filtered_niche": 54,
     "deep_analysis_failed": 551,
     "pe_backed": 48,
-    "portfolio_conflict": 13,
-    "low_differentiation": 219,
+    "portfolio_conflict": 14,
+    "low_differentiation": 220,
     "qualified": 0
   },
   "last_event": {
