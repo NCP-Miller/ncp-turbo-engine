@@ -121,6 +121,6 @@
     "memo_count": 0,
     "active": true,
     "backup_status": "not_configured",
-    "status": "paused"
+    "status": "running"
   }
 ]
