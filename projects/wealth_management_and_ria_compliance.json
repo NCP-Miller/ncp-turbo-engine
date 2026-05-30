@@ -1,7 +1,7 @@
 {
   "bot_status": {
-    "search": "searching_apollo",
-    "analysis": "filtering",
+    "search": "error",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -41423,6 +41423,14 @@
     {
       "role": "assistant",
       "content": "Understood. I'll ensure IT consulting firms are filtered out from the search results. Let's focus on finding companies that truly align with the compliance solutions niche."
+    },
+    {
+      "role": "user",
+      "content": "Please write memos on these businesses: ViewPoint Partners https://viewpointpartners.co/, Smartria https://smart-ria.com/, Ionfi https://ionfi.com/en, Trillium https://trilliumsurveyor.com/, Terrapin Technologies https://terrapintech.com/, Jordan & Jordan https://www.jandj.com/, Flyer Financial Technologies https://flyerft.com/, n-Tier fs https://www.ntierfs.com/, S3 https://s3.com/, BornTec https://borntec.com/, and PayNways Worldwide https://www.paynwaysworldwide.com/. "
+    },
+    {
+      "role": "assistant",
+      "content": "I'll get started on writing the investment memos for these companies. Expect a detailed analysis on each, focusing on their alignment with our niche and investment criteria. I'll keep you updated on the progress."
     }
   ],
   "user_feedback": [],
@@ -46230,19 +46238,50 @@
         "Conviction Reasoning": "The company does not align well with our investment mandate due to its low differentiation, broad focus, and absence of key deal criteria such as recurring revenue and defensibility."
       },
       "reason": "Conviction 3/10: The company does not align well with our investment mandate due to its low differentiation, broad focus, and absence of key deal criteria such as recurring revenue and defensibility."
+    },
+    {
+      "row": {
+        "Company": "Cyber Defense Technologies",
+        "Description": "Cyber Defense Technologies (CDT) is a company established in 2010 that provides advanced cyber and security engineering services to government and commercial entities. They specialize in enhancing cybersecurity posture through services such as penetration testing, attack simulation, secure system design, cybersecurity policy consulting, and incident response. CDT operates with a team predominantly composed of veterans, leveraging their expertise to serve both federal and state sectors.",
+        "Website": "http://www.cyberdefensetechnologies.com",
+        "City": "Sterling",
+        "State": "Virginia",
+        "LinkedIn": "http://www.linkedin.com/company/cyber-defense-technologies",
+        "Employees": 83,
+        "Est. EBITDA": "$2.5M\u2013$4.2M",
+        "CEO/Owner Name": "N/A",
+        "Title": "N/A",
+        "Email": "N/A",
+        "Email Estimate": "",
+        "Phone": "N/A",
+        "Source": "Not Found",
+        "Notes": "",
+        "Confidence": "Low",
+        "Latest News": "Pentagon announces senior appointments to CIO\u2019s office - Nextgov/FCW | https://news.google.com/rss/articles/CBMingFBVV95cUxPaXVvVVJGNVAzR2xQVzlTMmc5bkd2S1lpTHhRYWZhWmplWmZwRldEc1h4cjNnclF3d2ZtLV96b3lSMzRjUjdDd2RyY21icHdKa3JOd3BweERDWmlXQllMM0prRUhlQXlZWU4yeVpHWFp3TDdJSnl4cFVKSlRzSHFHaU9PZXRSQnViSkFuQkNmalVxaDU0V3RiWlhobEViZw?oc=5",
+        "Previously Sourced": "No",
+        "Differentiated": "Low",
+        "_niche": "I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.",
+        "Priority": "Medium",
+        "Growth": "Low",
+        "Txn Readiness": "Low",
+        "Conviction": 4,
+        "Conviction Pitch": "Cyber Defense Technologies offers cybersecurity services to government and commercial entities, specializing in penetration testing and secure system design with a veteran-heavy team. However, the differentiation in the cybersecurity field appears low with limited proprietary technology or unique market positioning.",
+        "Conviction Reasoning": "The company operates in a growing market with cybersecurity mandates being a secular tailwind, but lacks a clear 'right to win' or defensible moat given low differentiation."
+      },
+      "reason": "Conviction 4/10: The company operates in a growing market with cybersecurity mandates being a secular tailwind, but lacks a clear 'right to win' or defensible moat given low differentiation."
     }
   ],
   "reviewed_near_misses": [],
   "filter_stats": {
-    "total_sourced": 1647,
+    "total_sourced": 1650,
     "pre_filtered_size": 0,
     "pre_filtered_structural": 1366,
-    "pre_filtered_blocklist": 30,
+    "pre_filtered_blocklist": 31,
     "pre_filtered_niche": 54,
-    "deep_analysis_failed": 144,
+    "deep_analysis_failed": 145,
     "pe_backed": 11,
     "portfolio_conflict": 4,
-    "low_differentiation": 38,
+    "low_differentiation": 39,
     "qualified": 0
   },
   "last_event": {
@@ -46256,9 +46295,33 @@
     "niche": "I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.",
     "geography": "NCP Priority Geography (Eastern US)",
     "strategy": "A",
-    "target_count": 10,
+    "target_count": 32,
     "broaden_signal": false,
     "additional_keywords": ""
   },
-  "status": "running"
+  "status": "running",
+  "manual_companies": [
+    "ViewPoint Partners",
+    "https://viewpointpartners.co/",
+    "Smartria",
+    "https://smart-ria.com/",
+    "Ionfi",
+    "https://ionfi.com/en",
+    "Trillium",
+    "https://trilliumsurveyor.com/",
+    "Terrapin Technologies",
+    "https://terrapintech.com/",
+    "Jordan & Jordan",
+    "https://www.jandj.com/",
+    "Flyer Financial Technologies",
+    "https://flyerft.com/",
+    "n-Tier fs",
+    "https://www.ntierfs.com/",
+    "S3",
+    "https://s3.com/",
+    "BornTec",
+    "https://borntec.com/",
+    "PayNways Worldwide",
+    "https://www.paynwaysworldwide.com/"
+  ]
 }
