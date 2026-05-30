@@ -119,6 +119,7 @@
     "niche": "I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.",
     "geography": "NCP Priority Geography (Eastern US)",
     "memo_count": 0,
-    "active": true
+    "active": true,
+    "status": "stopped"
   }
 ]
