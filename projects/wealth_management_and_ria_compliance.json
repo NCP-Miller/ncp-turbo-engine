@@ -1,7 +1,7 @@
 {
   "bot_status": {
     "search": "idle",
-    "analysis": "filtering",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -30997,19 +30997,81 @@
         "Conviction Reasoning": "The combination of low differentiation and low readiness makes SiliconExpert a weak candidate for our specific investment mandate."
       },
       "reason": "Conviction 2/10: The combination of low differentiation and low readiness makes SiliconExpert a weak candidate for our specific investment mandate."
+    },
+    {
+      "row": {
+        "Company": "All Lines Technology",
+        "Description": "All Lines Technology, based in Pittsburgh, is a technology solutions and services provider specializing in infrastructure, edge to cloud, and cybersecurity solutions. Founded in 2000, the company serves a diverse range of clients from start-ups to Fortune 500 companies, offering services such as IT consulting, managed services, and cybersecurity consulting on a global scale.",
+        "Website": "http://www.all-lines-tech.com",
+        "City": "Cranberry",
+        "State": "Pennsylvania",
+        "LinkedIn": "http://www.linkedin.com/company/alllines",
+        "Employees": 260,
+        "Est. EBITDA": "$7.8M\u2013$13.0M",
+        "CEO/Owner Name": "N/A",
+        "Title": "N/A",
+        "Email": "N/A",
+        "Email Estimate": "",
+        "Phone": "412.279.8700",
+        "Source": "Web (contact only)",
+        "Notes": "",
+        "Confidence": "Medium",
+        "Latest News": "Cranberry Juice Could Help Antibiotics Fight UTIs - Technology Networks | https://news.google.com/rss/articles/CBMiswFBVV95cUxOa0tISVRMSkJWUFktUVJFTjU3Z3hRMnNIZ21xR1NTY2hfQWlBeUxHLVVjYmdfQ25KQU0wQk9YSDVWeXU1TU55SGRfWVk1NTJKSWxNNE9lQ0E2MjlWejAyalczSmx0eEVRMHlyUjQ0c2h0a3ljV3h5YjQtR3AxeU4wVFlIbFROTjc3VG5RSDk2d1ZtaWJOdVJYRzZZY3VmMjlJX1RVbFc1QnlJM1dOd2N2QXhEOA?oc=5",
+        "Previously Sourced": "No",
+        "Differentiated": "Low",
+        "_niche": "I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.",
+        "Priority": "Low",
+        "Growth": "High",
+        "Txn Readiness": "Low",
+        "Conviction": 3,
+        "Conviction Pitch": "All Lines Technology offers technology solutions and services in infrastructure, edge to cloud, and cybersecurity, but lacks specific differentiation in the crowded technology services sector. The company operates in a highly competitive market with major players offering similar services, and there's no indication of a defensible moat or unique advantage. Given its low differentiation and transactional readiness, this company doesn't align with our investment mandate priorities.",
+        "Conviction Reasoning": "The low differentiation and lack of a defensible advantage, paired with its positioning in a competitive market, significantly reduce the potential for All Lines Technology to provide an 'unfair advantage' or a compelling investment case."
+      },
+      "reason": "Conviction 3/10: The low differentiation and lack of a defensible advantage, paired with its positioning in a competitive market, significantly reduce the potential for All Lines Technology to provide an 'unfair advantage' or a compelling investment case."
+    },
+    {
+      "row": {
+        "Company": "i2e Consulting",
+        "Description": "i2e Consulting is a technology partner focused on the life sciences industry, providing digital transformation solutions for pharmaceutical and biotech companies. They specialize in areas such as Clinical Data Management and Project & Portfolio Management (PPM), utilizing AI-driven frameworks to enhance execution and deliver measurable impacts. Recognized for their expertise, i2e Consulting supports clients in accelerating innovations to improve patient outcomes.",
+        "Website": "http://www.i2econsulting.com",
+        "City": "Groton",
+        "State": "Connecticut",
+        "LinkedIn": "http://www.linkedin.com/company/i2e-consulting",
+        "Employees": 300,
+        "Est. EBITDA": "$9.0M\u2013$15.0M",
+        "CEO/Owner Name": "N/A",
+        "Title": "N/A",
+        "Email": "solutions@i2econsulting.com",
+        "Email Estimate": "",
+        "Phone": "+1(866) 968-9995",
+        "Source": "Web (contact only)",
+        "Notes": "",
+        "Confidence": "Medium",
+        "Latest News": "N/A",
+        "Previously Sourced": "No",
+        "Differentiated": "Low",
+        "_niche": "I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.",
+        "Priority": "Low",
+        "Growth": "High",
+        "Txn Readiness": "Low",
+        "Conviction": 3,
+        "Conviction Pitch": "i2e Consulting appears to be a competent company within the life sciences niche, leveraging AI to enhance project and portfolio management, but it lacks a unique differentiation or defensible moat in a competitive space. The company's growth prospects are high; however, it doesn't currently cater to our focus on compliance solutions for RIAs and private wealth advisors, making it a less strategic fit for our investment criteria. Without a clear standout trait or a compelling reason to believe they have an 'unfair advantage' in their market, it's not aligned with our investment mandate at this time.",
+        "Conviction Reasoning": "This company lacks differentiation and does not align with our specific search focus on compliance solutions for RIAs and private wealth advisors."
+      },
+      "reason": "Conviction 3/10: This company lacks differentiation and does not align with our specific search focus on compliance solutions for RIAs and private wealth advisors."
     }
   ],
   "reviewed_near_misses": [],
   "filter_stats": {
-    "total_sourced": 1917,
+    "total_sourced": 1920,
     "pre_filtered_size": 0,
-    "pre_filtered_structural": 1484,
+    "pre_filtered_structural": 1485,
     "pre_filtered_blocklist": 33,
     "pre_filtered_niche": 54,
     "deep_analysis_failed": 227,
     "pe_backed": 16,
     "portfolio_conflict": 8,
-    "low_differentiation": 95,
+    "low_differentiation": 97,
     "qualified": 0
   },
   "last_event": {
