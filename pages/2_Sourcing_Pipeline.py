@@ -177,8 +177,17 @@ with st.sidebar:
             if _save_name.strip():
                 if state.status == "running":
                     stop_pipeline()
-                save_project(_save_name.strip())
-                st.success(f"Saved: **{_save_name.strip()}**")
+                _save_result = save_project(_save_name.strip())
+                _bstatus = _save_result.get("backup_status", "unknown")
+                if _bstatus == "verified":
+                    _bcount = _save_result.get("backup_memo_count", 0)
+                    st.success(f"Saved and backed up to GitHub ({_bcount} memos verified on cloud).")
+                elif _bstatus == "not_configured":
+                    st.warning(f"Saved locally only — GitHub backup not configured. Data will be lost on redeploy.")
+                elif _bstatus in ("failed", "error", "unverified"):
+                    st.error(f"Saved locally but GitHub backup {_bstatus}. Save again or check your GitHub token.")
+                else:
+                    st.success(f"Saved: **{_save_name.strip()}**")
                 st.rerun()
             else:
                 st.warning("Enter a project name.")
