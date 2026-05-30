@@ -82,6 +82,14 @@ def _check_password():
 if not _check_password():
     st.stop()
 
+# Restore projects from GitHub BEFORE opening the state DB connection.
+# On Streamlit Cloud redeploys, the filesystem is wiped. ensure_restored()
+# downloads project data from GitHub. This MUST happen before PipelineState()
+# opens state.db, otherwise the state connection reads empty defaults and
+# never picks up the restored data.
+from pipeline.projects import ensure_restored
+ensure_restored()
+
 # Re-attach background pipeline if one was running.
 # restart_running_pipeline() checks if status == "running" and re-spawns the
 # orchestrator thread — this is what makes the pipeline survive browser
