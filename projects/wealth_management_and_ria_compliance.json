@@ -6,7 +6,41 @@
   },
   "candidate_queue": [],
   "qualified_queue": [],
-  "completed_memos": [],
+  "completed_memos": [
+    {
+      "company": "Terrapin Technologies, Inc.",
+      "row": {
+        "Company": "Terrapin Technologies, Inc.",
+        "Description": "Terrapin Technologies, Inc. is a financial software company founded in 1995 and based in Bloomington, Minnesota. It specializes in providing data aggregation, reporting, compliance, and automation solutions for wealth management firms, utilizing web-based technology to enhance visibility, profitability, and regulatory adherence. The company's digital platform automates processes related to compensation, compliance, and reporting, supporting wealth management firms in achieving operational efficiency and scalable growth.",
+        "Website": "http://www.terrapintech.com",
+        "City": "Bloomington",
+        "State": "Minnesota",
+        "LinkedIn": "http://www.linkedin.com/company/terrapin-technologies-inc",
+        "Employees": 17,
+        "Est. EBITDA": "$510K\u2013$850K",
+        "CEO/Owner Name": "Kristefor Lysne",
+        "Title": "President",
+        "Email": "N/A",
+        "Email Estimate": "kristefor.lysne@terrapintech.com",
+        "Phone": "N/A",
+        "Source": "Web Path (/about)",
+        "Notes": "",
+        "Confidence": "Medium",
+        "Latest News": "N/A",
+        "Previously Sourced": "No",
+        "Differentiated": "Medium",
+        "_niche": "I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.",
+        "Priority": "High",
+        "Growth": "Low",
+        "Txn Readiness": "Low",
+        "Conviction": 5,
+        "Conviction Pitch": "Terrapin Technologies, Inc. offers a robust digital platform for data aggregation and compliance solutions catering specifically to wealth management firms. While the technology supports operational efficiency and regulatory adherence, the differentiation appears medium and the company's growth and transaction readiness are currently low. The deal lacks the clear, distinctive edge necessary to stand out significantly from other operators in the space.",
+        "Conviction Reasoning": "The company's offering aligns with our investment mandate in providing essential services with some level of differentiation, but it lacks the standout characteristics or high growth potential we prioritize for strong conviction deals."
+      },
+      "memo": "New Capital Partners  \nInvestment Memo: Terrapin Technologies, Inc.  \nDate: [Insert Date]\n\n**1. Why We're Excited**  \nTerrapin Technologies, Inc. stands out due to its specialized digital platform tailored for data aggregation and compliance solutions in the wealth management industry. The unique automation of compensation, compliance, and reporting processes presents a distinct advantage, expected to drive operational efficiency, particularly in a sector navigating complex regulatory landscapes. This entrenched position within a niche market, combined with potential succession opportunities as the founder nears retirement, makes it an attractive prospect for further exploration.\n\n**2. Company Overview**  \nFounded in 1995 and headquartered in Bloomington, Minnesota, Terrapin Technologies employs 17 staff members. It provides financial software solutions emphasizing compliance and data management for wealth management firms. The company's platform aids firms in optimizing profitability and regulatory adherence by automating key operational processes.\n\n**3. Differentiated Value Proposition**  \nTerrapin Technologies leverages a web-based platform capable of automating multi-faceted processes, which serves as a moderate competitive moat. While differentiation is currently rated medium, the integration of compliance and reporting functionalities suggests a keen alignment with industry needs for regulatory adherence, offering an efficient, streamlined solution over manual alternatives.\n\n**4. Market Opportunity & Growth**  \nOperating within the growing wealth management sector, Terrapin benefits from secular tailwinds such as increasing compliance mandates and the digitization of financial services. However, growth potential is currently low, necessitating further investigation. The market remains fragmented with no clear industry leader, creating opportunities for further expansion and consolidation.\n\n**5. NCP Fit Rationale**  \nNCP's focus on lower middle-market services and technology companies aligns well with Terrapin\u2019s business model, which supports regulatory compliance and operational efficiencies within the wealth management sector. The company's founder-owned structure presents opportunities for nurturing a leadership transition, further cementing its fit with NCP's investment thesis. Terrapin\u2019s regional presence without substantial direct competition offers a platform for potential buy-and-build strategies.\n\n**6. Key Risks & Diligence Items**  \n- **EBITDA Validation:** Estimated EBITDA ($510K\u2013$850K) is heuristic-based and requires immediate verification.  \n- **Growth Assessment:** Low current growth necessitates an in-depth evaluation of historical performance and future pipeline prospects.  \n- **Technology Differentiation:** Further investigation into the company\u2019s technology stack is essential to confirm its unique positioning in the market.  \n- **Succession Planning:** Understanding the founder's transition plans and assessing the current management team's readiness and capability to lead post-transition.  \n- **Revenue Model Review:** Assess the stability and composition of revenue streams to evaluate contract lengths, renewal rates, and overall customer retention.\n\nNCP should prioritize these diligence items to accurately gauge Terrapin Technologies\u2019 potential as a strategic acquisition target.",
+      "promoted_from_near_miss": true
+    }
+  ],
   "chat_history": [
     {
       "role": "user",
@@ -18431,6 +18465,8 @@
   "manual_companies": [],
   "status": "paused",
   "reviewed_near_misses": [
-    "Data Based Development Systems"
+    "UsableNet",
+    "Data Based Development Systems",
+    "Terrapin Technologies, Inc."
   ]
 }
