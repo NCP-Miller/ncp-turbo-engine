@@ -18401,7 +18401,6 @@
       "reason": "Conviction 3/10: SL Consulting does not meet our investment criteria due to its lack of differentiation and growth potential, making it a generic operator without a clear competitive advantage in the market."
     }
   ],
-  "reviewed_near_misses": [],
   "filter_stats": {
     "total_sourced": 3797,
     "pre_filtered_size": 0,
@@ -18430,5 +18429,8 @@
     "additional_keywords": ""
   },
   "manual_companies": [],
-  "status": "paused"
+  "status": "paused",
+  "reviewed_near_misses": [
+    "Data Based Development Systems"
+  ]
 }
