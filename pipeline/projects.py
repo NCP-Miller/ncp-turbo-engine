@@ -123,7 +123,7 @@ def save_project(name):
     """Save the current pipeline state as a named project.
 
     If a project with this name already exists, it is overwritten.
-    Returns the project dict.
+    Returns the project dict with 'backup_status' indicating GitHub result.
     """
     _ensure_dir()
     slug = _slugify(name)
@@ -145,6 +145,7 @@ def save_project(name):
         "geography": meta["geography"],
         "memo_count": meta["memo_count"],
         "active": True,
+        "backup_status": "not_configured",
     }
 
     projects = [p for p in projects if p["slug"] != slug]
@@ -155,9 +156,28 @@ def save_project(name):
 
     if _gh_configured():
         try:
-            _gh_backup_project(slug, db_dest)
-            _gh_backup_index(projects)
+            ok1 = _gh_backup_project(slug, db_dest)
+            ok2 = _gh_backup_index(projects)
+            if ok1 and ok2:
+                # Verify: read back from GitHub and confirm data is there
+                from lib.github_backup import _get_credentials, _read_file
+                token, repo = _get_credentials()
+                content, _ = _read_file(token, repo, f"projects/{slug}.json")
+                if content and len(content) > 50:
+                    import json as _vjson
+                    _vdata = _vjson.loads(content)
+                    _v_memos = _vdata.get("completed_memos", [])
+                    entry["backup_status"] = "verified"
+                    entry["backup_memo_count"] = len(_v_memos)
+                    print(f"[Projects] Backup VERIFIED for '{name}': {len(_v_memos)} memos on GitHub.")
+                else:
+                    entry["backup_status"] = "unverified"
+                    print(f"[Projects] Backup uploaded but verification read-back was empty for '{name}'.")
+            else:
+                entry["backup_status"] = "failed"
+                print(f"[Projects] GitHub backup API returned failure for '{name}'.")
         except Exception as e:
+            entry["backup_status"] = "error"
             print(f"[Projects] GitHub backup failed for '{name}': {e}")
 
     return entry
@@ -250,7 +270,7 @@ def delete_project(name):
 
 
 _last_backup_time = 0.0
-_BACKUP_INTERVAL = 120  # seconds between GitHub backups
+_BACKUP_INTERVAL = 30  # seconds between GitHub backups
 
 def update_active_meta():
     """Refresh the metadata (memo_count, niche, etc.) for the active project.
