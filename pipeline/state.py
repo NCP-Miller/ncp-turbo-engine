@@ -160,8 +160,35 @@ class PipelineState:
         pass
 
     def reload_from_disk(self):
-        """Backward-compat no-op. SQLite always reads fresh."""
-        pass
+        """Close and reopen the SQLite connection to pick up external changes.
+
+        Needed after ensure_restored() replaces state.db on redeploys.
+        """
+        try:
+            self._conn.close()
+        except Exception:
+            pass
+        self._conn = sqlite3.connect(DB_PATH, check_same_thread=False, timeout=30.0, isolation_level=None)
+        self._conn.execute("PRAGMA journal_mode=WAL")
+        self._conn.execute("PRAGMA synchronous=NORMAL")
+        self._conn.execute("PRAGMA busy_timeout=30000")
+        self._conn.execute(
+            "CREATE TABLE IF NOT EXISTS pipeline_state (key TEXT PRIMARY KEY, value TEXT NOT NULL)"
+        )
+        row = self._conn.execute("SELECT COUNT(*) FROM pipeline_state").fetchone()
+        if row[0] == 0:
+            defaults = _default_state()
+            self._conn.execute("BEGIN IMMEDIATE")
+            try:
+                for key, value in defaults.items():
+                    self._conn.execute(
+                        "INSERT INTO pipeline_state (key, value) VALUES (?, ?)",
+                        (key, json.dumps(value)),
+                    )
+                self._conn.execute("COMMIT")
+            except Exception:
+                self._conn.execute("ROLLBACK")
+                raise
 
     def update(self, **kwargs):
         with self._lock:
