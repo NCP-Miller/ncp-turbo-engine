@@ -124,6 +124,8 @@ def _recover_project_from_history(token, repo, slug):
 
     The GitHub API commits endpoint lets us list all commits that touched a
     file.  Walk backwards until we find one with completed_memos > 0.
+    Returns the recovered state_dict directly (not just True/False) so
+    callers don't need to read back from GitHub (which can hit CDN cache).
     """
     path = f"projects/{slug}.json"
     commits_url = f"{_API}/repos/{repo}/commits"
@@ -131,10 +133,10 @@ def _recover_project_from_history(token, repo, slug):
     try:
         r = requests.get(commits_url, headers=_headers(token), params=params, timeout=15)
         if r.status_code != 200:
-            return False
+            return None
         commits = r.json()
     except Exception:
-        return False
+        return None
 
     for commit in commits:
         sha = commit.get("sha")
@@ -146,15 +148,15 @@ def _recover_project_from_history(token, repo, slug):
         try:
             data = json.loads(content)
             memos = data.get("completed_memos", [])
+            reviewed = data.get("reviewed_near_misses", [])
             if len(memos) > 0:
-                ok = _write_file(token, repo, path, content,
-                                 message=f"Recover {slug}: restored {len(memos)} memos from {sha[:8]}")
-                if ok:
-                    print(f"[Backup] RECOVERED '{slug}': {len(memos)} memos from commit {sha[:8]}")
-                return ok
+                _write_file(token, repo, path, content,
+                            message=f"Recover {slug}: restored {len(memos)} memos, {len(reviewed)} reviewed from {sha[:8]}")
+                print(f"[Backup] RECOVERED '{slug}': {len(memos)} memos, {len(reviewed)} reviewed from commit {sha[:8]}")
+                return data
         except (json.JSONDecodeError, TypeError):
             continue
-    return False
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -288,15 +290,11 @@ def restore_all():
         memos_in_backup = len(state_dict.get("completed_memos", []))
         if memos_in_backup == 0:
             print(f"[Backup] '{slug}' backup has 0 memos — checking history for recoverable data...")
-            recovered = _recover_project_from_history(token, repo, slug)
-            if recovered:
-                project_content, _ = _read_file(token, repo, f"projects/{slug}.json")
-                if project_content:
-                    try:
-                        state_dict = json.loads(project_content)
-                        print(f"[Backup] '{slug}' recovered {len(state_dict.get('completed_memos', []))} memos from history.")
-                    except (json.JSONDecodeError, TypeError):
-                        pass
+            recovered_data = _recover_project_from_history(token, repo, slug)
+            if recovered_data:
+                state_dict = recovered_data
+                print(f"[Backup] '{slug}' recovered {len(state_dict.get('completed_memos', []))} memos, "
+                      f"{len(state_dict.get('reviewed_near_misses', []))} reviewed from history.")
 
         recovered_count = len(state_dict.get("completed_memos", []))
         if recovered_count > 0 and p.get("memo_count", 0) == 0:
