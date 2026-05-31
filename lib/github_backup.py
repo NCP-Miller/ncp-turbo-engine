@@ -120,12 +120,10 @@ def _write_file(token, repo, path, content, message="Update backup"):
 
 
 def _recover_project_from_history(token, repo, slug):
-    """Find a historical backup version that has actual data and restore it.
+    """Find the best historical backup version and return it.
 
-    The GitHub API commits endpoint lets us list all commits that touched a
-    file.  Walk backwards until we find one with completed_memos > 0.
-    Returns the recovered state_dict directly (not just True/False) so
-    callers don't need to read back from GitHub (which can hit CDN cache).
+    Scans recent commits for the version with the most reviewed_near_misses
+    (not just the first with any memos). Returns the state_dict directly.
     """
     path = f"projects/{slug}.json"
     commits_url = f"{_API}/repos/{repo}/commits"
@@ -138,6 +136,10 @@ def _recover_project_from_history(token, repo, slug):
     except Exception:
         return None
 
+    best_data = None
+    best_reviewed = -1
+    best_sha = None
+
     for commit in commits:
         sha = commit.get("sha")
         if not sha:
@@ -149,14 +151,19 @@ def _recover_project_from_history(token, repo, slug):
             data = json.loads(content)
             memos = data.get("completed_memos", [])
             reviewed = data.get("reviewed_near_misses", [])
-            if len(memos) > 0:
-                _write_file(token, repo, path, content,
-                            message=f"Recover {slug}: restored {len(memos)} memos, {len(reviewed)} reviewed from {sha[:8]}")
-                print(f"[Backup] RECOVERED '{slug}': {len(memos)} memos, {len(reviewed)} reviewed from commit {sha[:8]}")
-                return data
+            if len(memos) > 0 and len(reviewed) > best_reviewed:
+                best_data = data
+                best_reviewed = len(reviewed)
+                best_sha = sha
+                if best_reviewed >= 70:
+                    break
         except (json.JSONDecodeError, TypeError):
             continue
-    return None
+
+    if best_data and best_sha:
+        print(f"[Backup] Best version for '{slug}': {len(best_data.get('completed_memos', []))} memos, "
+              f"{best_reviewed} reviewed from commit {best_sha[:8]}")
+    return best_data
 
 
 # ---------------------------------------------------------------------------
