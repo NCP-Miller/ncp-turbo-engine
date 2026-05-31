@@ -109,7 +109,8 @@
     "niche": "",
     "geography": "",
     "memo_count": 0,
-    "active": false
+    "active": true,
+    "status": "idle"
   },
   {
     "name": "Wealth management and RIA compliance",
@@ -119,7 +120,7 @@
     "niche": "",
     "geography": "",
     "memo_count": 0,
-    "active": true,
+    "active": false,
     "backup_status": "not_configured"
   }
 ]
