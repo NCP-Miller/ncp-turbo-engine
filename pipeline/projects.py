@@ -210,30 +210,30 @@ def load_project(name):
     if not os.path.exists(db_src):
         return None
 
-    # Check if local DB is empty — if so, try recovering from GitHub history
+    # Check GitHub history for better data and merge if found
     _checkpoint_wal(db_src)
     try:
-        from lib.github_backup import export_db_to_json
-        local_state = export_db_to_json(db_src)
-        local_memos = len((local_state or {}).get("completed_memos", []))
-        local_reviewed = len((local_state or {}).get("reviewed_near_misses", []))
         if _gh_configured():
-            from lib.github_backup import _recover_project_from_history, _get_credentials, import_json_to_db
+            from lib.github_backup import export_db_to_json, _recover_project_from_history, _get_credentials, import_json_to_db
             token, repo = _get_credentials()
-            if token and repo and (local_memos == 0 or local_reviewed == 0):
-                print(f"[Projects] '{target['slug']}' has {local_memos} memos, {local_reviewed} reviewed locally — checking history...")
+            if token and repo:
+                local_state = export_db_to_json(db_src) or {}
+                local_memos = len(local_state.get("completed_memos", []))
+                local_reviewed = len(local_state.get("reviewed_near_misses", []))
+                print(f"[Projects] '{target['slug']}' loading: {local_memos} memos, {local_reviewed} reviewed locally — checking history...")
                 recovered_data = _recover_project_from_history(token, repo, target["slug"])
                 if recovered_data:
+                    hist_memos = len(recovered_data.get("completed_memos", []))
                     hist_reviewed = len(recovered_data.get("reviewed_near_misses", []))
-                    if local_memos == 0 or hist_reviewed > local_reviewed:
-                        if local_memos > 0 and hist_reviewed > local_reviewed:
-                            local_state["reviewed_near_misses"] = recovered_data["reviewed_near_misses"]
-                            import_json_to_db(db_src, local_state)
-                            print(f"[Projects] Merged {hist_reviewed} reviewed entries into existing data for '{name}'.")
-                        else:
-                            import_json_to_db(db_src, recovered_data)
-                            target["memo_count"] = len(recovered_data.get("completed_memos", []))
-                            print(f"[Projects] RECOVERED full state for '{name}'.")
+                    print(f"[Projects] History has {hist_memos} memos, {hist_reviewed} reviewed.")
+                    if local_memos == 0 and hist_memos > 0:
+                        import_json_to_db(db_src, recovered_data)
+                        target["memo_count"] = hist_memos
+                        print(f"[Projects] RECOVERED full state for '{name}'.")
+                    elif hist_reviewed > local_reviewed:
+                        local_state["reviewed_near_misses"] = recovered_data["reviewed_near_misses"]
+                        import_json_to_db(db_src, local_state)
+                        print(f"[Projects] Merged {hist_reviewed} reviewed entries (was {local_reviewed}) for '{name}'.")
     except Exception as e:
         print(f"[Projects] Recovery check failed: {e}")
 
