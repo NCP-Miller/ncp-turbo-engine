@@ -692,12 +692,11 @@ RULES:
 # ---------------------------------------------------------------------------
 with tab_memos:
     # Load memo verdicts (liked/rejected) from persistent state
-    if "memo_verdicts" not in st.session_state:
-        try:
-            st.session_state["memo_verdicts"] = dict(state._get("memo_verdicts"))
-        except (AttributeError, KeyError):
-            st.session_state["memo_verdicts"] = {}
-    _verdicts = st.session_state["memo_verdicts"]
+    try:
+        _verdicts = dict(state._get("memo_verdicts"))
+    except (AttributeError, KeyError):
+        _verdicts = {}
+    st.session_state["memo_verdicts"] = _verdicts
 
     if not state.completed_memos:
         st.info(
@@ -1006,12 +1005,11 @@ with tab_near:
     except (AttributeError, KeyError):
         near_misses = []
 
-    if "reviewed_near_misses" not in st.session_state:
-        try:
-            st.session_state["reviewed_near_misses"] = set(state._get("reviewed_near_misses"))
-        except (AttributeError, KeyError):
-            st.session_state["reviewed_near_misses"] = set()
-    _reviewed = st.session_state["reviewed_near_misses"]
+    try:
+        _reviewed = set(state._get("reviewed_near_misses"))
+    except (AttributeError, KeyError):
+        _reviewed = set()
+    st.session_state["reviewed_near_misses"] = _reviewed
 
     if not near_misses:
         st.info(
