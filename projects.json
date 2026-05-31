@@ -109,8 +109,9 @@
     "niche": "",
     "geography": "",
     "memo_count": 0,
-    "active": false,
-    "backup_status": "not_configured"
+    "active": true,
+    "backup_status": "not_configured",
+    "status": "idle"
   },
   {
     "name": "Wealth management compliance",
@@ -120,7 +121,7 @@
     "niche": "",
     "geography": "",
     "memo_count": 0,
-    "active": true,
+    "active": false,
     "backup_status": "not_configured"
   }
 ]
