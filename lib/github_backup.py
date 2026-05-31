@@ -73,9 +73,9 @@ def _ensure_branch(token, repo):
     return ref_resp.status_code in (200, 201)
 
 
-def _read_file(token, repo, path):
+def _read_file(token, repo, path, ref=None):
     url = f"{_API}/repos/{repo}/contents/{path}"
-    r = requests.get(url, headers=_headers(token), params={"ref": _BRANCH}, timeout=15)
+    r = requests.get(url, headers=_headers(token), params={"ref": ref or _BRANCH}, timeout=15)
     if r.status_code != 200:
         return None, None
     data = r.json()
@@ -96,6 +96,44 @@ def _write_file(token, repo, path, content, message="Update backup"):
         payload["sha"] = existing_sha
     r = requests.put(url, headers=_headers(token), json=payload, timeout=20)
     return r.status_code in (200, 201)
+
+
+def _recover_project_from_history(token, repo, slug):
+    """Find a historical backup version that has actual data and restore it.
+
+    The GitHub API commits endpoint lets us list all commits that touched a
+    file.  Walk backwards until we find one with completed_memos > 0.
+    """
+    path = f"projects/{slug}.json"
+    commits_url = f"{_API}/repos/{repo}/commits"
+    params = {"sha": _BRANCH, "path": path, "per_page": 30}
+    try:
+        r = requests.get(commits_url, headers=_headers(token), params=params, timeout=15)
+        if r.status_code != 200:
+            return False
+        commits = r.json()
+    except Exception:
+        return False
+
+    for commit in commits:
+        sha = commit.get("sha")
+        if not sha:
+            continue
+        content, _ = _read_file(token, repo, path, ref=sha)
+        if not content:
+            continue
+        try:
+            data = json.loads(content)
+            memos = data.get("completed_memos", [])
+            if len(memos) > 0:
+                ok = _write_file(token, repo, path, content,
+                                 message=f"Recover {slug}: restored {len(memos)} memos from {sha[:8]}")
+                if ok:
+                    print(f"[Backup] RECOVERED '{slug}': {len(memos)} memos from commit {sha[:8]}")
+                return ok
+        except (json.JSONDecodeError, TypeError):
+            continue
+    return False
 
 
 # ---------------------------------------------------------------------------
@@ -214,6 +252,7 @@ def restore_all():
             continue
         if p.get("active"):
             active_slug = slug
+
         project_content, _ = _read_file(token, repo, f"projects/{slug}.json")
         if not project_content:
             continue
@@ -221,9 +260,34 @@ def restore_all():
             state_dict = json.loads(project_content)
         except (json.JSONDecodeError, TypeError):
             continue
+
+        # If the current backup is empty, check git history for a version
+        # that had actual data (memos). This handles cases where a bug or
+        # empty-state save overwrote a good backup.
+        memos_in_backup = len(state_dict.get("completed_memos", []))
+        if memos_in_backup == 0:
+            print(f"[Backup] '{slug}' backup has 0 memos — checking history for recoverable data...")
+            recovered = _recover_project_from_history(token, repo, slug)
+            if recovered:
+                project_content, _ = _read_file(token, repo, f"projects/{slug}.json")
+                if project_content:
+                    try:
+                        state_dict = json.loads(project_content)
+                        print(f"[Backup] '{slug}' recovered {len(state_dict.get('completed_memos', []))} memos from history.")
+                    except (json.JSONDecodeError, TypeError):
+                        pass
+
+        recovered_count = len(state_dict.get("completed_memos", []))
+        if recovered_count > 0 and p.get("memo_count", 0) == 0:
+            p["memo_count"] = recovered_count
+
         db_dest = os.path.join(STATE_DIR, f"project_{slug}.db")
         import_json_to_db(db_dest, state_dict)
         restored += 1
+
+    # Re-save the projects index with any corrected memo counts
+    with open(projects_file, "w", encoding="utf-8") as f:
+        json.dump(projects, f, indent=2)
 
     if active_slug:
         active_db = os.path.join(STATE_DIR, f"project_{active_slug}.db")

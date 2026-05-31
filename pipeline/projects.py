@@ -156,26 +156,31 @@ def save_project(name):
 
     if _gh_configured():
         try:
-            ok1 = _gh_backup_project(slug, db_dest)
-            ok2 = _gh_backup_index(projects)
-            if ok1 and ok2:
-                # Verify: read back from GitHub and confirm data is there
-                from lib.github_backup import _get_credentials, _read_file
-                token, repo = _get_credentials()
-                content, _ = _read_file(token, repo, f"projects/{slug}.json")
-                if content and len(content) > 50:
-                    import json as _vjson
-                    _vdata = _vjson.loads(content)
-                    _v_memos = _vdata.get("completed_memos", [])
-                    entry["backup_status"] = "verified"
-                    entry["backup_memo_count"] = len(_v_memos)
-                    print(f"[Projects] Backup VERIFIED for '{name}': {len(_v_memos)} memos on GitHub.")
-                else:
-                    entry["backup_status"] = "unverified"
-                    print(f"[Projects] Backup uploaded but verification read-back was empty for '{name}'.")
+            remote_memos = _remote_memo_count(slug)
+            local_memos = meta["memo_count"]
+            if local_memos == 0 and remote_memos > 0:
+                entry["backup_status"] = "skipped_protection"
+                print(f"[Projects] BLOCKED save-backup for '{name}': local has 0 memos but remote has {remote_memos}. Refusing to overwrite.")
             else:
-                entry["backup_status"] = "failed"
-                print(f"[Projects] GitHub backup API returned failure for '{name}'.")
+                ok1 = _gh_backup_project(slug, db_dest)
+                ok2 = _gh_backup_index(projects)
+                if ok1 and ok2:
+                    from lib.github_backup import _get_credentials, _read_file
+                    token, repo = _get_credentials()
+                    content, _ = _read_file(token, repo, f"projects/{slug}.json")
+                    if content and len(content) > 50:
+                        import json as _vjson
+                        _vdata = _vjson.loads(content)
+                        _v_memos = _vdata.get("completed_memos", [])
+                        entry["backup_status"] = "verified"
+                        entry["backup_memo_count"] = len(_v_memos)
+                        print(f"[Projects] Backup VERIFIED for '{name}': {len(_v_memos)} memos on GitHub.")
+                    else:
+                        entry["backup_status"] = "unverified"
+                        print(f"[Projects] Backup uploaded but verification read-back was empty for '{name}'.")
+                else:
+                    entry["backup_status"] = "failed"
+                    print(f"[Projects] GitHub backup API returned failure for '{name}'.")
         except Exception as e:
             entry["backup_status"] = "error"
             print(f"[Projects] GitHub backup failed for '{name}': {e}")
@@ -272,6 +277,24 @@ def delete_project(name):
 _last_backup_time = 0.0
 _BACKUP_INTERVAL = 30  # seconds between GitHub backups
 
+
+def _remote_memo_count(slug):
+    """Check how many memos the GitHub backup currently has for this project."""
+    try:
+        from lib.github_backup import _get_credentials, _read_file
+        token, repo = _get_credentials()
+        if not token or not repo:
+            return 0
+        content, _ = _read_file(token, repo, f"projects/{slug}.json")
+        if not content:
+            return 0
+        import json as _j
+        data = _j.loads(content)
+        return len(data.get("completed_memos", []))
+    except Exception:
+        return 0
+
+
 def update_active_meta():
     """Refresh the metadata (memo_count, niche, etc.) for the active project.
     Periodically backs up the full DB to GitHub so data survives redeploys."""
@@ -294,6 +317,12 @@ def update_active_meta():
     if active_slug and _gh_configured() and (now - _last_backup_time) > _BACKUP_INTERVAL:
         _last_backup_time = now
         try:
+            local_memos = meta["memo_count"]
+            remote_memos = _remote_memo_count(active_slug)
+            if local_memos == 0 and remote_memos > 0:
+                print(f"[Projects] BLOCKED auto-backup: local has 0 memos but remote has {remote_memos}. Refusing to overwrite.")
+                return
+
             db_file = _db_path_for(active_slug)
             if os.path.exists(DB_PATH):
                 _checkpoint_wal(DB_PATH)
