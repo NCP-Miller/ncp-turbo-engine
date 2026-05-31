@@ -116,10 +116,11 @@
     "slug": "wealth_management_and_ria_compliance",
     "db_file": "project_wealth_management_and_ria_compliance.db",
     "created_at": "2026-05-31T02:34:20.533800+00:00",
-    "niche": "I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.",
-    "geography": "NCP Priority Geography (Eastern US)",
-    "memo_count": 17,
+    "niche": "",
+    "geography": "",
+    "memo_count": 0,
     "active": true,
-    "backup_status": "not_configured"
+    "backup_status": "not_configured",
+    "status": "idle"
   }
 ]
