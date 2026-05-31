@@ -156,7 +156,7 @@ def save_project(name):
 
     if _gh_configured():
         try:
-            remote_memos = _remote_memo_count(slug)
+            remote_memos, _ = _remote_counts(slug)
             local_memos = meta["memo_count"]
             if local_memos == 0 and remote_memos > 0:
                 entry["backup_status"] = "skipped_protection"
@@ -216,21 +216,24 @@ def load_project(name):
         from lib.github_backup import export_db_to_json
         local_state = export_db_to_json(db_src)
         local_memos = len((local_state or {}).get("completed_memos", []))
-        if local_memos == 0 and _gh_configured():
-            from lib.github_backup import _recover_project_from_history, _get_credentials, import_json_to_db, _read_file
+        local_reviewed = len((local_state or {}).get("reviewed_near_misses", []))
+        if _gh_configured():
+            from lib.github_backup import _recover_project_from_history, _get_credentials, import_json_to_db
             token, repo = _get_credentials()
-            if token and repo:
-                print(f"[Projects] '{target['slug']}' has 0 memos locally — attempting recovery from GitHub history...")
-                recovered = _recover_project_from_history(token, repo, target["slug"])
-                if recovered:
-                    content, _ = _read_file(token, repo, f"projects/{target['slug']}.json")
-                    if content:
-                        import json as _rj
-                        state_dict = _rj.loads(content)
-                        import_json_to_db(db_src, state_dict)
-                        recovered_count = len(state_dict.get("completed_memos", []))
-                        target["memo_count"] = recovered_count
-                        print(f"[Projects] RECOVERED {recovered_count} memos for '{name}'.")
+            if token and repo and (local_memos == 0 or local_reviewed == 0):
+                print(f"[Projects] '{target['slug']}' has {local_memos} memos, {local_reviewed} reviewed locally — checking history...")
+                recovered_data = _recover_project_from_history(token, repo, target["slug"])
+                if recovered_data:
+                    hist_reviewed = len(recovered_data.get("reviewed_near_misses", []))
+                    if local_memos == 0 or hist_reviewed > local_reviewed:
+                        if local_memos > 0 and hist_reviewed > local_reviewed:
+                            local_state["reviewed_near_misses"] = recovered_data["reviewed_near_misses"]
+                            import_json_to_db(db_src, local_state)
+                            print(f"[Projects] Merged {hist_reviewed} reviewed entries into existing data for '{name}'.")
+                        else:
+                            import_json_to_db(db_src, recovered_data)
+                            target["memo_count"] = len(recovered_data.get("completed_memos", []))
+                            print(f"[Projects] RECOVERED full state for '{name}'.")
     except Exception as e:
         print(f"[Projects] Recovery check failed: {e}")
 
@@ -303,21 +306,21 @@ _last_backup_time = 0.0
 _BACKUP_INTERVAL = 30  # seconds between GitHub backups
 
 
-def _remote_memo_count(slug):
-    """Check how many memos the GitHub backup currently has for this project."""
+def _remote_counts(slug):
+    """Check how many memos and reviewed entries the GitHub backup has."""
     try:
         from lib.github_backup import _get_credentials, _read_file
         token, repo = _get_credentials()
         if not token or not repo:
-            return 0
+            return 0, 0
         content, _ = _read_file(token, repo, f"projects/{slug}.json")
         if not content:
-            return 0
+            return 0, 0
         import json as _j
         data = _j.loads(content)
-        return len(data.get("completed_memos", []))
+        return len(data.get("completed_memos", [])), len(data.get("reviewed_near_misses", []))
     except Exception:
-        return 0
+        return 0, 0
 
 
 def update_active_meta():
@@ -343,9 +346,18 @@ def update_active_meta():
         _last_backup_time = now
         try:
             local_memos = meta["memo_count"]
-            remote_memos = _remote_memo_count(active_slug)
+            remote_memos, remote_reviewed = _remote_counts(active_slug)
             if local_memos == 0 and remote_memos > 0:
                 print(f"[Projects] BLOCKED auto-backup: local has 0 memos but remote has {remote_memos}. Refusing to overwrite.")
+                return
+            # Also block if local has far fewer reviewed entries than remote
+            try:
+                ps = PipelineState()
+                local_reviewed = len(ps._get("reviewed_near_misses") or [])
+            except Exception:
+                local_reviewed = 0
+            if local_reviewed < remote_reviewed and remote_reviewed > 10:
+                print(f"[Projects] BLOCKED auto-backup: local has {local_reviewed} reviewed but remote has {remote_reviewed}. Refusing to overwrite.")
                 return
 
             db_file = _db_path_for(active_slug)
