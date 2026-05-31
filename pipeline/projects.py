@@ -192,7 +192,8 @@ def load_project(name):
     """Load a previously saved project as the active pipeline.
 
     Copies the project's DB to state.db. The caller must stop the
-    orchestrator thread BEFORE calling this.
+    orchestrator thread BEFORE calling this.  If the local DB is empty
+    but GitHub history has data, automatically recovers.
 
     Returns the project dict, or None if not found.
     """
@@ -208,6 +209,30 @@ def load_project(name):
     db_src = os.path.join(STATE_DIR, target["db_file"])
     if not os.path.exists(db_src):
         return None
+
+    # Check if local DB is empty — if so, try recovering from GitHub history
+    _checkpoint_wal(db_src)
+    try:
+        from lib.github_backup import export_db_to_json
+        local_state = export_db_to_json(db_src)
+        local_memos = len((local_state or {}).get("completed_memos", []))
+        if local_memos == 0 and _gh_configured():
+            from lib.github_backup import _recover_project_from_history, _get_credentials, import_json_to_db, _read_file
+            token, repo = _get_credentials()
+            if token and repo:
+                print(f"[Projects] '{target['slug']}' has 0 memos locally — attempting recovery from GitHub history...")
+                recovered = _recover_project_from_history(token, repo, target["slug"])
+                if recovered:
+                    content, _ = _read_file(token, repo, f"projects/{target['slug']}.json")
+                    if content:
+                        import json as _rj
+                        state_dict = _rj.loads(content)
+                        import_json_to_db(db_src, state_dict)
+                        recovered_count = len(state_dict.get("completed_memos", []))
+                        target["memo_count"] = recovered_count
+                        print(f"[Projects] RECOVERED {recovered_count} memos for '{name}'.")
+    except Exception as e:
+        print(f"[Projects] Recovery check failed: {e}")
 
     _checkpoint_wal(db_src)
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)

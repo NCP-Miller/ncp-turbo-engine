@@ -79,8 +79,29 @@ def _read_file(token, repo, path, ref=None):
     if r.status_code != 200:
         return None, None
     data = r.json()
-    content = base64.b64decode(data["content"]).decode("utf-8")
-    return content, data["sha"]
+    content_b64 = data.get("content") or ""
+    if content_b64.strip():
+        content = base64.b64decode(content_b64).decode("utf-8")
+        return content, data.get("sha")
+    # Files >1MB have empty content — use download_url or raw fallback
+    download_url = data.get("download_url")
+    if download_url:
+        try:
+            dl = requests.get(download_url, headers=_headers(token), timeout=30)
+            if dl.status_code == 200:
+                return dl.text, data.get("sha")
+        except Exception:
+            pass
+    # Raw URL fallback for historical refs
+    if ref:
+        raw_url = f"https://raw.githubusercontent.com/{repo}/{ref}/{path}"
+        try:
+            dl = requests.get(raw_url, headers=_headers(token), timeout=30)
+            if dl.status_code == 200:
+                return dl.text, data.get("sha")
+        except Exception:
+            pass
+    return None, None
 
 
 def _write_file(token, repo, path, content, message="Update backup"):
@@ -94,7 +115,7 @@ def _write_file(token, repo, path, content, message="Update backup"):
     }
     if existing_sha:
         payload["sha"] = existing_sha
-    r = requests.put(url, headers=_headers(token), json=payload, timeout=20)
+    r = requests.put(url, headers=_headers(token), json=payload, timeout=60)
     return r.status_code in (200, 201)
 
 
