@@ -19216,5 +19216,8 @@
     "ASSERTION Inc",
     "Argus Information and Advisory Services",
     "Velocity FinCrime Solutions Suite (Velocity FSS)"
-  ]
+  ],
+  "memo_verdicts": {
+    "True West": "liked"
+  }
 }
