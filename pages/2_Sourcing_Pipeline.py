@@ -223,6 +223,8 @@ with st.sidebar:
                             stop_pipeline()
                             import time as _t; _t.sleep(1)
                         load_project(_selected_proj)
+                        st.session_state.pop("reviewed_near_misses", None)
+                        st.session_state.pop("memo_verdicts", None)
                         st.rerun()
                 with _rc2:
                     if st.button("Delete", key="_proj_del", use_container_width=True):
