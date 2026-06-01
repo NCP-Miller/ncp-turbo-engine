@@ -1,7 +1,7 @@
 {
   "bot_status": {
     "search": "idle",
-    "analysis": "filtering",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -33424,14 +33424,14 @@
     }
   ],
   "filter_stats": {
-    "total_sourced": 4556,
+    "total_sourced": 4559,
     "pre_filtered_size": 0,
-    "pre_filtered_structural": 2731,
+    "pre_filtered_structural": 2733,
     "pre_filtered_blocklist": 90,
     "pre_filtered_niche": 60,
     "deep_analysis_failed": 1118,
     "pe_backed": 73,
-    "portfolio_conflict": 71,
+    "portfolio_conflict": 72,
     "low_differentiation": 412,
     "qualified": 1
   },
