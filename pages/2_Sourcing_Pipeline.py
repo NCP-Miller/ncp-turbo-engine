@@ -305,6 +305,9 @@ with st.sidebar:
             st.rerun()
     st.metric("Candidates in Queue", len(state.candidate_queue))
     st.metric("Qualified Pending Memo", len(state.qualified_queue))
+    _exclusions_display = cfg.get("exclusions") or ""
+    if _exclusions_display:
+        st.caption(f"**Excluding:** {_exclusions_display}")
 
     created_at_iso = state.created_at
     if created_at_iso:
@@ -438,6 +441,11 @@ with tab_chat:
                 value=5,
                 step=1,
             )
+            exclusions = st.text_area(
+                "Exclude company profiles matching these descriptions (optional)",
+                placeholder="e.g., cybersecurity firms, federal/government contractors, companies focused on IT staffing",
+                help="Describe types of companies the pipeline should skip. This helps the bots avoid wasting time on companies outside your target.",
+            )
             submitted = st.form_submit_button("🚀 Start Pipeline", type="primary")
 
             if submitted:
@@ -446,11 +454,12 @@ with tab_chat:
                 elif geo_mode == "Custom" and not geography:
                     st.error("Enter a geography or select NCP Priority Geography.")
                 else:
-                    start_pipeline(niche.strip(), geography, "A", int(target_count))
+                    start_pipeline(niche.strip(), geography, "A", int(target_count), exclusions=exclusions.strip() if exclusions else "")
                     state.reload_from_disk()
                     state.add_chat(
                         "user",
-                        f"Find me {target_count} differentiated {niche.strip()} companies in {geography.strip()}.",
+                        f"Find me {target_count} differentiated {niche.strip()} companies in {geography.strip()}."
+                        + (f" Exclude: {exclusions.strip()}" if exclusions and exclusions.strip() else ""),
                     )
                     state.add_chat(
                         "assistant",
@@ -521,11 +530,16 @@ If "command", also identify the specific action and arguments. Supported command
    "add Acme Corp to the pipeline", "look into these companies: X, Y, Z",
    "write a memo on Practifi", "research practifi.com and orionadvisor.com",
    "add https://www.acmecorp.com to the pipeline".
+10. "update_exclusions" — user wants to exclude certain types of companies from
+   results. args: {{"exclusions": "description of company types to exclude"}}.
+   Examples: "exclude cybersecurity firms", "skip government contractors and IT staffing",
+   "don't show me companies focused on federal compliance".
 
 User message: "{user_msg}"
 
 Recent pipeline state:
 - Status: {state.status}
+- Exclusions: {_cfg.get('exclusions', 'none')}
 - Niche: {_cfg.get('niche', 'none')}
 - Geography: {_cfg.get('geography', 'none')}
 - Target: {_cfg.get('target_count', 'none')}

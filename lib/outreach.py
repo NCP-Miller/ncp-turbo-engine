@@ -7,8 +7,9 @@ from textwrap import dedent
 
 
 def draft_cold_email(openai_client, row, thesis, sender_name="Trey"):
-    """Draft a personalized cold outreach email using Jeb Blount's
-    fanatical prospecting methodology for maximum open and reply rates.
+    """Draft a personalized cold outreach email that earns a reply from
+    a founder or CEO.  Uses proven cold-email psychology (Blount, Braun,
+    McKenna) but varies the angle so emails never feel templated.
 
     Returns dict with keys: subject, body
     """
@@ -25,7 +26,6 @@ def draft_cold_email(openai_client, row, thesis, sender_name="Trey"):
 
     first_name = contact.split()[0] if contact and contact != "N/A" else ""
 
-    # Build buyer-angle context from thesis
     excitement = thesis.get("excitement_signals", [])
     excitement_text = "\n".join(f"  - {s}" for s in excitement) if excitement else "  (none provided)"
     deal_breakers = thesis.get("deal_breakers", [])
@@ -33,11 +33,11 @@ def draft_cold_email(openai_client, row, thesis, sender_name="Trey"):
     conviction_bar = thesis.get("conviction_bar", "")
     firm_mandate = thesis.get("mandate", "lower middle market PE — founder-owned service businesses")
 
-    prompt = f"""You are {sender_name} at New Capital Partners (NCP). You invest in
-founder-owned service businesses. Draft a cold email to get a REPLY from this
-founder. That is your ONLY goal — not to sell, pitch, or make an offer.
+    prompt = f"""You are {sender_name}, a principal at New Capital Partners. You
+personally invest alongside founders of service businesses. Your job: write ONE
+cold email to {first_name or 'this founder'} that earns a reply.
 
-COMPANY:
+ABOUT THE RECIPIENT:
 - Company: {company}
 - Contact: {contact} ({title})
 - Location: {city}, {state}
@@ -46,97 +46,144 @@ COMPANY:
 - Website: {website}
 - Differentiation: {differentiated}
 
-YOUR BUYER ANGLE (use this to craft WHY you're reaching out to THIS company):
-- NCP Mandate: {firm_mandate}
-- What excites NCP about a deal:
+YOUR INVESTMENT ANGLE:
+- Mandate: {firm_mandate}
+- What excites you about a deal:
 {excitement_text}
-- What NCP avoids:
+- What you avoid:
 {breakers_text}
 - Conviction bar: {conviction_bar}
 
-Read the company info above and identify which of NCP's excitement signals this
-company triggers. Use that SPECIFIC angle in the relevance sentence — don't be
-generic. If they have a defensible moat, say that. If they're in a growing
-market with tailwinds, reference the tailwind. If they have recurring revenue,
-note it. The email should make it obvious you understand WHY their company is
-interesting, not just THAT it is.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+UNDERSTAND THE FOUNDER'S MINDSET:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+This person built this company from nothing. They are proud, protective, and
+skeptical of outside investors. They get generic PE emails regularly and delete
+them. They will ONLY reply if:
+  1. You clearly understand their specific business (not just their industry)
+  2. You say something that makes them think "huh, this person actually gets it"
+  3. The ask is so small it feels riskless to respond
+
+Your email must pass the "would I reply to this?" test from a busy founder
+who has heard every PE pitch in the book.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SUBJECT LINE (1-3 words — data says shorter = more opens):
+CHOOSE ONE ANGLE (pick the one that fits this company best):
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-- 1-3 words ONLY. All lowercase. No title case. No punctuation.
-- Use ONLY their first name, company name, or a 2-word curiosity hook.
-- Pattern interrupt — it should NOT look like a sales email.
-- WINNING examples:
-  "{first_name.lower() if first_name else 'quick question'}"
-  "{company.lower() if company else 'quick question'}"
-  "quick question"
-  "curious"
-  "{first_name.lower() + ', question' if first_name else 'hi'}"
-- NEVER use: "Partnership Opportunity", "Introduction", "Reaching Out",
-  "Business Inquiry", or anything that screams sales/PE email.
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-EMAIL BODY — THE FRAMEWORK:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Write at a 5th grade reading level. Short words. Short sentences. 3-4 sentences
-total. 25-50 words MAXIMUM (excluding sign-off). Every word must earn its place.
+ANGLE A — "I noticed something specific"
+Lead with a detail only someone who actually researched them would know.
+Pull from their description, website, differentiation, or geography.
+Then connect it to why you're reaching out in one sentence. Close casually.
 
-The email has exactly 3 parts (1 sentence each):
+ANGLE B — "Industry insight"
+Open with something happening in their industry right now — a trend, a
+shift, a regulatory change, a wave of consolidation — that affects them.
+Position yourself as someone tracking this space, not selling. Ask if
+they're seeing the same thing.
 
-1. OBSERVATION — "Show me you know me" (Sam McKenna):
-   - Start with "you" or their company name — NEVER start with "I".
-   - Reference ONE specific thing about THEIR business that caught your eye.
-   - Pull from their description, differentiation, location, or website.
-   - This must be real and specific — no generic flattery.
-   - Good: "{{company}} caught my eye — [specific detail from description]."
-   - Bad: "I came across your impressive company." (generic = delete)
+ANGLE C — "Founder-to-founder respect"
+Acknowledge what they've built is rare or hard to replicate. Be specific
+about WHAT is impressive (their moat, their longevity, their model). Then
+ask a genuine question about their business or plans.
 
-2. RELEVANCE — Make it about their world, not yours (Jeb Blount):
-   - One sentence connecting who you are to why THEY should care.
-   - Frame around their reality as a founder, not your credentials.
-   - Use "we" sparingly. Center the sentence on "you" or "founders like you."
-   - Good: "We back founders in [niche] who've built something hard to copy."
-   - Bad: "We are a PE firm with a proven track record." (nobody cares)
+ANGLE D — "The mutual connection frame"
+Reference that you've been studying companies in their niche in their
+region. Name the niche specifically. Say you keep hearing good things or
+their name keeps surfacing. Ask if they'd be open to connecting.
 
-3. MICRO-ASK — Permission-based close (Josh Braun):
-   - Ask the SMALLEST possible question. One question only.
-   - Frame it so saying "no" feels safe — this paradoxically increases replies.
-   - Use "not sure if" / "would it be worth" / "is this even" phrasing.
-   - Best closers:
-     "Not sure if this is even on your radar — would it be worth a quick chat?"
-     "Is this something you'd ever think about?"
-     "Would a 10-minute call be worth it, or am I off base?"
-     "Happy to share what we're seeing in [niche] — worth a conversation?"
-   - NEVER: "Would you be open to a 30-minute call next Tuesday?"
-
-Sign off: just "{sender_name}" — nothing else. No title, phone, or LinkedIn.
+ANGLE E — "The disarming honesty"
+Be upfront — you invest in companies like theirs, you're not sure if
+the timing is right for them, but something about their business caught
+your attention. Ask if it's even worth a conversation. The honesty
+itself is the pattern interrupt.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-ABSOLUTE RULES:
+SUBJECT LINE:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-- UNDER 50 WORDS in the body (excluding sign-off). Lavender data: emails under
-  50 words get 2x the reply rate of longer emails. Count them.
-- 5th grade reading level. No SAT words. Write like you talk.
-- NEVER start any sentence with "I" — always lead with "you" or their name.
-- No "I hope this finds you well" or any throat-clearing opener.
+1-3 words. All lowercase. No punctuation. Must NOT look like a sales email.
+Best performers: just their first name, their company name, or a 2-word hook.
+Examples: "{first_name.lower() if first_name else 'quick question'}", "{company.lower().split()[0] if company else 'hi'}", "curious about something", "quick question"
+NEVER: "Partnership Opportunity", "Introduction", "Connecting", "Business Inquiry"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+WRITING RULES:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- 3-5 sentences. 40-75 words in the body (excluding sign-off).
+- 5th grade reading level. Short words. Short sentences.
+- Write like a text message from a smart friend, not a business letter.
+- First word of the email must be "you", their name, or their company name.
+  NEVER open with "I".
+- The specific detail about THEIR company is the most important sentence.
+  If you can't point to something concrete from the company info above,
+  the email will fail. Generic = delete.
+- One question maximum. Make it easy to answer.
+- No "I hope this finds you well" or any filler opener.
 - No "My name is..." — your name is in the sign-off.
-- No jargon: synergies, value creation, strategic partnership, unlock potential,
-  deal flow, portfolio company, platform acquisition.
-- No mention of deal terms, valuation, EBITDA, multiples, or acquisition price.
-- No bullet points, bold, links, or formatting — plain text only.
-- No exclamation marks. One question mark max (the ask).
-- Do NOT sound like a PE firm. Sound like a real person writing a real email.
-- The email should feel like it took 30 seconds to write, even though it didn't.
+- No jargon: synergies, value creation, strategic partnership, unlock,
+  deal flow, portfolio company, platform, scalable, leverage.
+- No mention of deal terms, valuation, EBITDA, multiples, or price.
+- No exclamation marks. Maximum one question mark.
+- Plain text. No formatting, bullets, or links.
+- Sign off with just "{sender_name}" — no title, phone, or tagline.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+EXAMPLES OF GREAT vs TERRIBLE EMAILS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+GREAT (specific, human, earns curiosity):
+"subject: {first_name.lower() if first_name else 'quick question'}
+
+{first_name or company}, your team has built something unusual in [specific
+detail from their business]. We've been tracking [their niche] in [their
+region] and your name keeps coming up.
+
+Not sure if you'd ever think about a growth partner, but would a quick
+call be worth it?
+
+{sender_name}"
+
+GREAT (industry insight):
+"subject: {company.lower().split()[0] if company else 'curious'}
+
+{company} sits right in the middle of [specific industry trend]. We back
+founders in this space and I'm curious how you're thinking about the next
+few years.
+
+Would it be worth 10 minutes to compare notes?
+
+{sender_name}"
+
+TERRIBLE (generic, self-centered, instant delete):
+"subject: Partnership Opportunity
+
+Dear {first_name or 'Sir/Madam'},
+
+I came across your company and was impressed by your growth. We are a
+private equity firm that partners with founder-owned businesses to unlock
+their full potential. We have a proven track record of creating value for
+our portfolio companies.
+
+I would love to schedule a 30-minute call to discuss how we might work
+together. Would next Tuesday work?
+
+Best regards,
+{sender_name}
+Managing Director, New Capital Partners"
+
+The terrible example does everything wrong: generic subject, "I" opener,
+no specifics about THEIR company, jargon-filled, long, mentions PE, asks
+for too much time, formal sign-off. Every founder has seen this exact
+email 100 times. Do the OPPOSITE.
 
 Return JSON only:
-{{"subject": "1-3 word lowercase subject", "body": "the complete email body including sign-off"}}"""
+{{"subject": "1-3 word lowercase subject", "body": "the complete email body including sign-off", "angle": "A/B/C/D/E"}}"""
 
     resp = openai_client.chat.completions.create(
         model="gpt-4o",
         messages=[{"role": "user", "content": prompt}],
         response_format={"type": "json_object"},
-        temperature=0.8,
+        temperature=0.9,
         timeout=30,
     )
     result = json.loads(resp.choices[0].message.content)

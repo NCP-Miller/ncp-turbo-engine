@@ -648,6 +648,27 @@ class PipelineState:
                 "restart": True,
             }
 
+        if action == "update_exclusions":
+            new_exclusions = args.get("exclusions") or ""
+            with self._lock:
+                self._conn.execute("BEGIN IMMEDIATE")
+                try:
+                    cfg = self._get("config")
+                    old = cfg.get("exclusions") or ""
+                    if old and new_exclusions:
+                        cfg["exclusions"] = f"{old}; {new_exclusions}"
+                    else:
+                        cfg["exclusions"] = new_exclusions or old
+                    self._set("config", cfg)
+                    self._conn.execute("COMMIT")
+                except Exception:
+                    self._conn.execute("ROLLBACK")
+                    raise
+            return {
+                "success": True,
+                "message": f"Exclusions updated: {cfg['exclusions']}",
+            }
+
         return {"success": False, "message": f"Unknown command: {action}"}
 
     def pop_manual_companies(self):
