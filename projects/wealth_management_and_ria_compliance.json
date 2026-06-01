@@ -1,7 +1,7 @@
 {
   "bot_status": {
     "search": "idle",
-    "analysis": "filtering",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -45442,18 +45442,49 @@
         "Conviction Reasoning": "The company's offering is undifferentiated and lacks a defensible moat or unique competitive advantage, making it an unlikely candidate to fit our investment mandate."
       },
       "reason": "Conviction 3/10: The company's offering is undifferentiated and lacks a defensible moat or unique competitive advantage, making it an unlikely candidate to fit our investment mandate."
+    },
+    {
+      "row": {
+        "Company": "Hazen Technologies Inc",
+        "Description": "Hazen Technologies Inc, founded in 2017 and based in Florida, specializes in providing AI-driven business process outsourcing, IT services, and digital marketing solutions. The company serves various sectors, including legal, finance, and healthcare, offering services such as legal process outsourcing, custom software development, and cloud enablement to enhance operational efficiency and support business growth.",
+        "Website": "http://www.hazentech.com",
+        "City": "Parkland",
+        "State": "Florida",
+        "LinkedIn": "http://www.linkedin.com/company/hazentech",
+        "Employees": 290,
+        "Est. EBITDA": "$8.7M\u2013$14.5M",
+        "CEO/Owner Name": "Wajhi Ghuman",
+        "Title": "Co-founder",
+        "Email": "N/A",
+        "Email Estimate": "wajhi.ghuman@hazentech.com",
+        "Phone": "N/A",
+        "Source": "Web Path (/about-us)",
+        "Notes": "",
+        "Confidence": "Medium",
+        "Latest News": "N/A",
+        "Previously Sourced": "No",
+        "Differentiated": "Low",
+        "_niche": "I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.",
+        "Priority": "Low",
+        "Growth": "Low",
+        "Txn Readiness": "Low",
+        "Conviction": 3,
+        "Conviction Pitch": "Hazen Technologies Inc. operates in the crowded space of business process outsourcing and IT services with low differentiation from competitors, providing services that do not showcase a clear 'right to win.' The company caters to a broad range of sectors without a unique offering or defensible moat, making it difficult to secure a strategic edge in a competitive market.",
+        "Conviction Reasoning": "Lack of differentiation, low growth prospects, and low priority in alignment with our investment mandate do not present a compelling proposition for investment."
+      },
+      "reason": "Conviction 3/10: Lack of differentiation, low growth prospects, and low priority in alignment with our investment mandate do not present a compelling proposition for investment."
     }
   ],
   "filter_stats": {
-    "total_sourced": 3971,
+    "total_sourced": 3974,
     "pre_filtered_size": 0,
     "pre_filtered_structural": 2480,
     "pre_filtered_blocklist": 75,
     "pre_filtered_niche": 59,
-    "deep_analysis_failed": 879,
+    "deep_analysis_failed": 881,
     "pe_backed": 60,
     "portfolio_conflict": 61,
-    "low_differentiation": 357,
+    "low_differentiation": 358,
     "qualified": 0
   },
   "last_event": {
