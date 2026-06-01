@@ -29234,7 +29234,6 @@
     "additional_keywords": ""
   },
   "manual_companies": [],
-  "status": "running",
   "reviewed_near_misses": [
     "IntellecTechs",
     "Elevate Technology Solutions",
@@ -29368,5 +29367,6 @@
     "Smart-RIA Ventures, Inc.": "liked",
     "Smartria\u00ae": "liked",
     "n-Tier fs": "liked"
-  }
+  },
+  "status": "paused"
 }
