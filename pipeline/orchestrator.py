@@ -74,7 +74,7 @@ def _auto_backup():
 # ---------------------------------------------------------------------------
 # PUBLIC API
 # ---------------------------------------------------------------------------
-def start_pipeline(niche, geography, strategy="A", target_count=5):
+def start_pipeline(niche, geography, strategy="A", target_count=5, exclusions=""):
     """Initialize a fresh pipeline run and start the background loop."""
     state = PipelineState()
     state.reset()
@@ -84,6 +84,7 @@ def start_pipeline(niche, geography, strategy="A", target_count=5):
             "geography": geography,
             "strategy": strategy,
             "target_count": target_count,
+            "exclusions": exclusions,
         },
         status="running",
     )
@@ -540,6 +541,8 @@ def _run_loop():
             geography = config["geography"]
             strategy = config.get("strategy", "A")
             target_count = config["target_count"]
+            exclusions = config.get("exclusions") or ""
+            niche_with_exclusions = niche + (f"\n\nEXCLUDE these types of companies: {exclusions}" if exclusions else "")
 
             from lib.constants import NCP_PRIORITY_LABEL, NCP_PRIORITY_APOLLO_LOCATIONS
             if geography == NCP_PRIORITY_LABEL:
@@ -936,7 +939,7 @@ def _run_loop():
                             "info",
                         )
                         _process_candidate_batch(
-                            batch, niche, strategy, config, search_params,
+                            batch, niche_with_exclusions, strategy, config, search_params,
                             client, apollo_key, firecrawl_key, user_agent,
                             _thesis, state,
                         )
