@@ -111,7 +111,7 @@
     "memo_count": 22,
     "active": true,
     "backup_status": "not_configured",
-    "status": "paused"
+    "status": "running"
   },
   {
     "name": "Wealth management compliance",
