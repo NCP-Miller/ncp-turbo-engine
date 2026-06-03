@@ -22,6 +22,7 @@ from lib.feedback import load_feedback
 from lib.github_backup import is_configured as _gh_configured, backup_project as _gh_backup
 from lib.ncp_portfolio import check_portfolio_conflict
 from lib.constants import OPENAI_MODEL
+from lib.cost_tracker import COST_OPENAI, COST_FIRECRAWL, COST_PER_DEEP_CANDIDATE
 from pipeline.state import PipelineState
 from pipeline.qa_bot import diagnose as qa_diagnose, recommend_action as qa_recommend, reset as qa_reset
 
@@ -436,15 +437,23 @@ def _process_candidate_batch(batch, niche, strategy, config, search_params,
             state.increment_filter_stat("pre_filtered_niche")
             print(f"[Analysis Bot] Pre-filtered: {comp_name} ({r['reason']})")
         elif outcome == "deep_analysis_failed":
+            state.record_cost("openai", COST_OPENAI["relevance_check"])
+            state.record_cost("firecrawl", COST_FIRECRAWL * 3, calls=3)
             state.increment_filter_stat("deep_analysis_failed")
             print(f"[Analysis Bot] Filtered out: {comp_name} (deep analysis failed)")
         elif outcome == "pe_backed":
+            state.record_cost("openai", COST_PER_DEEP_CANDIDATE * 0.6)
+            state.record_cost("firecrawl", COST_FIRECRAWL * 20, calls=20)
             state.increment_filter_stat("pe_backed")
             print(f"[Analysis Bot] Filtered out: {comp_name} ({r['reason']})")
         elif outcome == "portfolio_conflict":
+            state.record_cost("openai", COST_PER_DEEP_CANDIDATE * 0.8)
+            state.record_cost("firecrawl", COST_FIRECRAWL * 22, calls=22)
             state.increment_filter_stat("portfolio_conflict")
             print(f"[Analysis Bot] Filtered out: {comp_name} (portfolio conflict)")
         elif outcome == "qualified":
+            state.record_cost("openai", COST_PER_DEEP_CANDIDATE)
+            state.record_cost("firecrawl", COST_FIRECRAWL * 25, calls=25)
             state.add_qualified(r["row"])
             state.increment_filter_stat("qualified")
             state.set_event(
@@ -454,6 +463,8 @@ def _process_candidate_batch(batch, niche, strategy, config, search_params,
             )
             print(f"[Analysis Bot] Qualified: {comp_name} (conviction={r['score']}/10)")
         elif outcome == "near_miss":
+            state.record_cost("openai", COST_PER_DEEP_CANDIDATE)
+            state.record_cost("firecrawl", COST_FIRECRAWL * 25, calls=25)
             state.increment_filter_stat("low_differentiation")
             state.add_near_miss(
                 r["row"],
@@ -686,6 +697,7 @@ def _run_loop():
                     # First iteration: ask AI for Apollo search params
                     if search_params is None:
                         search_params = suggest_search_params(client, niche)
+                        state.record_cost("openai", COST_OPENAI["suggest_search_params"] + COST_OPENAI["classify_niche"])
                         # Snapshot baseline metrics for round 1 evaluation
                         _round_start_total_sourced = state.filter_stats.get("total_sourced", 0)
                         _round_start_qualified = state.filter_stats.get("qualified", 0)
@@ -771,6 +783,8 @@ def _run_loop():
                             seen_names,
                             user_agent=user_agent,
                         )
+                        state.record_cost("openai", COST_OPENAI["web_discovery_extract"])
+                        state.record_cost("firecrawl", COST_FIRECRAWL * 5, calls=5)
 
                         # Batch-write all discovered orgs + their seen entries
                         new_domains = []
@@ -829,6 +843,7 @@ def _run_loop():
                                         "common_filter_reasons": common_reasons,
                                     },
                                 )
+                                state.record_cost("openai", COST_OPENAI["refine_search_params"])
                                 if refined:
                                     search_params = {
                                         "industries": refined["industries"],
@@ -877,6 +892,7 @@ def _run_loop():
                                     print(f"[Search Bot] Generating closest-fit memo for: {best_name}")
                                     state.set_event("writing_closest_fit", f"No companies met the conviction bar. Generating closest-fit memo for {best_name}.", "warning")
                                     memo_text = _generate_memo(client, best_row, niche)
+                                    state.record_cost("openai", COST_OPENAI["memo_generation"])
                                     memo = {
                                         "company": best_name,
                                         "row": best_row,
@@ -1008,6 +1024,7 @@ def _run_loop():
                         state.set_event("writing_memo", f"Generating investment memo for {comp_name}.", "info")
                         print(f"[Write-up Bot] Generating memo: {comp_name}")
                         memo_text = _generate_memo(client, row, niche, thesis=_thesis)
+                        state.record_cost("openai", COST_OPENAI["memo_generation"])
                         memo = {
                             "company": comp_name,
                             "row": row,
