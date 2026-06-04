@@ -305,6 +305,22 @@ with st.sidebar:
             st.rerun()
     st.metric("Candidates in Queue", len(state.candidate_queue))
     st.metric("Qualified Pending Memo", len(state.qualified_queue))
+
+    try:
+        _ct = state.cost_tracker
+    except (AttributeError, KeyError):
+        _ct = {"total": 0, "openai": 0, "firecrawl": 0, "call_counts": {}}
+    if _ct.get("total", 0) > 0:
+        st.divider()
+        st.caption("Estimated Spend")
+        st.metric("Total Cost", f"${_ct['total']:.2f}")
+        _cc = _ct.get("call_counts", {})
+        st.caption(
+            f"OpenAI: ${_ct.get('openai', 0):.2f} &nbsp;·&nbsp; "
+            f"Firecrawl: ${_ct.get('firecrawl', 0):.2f} &nbsp;·&nbsp; "
+            f"API calls: {sum(_cc.values()):,}"
+        )
+
     _exclusions_display = cfg.get("exclusions") or ""
     if _exclusions_display:
         st.caption(f"**Excluding:** {_exclusions_display}")
@@ -445,6 +461,13 @@ with tab_chat:
                 "Exclude company profiles matching these descriptions (optional)",
                 placeholder="e.g., cybersecurity firms, federal/government contractors, companies focused on IT staffing",
                 help="Describe types of companies the pipeline should skip. This helps the bots avoid wasting time on companies outside your target.",
+            )
+            from lib.cost_tracker import estimate_search_cost
+            _est = estimate_search_cost(int(target_count))
+            st.caption(
+                f"**Estimated API cost:** ${_est['low']['total']:.0f} – ${_est['high']['total']:.0f} "
+                f"(most likely ~${_est['mid']['total']:.0f}) &nbsp;·&nbsp; "
+                f"~{_est['mid']['candidates_analyzed']} candidates analyzed"
             )
             submitted = st.form_submit_button("🚀 Start Pipeline", type="primary")
 
@@ -1201,6 +1224,21 @@ with tab_overview:
         if sent_to_deep > 0 and qualified > 0:
             hit_rate = qualified * 100 // max(sent_to_deep, 1)
             st.info(f"Deep analysis hit rate: {hit_rate}% ({qualified} qualified out of {sent_to_deep} analyzed)")
+
+        try:
+            _ct_overview = state.cost_tracker
+        except (AttributeError, KeyError):
+            _ct_overview = {"total": 0, "openai": 0, "firecrawl": 0, "call_counts": {}}
+        if _ct_overview.get("total", 0) > 0:
+            st.divider()
+            st.subheader("Cost Tracker")
+            _cc_ov = _ct_overview.get("call_counts", {})
+            _cost_cols = st.columns(3)
+            _cost_cols[0].metric("OpenAI", f"${_ct_overview.get('openai', 0):.2f}", f"{_cc_ov.get('openai', 0)} calls")
+            _cost_cols[1].metric("Firecrawl", f"${_ct_overview.get('firecrawl', 0):.2f}", f"{_cc_ov.get('firecrawl', 0)} scrapes")
+            _cost_cols[2].metric("Total", f"${_ct_overview['total']:.2f}")
+            if memos > 0:
+                st.caption(f"**Cost per memo:** ${_ct_overview['total'] / memos:.2f} &nbsp;·&nbsp; **Cost per qualified candidate:** ${_ct_overview['total'] / max(qualified, 1):.2f}")
 
 
 # ---------------------------------------------------------------------------

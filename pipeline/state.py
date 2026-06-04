@@ -36,6 +36,13 @@ def _default_state():
             "low_differentiation": 0,
             "qualified": 0,
         },
+        "cost_tracker": {
+            "openai": 0.0,
+            "firecrawl": 0.0,
+            "apollo": 0.0,
+            "total": 0.0,
+            "call_counts": {"openai": 0, "firecrawl": 0, "apollo": 0},
+        },
         "last_event": {
             "type": "idle",
             "message": "Pipeline ready. Configure and click Start.",
@@ -253,6 +260,31 @@ class PipelineState:
                     "INSERT OR REPLACE INTO pipeline_state (key, value) VALUES (?, ?)",
                     ("filter_stats", json.dumps(defaults)),
                 )
+                self._conn.execute("COMMIT")
+            except Exception:
+                self._conn.execute("ROLLBACK")
+                raise
+
+    def record_cost(self, category, amount, calls=1):
+        """Thread-safe cost accumulator. category: 'openai' | 'firecrawl' | 'apollo'."""
+        with self._lock:
+            self._conn.execute("BEGIN IMMEDIATE")
+            try:
+                try:
+                    ct = self._get("cost_tracker")
+                except KeyError:
+                    from lib.cost_tracker import default_cost_state
+                    ct = default_cost_state()
+                    self._conn.execute(
+                        "INSERT INTO pipeline_state (key, value) VALUES (?, ?)",
+                        ("cost_tracker", json.dumps(ct)),
+                    )
+                ct[category] = round(ct.get(category, 0.0) + amount, 4)
+                ct["total"] = round(ct.get("openai", 0.0) + ct.get("firecrawl", 0.0) + ct.get("apollo", 0.0), 4)
+                counts = ct.get("call_counts", {})
+                counts[category] = counts.get(category, 0) + calls
+                ct["call_counts"] = counts
+                self._set("cost_tracker", ct)
                 self._conn.execute("COMMIT")
             except Exception:
                 self._conn.execute("ROLLBACK")
