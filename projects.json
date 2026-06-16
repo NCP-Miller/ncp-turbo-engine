@@ -120,7 +120,18 @@
     "niche": "I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.",
     "geography": "NCP Priority Geography (Eastern US)",
     "memo_count": 23,
-    "active": true,
+    "active": false,
     "backup_status": "not_configured"
+  },
+  {
+    "name": "Community Bank and Credit Union Compliance 26.06.16",
+    "slug": "community_bank_and_credit_union_compliance_26_06_16",
+    "db_file": "project_community_bank_and_credit_union_compliance_26_06_16.db",
+    "created_at": "2026-06-16T23:12:33.949199+00:00",
+    "niche": "",
+    "geography": "",
+    "memo_count": 0,
+    "active": true,
+    "status": "idle"
   }
 ]
