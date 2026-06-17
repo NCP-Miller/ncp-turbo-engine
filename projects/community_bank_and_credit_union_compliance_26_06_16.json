@@ -1,7 +1,7 @@
 {
   "bot_status": {
     "search": "idle",
-    "analysis": "filtering",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -9340,6 +9340,10 @@
     {
       "role": "assistant",
       "content": "[QA Bot] 53/53 candidates (100%) failed AI relevance. Forcing search parameter pivot."
+    },
+    {
+      "role": "assistant",
+      "content": "[QA Bot] 90% of candidates failing AI relevance. Refining search parameters."
     }
   ],
   "user_feedback": [],
@@ -11826,37 +11830,68 @@
         "Conviction Reasoning": "The company aligns with market trends but lacks the distinct competitive edge needed to stand out in our investment mandate."
       },
       "reason": "Conviction 4/10: The company aligns with market trends but lacks the distinct competitive edge needed to stand out in our investment mandate."
+    },
+    {
+      "row": {
+        "Company": "SightSpan, Inc",
+        "Description": "SightSpan, Inc. is a consulting firm specializing in security, risk management, and compliance solutions for financial technology businesses and other industries. They provide services such as regulatory risk management, audits, and anti-money laundering compliance to clients worldwide, including banks, fintech companies, and government organizations. Established in 2007, SightSpan operates globally, addressing complex challenges in finance, technology, and public sectors.",
+        "Website": "http://www.sightspan.com",
+        "City": "Mooresville",
+        "State": "North Carolina",
+        "LinkedIn": "http://www.linkedin.com/company/sightspan-inc",
+        "Employees": 40,
+        "Est. EBITDA": "$1.2M\u2013$2.0M",
+        "CEO/Owner Name": "N/A",
+        "Title": "N/A",
+        "Email": "info@sightspan.com",
+        "Email Estimate": "",
+        "Phone": "(771) 233-3938",
+        "Source": "Web (contact only)",
+        "Notes": "",
+        "Confidence": "Medium",
+        "Latest News": "N/A",
+        "Previously Sourced": "No",
+        "Differentiated": "Low",
+        "_niche": "I am looking for tech enabled companies providing compliance and risk solutions to banks, community banks/lenders, and credit unions. The solutions may be related to vendor third party risk management, Bank Secrecy Act (BSA), Anti-Money Laundering (AML), loan review, fair lending, and complaint management.\n\nEXCLUDE these types of companies: Consulting",
+        "Priority": "Medium",
+        "Growth": "Low",
+        "Txn Readiness": "Medium",
+        "Conviction": 3,
+        "Conviction Pitch": "SightSpan, Inc. largely operates in the consulting space, providing security, risk management, and compliance solutions, which does not align with our interest in tech-enabled companies and excludes consulting firms. Additionally, there is a low differentiation and low growth potential, making it a less compelling candidate for our investment mandate.",
+        "Conviction Reasoning": "The company primarily offers consulting services, lacks significant differentiation, and operates in a low growth sector, misaligning with our specific search criteria and investment interests."
+      },
+      "reason": "Conviction 3/10: The company primarily offers consulting services, lacks significant differentiation, and operates in a low growth sector, misaligning with our specific search criteria and investment interests."
     }
   ],
   "reviewed_near_misses": [],
   "filter_stats": {
-    "total_sourced": 1155,
+    "total_sourced": 1158,
     "pre_filtered_size": 0,
     "pre_filtered_structural": 986,
     "pre_filtered_blocklist": 23,
     "pre_filtered_niche": 9,
-    "deep_analysis_failed": 124,
+    "deep_analysis_failed": 126,
     "pe_backed": 6,
     "portfolio_conflict": 2,
-    "low_differentiation": 4,
+    "low_differentiation": 5,
     "qualified": 1
   },
   "cost_tracker": {
-    "openai": 5.0812,
-    "firecrawl": 3.33,
+    "openai": 5.5056,
+    "firecrawl": 3.485,
     "apollo": 0.0,
-    "total": 8.4112,
+    "total": 8.9906,
     "call_counts": {
-      "openai": 144,
-      "firecrawl": 666,
+      "openai": 147,
+      "firecrawl": 697,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "analyzing",
-    "message": "Analyzing 3 candidates in parallel. 50 more in queue.",
-    "timestamp": "2026-06-17T00:10:08.542661+00:00",
-    "severity": "info"
+    "type": "qa_refine",
+    "message": "QA Bot detected suboptimal search \u2014 refining parameters. 90% of candidates failing AI relevance. Refining search parameters.",
+    "timestamp": "2026-06-17T00:11:35.514488+00:00",
+    "severity": "warning"
   },
   "created_at": "2026-06-16T23:14:22.187844+00:00",
   "config": {
@@ -11865,7 +11900,7 @@
     "strategy": "A",
     "target_count": 5,
     "exclusions": "Consulting",
-    "broaden_signal": false,
+    "broaden_signal": true,
     "pivot_signal": false
   },
   "status": "running"
