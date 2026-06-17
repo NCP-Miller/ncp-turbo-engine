@@ -18168,6 +18168,7 @@
   },
   "status": "paused",
   "memo_verdicts": {
-    "Hadrius": "rejected"
+    "Hadrius": "rejected",
+    "RiskProfiler": "rejected"
   }
 }
