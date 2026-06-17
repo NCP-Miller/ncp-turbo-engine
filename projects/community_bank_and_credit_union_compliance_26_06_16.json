@@ -18128,32 +18128,32 @@
   ],
   "reviewed_near_misses": [],
   "filter_stats": {
-    "total_sourced": 2340,
+    "total_sourced": 2343,
     "pre_filtered_size": 0,
-    "pre_filtered_structural": 1717,
+    "pre_filtered_structural": 1718,
     "pre_filtered_blocklist": 49,
     "pre_filtered_niche": 11,
-    "deep_analysis_failed": 501,
+    "deep_analysis_failed": 503,
     "pe_backed": 19,
     "portfolio_conflict": 12,
     "low_differentiation": 26,
     "qualified": 5
   },
   "cost_tracker": {
-    "openai": 24.8348,
-    "firecrawl": 14.685,
+    "openai": 24.8468,
+    "firecrawl": 14.715,
     "apollo": 0.0,
-    "total": 39.5198,
+    "total": 39.5618,
     "call_counts": {
-      "openai": 580,
-      "firecrawl": 2937,
+      "openai": 582,
+      "firecrawl": 2943,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "memo_complete",
-    "message": "Memo complete: konaAI, a Covasant company. 5/5 done.",
-    "timestamp": "2026-06-17T01:22:36.896702+00:00",
+    "type": "done",
+    "message": "Pipeline complete! All 5 memos generated. Click 'Investment Memos' tab to review.",
+    "timestamp": "2026-06-17T01:23:15.896544+00:00",
     "severity": "success"
   },
   "created_at": "2026-06-16T23:14:22.187844+00:00",
@@ -18166,5 +18166,5 @@
     "broaden_signal": false,
     "pivot_signal": false
   },
-  "status": "running"
+  "status": "paused"
 }
