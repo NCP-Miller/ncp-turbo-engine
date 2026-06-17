@@ -18169,6 +18169,8 @@
   "status": "paused",
   "memo_verdicts": {
     "Hadrius": "rejected",
-    "RiskProfiler": "rejected"
+    "RiskProfiler": "rejected",
+    "Perimeter.net": "rejected",
+    "Baselayer": "rejected"
   }
 }
