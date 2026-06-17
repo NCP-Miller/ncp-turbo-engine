@@ -10752,35 +10752,66 @@
         "Conviction Reasoning": "The inclusion of a professional investor is a significant deal breaker, and the lack of clear differentiation and readiness for transaction diminishes its appeal."
       },
       "reason": "Conviction 4/10: The inclusion of a professional investor is a significant deal breaker, and the lack of clear differentiation and readiness for transaction diminishes its appeal."
+    },
+    {
+      "row": {
+        "Company": "SoftSensor.ai",
+        "Description": "SoftSensor.ai is a data analytics and artificial intelligence firm based in New Jersey, specializing in analyzing complex operational, financial, and customer data to drive business process and performance improvements. The company serves clients across Asia, Europe, and North America, integrating insights into business applications like ERP and SFDC to achieve transformative results.",
+        "Website": "http://www.softsensor.ai",
+        "City": "Bernards",
+        "State": "New Jersey",
+        "LinkedIn": "http://www.linkedin.com/company/softsensor-ai-labs",
+        "Employees": 120,
+        "Est. EBITDA": "$3.6M\u2013$6.0M",
+        "CEO/Owner Name": "Vivek Gupta",
+        "Title": "Co Founder, CEO",
+        "Email": "N/A",
+        "Email Estimate": "vivek.gupta@softsensor.ai",
+        "Phone": "N/A",
+        "Source": "Web Path (/about)",
+        "Notes": "",
+        "Confidence": "Medium",
+        "Latest News": "N/A",
+        "Previously Sourced": "No",
+        "Differentiated": "Low",
+        "_niche": "I am looking for tech enabled companies providing compliance and risk solutions to banks, community banks/lenders, and credit unions. The solutions may be related to vendor third party risk management, Bank Secrecy Act (BSA), Anti-Money Laundering (AML), loan review, fair lending, and complaint management.\n\nEXCLUDE these types of companies: Consulting",
+        "Priority": "Low",
+        "Growth": "Low",
+        "Txn Readiness": "Medium",
+        "Conviction": 3,
+        "Conviction Pitch": "SoftSensor.ai lacks a clear differentiation in its offering, described as a generic operator in the crowded field of data analytics and AI. The company does not specify any unique technology, certification, or defensible moat that sets it apart from competitors, and its growth prospects are low with no indication of proprietary processes or recurring revenue streams.",
+        "Conviction Reasoning": "The company exhibits traits similar to those on the THUMBS-DOWN list, primarily due to its low differentiation, growth prospects, and lack of a clear competitive advantage."
+      },
+      "reason": "Conviction 3/10: The company exhibits traits similar to those on the THUMBS-DOWN list, primarily due to its low differentiation, growth prospects, and lack of a clear competitive advantage."
     }
   ],
   "filter_stats": {
-    "total_sourced": 4134,
+    "total_sourced": 4137,
     "pre_filtered_size": 0,
     "pre_filtered_structural": 2621,
     "pre_filtered_blocklist": 86,
     "pre_filtered_niche": 15,
-    "deep_analysis_failed": 1267,
+    "deep_analysis_failed": 1269,
     "pe_backed": 49,
     "portfolio_conflict": 20,
-    "low_differentiation": 69,
+    "low_differentiation": 70,
     "qualified": 7
   },
   "cost_tracker": {
-    "openai": 58.648,
-    "firecrawl": 35.855,
+    "openai": 59.0724,
+    "firecrawl": 36.01,
     "apollo": 0.0,
-    "total": 94.503,
+    "total": 95.0824,
     "call_counts": {
-      "openai": 1446,
-      "firecrawl": 7171,
+      "openai": 1449,
+      "firecrawl": 7202,
       "apollo": 0
     }
   },
   "last_event": {
     "type": "exhausted",
     "message": "Search exhausted \u2014 found 9/10 memos. Try broadening niche or geography, or ask for more in a different region.",
-    "timestamp": "2026-06-17T20:18:02.432132+00:00",
+    "timestamp": "2026-06-17T20:18:29.258292+00:00",
     "severity": "warning"
   },
   "created_at": "2026-06-16T23:14:22.187844+00:00",
@@ -10803,20 +10834,21 @@
   },
   "status": "stopped",
   "reviewed_near_misses": [
+    "Informativ",
     "Brightwell",
     "Smarttech247",
-    "UGR - NextGen Compliance",
     "Infobelt, Inc",
     "VeraSafe",
     "Clarip",
-    "Sirius AI",
+    "iuvity",
     "Lendsqr",
     "GoML",
     "Plus Technologies & Innovations",
     "GFMI",
-    "iuvity",
+    "UGR - NextGen Compliance",
+    "Pegasus Knowledge Solutions, Inc.",
     "Provenir",
-    "Informativ",
+    "Sirius AI",
     "Declassify | Crypto Research and Monitoring"
   ]
 }
