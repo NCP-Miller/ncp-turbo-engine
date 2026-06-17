@@ -10637,19 +10637,20 @@
     "Baselayer": "rejected",
     "konaAI, a Covasant company": "rejected"
   },
+  "status": "running",
   "reviewed_near_misses": [
     "Brightwell",
     "Smarttech247",
+    "UGR - NextGen Compliance",
     "Infobelt, Inc",
     "Clarip",
-    "iuvity",
+    "Lendsqr",
     "GoML",
     "Plus Technologies & Innovations",
     "GFMI",
-    "UGR - NextGen Compliance",
+    "iuvity",
     "Provenir",
     "Informativ",
     "Declassify | Crypto Research and Monitoring"
-  ],
-  "status": "running"
+  ]
 }
