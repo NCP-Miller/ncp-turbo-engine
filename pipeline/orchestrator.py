@@ -331,9 +331,10 @@ def _analyze_single(org, niche, strategy, config, search_params,
         if _enriched:
             _e_funding = _enriched.get("total_funding") or 0
             try:
-                if isinstance(_e_funding, (int, float)) and _e_funding > 5_000_000:
+                _e_fval = float(_e_funding) if isinstance(_e_funding, str) else _e_funding
+                if isinstance(_e_fval, (int, float)) and _e_fval > 5_000_000:
                     return {"outcome": "pe_backed", "company": comp_name,
-                            "reason": f"Institutional Funding (${_e_funding:,.0f} raised)",
+                            "reason": f"Institutional Funding (${_e_fval:,.0f} raised)",
                             "row": row}
             except (ValueError, TypeError):
                 pass
@@ -342,6 +343,7 @@ def _analyze_single(org, niche, strategy, config, search_params,
             _institutional_stages = [
                 "series a", "series b", "series c", "series d", "series e",
                 "private equity", "growth equity", "debt financing",
+                "seed", "pre seed",
             ]
             if any(s in _e_stage for s in _institutional_stages):
                 return {"outcome": "pe_backed", "company": comp_name,
@@ -349,9 +351,10 @@ def _analyze_single(org, niche, strategy, config, search_params,
 
             _e_rounds = _enriched.get("number_of_funding_rounds") or 0
             try:
-                if isinstance(_e_rounds, int) and _e_rounds >= 2:
+                _e_rval = int(_e_rounds) if isinstance(_e_rounds, str) else _e_rounds
+                if isinstance(_e_rval, int) and _e_rval >= 2:
                     return {"outcome": "pe_backed", "company": comp_name,
-                            "reason": f"Institutional Funding ({_e_rounds} rounds)",
+                            "reason": f"Institutional Funding ({_e_rval} rounds)",
                             "row": row}
             except (ValueError, TypeError):
                 pass
@@ -671,6 +674,27 @@ def _run_loop():
             if state.status == "paused":
                 time.sleep(5)
                 continue
+
+            # --- Budget gate: pause at every $30 increment ---
+            try:
+                _ct = state.cost_tracker
+                _total_spend = _ct.get("total", 0)
+                _last_gate = config.get("_budget_gate_cleared", 0)
+                _BUDGET_INCREMENT = 30
+                _next_gate = _last_gate + _BUDGET_INCREMENT
+                if _total_spend >= _next_gate:
+                    state.update(status="paused")
+                    state.set_event(
+                        "budget_pause",
+                        f"Estimated spend reached ${_total_spend:.2f} (gate: ${_next_gate:.0f}). "
+                        f"Pipeline paused — click Resume to approve the next ${_BUDGET_INCREMENT} of spend.",
+                        "warning",
+                    )
+                    print(f"[Orchestrator] Budget gate: ${_total_spend:.2f} >= ${_next_gate:.0f}. Paused.")
+                    continue
+            except (AttributeError, KeyError):
+                pass
+
             if len(state.completed_memos) >= target_count:
                 state.set_event("done", f"Pipeline complete! All {target_count} memos generated. Click 'Investment Memos' tab to review.", "success")
                 state.update(status="idle")

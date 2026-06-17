@@ -43,6 +43,10 @@ _PE_VC_SIGNALS = [
     "spectrum equity", "k1 investment", "long ridge equity",
     "norwest venture", "tiger global", "coatue", "iconiq",
     "susquehanna growth", "strategic investor",
+    "y combinator", "yc-backed", "yc backed", "techstars",
+    "500 startups", "seed round", "pre-seed", "angel round",
+    "greylock", "benchmark", "founders fund", "lightspeed",
+    "khosla ventures", "index ventures", "ribbit capital",
 ]
 
 _KNOWN_PE_PORTFOLIOS = {
@@ -71,6 +75,18 @@ _KNOWN_PE_PORTFOLIOS = {
     "battery ventures":     "https://www.battery.com/our-portfolio/",
     "accel":                "https://www.accel.com/portfolio",
     "norwest venture":      "https://www.nvp.com/portfolio/",
+    "y combinator":         "https://www.ycombinator.com/companies",
+    "a16z":                 "https://a16z.com/portfolio/",
+    "andreessen horowitz":  "https://a16z.com/portfolio/",
+    "bessemer":             "https://www.bvp.com/portfolio",
+    "greylock":             "https://greylock.com/portfolio/",
+    "index ventures":       "https://www.indexventures.com/companies/",
+    "benchmark":            "https://www.benchmark.com/portfolio",
+    "founders fund":        "https://foundersfund.com/portfolio/",
+    "lightspeed":           "https://lsvp.com/portfolio/",
+    "khosla ventures":      "https://www.khoslaventures.com/portfolio",
+    "nea":                  "https://www.nea.com/portfolio",
+    "ribbit capital":       "https://ribbitcap.com/companies/",
 }
 
 
@@ -112,6 +128,20 @@ def is_buyable_structure(org, mode):
     if "government administration" in industry and emp > 50:
         return False, "Government Entity"
 
+    # Subsidiary detection — "X, a Y company" / "a division of" / "a subsidiary of"
+    _sub_patterns = [
+        r",\s+a\s+\w[\w\s&.'-]+\s+company",
+        r"a\s+division\s+of\s+",
+        r"a\s+subsidiary\s+of\s+",
+        r"an?\s+\w[\w\s&.'-]+\s+brand\b",
+        r"part\s+of\s+\w[\w\s&.'-]+\s+group",
+        r"wholly[- ]owned",
+    ]
+    _combined_text = f"{name} {desc}"
+    for pat in _sub_patterns:
+        if re.search(pat, _combined_text):
+            return False, f"Subsidiary ('{re.search(pat, _combined_text).group().strip()}')"
+
     # Apollo public trading fields (catches companies even when ownership_status is wrong)
     ticker = org.get("publicly_traded_symbol") or org.get("ticker") or ""
     exchange = org.get("publicly_traded_exchange") or ""
@@ -146,22 +176,24 @@ def is_buyable_structure(org, mode):
         _institutional_stages = [
             "series a", "series b", "series c", "series d", "series e",
             "private equity", "debt financing", "ipo", "post ipo",
-            "grant", "secondary market",
+            "grant", "secondary market", "seed", "pre seed",
         ]
         if any(s in latest_stage for s in _institutional_stages):
             return False, f"Institutional Funding ({latest_stage})"
 
         total_funding = org.get("total_funding") or 0
         try:
-            if isinstance(total_funding, (int, float)) and total_funding > 5_000_000:
-                return False, f"Institutional Funding (${total_funding:,.0f} raised)"
+            val = float(total_funding) if isinstance(total_funding, str) else total_funding
+            if isinstance(val, (int, float)) and val > 5_000_000:
+                return False, f"Institutional Funding (${val:,.0f} raised)"
         except (ValueError, TypeError):
             pass
 
         num_rounds = org.get("number_of_funding_rounds") or 0
         try:
-            if isinstance(num_rounds, int) and num_rounds >= 2:
-                return False, f"Institutional Funding ({num_rounds} funding rounds)"
+            val = int(num_rounds) if isinstance(num_rounds, str) else num_rounds
+            if isinstance(val, int) and val >= 2:
+                return False, f"Institutional Funding ({val} funding rounds)"
         except (ValueError, TypeError):
             pass
 
@@ -497,6 +529,15 @@ def check_pe_vc_web(client, firecrawl_scrape_fn, company_name, domain):
     content = firecrawl_scrape_fn(f"https://tracxn.com/d/companies/{tracxn_slug}")
     if content and len(content) >= 200:
         snippets.append(f"TRACXN PROFILE:\n{content[:8000]}")
+
+    # 2c. Google search for investor/funding info
+    from urllib.parse import quote as _url_quote
+    for query in [f"{company_name} investors funding", f"{company_name} raised series"]:
+        gurl = f"https://www.google.com/search?q={_url_quote(query)}"
+        content = firecrawl_scrape_fn(gurl)
+        if content and len(content) >= 100:
+            snippets.append(f"GOOGLE SEARCH ({query}):\n{content[:8000]}")
+            break
 
     # 3. Cross-check with PE firm portfolio pages if their name appears
     snippet_text = " ".join(snippets).lower()

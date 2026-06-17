@@ -352,6 +352,13 @@ with st.sidebar:
     with c2:
         _can_resume = state.status in ("paused", "stopped")
         if st.button("▶ Resume", disabled=not _can_resume, use_container_width=True):
+            try:
+                _ct_resume = state.cost_tracker
+                _current_spend = _ct_resume.get("total", 0)
+                _cleared = int(_current_spend // 30) * 30
+                state.batch_update(config={"_budget_gate_cleared": _cleared})
+            except (AttributeError, KeyError):
+                pass
             state.update(status="running")
             force_restart_pipeline()
             st.rerun()
