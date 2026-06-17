@@ -324,6 +324,15 @@ with st.sidebar:
     _exclusions_display = cfg.get("exclusions") or ""
     if _exclusions_display:
         st.caption(f"**Excluding:** {_exclusions_display}")
+    _size_min_display = cfg.get("override_size_min")
+    _size_max_display = cfg.get("override_size_max")
+    if _size_min_display or _size_max_display:
+        _parts = []
+        if _size_min_display:
+            _parts.append(f"min {_size_min_display}")
+        if _size_max_display:
+            _parts.append(f"max {_size_max_display}")
+        st.caption(f"**Employee range:** {' / '.join(_parts)}")
 
     created_at_iso = state.created_at
     if created_at_iso:
@@ -469,6 +478,19 @@ with tab_chat:
                 placeholder="e.g., cybersecurity firms, federal/government contractors, companies focused on IT staffing",
                 help="Describe types of companies the pipeline should skip. This helps the bots avoid wasting time on companies outside your target.",
             )
+            _size_cols = st.columns(2)
+            with _size_cols[0]:
+                size_min = st.number_input(
+                    "Min employees (0 = use default of 15)",
+                    min_value=0, max_value=1000, value=0, step=5,
+                    help="Minimum employee count. Companies below this are skipped. Default: 15.",
+                )
+            with _size_cols[1]:
+                size_max = st.number_input(
+                    "Max employees (0 = use default of 500)",
+                    min_value=0, max_value=10000, value=0, step=50,
+                    help="Maximum employee count. Companies above this are skipped. Default: 500.",
+                )
             from lib.cost_tracker import estimate_search_cost
             _est = estimate_search_cost(int(target_count))
             st.caption(
@@ -484,7 +506,12 @@ with tab_chat:
                 elif geo_mode == "Custom" and not geography:
                     st.error("Enter a geography or select NCP Priority Geography.")
                 else:
-                    start_pipeline(niche.strip(), geography, "A", int(target_count), exclusions=exclusions.strip() if exclusions else "")
+                    start_pipeline(
+                        niche.strip(), geography, "A", int(target_count),
+                        exclusions=exclusions.strip() if exclusions else "",
+                        size_min=size_min if size_min > 0 else None,
+                        size_max=size_max if size_max > 0 else None,
+                    )
                     state.reload_from_disk()
                     state.add_chat(
                         "user",
