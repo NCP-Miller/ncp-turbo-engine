@@ -2,7 +2,7 @@
   "bot_status": {
     "search": "idle",
     "analysis": "filtering",
-    "writeup": "idle"
+    "writeup": "generating_memo"
   },
   "candidate_queue": [
     {
@@ -21643,32 +21643,32 @@
     }
   ],
   "filter_stats": {
-    "total_sourced": 3611,
+    "total_sourced": 3614,
     "pre_filtered_size": 0,
-    "pre_filtered_structural": 2321,
+    "pre_filtered_structural": 2323,
     "pre_filtered_blocklist": 79,
     "pre_filtered_niche": 13,
     "deep_analysis_failed": 1063,
     "pe_backed": 45,
     "portfolio_conflict": 19,
     "low_differentiation": 65,
-    "qualified": 6
+    "qualified": 7
   },
   "cost_tracker": {
-    "openai": 53.8035,
-    "firecrawl": 31.585,
+    "openai": 54.2159,
+    "firecrawl": 31.71,
     "apollo": 0.0,
-    "total": 85.3885,
+    "total": 85.9259,
     "call_counts": {
-      "openai": 1227,
-      "firecrawl": 6317,
+      "openai": 1228,
+      "firecrawl": 6342,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "analyzing",
-    "message": "Analyzing 3 candidates in parallel. 60 more in queue.",
-    "timestamp": "2026-06-17T19:54:34.548222+00:00",
+    "type": "writing_memo",
+    "message": "Generating investment memo for Affirmative Technologies.",
+    "timestamp": "2026-06-17T19:56:17.980375+00:00",
     "severity": "info"
   },
   "created_at": "2026-06-16T23:14:22.187844+00:00",
