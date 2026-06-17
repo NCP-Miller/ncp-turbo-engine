@@ -1,7 +1,7 @@
 {
   "bot_status": {
     "search": "idle",
-    "analysis": "filtering",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -20760,28 +20760,59 @@
         "Conviction Reasoning": "Lendsqr doesn't fit perfectly within our mandate due to low differentiation and lack of focus on the specific niche we are targeting, but its broad reach and potential for expansion into underserved segments provide some level of interest."
       },
       "reason": "Conviction 5/10: Lendsqr doesn't fit perfectly within our mandate due to low differentiation and lack of focus on the specific niche we are targeting, but its broad reach and potential for expansion into underserved segments provide some level of interest."
+    },
+    {
+      "row": {
+        "Company": "LogicManager",
+        "Description": "LogicManager is a provider of enterprise risk management software that helps organizations streamline their risk management processes by centralizing them into an all-in-one platform. The company serves a wide range of industries, offering tools for risk identification, monitoring, and reporting, with a focus on improving governance and compliance. Founded in 2005, LogicManager operates globally, supporting businesses in enhancing their risk management strategies and aligning them with strategic goals.",
+        "Website": "http://www.logicmanager.com",
+        "City": "Boston",
+        "State": "Massachusetts",
+        "LinkedIn": "http://www.linkedin.com/company/logicmanager-inc.",
+        "Employees": 55,
+        "Est. EBITDA": "$1.6M\u2013$2.8M",
+        "CEO/Owner Name": "Steven Minsky",
+        "Title": "CEO & Founder",
+        "Email": "steven.minsky@logicmanager.com",
+        "Email Estimate": "",
+        "Phone": "617-530-1210",
+        "Source": "Web Path (/about) \u2192 Verified",
+        "Notes": "",
+        "Confidence": "High",
+        "Latest News": "LogicManager delivers next generation product - PR Newswire | https://news.google.com/rss/articles/CBMiowFBVV95cUxOaVVYb1d2NkliQl9oMzFlZ0lsbDYyNEt3OEpzRnFWRlA0MlhRT0ZxRVhBWG1CVi10REpHRXE4dk9ScWduUXlPRmZ5clR2TmxNNjFhT1pSeTg4Y2hMbmExbVZGZ3UtQW9PN2NHcVltYlFsY1Z3QllqemFNT2licmpJQS1BV2FKQ2VCbk1EUm4zbHdYRTFlclNST09QamlzOUZoMlBn?oc=5",
+        "Previously Sourced": "No",
+        "Differentiated": "Low",
+        "_niche": "I am looking for tech enabled companies providing compliance and risk solutions to banks, community banks/lenders, and credit unions. The solutions may be related to vendor third party risk management, Bank Secrecy Act (BSA), Anti-Money Laundering (AML), loan review, fair lending, and complaint management.\n\nEXCLUDE these types of companies: Consulting",
+        "Priority": "High",
+        "Growth": "Low",
+        "Txn Readiness": "Low",
+        "Conviction": 4,
+        "Conviction Pitch": "LogicManager offers a comprehensive platform for enterprise risk management that supports a wide array of industries in improving governance and compliance. However, its differentiation is low in a crowded market, and growth appears sluggish. Additionally, there is no unique edge over competitors, making it less compelling for our specialized investment focus.",
+        "Conviction Reasoning": "While LogicManager operates in a market with potential growth, particularly in risk solutions for financial institutions, the company lacks clear differentiation and transformative growth, aligning too closely with traits from the Thumbs-Down list."
+      },
+      "reason": "Conviction 4/10: While LogicManager operates in a market with potential growth, particularly in risk solutions for financial institutions, the company lacks clear differentiation and transformative growth, aligning too closely with traits from the Thumbs-Down list."
     }
   ],
   "filter_stats": {
-    "total_sourced": 3114,
+    "total_sourced": 3117,
     "pre_filtered_size": 0,
     "pre_filtered_structural": 2055,
-    "pre_filtered_blocklist": 61,
+    "pre_filtered_blocklist": 62,
     "pre_filtered_niche": 11,
-    "deep_analysis_failed": 874,
+    "deep_analysis_failed": 875,
     "pe_backed": 38,
     "portfolio_conflict": 18,
-    "low_differentiation": 52,
+    "low_differentiation": 53,
     "qualified": 5
   },
   "cost_tracker": {
-    "openai": 44.5622,
-    "firecrawl": 26.115,
+    "openai": 44.9806,
+    "firecrawl": 26.255,
     "apollo": 0.0,
-    "total": 70.6772,
+    "total": 71.2356,
     "call_counts": {
-      "openai": 1007,
-      "firecrawl": 5223,
+      "openai": 1009,
+      "firecrawl": 5251,
       "apollo": 0
     }
   },
