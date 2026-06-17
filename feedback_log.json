@@ -4814,5 +4814,12 @@
     "niche": "I am looking for tech enabled companies providing compliance and risk solutions to banks, community banks/lenders, and credit unions. The solutions may be related to vendor third party risk management, Bank Secrecy Act (BSA), Anti-Money Laundering (AML), loan review, fair lending, and complaint management.",
     "verdict": "caveats",
     "timestamp": "2026-06-17T15:20:11.400866+00:00"
+  },
+  {
+    "company": "Baselayer",
+    "feedback": "Passed",
+    "niche": "I am looking for tech enabled companies providing compliance and risk solutions to banks, community banks/lenders, and credit unions. The solutions may be related to vendor third party risk management, Bank Secrecy Act (BSA), Anti-Money Laundering (AML), loan review, fair lending, and complaint management.",
+    "verdict": "rejected",
+    "timestamp": "2026-06-17T15:20:14.736648+00:00"
   }
 ]
