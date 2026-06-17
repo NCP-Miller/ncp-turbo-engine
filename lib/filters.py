@@ -128,6 +128,20 @@ def is_buyable_structure(org, mode):
     if "government administration" in industry and emp > 50:
         return False, "Government Entity"
 
+    # Subsidiary detection — "X, a Y company" / "a division of" / "a subsidiary of"
+    _sub_patterns = [
+        r",\s+a\s+\w[\w\s&.'-]+\s+company",
+        r"a\s+division\s+of\s+",
+        r"a\s+subsidiary\s+of\s+",
+        r"an?\s+\w[\w\s&.'-]+\s+brand\b",
+        r"part\s+of\s+\w[\w\s&.'-]+\s+group",
+        r"wholly[- ]owned",
+    ]
+    _combined_text = f"{name} {desc}"
+    for pat in _sub_patterns:
+        if re.search(pat, _combined_text):
+            return False, f"Subsidiary ('{re.search(pat, _combined_text).group().strip()}')"
+
     # Apollo public trading fields (catches companies even when ownership_status is wrong)
     ticker = org.get("publicly_traded_symbol") or org.get("ticker") or ""
     exchange = org.get("publicly_traded_exchange") or ""
@@ -515,6 +529,15 @@ def check_pe_vc_web(client, firecrawl_scrape_fn, company_name, domain):
     content = firecrawl_scrape_fn(f"https://tracxn.com/d/companies/{tracxn_slug}")
     if content and len(content) >= 200:
         snippets.append(f"TRACXN PROFILE:\n{content[:8000]}")
+
+    # 2c. Google search for investor/funding info
+    from urllib.parse import quote as _url_quote
+    for query in [f"{company_name} investors funding", f"{company_name} raised series"]:
+        gurl = f"https://www.google.com/search?q={_url_quote(query)}"
+        content = firecrawl_scrape_fn(gurl)
+        if content and len(content) >= 100:
+            snippets.append(f"GOOGLE SEARCH ({query}):\n{content[:8000]}")
+            break
 
     # 3. Cross-check with PE firm portfolio pages if their name appears
     snippet_text = " ".join(snippets).lower()
