@@ -18166,5 +18166,8 @@
     "broaden_signal": false,
     "pivot_signal": false
   },
-  "status": "paused"
+  "status": "paused",
+  "memo_verdicts": {
+    "Hadrius": "rejected"
+  }
 }
