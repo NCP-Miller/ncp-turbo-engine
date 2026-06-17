@@ -2,7 +2,7 @@
   "bot_status": {
     "search": "idle",
     "analysis": "filtering",
-    "writeup": "idle"
+    "writeup": "generating_memo"
   },
   "candidate_queue": [
     {
@@ -17341,32 +17341,32 @@
     }
   ],
   "filter_stats": {
-    "total_sourced": 3443,
+    "total_sourced": 3446,
     "pre_filtered_size": 0,
-    "pre_filtered_structural": 2217,
+    "pre_filtered_structural": 2219,
     "pre_filtered_blocklist": 77,
     "pre_filtered_niche": 13,
     "deep_analysis_failed": 1007,
     "pe_backed": 43,
     "portfolio_conflict": 19,
     "low_differentiation": 62,
-    "qualified": 5
+    "qualified": 6
   },
   "cost_tracker": {
-    "openai": 51.2951,
-    "firecrawl": 30.045,
+    "openai": 51.7075,
+    "firecrawl": 30.17,
     "apollo": 0.0,
-    "total": 81.3401,
+    "total": 81.8775,
     "call_counts": {
-      "openai": 1163,
-      "firecrawl": 6009,
+      "openai": 1164,
+      "firecrawl": 6034,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "analyzing",
-    "message": "Analyzing 3 candidates in parallel. 41 more in queue.",
-    "timestamp": "2026-06-17T19:35:06.001885+00:00",
+    "type": "writing_memo",
+    "message": "Generating investment memo for DataSeers.",
+    "timestamp": "2026-06-17T19:35:47.866317+00:00",
     "severity": "info"
   },
   "created_at": "2026-06-16T23:14:22.187844+00:00",
