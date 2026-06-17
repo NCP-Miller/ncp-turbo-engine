@@ -10798,20 +10798,20 @@
     "qualified": 7
   },
   "cost_tracker": {
-    "openai": 59.1594,
-    "firecrawl": 36.035,
+    "openai": 59.2384,
+    "firecrawl": 36.06,
     "apollo": 0.0,
-    "total": 95.1944,
+    "total": 95.2984,
     "call_counts": {
-      "openai": 1452,
-      "firecrawl": 7207,
+      "openai": 1454,
+      "firecrawl": 7212,
       "apollo": 0
     }
   },
   "last_event": {
     "type": "searching_apollo",
-    "message": "Searching Apollo for Computer & Network Security companies in NCP Priority Geography (Eastern US) (round 2 of 4).",
-    "timestamp": "2026-06-17T23:56:46.847385+00:00",
+    "message": "Searching Apollo for Financial Services companies in NCP Priority Geography (Eastern US) (round 3 of 4).",
+    "timestamp": "2026-06-17T23:57:09.979191+00:00",
     "severity": "info"
   },
   "created_at": "2026-06-16T23:14:22.187844+00:00",
