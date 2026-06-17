@@ -1,6 +1,6 @@
 {
   "bot_status": {
-    "search": "exhausted",
+    "search": "searching_apollo",
     "analysis": "idle",
     "writeup": "idle"
   },
@@ -10798,20 +10798,20 @@
     "qualified": 7
   },
   "cost_tracker": {
-    "openai": 59.0724,
-    "firecrawl": 36.01,
+    "openai": 59.1594,
+    "firecrawl": 36.035,
     "apollo": 0.0,
-    "total": 95.0824,
+    "total": 95.1944,
     "call_counts": {
-      "openai": 1449,
-      "firecrawl": 7202,
+      "openai": 1452,
+      "firecrawl": 7207,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "starting",
-    "message": "Pipeline starting. Niche: I am looking for tech enabled companies providing compliance and risk solutions to banks, community banks/lenders, and credit unions. The solutions may be related to vendor third party risk management, Bank Secrecy Act (BSA), Anti-Money Laundering (AML), loan review, fair lending, and complaint management., geography: NCP Priority Geography (Eastern US), target: 10 memos.",
-    "timestamp": "2026-06-17T23:55:46.497494+00:00",
+    "type": "searching_apollo",
+    "message": "Searching Apollo for Banking companies in NCP Priority Geography (Eastern US) (round 2 of 4).",
+    "timestamp": "2026-06-17T23:56:16.531983+00:00",
     "severity": "info"
   },
   "created_at": "2026-06-16T23:14:22.187844+00:00",
