@@ -10834,22 +10834,24 @@
   },
   "status": "stopped",
   "reviewed_near_misses": [
-    "Brightwell",
-    "Smarttech247",
-    "UGR - NextGen Compliance",
     "Infobelt, Inc",
     "VeraSafe",
-    "Clarip",
-    "Blutic",
     "Lendsqr",
-    "GoML",
-    "Plus Technologies & Innovations",
     "GFMI",
     "iuvity",
+    "Declassify | Crypto Research and Monitoring",
+    "Brightwell",
+    "CLDigital",
+    "Blutic",
+    "Plus Technologies & Innovations",
+    "UGR - NextGen Compliance",
+    "Sirius AI",
     "Provenir",
     "Pegasus Knowledge Solutions, Inc.",
     "Informativ",
-    "Sirius AI",
-    "Declassify | Crypto Research and Monitoring"
+    "VIVE",
+    "Smarttech247",
+    "Clarip",
+    "GoML"
   ]
 }
