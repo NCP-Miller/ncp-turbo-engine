@@ -1,7 +1,7 @@
 {
   "bot_status": {
-    "search": "idle",
-    "analysis": "filtering",
+    "search": "searching_apollo",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -14811,32 +14811,32 @@
     }
   ],
   "filter_stats": {
-    "total_sourced": 4404,
+    "total_sourced": 4407,
     "pre_filtered_size": 0,
-    "pre_filtered_structural": 2778,
+    "pre_filtered_structural": 2780,
     "pre_filtered_blocklist": 94,
     "pre_filtered_niche": 16,
-    "deep_analysis_failed": 1357,
+    "deep_analysis_failed": 1358,
     "pe_backed": 51,
     "portfolio_conflict": 23,
     "low_differentiation": 78,
     "qualified": 7
   },
   "cost_tracker": {
-    "openai": 64.5581,
-    "firecrawl": 38.91,
+    "openai": 64.5641,
+    "firecrawl": 38.925,
     "apollo": 0.0,
-    "total": 103.4681,
+    "total": 103.4891,
     "call_counts": {
-      "openai": 1556,
-      "firecrawl": 7782,
+      "openai": 1557,
+      "firecrawl": 7785,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "analyzing",
-    "message": "Analyzing 3 candidates in parallel. 17 more in queue.",
-    "timestamp": "2026-06-18T00:22:46.228523+00:00",
+    "type": "searching_apollo",
+    "message": "Searching Apollo for Information Technology and Services companies in NCP Priority Geography (Eastern US) (round 3 of 4).",
+    "timestamp": "2026-06-18T00:24:03.433109+00:00",
     "severity": "info"
   },
   "created_at": "2026-06-16T23:14:22.187844+00:00",
