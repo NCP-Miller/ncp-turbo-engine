@@ -1,7 +1,7 @@
 {
   "bot_status": {
     "search": "idle",
-    "analysis": "filtering",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -20127,6 +20127,38 @@
       },
       "memo": "**New Capital Partners Investment Memo**\n\n**Pegasus Knowledge Solutions, Inc. (PKSI)**  \n**Location:** Schaumburg, Illinois  \n**Employees:** 69  \n**Est. EBITDA:** $2.1M\u2013$3.5M (heuristic; requires confirmation)\n\n**1. Why We're Excited**  \nPegasus Knowledge Solutions, Inc. offers a strong foundation in analytics software and services with robust industry certifications (ISO 9001-2008 and ISMS 27001-2013). Despite low differentiation and growth in a competitive landscape, PKSI's global operation and compliance solutions tailored to financial services provide an opportunity to carve a niche in compliance and risk solutions for banks and credit unions. The company's solid accreditation and infrastructure make it a potentially strategic acquisition target as a platform for future bolt-ons or expansions within a fragmented market.\n\n**2. Company Overview**  \nFounded in 1997, PKSI specializes in advanced analytics, data integration, predictive modeling, and machine learning, providing services to industries such as financial services, healthcare, and logistics. Operating globally with certified solution delivery centers, PKSI is well-positioned to serve diverse markets by leveraging its expertise in analytics to improve customer and operational insights.\n\n**3. Differentiated Value Proposition**  \nPKSI's primary advantage lies in its strong certifications, which provide credibility and trust in delivering reliable and standardized solutions. While the company does not currently maintain a significant competitive edge in product differentiation, its adherence to rigorous quality and security standards can act as a defensible moat in regulated industries requiring high compliance standards.\n\n**4. Market Opportunity & Growth**  \nThe demand for tech-enabled compliance and risk solutions is growing due to increasing regulatory scrutiny and the need for robust compliance frameworks within financial institutions. PKSI's expertise in analytics positions it to capitalize on these secular trends, though current growth appears constrained. Exploring opportunities to evolve into a recurring revenue model through managed services or subscription-based analytics offerings could unlock further potential.\n\n**5. NCP Fit Rationale**  \nPKSI's profile aligns with NCP's lower middle market focus on services-oriented, founder-owned companies ripe for strategic growth through a buy-and-build strategy. The fragmented market, coupled with PKSI's foundation, offers whitespace opportunities for expansion and consolidation. With a founder approaching retirement, there is a natural succession and leadership transition opportunity.\n\n**6. Key Risks & Diligence Items**  \n1. **Revenue Model Sustainability:** The need to confirm and potentially enhance revenue predictability by transitioning towards a recurring model.\n2. **Growth Trajectory:** Low current growth requires identification of growth levers and strategic initiatives to capture market share.\n3. **Competitive Positioning:** Further analysis needed to evaluate PKSI's competitive position and differentiation in the market.\n4. **Management Transition:** Assess the impact of founder succession and ensure continuity of operations and strategic vision.\n5. **Financial Validation:** Confirm the estimated EBITDA and financial health through detailed financial diligence.",
       "promoted_from_near_miss": true
+    },
+    {
+      "company": "KYC2020",
+      "row": {
+        "Company": "KYC2020",
+        "Description": "KYC2020 is a regulatory technology company that specializes in anti-money laundering (AML) compliance solutions, including identity verification, know your business (KYB) screening, and transaction screening. They serve over 300 global customers, including financial institutions and money service businesses, across more than 40 countries, providing tools for real-time risk assessment and compliance with global sanction and watchlist requirements. Headquartered in Chicago, USA, KYC2020 offers cloud-based, GDPR-compliant services with a focus on reducing costs and improving the accuracy of AML processes.",
+        "Website": "http://www.kyc2020.com",
+        "City": "Chicago",
+        "State": "Illinois",
+        "LinkedIn": "http://www.linkedin.com/company/kyc2020",
+        "Employees": 27,
+        "Est. EBITDA": "$810K\u2013$1.4M",
+        "CEO/Owner Name": "Rajeev Bahri",
+        "Title": "Founder, CEO",
+        "Email": "N/A",
+        "Email Estimate": "rajeev.bahri@kyc2020.com",
+        "Phone": "N/A",
+        "Source": "Web Path (/about-us)",
+        "Notes": "",
+        "Confidence": "Medium",
+        "Latest News": "Three Friends Want to Make 10,000 Masks in 10 Days - Chicago Magazine | https://news.google.com/rss/articles/CBMihwFBVV95cUxObU84NEJ5emk5QUExQVAyWmxhOFZtWnhwb0FwVFkxRHpONkhIQTRZWGxsRHlJQ2ZLWlNJaHgzVmRvNUZwSEhEOTEzME9wSkpfeW1lWTMySmRVRHY1SUc3Wm1hOG1hcnhld19DTTF1UjFpeWFRWFRxQk5KOG03SlpzWExaWk5KSXM?oc=5",
+        "Previously Sourced": "No",
+        "Differentiated": "Medium",
+        "_niche": "I am looking for tech enabled companies providing compliance and risk solutions to banks, community banks/lenders, and credit unions. The solutions may be related to vendor third party risk management, Bank Secrecy Act (BSA), Anti-Money Laundering (AML), loan review, fair lending, and complaint management.\n\nEXCLUDE these types of companies: Consulting",
+        "Priority": "High",
+        "Growth": "Low",
+        "Txn Readiness": "Low",
+        "Conviction": 7,
+        "Conviction Pitch": "KYC2020 stands out as a solid investment opportunity in the regulatory technology space, offering AML compliance solutions across a broad client base of over 300 global customers in over 40 countries. Their cloud-based, GDPR-compliant services provide a defensible moat, ensuring accurate and cost-effective AML processes for financial institutions. While growth is currently low, their focus on essential compliance in a fragmented market affords significant expansion potential, making them an intriguing candidate for buy-and-build strategies.",
+        "Conviction Reasoning": "The company operates in a fragmented market with essential compliance services, offering a defensible moat, but lacks current high growth, resulting in a medium conviction score."
+      },
+      "memo": "### Why We're Excited\n\nKYC2020 offers a unique proposition in the regulatory technology space by providing AML compliance solutions that are essential to financial institutions globally. Their ability to deliver cloud-based, GDPR-compliant services across 40 countries to over 300 clients highlights their operational efficiency and market credibility. This broad reach combined with their specialized focus on AML compliance positions them with a strong \"right to win\" in a fragmented market ripe for consolidation, making them an attractive candidate for a buy-and-build strategy.\n\n### Company Overview\n\nKYC2020, based in Chicago, Illinois, is a regulatory technology firm specializing in anti-money laundering (AML) compliance solutions. With a team of 27 employees, the company serves over 300 customers in more than 40 countries. Their offerings include identity verification, know your business (KYB) screening, and transaction screening, all designed to ensure real-time risk assessment and adherence to global sanction and watchlist requirements.\n\n### Differentiated Value Proposition\n\nKYC2020's core advantage lies in its cloud-based, GDPR-compliant solutions that lower costs while improving the accuracy of AML processes. This technological edge, coupled with a large, diverse client base, creates a defensible moat in a market with limited direct competition. The intellectual property underlying their compliance tools and the proprietary procedures they employ reinforce this competitive barrier, making their services essential and non-cyclical.\n\n### Market Opportunity & Growth\n\nThe regulatory technology space is experiencing growth driven by increasing globalization and tightening compliance mandates. While KYC2020 currently shows modest growth, the total addressable market (TAM) is expanding due to prevalent cybersecurity concerns and ongoing regulatory changes. Their foundational customer base and technology platform provide tangible levers for growth, capitalizing on market fragmentation through strategic acquisitions and scaling operations.\n\n### NCP Fit Rationale\n\nKYC2020 fits New Capital Partners\u2019 investment thesis focusing on lower middle market, services-oriented, founder-owned companies. The firm\u2019s strategic positioning as a compliance solution provider across varied geographies matches NCP's interest in essential, non-cyclical services. Moreover, with the possibility of the founder approaching retirement, there exists a natural succession pathway, unified with NCP\u2019s goal of expansion through a buy-and-build approach in a fragmented market.\n\n### Key Risks & Diligence Items\n\n1. **Verification of Financial Performance**: The estimated EBITDA range based on employee count requires confirmation to understand profitability accurately.\n   \n2. **Growth Trajectory**: Assess the growth potential and strategy beyond the current low-growth phase to ensure scalability.\n   \n3. **Technology Audit**: Conduct a technical due diligence to verify the robustness and compliance of cloud solutions offered.\n   \n4. **Competitive Analysis**: Investigate market competition further to ensure the perceived moat and competitive advantage are sustainable.\n   \n5. **Regulatory Dependencies**: Scrutinize dependency on regulatory changes and their potential impact on business operations and revenue cycles. \n\nThis memo necessitates immediate attention to due diligence to confirm the financials and further clarify the competitive position of KYC2020 within the regulatory technology landscape."
     }
   ],
   "chat_history": [
@@ -32414,33 +32446,33 @@
     }
   ],
   "filter_stats": {
-    "total_sourced": 4623,
+    "total_sourced": 4626,
     "pre_filtered_size": 0,
     "pre_filtered_structural": 2857,
     "pre_filtered_blocklist": 101,
     "pre_filtered_niche": 16,
-    "deep_analysis_failed": 1480,
+    "deep_analysis_failed": 1482,
     "pe_backed": 53,
     "portfolio_conflict": 23,
     "low_differentiation": 86,
-    "qualified": 7
+    "qualified": 8
   },
   "cost_tracker": {
-    "openai": 69.0901,
-    "firecrawl": 41.955,
+    "openai": 69.5345,
+    "firecrawl": 42.11,
     "apollo": 0.0,
-    "total": 111.0451,
+    "total": 111.6445,
     "call_counts": {
-      "openai": 1689,
-      "firecrawl": 8391,
+      "openai": 1693,
+      "firecrawl": 8422,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "analyzing",
-    "message": "Analyzing 3 candidates in parallel. 146 more in queue.",
-    "timestamp": "2026-06-18T01:05:10.026665+00:00",
-    "severity": "info"
+    "type": "done",
+    "message": "Pipeline complete! All 10 memos generated. Click 'Investment Memos' tab to review.",
+    "timestamp": "2026-06-18T01:06:34.151263+00:00",
+    "severity": "success"
   },
   "created_at": "2026-06-16T23:14:22.187844+00:00",
   "config": {
@@ -32490,5 +32522,5 @@
     "Clarip",
     "GoML"
   ],
-  "status": "running"
+  "status": "idle"
 }
