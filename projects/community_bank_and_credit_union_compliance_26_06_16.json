@@ -32492,6 +32492,7 @@
     "Baselayer": "rejected",
     "konaAI, a Covasant company": "rejected"
   },
+  "status": "idle",
   "reviewed_near_misses": [
     "Cogency Global Inc.",
     "Infobelt, Inc",
@@ -32520,7 +32521,7 @@
     "VIVE",
     "Smarttech247",
     "Clarip",
+    "SolasAI",
     "GoML"
-  ],
-  "status": "idle"
+  ]
 }
