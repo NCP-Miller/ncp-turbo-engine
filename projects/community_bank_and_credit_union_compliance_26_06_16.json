@@ -1,7 +1,7 @@
 {
   "bot_status": {
     "search": "idle",
-    "analysis": "filtering",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -31680,28 +31680,59 @@
         "Conviction Reasoning": "The company's service is focused on tax compliance rather than the tech-enabled compliance and risk solutions to financial institutions we are currently targeting, and it lacks a clear, compelling competitive edge."
       },
       "reason": "Conviction 3/10: The company's service is focused on tax compliance rather than the tech-enabled compliance and risk solutions to financial institutions we are currently targeting, and it lacks a clear, compelling competitive edge."
+    },
+    {
+      "row": {
+        "Company": "CogniTensor",
+        "Description": "CogniTensor is an AI company that designs, engineers, and deploys industry-grade platforms to transform organizational operations across various sectors, including financial services, manufacturing, healthcare, and energy. They offer solutions in AI strategy, data architecture, and AI platforms, focusing on enterprise-grade scalability and intelligent operations.",
+        "Website": "http://www.cognitensor.com",
+        "City": "Austin",
+        "State": "Texas",
+        "LinkedIn": "http://www.linkedin.com/company/cognitensor",
+        "Employees": 36,
+        "Est. EBITDA": "$1.1M\u2013$1.8M",
+        "CEO/Owner Name": "N/A",
+        "Title": "N/A",
+        "Email": "N/A",
+        "Email Estimate": "",
+        "Phone": "N/A",
+        "Source": "Not Found",
+        "Notes": "",
+        "Confidence": "Low",
+        "Latest News": "N/A",
+        "Previously Sourced": "No",
+        "Differentiated": "Low",
+        "_niche": "I am looking for tech enabled companies providing compliance and risk solutions to banks, community banks/lenders, and credit unions. The solutions may be related to vendor third party risk management, Bank Secrecy Act (BSA), Anti-Money Laundering (AML), loan review, fair lending, and complaint management.\n\nEXCLUDE these types of companies: Consulting",
+        "Priority": "Medium",
+        "Growth": "Low",
+        "Txn Readiness": "Low",
+        "Conviction": 3,
+        "Conviction Pitch": "CogniTensor operates in a crowded AI market with low differentiation and lacks a unique edge necessary to stand out in the tech-enabled compliance and risk solution niche for financial institutions. The low growth and transaction readiness further diminish its attractiveness.",
+        "Conviction Reasoning": "The company's general focus on AI strategy and data architecture lacks the specialized compliance solutions tailored for banking institutions that align with our investment mandate. Additionally, the absence of compelling differentiation or standout traits reduces its alignment with past successful evaluations."
+      },
+      "reason": "Conviction 3/10: The company's general focus on AI strategy and data architecture lacks the specialized compliance solutions tailored for banking institutions that align with our investment mandate. Additionally, the absence of compelling differentiation or standout traits reduces its alignment with past successful evaluations."
     }
   ],
   "filter_stats": {
-    "total_sourced": 4317,
+    "total_sourced": 4320,
     "pre_filtered_size": 0,
-    "pre_filtered_structural": 2740,
+    "pre_filtered_structural": 2741,
     "pre_filtered_blocklist": 93,
     "pre_filtered_niche": 16,
-    "deep_analysis_failed": 1318,
+    "deep_analysis_failed": 1319,
     "pe_backed": 49,
     "portfolio_conflict": 22,
-    "low_differentiation": 72,
+    "low_differentiation": 73,
     "qualified": 7
   },
   "cost_tracker": {
-    "openai": 61.025,
-    "firecrawl": 37.265,
+    "openai": 61.4434,
+    "firecrawl": 37.405,
     "apollo": 0.0,
-    "total": 98.29,
+    "total": 98.8484,
     "call_counts": {
-      "openai": 1508,
-      "firecrawl": 7453,
+      "openai": 1510,
+      "firecrawl": 7481,
       "apollo": 0
     }
   },
