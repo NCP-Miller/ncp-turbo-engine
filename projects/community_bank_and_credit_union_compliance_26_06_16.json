@@ -32584,13 +32584,6 @@
     "pivot_signal": false,
     "_budget_gate_cleared": 90
   },
-  "memo_verdicts": {
-    "Hadrius": "rejected",
-    "RiskProfiler": "rejected",
-    "Perimeter.net": "rejected",
-    "Baselayer": "rejected",
-    "konaAI, a Covasant company": "rejected"
-  },
   "status": "idle",
   "reviewed_near_misses": [
     "Cogency Global Inc.",
@@ -32679,5 +32672,13 @@
     "Corvia",
     "Global IDs",
     "Quantrium"
-  ]
+  ],
+  "memo_verdicts": {
+    "Hadrius": "rejected",
+    "RiskProfiler": "rejected",
+    "Perimeter.net": "rejected",
+    "Baselayer": "rejected",
+    "konaAI, a Covasant company": "rejected",
+    "DataSeers": "liked"
+  }
 }
