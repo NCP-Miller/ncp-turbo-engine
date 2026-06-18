@@ -75,7 +75,8 @@ def _auto_backup():
 # ---------------------------------------------------------------------------
 # PUBLIC API
 # ---------------------------------------------------------------------------
-def start_pipeline(niche, geography, strategy="A", target_count=5, exclusions=""):
+def start_pipeline(niche, geography, strategy="A", target_count=5, exclusions="",
+                   size_min=None, size_max=None):
     """Initialize a fresh pipeline run and start the background loop."""
     state = PipelineState()
     state.reset()
@@ -86,6 +87,8 @@ def start_pipeline(niche, geography, strategy="A", target_count=5, exclusions=""
             "strategy": strategy,
             "target_count": target_count,
             "exclusions": exclusions,
+            "override_size_min": size_min,
+            "override_size_max": size_max,
         },
         status="running",
     )
