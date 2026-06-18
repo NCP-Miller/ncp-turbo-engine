@@ -4863,5 +4863,19 @@
     "niche": "I am looking for tech enabled companies providing compliance and risk solutions to banks, community banks/lenders, and credit unions. The solutions may be related to vendor third party risk management, Bank Secrecy Act (BSA), Anti-Money Laundering (AML), loan review, fair lending, and complaint management.",
     "verdict": "caveats",
     "timestamp": "2026-06-18T17:56:36.121004+00:00"
+  },
+  {
+    "company": "KYC2020",
+    "feedback": "Passed",
+    "niche": "I am looking for tech enabled companies providing compliance and risk solutions to banks, community banks/lenders, and credit unions. The solutions may be related to vendor third party risk management, Bank Secrecy Act (BSA), Anti-Money Laundering (AML), loan review, fair lending, and complaint management.",
+    "verdict": "rejected",
+    "timestamp": "2026-06-18T17:56:40.566874+00:00"
+  },
+  {
+    "company": "Clarip",
+    "feedback": "Undifferentiated",
+    "niche": "I am looking for tech enabled companies providing compliance and risk solutions to banks, community banks/lenders, and credit unions. The solutions may be related to vendor third party risk management, Bank Secrecy Act (BSA), Anti-Money Laundering (AML), loan review, fair lending, and complaint management.",
+    "verdict": "caveats",
+    "timestamp": "2026-06-18T18:05:14.896586+00:00"
   }
 ]
