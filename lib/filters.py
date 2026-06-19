@@ -136,11 +136,24 @@ def is_buyable_structure(org, mode):
         r"an?\s+\w[\w\s&.'-]+\s+brand\b",
         r"part\s+of\s+\w[\w\s&.'-]+\s+group",
         r"wholly[- ]owned",
+        r"owned\s+by\s+\w",
+        r"product\s+(?:line\s+)?(?:of|by)\s+\w",
+        r"powered\s+by\s+\w[\w\s&.'-]+",
     ]
     _combined_text = f"{name} {desc}"
     for pat in _sub_patterns:
         if re.search(pat, _combined_text):
             return False, f"Subsidiary ('{re.search(pat, _combined_text).group().strip()}')"
+
+    # Product-line detection: "Quadient AR Automation" on quadient.com
+    _org_domain = (org.get("website_url") or "").lower()
+    if _org_domain:
+        _dom_clean = re.sub(r"https?://(?:www\.)?", "", _org_domain).split("/")[0]
+        _dom_base = _dom_clean.split(".")[0] if _dom_clean else ""
+        _name_words = name.split()
+        if (_dom_base and len(_name_words) >= 3
+                and _dom_base == _name_words[0].lower().replace(",", "")):
+            return False, f"Product line of {_name_words[0]} (website: {_dom_clean})"
 
     # Apollo public trading fields (catches companies even when ownership_status is wrong)
     ticker = org.get("publicly_traded_symbol") or org.get("ticker") or ""
@@ -530,14 +543,23 @@ def check_pe_vc_web(client, firecrawl_scrape_fn, company_name, domain):
     if content and len(content) >= 200:
         snippets.append(f"TRACXN PROFILE:\n{content[:8000]}")
 
-    # 2c. Google search for investor/funding info
+    # 2c. Google search for investor/funding info AND public ownership
     from urllib.parse import quote as _url_quote
-    for query in [f"{company_name} investors funding", f"{company_name} raised series"]:
+    _google_queries = [
+        f"{company_name} investors funding",
+        f"{company_name} raised series",
+        f"{company_name} parent company publicly traded",
+        f"{company_name} owned by acquired",
+    ]
+    _google_hits = 0
+    for query in _google_queries:
+        if _google_hits >= 2:
+            break
         gurl = f"https://www.google.com/search?q={_url_quote(query)}"
         content = firecrawl_scrape_fn(gurl)
         if content and len(content) >= 100:
             snippets.append(f"GOOGLE SEARCH ({query}):\n{content[:8000]}")
-            break
+            _google_hits += 1
 
     # 3. Cross-check with PE firm portfolio pages if their name appears
     snippet_text = " ".join(snippets).lower()
@@ -553,21 +575,27 @@ def check_pe_vc_web(client, firecrawl_scrape_fn, company_name, domain):
         return result
 
     combined = "\n---\n".join(snippets)
-    prompt = f"""Determine whether "{company_name}" is owned by or has received significant
-investment from a private equity firm or venture capital firm.
+    prompt = f"""Determine whether "{company_name}" is ineligible for acquisition because it is:
+(A) owned by or backed by a private equity firm or venture capital firm, OR
+(B) owned by, a subsidiary of, a division of, or a product line of a publicly traded company.
+
+Either condition makes the company ineligible — return true if EITHER applies.
 
 Look for evidence such as:
-- "backed by [PE/VC firm name]"
-- "portfolio company of [firm]"
-- "acquired by [firm]"
+- "backed by [PE/VC firm name]" or "portfolio company of [firm]"
+- "acquired by [firm]" or "a [parent company] company"
 - Company name appearing on a PE/VC firm's portfolio page
 - Crunchbase listing showing PE/VC investors or funding rounds
-- Series A/B/C/D funding rounds
-- Recapitalization or leveraged buyout
+- Series A/B/C/D funding rounds, recapitalization, or leveraged buyout
 - Any named PE or VC firm as an investor or owner
+- Company is a product, brand, or division of a publicly traded company
+- Parent company has a stock ticker (NYSE, NASDAQ, Euronext, LSE, TSX, etc.)
+- Company's website belongs to a larger publicly traded parent
+- Company name starts with or contains a publicly traded company's name
 
 IMPORTANT: If "{company_name}" appears on any PE/VC firm's portfolio page, that is
-definitive proof of PE/VC ownership — return true.
+definitive proof — return true. If the company is clearly a product line or brand
+of a publicly traded company, that is also definitive — return true.
 
 Web content:
 {combined[:25000]}
@@ -622,6 +650,8 @@ def check_news_for_pe_vc(news_title):
         "series a", "series b", "series c", "series d",
         "funding round", "raises $", "raised $", "secures $",
         "investment from", "growth equity", "portfolio company",
+        "publicly traded", "stock exchange", "ipo", "nasdaq",
+        "nyse", "euronext", "subsidiary of", "division of",
     ]
     return any(s in t for s in signals)
 
@@ -668,6 +698,9 @@ def check_pe_backed(client, candidate_name, news_snippets=None):
         elif any(signal in snippet_lower for signal in [
             "acquired by", "investment from", "partnership with",
             "portfolio company of", "backed by", "majority investor",
+            "publicly traded", "subsidiary of", "division of",
+            "parent company", "stock exchange", "nasdaq", "nyse",
+            "euronext", "listed on",
         ]):
             matching_snippets.append(snippet)
 
@@ -680,8 +713,9 @@ def check_pe_backed(client, candidate_name, news_snippets=None):
         resp = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role": "user", "content": (
-                f"Does this evidence indicate that '{candidate_name}' is currently owned/backed "
-                f"by a private equity firm? Return JSON: {{'is_pe_backed': true/false, "
+                f"Does this evidence indicate that '{candidate_name}' is (A) currently owned/backed "
+                f"by a private equity firm, or (B) a subsidiary/division/product of a publicly traded "
+                f"company? Either makes it ineligible. Return JSON: {{'is_pe_backed': true/false, "
                 f"'pe_firm': 'name or null', 'rationale': 'brief'}}.\n\n"
                 f"News evidence:\n{combined[:5000]}"
             )}],

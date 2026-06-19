@@ -207,13 +207,15 @@ def make_mailto_url(to_email, subject, body):
 
 def generate_followup_ics(company, contact_name, phone="", email="",
                           send_date=None):
-    """Generate an .ics file with follow-up reminders:
-      1. Phone call — day 1 (9:00 AM, 15 min)
-      2. Follow-up email — day 3 (9:00 AM, 15 min)
-      3. Second follow-up — day 7 (9:00 AM, 15 min)
-      4. Third follow-up — day 10 (9:00 AM, 15 min)
-      5. Final follow-up — day 14 (9:00 AM, 15 min)
+    """Generate an .ics file with 6 follow-up reminders timed from click:
+      1. +15 min  — Email follow-up
+      2. +20 min  — LinkedIn invite & message
+      3. +15 hrs  — Phone call
+      4. +15h 15m — Email follow-up
+      5. +36 hrs  — Email follow-up
+      6. +48 hrs  — Phone call
 
+    All times are relative to when the user clicks Add Reminders.
     Returns the .ics content as a string.
     """
     if send_date is None:
@@ -227,85 +229,79 @@ def generate_followup_ics(company, contact_name, phone="", email="",
         safe = company.replace(" ", "").replace("'", "")[:20]
         return f"ncp-{safe}-{ts}-{suffix}@ncpengine"
 
-    def _event_times(days_after):
-        d = send_date + timedelta(days=days_after)
-        start = d.replace(hour=9, minute=0, second=0, microsecond=0)
-        return start, start + timedelta(minutes=15)
-
     phone_note = f"\\nPhone: {phone}" if phone else ""
     email_note = f"\\nEmail: {email}" if email else ""
     sent_str = send_date.strftime('%b %d')
 
-    call_start, call_end = _event_times(1)
-    fu1_start, fu1_end = _event_times(3)
-    fu2_start, fu2_end = _event_times(7)
-    fu3_start, fu3_end = _event_times(10)
-    fu4_start, fu4_end = _event_times(14)
+    events = [
+        {
+            "uid": _uid("email15m"),
+            "offset": timedelta(minutes=15),
+            "summary": f"Email follow-up: {contact_name} at {company}",
+            "desc": f"Send follow-up email to {contact_name} at {company}. Reference your initial outreach from {sent_str}.{email_note}",
+            "alarm_desc": f"Email follow-up with {contact_name} in 5 minutes",
+        },
+        {
+            "uid": _uid("linkedin20m"),
+            "offset": timedelta(minutes=20),
+            "summary": f"LinkedIn invite & message: {contact_name} at {company}",
+            "desc": f"Send LinkedIn connection request and message to {contact_name} at {company}. Reference your outreach from {sent_str}.{email_note}",
+            "alarm_desc": f"LinkedIn outreach to {contact_name} in 5 minutes",
+        },
+        {
+            "uid": _uid("call15h"),
+            "offset": timedelta(hours=15),
+            "summary": f"Follow-up call: {contact_name} at {company}{f' — {phone}' if phone else ''}",
+            "desc": f"Call {contact_name} at {company} to follow up on outreach sent {sent_str}.{phone_note}{email_note}",
+            "alarm_desc": f"Follow-up call with {contact_name} in 5 minutes",
+        },
+        {
+            "uid": _uid("email15h15m"),
+            "offset": timedelta(hours=15, minutes=15),
+            "summary": f"Email follow-up #2: {contact_name} at {company}",
+            "desc": f"Send follow-up email to {contact_name} at {company} after your call. Reference outreach from {sent_str}.{email_note}",
+            "alarm_desc": f"Email follow-up with {contact_name} in 5 minutes",
+        },
+        {
+            "uid": _uid("email36h"),
+            "offset": timedelta(hours=36),
+            "summary": f"Email follow-up #3: {contact_name} at {company}",
+            "desc": f"Send another follow-up email to {contact_name} at {company}. Try a different angle. Original outreach sent {sent_str}.{email_note}",
+            "alarm_desc": f"Email follow-up with {contact_name} in 5 minutes",
+        },
+        {
+            "uid": _uid("call48h"),
+            "offset": timedelta(hours=48),
+            "summary": f"Follow-up call #2: {contact_name} at {company}{f' — {phone}' if phone else ''}",
+            "desc": f"Second follow-up call to {contact_name} at {company}. Original outreach sent {sent_str}.{phone_note}{email_note}",
+            "alarm_desc": f"Follow-up call with {contact_name} in 5 minutes",
+        },
+    ]
 
-    ics = dedent(f"""\
-        BEGIN:VCALENDAR
-        VERSION:2.0
-        PRODID:-//NCP//Sourcing Engine//EN
-        METHOD:PUBLISH
-        BEGIN:VEVENT
-        UID:{_uid("call")}
-        DTSTART:{_fmt(call_start)}
-        DTEND:{_fmt(call_end)}
-        SUMMARY:Follow-up call: {contact_name} at {company}{f" — {phone}" if phone else ""}
-        DESCRIPTION:Call {contact_name} at {company} to follow up on outreach email sent {sent_str}.{phone_note}{email_note}
-        BEGIN:VALARM
-        TRIGGER:-PT30M
-        ACTION:DISPLAY
-        DESCRIPTION:Follow-up call with {contact_name} in 30 minutes
-        END:VALARM
-        END:VEVENT
-        BEGIN:VEVENT
-        UID:{_uid("email2")}
-        DTSTART:{_fmt(fu1_start)}
-        DTEND:{_fmt(fu1_end)}
-        SUMMARY:Follow-up email #1: {contact_name} at {company}
-        DESCRIPTION:Send follow-up email to {contact_name} at {company}. Reference your initial outreach from {sent_str}.{email_note}
-        BEGIN:VALARM
-        TRIGGER:-PT30M
-        ACTION:DISPLAY
-        DESCRIPTION:Follow-up email to {contact_name} in 30 minutes
-        END:VALARM
-        END:VEVENT
-        BEGIN:VEVENT
-        UID:{_uid("fu7")}
-        DTSTART:{_fmt(fu2_start)}
-        DTEND:{_fmt(fu2_end)}
-        SUMMARY:Follow-up #2 (day 7): {contact_name} at {company}
-        DESCRIPTION:Second follow-up with {contact_name} at {company}. Try a different angle — share an insight or ask a new question. Original outreach sent {sent_str}.{email_note}
-        BEGIN:VALARM
-        TRIGGER:-PT30M
-        ACTION:DISPLAY
-        DESCRIPTION:Second follow-up with {contact_name} in 30 minutes
-        END:VALARM
-        END:VEVENT
-        BEGIN:VEVENT
-        UID:{_uid("fu10")}
-        DTSTART:{_fmt(fu3_start)}
-        DTEND:{_fmt(fu3_end)}
-        SUMMARY:Follow-up #3 (day 10): {contact_name} at {company}
-        DESCRIPTION:Third follow-up with {contact_name} at {company}. Keep it short — one sentence asking if timing is better now. Original outreach sent {sent_str}.{email_note}
-        BEGIN:VALARM
-        TRIGGER:-PT30M
-        ACTION:DISPLAY
-        DESCRIPTION:Third follow-up with {contact_name} in 30 minutes
-        END:VALARM
-        END:VEVENT
-        BEGIN:VEVENT
-        UID:{_uid("fu14")}
-        DTSTART:{_fmt(fu4_start)}
-        DTEND:{_fmt(fu4_end)}
-        SUMMARY:Final follow-up (day 14): {contact_name} at {company}
-        DESCRIPTION:Final follow-up with {contact_name} at {company}. Breakup email — let them know you won't keep reaching out unless they're interested. Original outreach sent {sent_str}.{email_note}
-        BEGIN:VALARM
-        TRIGGER:-PT30M
-        ACTION:DISPLAY
-        DESCRIPTION:Final follow-up with {contact_name} in 30 minutes
-        END:VALARM
-        END:VEVENT
-        END:VCALENDAR""")
-    return ics
+    lines = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//NCP//Sourcing Engine//EN",
+        "METHOD:PUBLISH",
+    ]
+
+    for ev in events:
+        start = send_date + ev["offset"]
+        end = start + timedelta(minutes=15)
+        lines += [
+            "BEGIN:VEVENT",
+            f"UID:{ev['uid']}",
+            f"DTSTART:{_fmt(start)}",
+            f"DTEND:{_fmt(end)}",
+            f"SUMMARY:{ev['summary']}",
+            f"DESCRIPTION:{ev['desc']}",
+            "BEGIN:VALARM",
+            "TRIGGER:-PT5M",
+            "ACTION:DISPLAY",
+            f"DESCRIPTION:{ev['alarm_desc']}",
+            "END:VALARM",
+            "END:VEVENT",
+        ]
+
+    lines.append("END:VCALENDAR")
+    return "\r\n".join(lines)
