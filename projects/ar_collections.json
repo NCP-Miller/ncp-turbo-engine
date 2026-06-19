@@ -2796,6 +2796,14 @@
     {
       "role": "assistant",
       "content": "Got it. I know what NCP looks for \u2014 founder-owned, differentiated, right to win, growing market, no PE on the cap table. I'll search multiple channels and only bring you companies I'm genuinely excited about (conviction 6+/10). You'll get 5 with investment memos. Give me feedback on each one and I'll learn your preferences."
+    },
+    {
+      "role": "user",
+      "content": "Exclude: Factoring"
+    },
+    {
+      "role": "assistant",
+      "content": "Understood. I've updated the exclusions to include factoring. I'll ensure the candidates we consider don't fall into that category."
     }
   ],
   "user_feedback": [],
@@ -7555,7 +7563,7 @@
     "geography": "NCP Priority Geography (Eastern US)",
     "strategy": "A",
     "target_count": 5,
-    "exclusions": "",
+    "exclusions": "Factoring",
     "override_size_min": 15,
     "override_size_max": 150,
     "_budget_gate_cleared": 30
@@ -7565,7 +7573,9 @@
     "NCSPlus Incorporated",
     "NCS Credit",
     "NewLane Finance",
+    "PayNways Worldwide",
     "Smyyth + Carixa\u2122",
+    "Gulf Coast Business Credit",
     "Paynada",
     "Burt and Associates - Collection Agency",
     "Autocash.ai",
