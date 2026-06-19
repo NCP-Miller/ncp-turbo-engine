@@ -1,7 +1,7 @@
 {
   "bot_status": {
     "search": "idle",
-    "analysis": "filtering",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -8115,29 +8115,60 @@
         "Conviction Reasoning": "The company's lack of differentiation and high competition combined with no standout traits means it doesn't align with the traits of previously successful investments."
       },
       "reason": "Conviction 5/10: The company's lack of differentiation and high competition combined with no standout traits means it doesn't align with the traits of previously successful investments."
+    },
+    {
+      "row": {
+        "Company": "Ambit Tax and Accounting",
+        "Description": "Ambit Tax and Accounting is a global firm providing comprehensive accounting, tax, and financial management services to businesses and individuals across the UK, USA, and UAE. They offer a range of services including bookkeeping, tax preparation and filing, payroll management, and financial reporting, ensuring compliance and structured financial operations for their clients.",
+        "Website": "http://www.ambitkpo.com",
+        "City": "Buford",
+        "State": "Georgia",
+        "LinkedIn": "http://www.linkedin.com/company/ambitkpo",
+        "Employees": 41,
+        "Est. EBITDA": "$1.5M\u2013$3.1M",
+        "CEO/Owner Name": "Nishant Sharma",
+        "Title": "Owner or null",
+        "Email": "N/A",
+        "Email Estimate": "nishant.sharma@ambitkpo.com",
+        "Phone": "N/A",
+        "Source": "Web Spider",
+        "Notes": "",
+        "Confidence": "Medium",
+        "Latest News": "N/A",
+        "Previously Sourced": "No",
+        "Differentiated": "Low",
+        "_niche": "Software and tech enabled services companies that improve the collections of accounts receivable",
+        "Priority": "Medium",
+        "Growth": "Low",
+        "Txn Readiness": "Medium",
+        "Conviction": 3,
+        "Conviction Pitch": "Ambit Tax and Accounting operates in the broadly competitive field of accounting and tax services without a distinct differentiation. Its low growth and limited niche focus make it an unlikely match for our investment mandate. Pursuing this would not yield a unique advantage or strategic edge for our portfolio.",
+        "Conviction Reasoning": "The company lacks differentiation, has low growth prospects, and operates in a highly competitive and fragmented market without noteworthy unique traits or a defensible moat, reminiscent of past less desirable pitches."
+      },
+      "reason": "Conviction 3/10: The company lacks differentiation, has low growth prospects, and operates in a highly competitive and fragmented market without noteworthy unique traits or a defensible moat, reminiscent of past less desirable pitches."
     }
   ],
   "reviewed_near_misses": [],
   "filter_stats": {
-    "total_sourced": 1284,
-    "pre_filtered_size": 1077,
+    "total_sourced": 1287,
+    "pre_filtered_size": 1078,
     "pre_filtered_structural": 53,
     "pre_filtered_blocklist": 5,
     "pre_filtered_niche": 44,
-    "deep_analysis_failed": 73,
+    "deep_analysis_failed": 74,
     "pe_backed": 5,
     "portfolio_conflict": 3,
-    "low_differentiation": 24,
+    "low_differentiation": 25,
     "qualified": 0
   },
   "cost_tracker": {
-    "openai": 12.7363,
-    "firecrawl": 4.975,
+    "openai": 13.1547,
+    "firecrawl": 5.115,
     "apollo": 0.0,
-    "total": 17.7113,
+    "total": 18.2697,
     "call_counts": {
-      "openai": 111,
-      "firecrawl": 995,
+      "openai": 113,
+      "firecrawl": 1023,
       "apollo": 0
     }
   },
