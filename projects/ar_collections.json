@@ -1,7 +1,7 @@
 {
   "bot_status": {
     "search": "idle",
-    "analysis": "filtering",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -20215,28 +20215,59 @@
         "Conviction Reasoning": "The company does not demonstrate a clear right to win or any unique competitive advantage, aligning more with traits of previously passed companies like KYC2020 and Tilli Software."
       },
       "reason": "Conviction 3/10: The company does not demonstrate a clear right to win or any unique competitive advantage, aligning more with traits of previously passed companies like KYC2020 and Tilli Software."
+    },
+    {
+      "row": {
+        "Company": "Frontline Asset Strategies",
+        "Description": "Frontline Asset Strategies is a company involved in debt collection and credit management services, focusing on compliant recovery and consumer communication. They handle creditor data requests, dispute resolution, and fraud claims, ensuring data security and consumer rights in their operations.",
+        "Website": "http://www.frontlineas.com",
+        "City": "Jacksonville",
+        "State": "Florida",
+        "LinkedIn": "http://www.linkedin.com/company/frontline-asset-strategies-llc",
+        "Employees": 61,
+        "Est. EBITDA": "$2.3M\u2013$4.6M",
+        "CEO/Owner Name": "N/A",
+        "Title": "N/A",
+        "Email": "N/A",
+        "Email Estimate": "",
+        "Phone": "877-258-1590",
+        "Source": "Web (contact only)",
+        "Notes": "",
+        "Confidence": "Medium",
+        "Latest News": "N/A",
+        "Previously Sourced": "No",
+        "Differentiated": "Low",
+        "_niche": "Software and tech enabled services companies that improve the collections of accounts receivable\n\nEXCLUDE these types of companies: Factoring",
+        "Priority": "High",
+        "Growth": "Low",
+        "Txn Readiness": "Low",
+        "Conviction": 3,
+        "Conviction Pitch": "Frontline Asset Strategies operates in the debt collection and credit management space, focusing on compliant recovery and consumer communication. However, there is no significant differentiation or defensible moat compared to competitors in this sector.",
+        "Conviction Reasoning": "The company's lack of differentiation and presence in a non-exciting, low-growth market limits its appeal, failing to meet NCP's investment mandate for a 'clear right to win' or an 'unfair advantage.'"
+      },
+      "reason": "Conviction 3/10: The company's lack of differentiation and presence in a non-exciting, low-growth market limits its appeal, failing to meet NCP's investment mandate for a 'clear right to win' or an 'unfair advantage.'"
     }
   ],
   "filter_stats": {
-    "total_sourced": 1928,
-    "pre_filtered_size": 1417,
+    "total_sourced": 1931,
+    "pre_filtered_size": 1419,
     "pre_filtered_structural": 114,
     "pre_filtered_blocklist": 14,
     "pre_filtered_niche": 89,
     "deep_analysis_failed": 202,
     "pe_backed": 20,
     "portfolio_conflict": 8,
-    "low_differentiation": 61,
+    "low_differentiation": 62,
     "qualified": 3
   },
   "cost_tracker": {
-    "openai": 35.5138,
-    "firecrawl": 13.985,
+    "openai": 35.9262,
+    "firecrawl": 14.11,
     "apollo": 0.0,
-    "total": 49.4988,
+    "total": 50.0362,
     "call_counts": {
-      "openai": 306,
-      "firecrawl": 2797,
+      "openai": 307,
+      "firecrawl": 2822,
       "apollo": 0
     }
   },
