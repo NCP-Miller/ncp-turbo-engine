@@ -1,7 +1,7 @@
 {
   "bot_status": {
     "search": "idle",
-    "analysis": "filtering",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -34835,33 +34835,33 @@
     }
   ],
   "filter_stats": {
-    "total_sourced": 2603,
-    "pre_filtered_size": 1951,
+    "total_sourced": 2609,
+    "pre_filtered_size": 1955,
     "pre_filtered_structural": 138,
     "pre_filtered_blocklist": 22,
     "pre_filtered_niche": 108,
     "deep_analysis_failed": 275,
     "pe_backed": 24,
-    "portfolio_conflict": 8,
+    "portfolio_conflict": 10,
     "low_differentiation": 73,
     "qualified": 4
   },
   "cost_tracker": {
-    "openai": 42.4806,
-    "firecrawl": 17.155,
+    "openai": 43.1404,
+    "firecrawl": 17.375,
     "apollo": 0.0,
-    "total": 59.6356,
+    "total": 60.5154,
     "call_counts": {
-      "openai": 401,
-      "firecrawl": 3431,
+      "openai": 403,
+      "firecrawl": 3475,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "analyzing",
-    "message": "Analyzing 3 candidates in parallel. 143 more in queue.",
-    "timestamp": "2026-06-19T21:11:30.719239+00:00",
-    "severity": "info"
+    "type": "budget_pause",
+    "message": "Estimated spend reached $60.08 (gate: $60). Pipeline paused \u2014 click Resume to approve the next $30 of spend.",
+    "timestamp": "2026-06-19T21:12:10.241139+00:00",
+    "severity": "warning"
   },
   "created_at": "2026-06-19T15:29:52.553306+00:00",
   "config": {
@@ -34874,7 +34874,6 @@
     "override_size_max": 150,
     "_budget_gate_cleared": 30
   },
-  "status": "running",
   "reviewed_near_misses": [
     "NCSPlus Incorporated",
     "NCS Credit",
@@ -34927,5 +34926,6 @@
   "memo_verdicts": {
     "Tilli Software": "rejected",
     "Itemize": "rejected"
-  }
+  },
+  "status": "paused"
 }
