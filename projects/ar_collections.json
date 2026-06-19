@@ -18286,7 +18286,6 @@
       "reason": "Conviction 3/10: The company does not exhibit any unique traits or an unfair advantage that align with our investment criteria, and the market is not positioned for significant growth."
     }
   ],
-  "reviewed_near_misses": [],
   "filter_stats": {
     "total_sourced": 1575,
     "pre_filtered_size": 1227,
@@ -18326,5 +18325,8 @@
     "override_size_min": 15,
     "override_size_max": 150
   },
-  "status": "paused"
+  "status": "paused",
+  "reviewed_near_misses": [
+    "Quadient Accounts Receivable Automation"
+  ]
 }
