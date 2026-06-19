@@ -1,7 +1,7 @@
 {
   "bot_status": {
     "search": "idle",
-    "analysis": "filtering",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -26858,29 +26858,60 @@
         "Conviction Reasoning": "The company's low differentiation and lack of a compelling, competitive edge were significant detractors from its potential fit with our investment profile."
       },
       "reason": "Conviction 3/10: The company's low differentiation and lack of a compelling, competitive edge were significant detractors from its potential fit with our investment profile."
+    },
+    {
+      "row": {
+        "Company": "Regal Credit Management",
+        "Description": "Regal Credit Management provides credit and identity protection services, utilizing AI-backed solutions to proactively manage and strengthen clients' credit profiles and digital footprints. The company serves individuals and businesses, including high-net-worth clients, with offices in New York, Los Angeles, and London.",
+        "Website": "http://www.regalcredit.com",
+        "City": "New York",
+        "State": "New York",
+        "LinkedIn": "http://www.linkedin.com/company/regalcreditmanagement",
+        "Employees": 36,
+        "Est. EBITDA": "$1.4M\u2013$2.7M",
+        "CEO/Owner Name": "N/A",
+        "Title": "N/A",
+        "Email": "info@regalcredit.com",
+        "Email Estimate": "",
+        "Phone": "+1 (833) 820-0126",
+        "Source": "Web (contact only)",
+        "Notes": "",
+        "Confidence": "Medium",
+        "Latest News": "BDCs: The Liquid Alternative to Private Credit - vaneck.com | https://news.google.com/rss/articles/CBMinwFBVV95cUxQQkdwaVJNVVVnNUgyaHpaX3BoYnJWY19NM2RVaHNpVGZFc1lSQnB1OThlMkpfUk9Zb1AtOUc3RzlncUxVcHA3dHdKb1libi1nYlpRVXg4MFBNMDNIaVRtVGkzUjAyOWxmWWpOT1dUd2l3LURRa2owUU9MUElLQlpqaU83SzdxZGFrTGlnYlJIZE5xN3A1djJ2aElFbEVSQlE?oc=5",
+        "Previously Sourced": "No",
+        "Differentiated": "Low",
+        "_niche": "Software and tech enabled services companies that improve the collections of accounts receivable",
+        "Priority": "High",
+        "Growth": "Low",
+        "Txn Readiness": "Medium",
+        "Conviction": 4,
+        "Conviction Pitch": "Regal Credit Management operates in a crowded space of credit and identity protection services, with low differentiation and limited growth potential. While they serve high-net-worth clients and have international offices, there's no standout element or defensible moat that sets them apart from competitors. The lack of strong growth and unique value proposition makes it difficult to justify pursuing this opportunity with high enthusiasm.",
+        "Conviction Reasoning": "The company's low differentiation and limited growth do not align with our preference for clear, competitive advantages and substantial market expansion potential."
+      },
+      "reason": "Conviction 4/10: The company's low differentiation and limited growth do not align with our preference for clear, competitive advantages and substantial market expansion potential."
     }
   ],
   "reviewed_near_misses": [],
   "filter_stats": {
-    "total_sourced": 1173,
-    "pre_filtered_size": 1019,
+    "total_sourced": 1176,
+    "pre_filtered_size": 1020,
     "pre_filtered_structural": 43,
     "pre_filtered_blocklist": 3,
     "pre_filtered_niche": 42,
-    "deep_analysis_failed": 47,
+    "deep_analysis_failed": 48,
     "pe_backed": 2,
     "portfolio_conflict": 1,
-    "low_differentiation": 16,
+    "low_differentiation": 17,
     "qualified": 0
   },
   "cost_tracker": {
-    "openai": 7.8791,
-    "firecrawl": 3.065,
+    "openai": 8.2975,
+    "firecrawl": 3.205,
     "apollo": 0.0,
-    "total": 10.9441,
+    "total": 11.5025,
     "call_counts": {
-      "openai": 72,
-      "firecrawl": 613,
+      "openai": 74,
+      "firecrawl": 641,
       "apollo": 0
     }
   },
