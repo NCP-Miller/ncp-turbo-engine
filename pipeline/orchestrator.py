@@ -374,6 +374,21 @@ def _analyze_single(org, niche, strategy, config, search_params,
         return {"outcome": "pe_backed", "company": comp_name,
                 "reason": pe_check.get("evidence", "PE-backed"), "row": row}
 
+    # 6b. Public ownership / subsidiary safety net
+    _desc_lower = (row.get("Description") or "").lower()
+    _ownership_kill_signals = [
+        "publicly traded", "publicly listed", "stock exchange",
+        "nasdaq", "nyse", "euronext", "ticker symbol",
+        "subsidiary of", "division of", "a unit of",
+        "product line of", "parent company",
+        "wholly owned", "wholly-owned",
+    ]
+    for sig in _ownership_kill_signals:
+        if sig in _desc_lower:
+            return {"outcome": "pe_backed", "company": comp_name,
+                    "reason": f"Public/subsidiary signal in description ('{sig}')",
+                    "row": row}
+
     # 7. Portfolio conflict check
     conflict = check_portfolio_conflict(
         client, row.get("Company", ""), row.get("Description", ""),

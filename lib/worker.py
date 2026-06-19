@@ -224,6 +224,19 @@ def process_single_company(
             row["Confidence"] = "Medium"
             row["Source"] = "Web (contact only)"
 
+    # Stage 4b: kill if generated description reveals public/subsidiary ownership
+    if strat_code == "A":
+        _desc_check = (row.get("Description") or "").lower()
+        _kill_signals = [
+            "publicly traded", "publicly listed", "stock exchange",
+            "nasdaq", "nyse", "euronext", "ticker symbol",
+            "subsidiary of", "division of", "a unit of",
+            "product line of", "parent company",
+            "wholly owned", "wholly-owned",
+        ]
+        if any(sig in _desc_check for sig in _kill_signals):
+            return None
+
     # Stage 5: email guess (only when we have a name + domain but no verified email)
     if row["Email"] == "N/A" and found_person and domain:
         fn = found_person.get("first_name", "").strip()
