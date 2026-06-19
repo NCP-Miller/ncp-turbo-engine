@@ -34874,6 +34874,11 @@
     "override_size_max": 150,
     "_budget_gate_cleared": 30
   },
+  "memo_verdicts": {
+    "Tilli Software": "rejected",
+    "Itemize": "rejected"
+  },
+  "status": "paused",
   "reviewed_near_misses": [
     "NCSPlus Incorporated",
     "NCS Credit",
@@ -34904,6 +34909,7 @@
     "PFC USA",
     "Atika Technologies & BPM",
     "Regal Credit Management",
+    "Avivatech",
     "Accounts Receivable",
     "M. Block and Sons, Inc.",
     "Lanvera",
@@ -34922,10 +34928,5 @@
     "AmeriFactors Financial Group, LLC.",
     "Quadient Accounts Receivable Automation",
     "BYL Risk Management"
-  ],
-  "memo_verdicts": {
-    "Tilli Software": "rejected",
-    "Itemize": "rejected"
-  },
-  "status": "paused"
+  ]
 }
