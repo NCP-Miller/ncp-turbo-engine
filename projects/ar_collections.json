@@ -34874,10 +34874,6 @@
     "override_size_max": 150,
     "_budget_gate_cleared": 30
   },
-  "memo_verdicts": {
-    "Tilli Software": "rejected",
-    "Itemize": "rejected"
-  },
   "status": "paused",
   "reviewed_near_misses": [
     "UQUAL",
@@ -34953,5 +34949,10 @@
     "BYL Risk Management",
     "JDi",
     "AirPay"
-  ]
+  ],
+  "memo_verdicts": {
+    "Tilli Software": "rejected",
+    "Itemize": "rejected",
+    "TEC Services Group": "liked"
+  }
 }
