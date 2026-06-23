@@ -356,8 +356,9 @@ def suggest_search_params(client, niche_description: str) -> dict:
 # ---------------------------------------------------------------------------
 # ADAPTIVE REFINEMENT — adjusts search params between rounds based on results
 # ---------------------------------------------------------------------------
-def refine_search_params(client, niche, current_params, round_stats):
-    """Refine Apollo search params based on results from the previous round.
+def refine_search_params(client, niche, current_params, round_stats,
+                         feedback_history=None):
+    """Refine Apollo search params based on results + user feedback.
 
     Args:
         client: OpenAI client.
@@ -371,6 +372,7 @@ def refine_search_params(client, niche, current_params, round_stats):
               highest-scoring qualified companies)
             - common_filter_reasons: list of strings (top reasons candidates
               were filtered out)
+        feedback_history: list of feedback dicts from user (optional).
 
     Returns:
         dict with refined "industries" and "keywords", or None if no
@@ -397,6 +399,29 @@ def refine_search_params(client, niche, current_params, round_stats):
     top_desc_text = "\n".join(f"  - {d[:200]}" for d in top_descriptions[:5]) or "  (none qualified yet)"
     filter_reasons_text = "\n".join(f"  - {r}" for r in filter_reasons[:5]) or "  (none recorded)"
 
+    _fb_section = ""
+    if feedback_history:
+        _recent_fb = feedback_history[-15:]
+        _liked = [fb for fb in _recent_fb if (fb.get("verdict") or "").lower() == "liked"]
+        _rejected = [fb for fb in _recent_fb if (fb.get("verdict") or "").lower() == "rejected"]
+        _caveats = [fb for fb in _recent_fb if (fb.get("verdict") or "").lower() == "caveats"]
+        _fb_lines = []
+        if _liked:
+            _fb_lines.append("Companies the user LIKED (find MORE like these):")
+            for fb in _liked[-5:]:
+                _fb_lines.append(f"  - {fb.get('company', '?')}: {fb.get('feedback', '')}")
+        if _rejected:
+            _fb_lines.append("Companies the user REJECTED (AVOID these types):")
+            for fb in _rejected[-5:]:
+                _fb_lines.append(f"  - {fb.get('company', '?')}: {fb.get('feedback', '')}")
+        if _caveats:
+            _fb_lines.append("User's specific critiques:")
+            for fb in _caveats[-5:]:
+                _fb_lines.append(f"  - {fb.get('company', '?')}: {fb.get('feedback', '')}")
+        if _fb_lines:
+            _fb_section = "\n\nUSER FEEDBACK (use this to steer the search):\n" + "\n".join(_fb_lines) + \
+                "\n\nAdjust industries and keywords to find MORE companies matching the LIKED patterns and FEWER matching the REJECTED patterns."
+
     prompt = f"""You are refining an Apollo.io B2B company search based on results from the previous round.
 
 NICHE: "{niche}"
@@ -411,7 +436,7 @@ Top descriptions of qualified companies (use these to find more like them):
 {top_desc_text}
 
 Top reasons candidates were filtered out:
-{filter_reasons_text}
+{filter_reasons_text}{_fb_section}
 
 YOUR JOB: Refine the industries and keywords for the NEXT round of search.
 

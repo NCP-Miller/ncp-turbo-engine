@@ -11,6 +11,43 @@ import concurrent.futures
 from lib.constants import OPENAI_MODEL
 
 
+def _format_feedback_section(feedback_history, max_entries=10):
+    """Build a calibration prompt section from recent user feedback."""
+    if not feedback_history:
+        return ""
+    recent = feedback_history[-max_entries:]
+    liked, rejected, caveats = [], [], []
+    for fb in recent:
+        verdict = (fb.get("verdict") or "").lower()
+        company = fb.get("company", "?")
+        text = fb.get("feedback", "")
+        niche = fb.get("niche", "")
+        entry = f"  - {company}"
+        if niche:
+            entry += f" ({niche})"
+        if text:
+            entry += f": {text}"
+        if verdict == "liked":
+            liked.append(entry)
+        elif verdict == "rejected":
+            rejected.append(entry)
+        elif verdict == "caveats":
+            caveats.append(entry)
+
+    sections = []
+    if liked:
+        sections.append("Companies Trey LIKED (match these traits):\n" + "\n".join(liked))
+    if rejected:
+        sections.append("Companies Trey REJECTED (avoid these traits):\n" + "\n".join(rejected))
+    if caveats:
+        sections.append("Trey's SPECIFIC CRITIQUES:\n" + "\n".join(caveats))
+    if not sections:
+        return ""
+    return ("\n\nCALIBRATION FROM PAST FEEDBACK:\n"
+            + "\n".join(sections)
+            + "\nWeight these patterns when scoring.")
+
+
 def _load_thesis():
     thesis_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "ncp_thesis.json")
     try:
@@ -116,8 +153,9 @@ Rules:
 # ---------------------------------------------------------------------------
 # DIFFERENTIATION
 # ---------------------------------------------------------------------------
-def assess_differentiation(client, company_name, description, niche):
+def assess_differentiation(client, company_name, description, niche, feedback_history=None):
     """Rate company differentiation within its niche (High/Medium/Low) + confidence."""
+    _fb = _format_feedback_section(feedback_history)
     prompt = f"""You are evaluating whether a company is meaningfully differentiated within its niche market.
 
 Search niche: "{niche}"
@@ -144,7 +182,7 @@ Also rate your CONFIDENCE in this assessment:
 - MEDIUM confidence: You have a reasonable description but lack specifics about their competitive edge.
 - LOW confidence: Very limited information — the description is vague or generic.
 
-Return JSON only: {{"differentiation": "High", "reason": "one sentence", "confidence": "High"}}"""
+Return JSON only: {{"differentiation": "High", "reason": "one sentence", "confidence": "High"}}{_fb}"""
 
     try:
         resp = client.chat.completions.create(
@@ -169,8 +207,9 @@ Return JSON only: {{"differentiation": "High", "reason": "one sentence", "confid
 # PRIORITY (NCP investment criteria fit)
 # ---------------------------------------------------------------------------
 def assess_priority(client, company_name, description, state, employees, keywords, niche,
-                    ebitda_estimate=None):
+                    ebitda_estimate=None, feedback_history=None):
     """Rate acquisition priority (High/Medium/Low) for Strategy A + confidence."""
+    _fb = _format_feedback_section(feedback_history)
     ebitda_line = ""
     if ebitda_estimate and ebitda_estimate != "Unknown":
         ebitda_line = f"\nEstimated EBITDA (industry-adjusted): {ebitda_estimate}"
@@ -206,7 +245,7 @@ Also rate your CONFIDENCE in this assessment:
 - MEDIUM confidence: Some criteria are uncertain or data is incomplete.
 - LOW confidence: Major gaps in data (no state, unclear sector, unknown size).
 
-Return JSON only: {{"priority": "High", "reason": "one sentence", "confidence": "High"}}"""
+Return JSON only: {{"priority": "High", "reason": "one sentence", "confidence": "High"}}{_fb}"""
 
     try:
         resp = client.chat.completions.create(
@@ -247,7 +286,7 @@ Return JSON only: {{"priority": "High", "reason": "one sentence", "confidence": 
 # GROWTH SCORE
 # ---------------------------------------------------------------------------
 def assess_growth_score(client, firecrawl_scrape_fn, company_name, domain,
-                        apollo_people, linkedin_url=None):
+                        apollo_people, linkedin_url=None, feedback_history=None):
     """Rate growth trajectory (High/Medium/Low) from hiring, Google, LinkedIn + confidence."""
     signals = []
 
@@ -332,7 +371,7 @@ Also rate your CONFIDENCE in this assessment:
   team roster without careers page).
 - LOW confidence: Very limited data — no careers page found, minimal Google results.
 
-Return JSON only: {{"growth_score": "High", "reason": "one sentence", "confidence": "High"}}"""
+Return JSON only: {{"growth_score": "High", "reason": "one sentence", "confidence": "High"}}{_format_feedback_section(feedback_history)}"""
 
     try:
         resp = client.chat.completions.create(
@@ -364,6 +403,7 @@ def assess_transaction_readiness(
     domain,
     apollo_people,
     description,
+    feedback_history=None,
 ):
     """Rate transaction readiness (High/Medium/Low) from founder/CFO/strategic signals."""
     signals = []
@@ -437,7 +477,7 @@ Also rate your CONFIDENCE in this assessment:
 - MEDIUM confidence: Some founder data available but age/tenure is uncertain.
 - LOW confidence: No founder LinkedIn found, no career timeline, guessing from limited data.
 
-Return JSON only: {{"readiness": "High", "reason": "one sentence", "confidence": "High"}}"""
+Return JSON only: {{"readiness": "High", "reason": "one sentence", "confidence": "High"}}{_format_feedback_section(feedback_history)}"""
 
     try:
         resp = client.chat.completions.create(

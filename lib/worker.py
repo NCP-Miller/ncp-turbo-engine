@@ -70,6 +70,7 @@ def process_single_company(
     firecrawl_api_key,
     history_keys=None,
     user_agent=None,
+    feedback_history=None,
 ):
     """Filter, enrich, score, and contact-find for a single Apollo organization.
 
@@ -258,23 +259,26 @@ def process_single_company(
     if strat_code == "A":
         _li_url = org.get("linkedin_url")
         _ebitda_est = row.get("Est. EBITDA")
+        _fb = feedback_history
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as score_ex:
             pri_fut = score_ex.submit(
                 assess_priority, openai_client, comp_name, row["Description"],
                 org.get("state"), org.get("estimated_num_employees"),
                 tags, specific_niche, ebitda_estimate=_ebitda_est,
+                feedback_history=_fb,
             )
             growth_fut = score_ex.submit(
                 assess_growth_score, openai_client, _scrape, comp_name, domain,
-                apollo_people, linkedin_url=_li_url,
+                apollo_people, linkedin_url=_li_url, feedback_history=_fb,
             )
             txn_fut = score_ex.submit(
                 assess_transaction_readiness, openai_client, _scrape, comp_name,
                 domain, apollo_people, row["Description"],
+                feedback_history=_fb,
             )
             diff_fut = score_ex.submit(
                 assess_differentiation, openai_client, comp_name,
-                row["Description"], specific_niche,
+                row["Description"], specific_niche, feedback_history=_fb,
             )
             row["Priority"], _, row["Priority Confidence"] = pri_fut.result()
             row["Growth"], _, row["Growth Confidence"] = growth_fut.result()
@@ -283,6 +287,7 @@ def process_single_company(
     else:
         row["Differentiated"], _, row["Differentiated Confidence"] = assess_differentiation(
             openai_client, comp_name, row["Description"], specific_niche,
+            feedback_history=feedback_history,
         )
 
     return row

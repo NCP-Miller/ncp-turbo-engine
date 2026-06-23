@@ -843,9 +843,12 @@ with tab_memos:
                     def _score_with_conf(label, key, row=row):
                         val = row.get(key, "N/A")
                         conf = row.get(f"{key} Confidence", "")
-                        if conf and conf != "High":
-                            _icon = "⚠️" if conf == "Low" else "◐"
-                            return f"**{label}:** {val} {_icon} *({conf} confidence)*"
+                        if conf == "Low":
+                            return f"**{label}:** {val} ⚠️ *({conf} confidence)*"
+                        elif conf == "Medium":
+                            return f"**{label}:** {val} ◐ *({conf} confidence)*"
+                        elif conf == "High":
+                            return f"**{label}:** {val} ✅"
                         return f"**{label}:** {val}"
 
                     st.markdown(_score_with_conf("Differentiated", "Differentiated"))
@@ -1158,9 +1161,12 @@ with tab_near:
                     def _nm_score_conf(label, key, row=row):
                         val = row.get(key, "N/A")
                         conf = row.get(f"{key} Confidence", "")
-                        if conf and conf != "High":
-                            _icon = "⚠️" if conf == "Low" else "◐"
-                            return f"**{label}:** {val} {_icon} *({conf} confidence)*"
+                        if conf == "Low":
+                            return f"**{label}:** {val} ⚠️ *({conf} confidence)*"
+                        elif conf == "Medium":
+                            return f"**{label}:** {val} ◐ *({conf} confidence)*"
+                        elif conf == "High":
+                            return f"**{label}:** {val} ✅"
                         return f"**{label}:** {val}"
 
                     st.markdown(_nm_score_conf("Differentiated", "Differentiated"))
