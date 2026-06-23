@@ -11737,7 +11737,6 @@
       "reason": "Conviction 3/10: The company's low differentiation and growth, combined with its generic operational profile, do not meet the criteria of having a compelling 'right to win' or defensible moat, making it unaligned with NCP's investment appetite."
     }
   ],
-  "reviewed_near_misses": [],
   "filter_stats": {
     "total_sourced": 759,
     "pre_filtered_size": 699,
@@ -11780,5 +11779,10 @@
   "memo_verdicts": {
     "Jarrett Fire Protection, Inc.": "liked"
   },
-  "status": "running"
+  "status": "running",
+  "reviewed_near_misses": [
+    "Chattanooga Fire Protection",
+    "Jarrett Fire Protection, Inc.",
+    "Fire Protection Services, LLC"
+  ]
 }
