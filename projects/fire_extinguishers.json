@@ -10104,6 +10104,14 @@
     {
       "role": "assistant",
       "content": "Got it. I know what NCP looks for \u2014 founder-owned, differentiated, right to win, growing market, no PE on the cap table. I'll search multiple channels and only bring you companies I'm genuinely excited about (conviction 6+/10). You'll get 2 with investment memos. Give me feedback on each one and I'll learn your preferences."
+    },
+    {
+      "role": "user",
+      "content": "Please focus on Alabama, Tennessee, Mississippi and Georgia only"
+    },
+    {
+      "role": "assistant",
+      "content": "Understood. I'll focus exclusively on Alabama, Tennessee, Mississippi, and Georgia for this search. I'll identify two differentiated companies within these states and prepare investment memos for your review."
     }
   ],
   "user_feedback": [],
@@ -12080,7 +12088,7 @@
   "created_at": "2026-06-23T18:50:42.139968+00:00",
   "config": {
     "niche": "Fire extinguisher recharge and fire extinguisher compliance",
-    "geography": "NCP Priority Geography (Eastern US)",
+    "geography": "Alabama, Tennessee, Mississippi, Georgia",
     "strategy": "A",
     "target_count": 12,
     "exclusions": "",
