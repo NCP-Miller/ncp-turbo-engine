@@ -839,10 +839,22 @@ with tab_memos:
                 with right:
                     if conv:
                         st.markdown(f"**Conviction:** {conv}/10")
-                    st.markdown(f"**Differentiated:** {row.get('Differentiated', 'N/A')}")
-                    st.markdown(f"**Priority:** {row.get('Priority', 'N/A')}")
-                    st.markdown(f"**Growth:** {row.get('Growth', 'N/A')}")
-                    st.markdown(f"**Txn Readiness:** {row.get('Txn Readiness', 'N/A')}")
+
+                    def _score_with_conf(label, key, row=row):
+                        val = row.get(key, "N/A")
+                        conf = row.get(f"{key} Confidence", "")
+                        if conf == "Low":
+                            return f"**{label}:** {val} ⚠️ *({conf} confidence)*"
+                        elif conf == "Medium":
+                            return f"**{label}:** {val} ◐ *({conf} confidence)*"
+                        elif conf == "High":
+                            return f"**{label}:** {val} ✅"
+                        return f"**{label}:** {val}"
+
+                    st.markdown(_score_with_conf("Differentiated", "Differentiated"))
+                    st.markdown(_score_with_conf("Priority", "Priority"))
+                    st.markdown(_score_with_conf("Growth", "Growth"))
+                    st.markdown(_score_with_conf("Txn Readiness", "Txn Readiness"))
 
                 st.markdown("---")
                 st.markdown(memo["memo"])
@@ -1146,9 +1158,20 @@ with tab_near:
                     st.markdown(f"**Est. EBITDA:** {row.get('Est. EBITDA', 'N/A')}")
                     st.markdown(f"**Website:** {row.get('Website', 'N/A')}")
                 with right:
-                    st.markdown(f"**Differentiated:** {row.get('Differentiated', 'N/A')}")
-                    st.markdown(f"**Priority:** {row.get('Priority', 'N/A')}")
-                    st.markdown(f"**Growth:** {row.get('Growth', 'N/A')}")
+                    def _nm_score_conf(label, key, row=row):
+                        val = row.get(key, "N/A")
+                        conf = row.get(f"{key} Confidence", "")
+                        if conf == "Low":
+                            return f"**{label}:** {val} ⚠️ *({conf} confidence)*"
+                        elif conf == "Medium":
+                            return f"**{label}:** {val} ◐ *({conf} confidence)*"
+                        elif conf == "High":
+                            return f"**{label}:** {val} ✅"
+                        return f"**{label}:** {val}"
+
+                    st.markdown(_nm_score_conf("Differentiated", "Differentiated"))
+                    st.markdown(_nm_score_conf("Priority", "Priority"))
+                    st.markdown(_nm_score_conf("Growth", "Growth"))
 
                 desc = row.get("Description", "")
                 if desc:

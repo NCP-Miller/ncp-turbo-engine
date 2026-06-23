@@ -258,7 +258,8 @@ Write in a professional PE memo tone. Factual and concise."""
 # INTERNAL — PARALLEL ANALYSIS HELPERS
 # ---------------------------------------------------------------------------
 def _analyze_single(org, niche, strategy, config, search_params,
-                    client, apollo_key, firecrawl_key, user_agent, thesis):
+                    client, apollo_key, firecrawl_key, user_agent, thesis,
+                    feedback_history=None):
     """Analyze a single candidate end-to-end (pre-filters + deep + scoring).
 
     Returns a result dict the orchestrator uses to update state safely
@@ -320,6 +321,7 @@ def _analyze_single(org, niche, strategy, config, search_params,
         apollo_api_key=apollo_key,
         firecrawl_api_key=firecrawl_key,
         user_agent=user_agent,
+        feedback_history=feedback_history,
     )
     if not row:
         return {"outcome": "deep_analysis_failed", "company": comp_name,
@@ -398,7 +400,8 @@ def _analyze_single(org, niche, strategy, config, search_params,
                 "reason": "portfolio conflict", "row": row}
 
     # 8. Conviction scoring — the final gate
-    feedback_history = load_feedback()
+    if feedback_history is None:
+        feedback_history = load_feedback()
     conv_score, conv_pitch, conv_reason = score_conviction(
         client, comp_name, row.get("Description", ""),
         niche, row, thesis=thesis, feedback_history=feedback_history,
@@ -416,7 +419,7 @@ def _analyze_single(org, niche, strategy, config, search_params,
 
 def _process_candidate_batch(batch, niche, strategy, config, search_params,
                              client, apollo_key, firecrawl_key, user_agent,
-                             thesis, state):
+                             thesis, state, feedback_history=None):
     """Run _analyze_single on a batch of candidates in parallel.
 
     All state updates happen in the main thread after results come back
@@ -428,6 +431,7 @@ def _process_candidate_batch(batch, niche, strategy, config, search_params,
             ex.submit(
                 _analyze_single, org, niche, strategy, config, search_params,
                 client, apollo_key, firecrawl_key, user_agent, thesis,
+                feedback_history=feedback_history,
             )
             for org in batch
         ]
@@ -720,6 +724,9 @@ def _run_loop():
                 _auto_backup()
                 break
 
+            # Reload feedback each iteration so mid-run feedback is picked up
+            _feedback = load_feedback()
+
             # Track final statuses for end-of-iteration reconciliation
             search_final = None
             analysis_final = None
@@ -884,6 +891,7 @@ def _run_loop():
                                         "top_qualified_descriptions": top_descs,
                                         "common_filter_reasons": common_reasons,
                                     },
+                                    feedback_history=_feedback,
                                 )
                                 state.record_cost("openai", COST_OPENAI["refine_search_params"])
                                 if refined:
@@ -999,7 +1007,7 @@ def _run_loop():
                         _process_candidate_batch(
                             batch, niche_with_exclusions, strategy, config, search_params,
                             client, apollo_key, firecrawl_key, user_agent,
-                            _thesis, state,
+                            _thesis, state, feedback_history=_feedback,
                         )
 
                     analysis_final = "idle"
