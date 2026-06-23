@@ -1,8 +1,8 @@
 {
   "bot_status": {
     "search": "exhausted",
-    "analysis": "filtering",
-    "writeup": "generating_memo"
+    "analysis": "idle",
+    "writeup": "idle"
   },
   "candidate_queue": [
     {
@@ -10307,6 +10307,103 @@
         "Conviction Reasoning": "The company's strengths in a fragmented and essential services market align well with our investment mandate, but the lack of significant differentiation and low transactional readiness prevent a higher conviction."
       },
       "memo": "**Investment Memo: Fortis Fire & Safety**\n\n**Why We're Excited**  \nFortis Fire & Safety stands out for its well-established presence in the essential fire protection and integrated security services sector, a market characterized by consistent, non-cyclical demand driven by regulatory requirements. The company's commitment to workforce development ensures high-quality service delivery, distinguishing it within a fragmented industry. Additionally, the potential for a buy-and-build strategy is promising given the market's fragmentation and absence of dominant players.\n\n**Company Overview**  \nFortis Fire & Safety, based in Schaumburg, Illinois, specializes in fire protection and integrated security services across the United States. With 34 employees, the company provides solutions including fire alarm systems, sprinkler systems, and fire suppression services to various sectors such as commercial buildings, marine and ports, and special hazard environments. The estimated EBITDA is between $595K and $1.2M, though this requires confirmation.\n\n**Differentiated Value Proposition**  \nFortis's primary moat lies in its emphasis on a \"people-first\" philosophy, which results in superior service delivery. This commitment to workforce investment is not only rare in the fragmented fire safety market but also positions Fortis as a reliable partner for sustained service quality. This, coupled with its broad service offering, provides a competitive edge that allows for deeper market penetration.\n\n**Market Opportunity & Growth**  \nThe fire protection space benefits from strong secular tailwinds, including increased regulatory mandates and growing safety awareness. The market's non-cyclical nature ensures stability, while opportunities for Fortis are amplified by the absence of a dominant player, lending itself well to a consolidation strategy through acquisition by NCP. Growth levers include geographic expansion and increased service offerings leveraging Fortis's existing high-quality delivery platform.\n\n**NCP Fit Rationale**  \nFortis aligns with NCP's lower middle market, services-oriented investment thesis due to its stable recurring revenue from essential services, rooted in regulation-driven demand. The founder-owned nature implies potential for operational improvements and natural succession planning, making it an appetizing target for strategic roll-up initiatives.\n\n**Key Risks & Diligence Items**  \n1. **EBITDA Validation**: Confirm the estimated EBITDA range and explore financial health.\n2. **Operational Scalability**: Can Fortis support expanded operations without compromising service quality?\n3. **Regulatory Compliance**: Assess any upcoming regulatory changes that may impact operations or costs.\n4. **Succession Planning**: Gauge readiness and flexibility for leadership transition.\n5. **Market Position**: Establish competitive positioning and local/regional market competition intensity.\n\nOverall, Fortis Fire & Safety presents a compelling opportunity in a stable and growing market, providing the potential for NCP to leverage its consolidation experience to enhance value and market presence."
+    },
+    {
+      "company": "AKE Safety Equipment",
+      "row": {
+        "Company": "AKE Safety Equipment",
+        "Description": "AKE Safety Equipment specializes in manufacturing and distributing fire safety products, particularly focusing on their proprietary STOP-FYRE\u00ae fire extinguishers. These extinguishers are designed for use in agricultural, industrial, and residential settings, offering a clean-agent formula that leaves no residue and requires no maintenance. The company serves a range of customers including farmers, fire departments, and first responders across the United States.",
+        "Website": "http://www.ake.com",
+        "City": "Rochester",
+        "State": "Minnesota",
+        "LinkedIn": "http://www.linkedin.com/company/ake-companies-llc-dba-ake-safety-equipment-",
+        "Employees": 43,
+        "Est. EBITDA": "$752K\u2013$1.5M",
+        "CEO/Owner Name": "N/A",
+        "Title": "N/A",
+        "Email": "N/A",
+        "Email Estimate": "",
+        "Phone": "+1-800-586-1639",
+        "Source": "Web (contact only)",
+        "Notes": "",
+        "Confidence": "Medium",
+        "Latest News": "Putting out fires - Agweek | https://news.google.com/rss/articles/CBMiXkFVX3lxTE42d1U1SnF4V0xXb2xqOTdNdUxDTURQS3FaNW9QeURoTXE3UGxlMDNHVDhXTzZ4aXg2dEhUZ3lvOFRDbXdIN29FNWRtYTM2dVpyM0EtVHlaYXNGWUgxX3c?oc=5",
+        "Previously Sourced": "No",
+        "Differentiated": "High",
+        "_niche": "Fire extinguisher recharge and fire extinguisher compliance",
+        "Priority": "Low",
+        "Growth": "Medium",
+        "Txn Readiness": "Low",
+        "Conviction": 7,
+        "Conviction Pitch": "AKE Safety Equipment offers a proprietary STOP-FYRE\u00ae fire extinguisher that provides a unique clean-agent solution, suitable for use in diverse settings such as agricultural, industrial, and residential areas. Their product's innovation, combined with a broad customer base including farmers and first responders, positions them well in a market with crucial safety requirements. This reduces maintenance needs and competitive pressure by differentiating from basic extinguisher offerings, although the company's growth and transactional readiness are not yet high priority.",
+        "Conviction Reasoning": "The proprietary nature of AKE's product and its applicability to an essential, non-cyclical market are compelling factors, though the overall growth and immediate transactional readiness temper the score."
+      },
+      "memo": "**Investment Memo: AKE Safety Equipment**\n\n---\n\n**1. Why We're Excited**\n\nAKE Safety Equipment stands out due to its proprietary STOP-FYRE\u00ae fire extinguishers, which offer a unique clean-agent solution suitable for agricultural, industrial, and residential use. Their product differentiation through a no-residue, no-maintenance extinguisher creates a defensible market position by addressing key consumer pain points. This, combined with a broad customer base that includes farmers and first responders, presents a significant competitive advantage and aligns with our strategy to invest in companies with a clear 'right to win' in essential service markets.\n\n**2. Company Overview**\n\nBased in Rochester, Minnesota, AKE Safety Equipment specializes in manufacturing and distributing fire safety products, with a primary focus on their proprietary STOP-FYRE\u00ae fire extinguishers. The company employs 43 people and actively serves a diverse clientele across the United States, including agricultural, industrial, and residential sectors.\n\n**3. Differentiated Value Proposition**\n\nAKE's differentiation lies in its innovative fire extinguisher technology, which requires no maintenance and leaves no residue. This not only enhances customer value but reduces competitive pressure. Additionally, its proprietary formulation strengthens its product's defensibility against market competitors, granting AKE a sustainable competitive moat.\n\n**4. Market Opportunity & Growth**\n\nThe market for fire safety equipment is expanding, driven by increasing safety regulations and an emphasis on property and life safety across various sectors. The agricultural and industrial settings particularly offer growth, supported by secular tailwinds such as technological advancement in farm practices and industrial expansion. AKE's established customer base and product innovation position it well to capture additional market share in a fragmented market with significant growth potential.\n\n**5. NCP Fit Rationale**\n\nAKE Safety Equipment aligns with NCP's investment thesis focused on lower middle-market, services-oriented, founder-led enterprises. As a company in a fragmented market with no dominant players, AKE is ripe for strategic growth initiatives and potentially a buy-and-build strategy. Furthermore, with the founder nearing retirement, there is a natural succession opportunity that aligns with our operational improvement focus and hands-on approach.\n\n**6. Key Risks & Diligence Items**\n\n1. **Financial Validation**: Confirmation of the estimated EBITDA figure ($752K\u2013$1.5M), which currently relies on heuristic methods.\n   \n2. **Growth Strategy**: Evaluation of company growth strategies to ensure scalability and market penetration in new regions or customer segments.\n\n3. **Founder Transition**: Assessment of succession plans and operational readiness for post-founder transition.\n\n4. **Competition Analysis**: Clarity on local and regional competitive dynamics and barriers to entry for new competitors.\n\n5. **Product Liability and Compliance**: Ensure all proprietary products meet the necessary safety and regulatory standards to mitigate liability risks. \n\nBy addressing these uncertainties, NCP can make a more informed investment decision regarding AKE Safety Equipment."
+    },
+    {
+      "company": "Keller Fire & Safety Inc.",
+      "row": {
+        "Company": "Keller Fire & Safety Inc.",
+        "Description": "Keller Fire & Safety Inc. specializes in the installation, inspection, and servicing of fire protection systems for commercial and industrial facilities. They offer a range of services including fire alarms, fire extinguishers, fire sprinklers, and clean agent fire suppression, ensuring compliance with NFPA, state, and local requirements. Operating since 1950, Keller Fire & Safety provides 24/7 emergency response and customized fire protection plans tailored to the unique needs of each facility.",
+        "Website": "http://www.kellerfire.com",
+        "City": "Kansas City",
+        "State": "Kansas",
+        "LinkedIn": "http://www.linkedin.com/company/keller-fire-&-safety-inc-",
+        "Employees": 63,
+        "Est. EBITDA": "$1.1M\u2013$2.2M",
+        "CEO/Owner Name": "N/A",
+        "Title": "N/A",
+        "Email": "N/A",
+        "Email Estimate": "",
+        "Phone": "913.371.8494",
+        "Source": "Web (contact only)",
+        "Notes": "",
+        "Confidence": "Medium",
+        "Latest News": "Billy Keller Obituary - Montgomery, AL - Dignity Memorial | https://news.google.com/rss/articles/CBMigwFBVV95cUxOVGhKNnVjTXltN19FN1Ezd3QxdFhqZGhNR0p1MkkySGtIdTRuVlV1OTR6N19DSDY0S3poV1NXRnF6ZU04elpLUWlqUWQ5QzQ4a1p2VG90aHZ2RGNWZGEzdEVDRUJLcmlzVTg4UEdsZTdYM01qZEs0aG9CaUFxa2FwNlBXbw?oc=5",
+        "Previously Sourced": "No",
+        "Differentiated": "Medium",
+        "_niche": "Fire extinguisher recharge and fire extinguisher compliance",
+        "Priority": "Low",
+        "Growth": "Low",
+        "Txn Readiness": "Low",
+        "Conviction": 6,
+        "Conviction Pitch": "Keller Fire & Safety Inc. stands out as a longstanding player in the fire safety sector with a comprehensive service offering and regulatory expertise spanning over seven decades. Their ability to offer tailored fire protection solutions and 24/7 emergency support adds to their unique customer value proposition. However, the company lacks significant growth potential and a clear edge that sets them apart in a crowded market, ultimately tempering the excitement of this opportunity.",
+        "Conviction Reasoning": "Keller Fire & Safety Inc. benefits from a defensible moat with its compliance expertise and wide service range, but its medium differentiation and low growth prospects limit its standout appeal."
+      },
+      "memo": "### Investment Memo: Keller Fire & Safety Inc. \n\n**Why We're Excited:**  \nKeller Fire & Safety Inc. presents a stable acquisition target due to its established history and comprehensive service offerings in fire safety, a sector recognized for its essential and non-cyclical nature. The company's over 70 years of operational expertise in the Kansas City area, combined with its 24/7 emergency response services, highlight its deep-rooted market presence and credibility. This foundation establishes a potential platform for buy-and-build strategies in a fragmented industry. \n\n**Company Overview:**  \nEstablished in 1950 and located in Kansas City, Kansas, Keller Fire & Safety Inc. provides installation, inspection, and maintenance of fire protection systems such as fire alarms, extinguishers, sprinklers, and clean agent fire suppression systems. The company employs approximately 63 people and operates consistently within compliance of NFPA and local standards, emphasizing tailored solutions for commercial and industrial clients.\n\n**Differentiated Value Proposition:**  \nKeller's prolonged market presence and regulatory expertise serve as a defensible moat within the localized Kansas market. Its commitment to customized fire protection strategies and 24/7 service ensures continuous client engagement and trust. However, the advantages, while significant, are largely regional without unique proprietary technology or IP creating a significant competitive edge nationally.\n\n**Market Opportunity & Growth:**  \nThe fire safety service industry benefits from secular tailwinds such as increasing regulatory requirements and a heightened focus on safety compliance across industries. Despite the lack of clear national growth levers, the localized dominance in a fragmented market positions Keller as a potential vehicle for regional consolidation, capitalizing on an industry poised for incremental but steady growth.\n\n**NCP Fit Rationale:**  \nKeller aligns with NCP\u2019s focus on lower middle-market and service-oriented enterprises, especially given its founder-owned structure, which presents a natural succession opportunity. The essential nature of its services underpins a stable revenue stream that aligns with the thesis of acquiring recession-proof businesses. Additionally, its regional dominance offers a strategic foothold for expanding a buy-and-build approach within the Midwest.\n\n**Key Risks & Diligence Items:**  \n1. **EBITDA Verification:** The current estimate is heuristic-based; confirm actual financial performance and assess any variability.\n2. **Growth Potential:** Analyze pathways for expansion beyond the Kansas City area and evaluate potential market entry barriers in adjacent regions.\n3. **Competitive Landscape:** Assess local competition and any emerging threats that could undermine regional dominance.\n4. **Operational Dependence:** Evaluate the operational reliance on the founding team and potential impacts of leadership transition.\n5. **Revenue Composition:** Scrutinize the proportion of recurring revenue to one-off contracts to gauge stability. \n\nIn summary, Keller Fire & Safety Inc. stands as a viable candidate for NCP\u2019s acquisition strategy, though the specific growth avenues and confirmation of EBITDA remain pivotal in determining the final fit."
+    },
+    {
+      "company": "Chattanooga Fire Protection",
+      "row": {
+        "Company": "Chattanooga Fire Protection",
+        "Description": "Chattanooga Fire Protection provides comprehensive fire and life safety services, including fire extinguishers, fire sprinkler systems, fire alarms, and suppression systems, to commercial, industrial, vehicle, and residential clients. Operating since 1945, the company serves areas in Chattanooga, Knoxville, Woodstock, and Calhoun, offering services such as system installation, inspection, and emergency response.",
+        "Website": "http://www.chattanoogafire.com",
+        "City": "Chattanooga",
+        "State": "Tennessee",
+        "LinkedIn": "http://www.linkedin.com/company/chattanooga-fire-protection",
+        "Employees": 110,
+        "Est. EBITDA": "$1.9M\u2013$3.9M",
+        "CEO/Owner Name": "N/A",
+        "Title": "N/A",
+        "Email": "N/A",
+        "Email Estimate": "",
+        "Phone": "423-265-1772",
+        "Source": "Web (contact only)",
+        "Notes": "",
+        "Confidence": "Medium",
+        "Latest News": "No injuries in Midtown Apartments fire on Tuesday, Chattanooga firefighters say - Local 3 News | https://news.google.com/rss/articles/CBMi-gFBVV95cUxPZG9RSVNQenpSZGwwSDlWUk44ZXIta3NaeG9mdWoxVXREOHl1djI5N2s4WFNOT2NOb2VYamVNTEk3eVNKOWxxX1BRWnVqamVFcHU0YlRySmhFTnc4QllGei1wS3BoZXJ6VjQyWld0NFAxYWFvemozMWEtZmgtNUduYkZwVUFETkdxbmg2Sm81NG8tbnBaTVUyQzhrX0lmMEhlN0tRV1lyMUdaUExkVDhQZ0RUYkpQQ1JkU04walFQcDdZdmR5RGRYSWU0ei1aY0RMM3JkNkIzWU5LWUIyWnQtMjl0QllYMHMyV3VyVGZGaUZBUmlPNnlBVUl3?oc=5",
+        "Previously Sourced": "No",
+        "Differentiated": "Low",
+        "_niche": "Fire extinguisher recharge and fire extinguisher compliance",
+        "Priority": "Low",
+        "Growth": "High",
+        "Txn Readiness": "Low",
+        "Conviction": 5,
+        "Conviction Pitch": "Chattanooga Fire Protection, operating since 1945, serves a diverse clientele with comprehensive fire and life safety services across multiple locations. While they are established in a growing market with essential services, the company lacks differentiation and strong unique advantages in their niche, reducing its immediate appeal.",
+        "Conviction Reasoning": "The company operates in a critical and growing sector with potential for expansion, but it lacks clear differentiation and a compelling unique edge that would make it truly special."
+      },
+      "memo": "**Investment Memo: Chattanooga Fire Protection**\n\n**Why We're Excited:**  \nChattanooga Fire Protection, operating since 1945, presents a unique opportunity within the fire safety sector due to its extensive operating history and multi-location presence in a fragmented market. The company stands out with a legacy of comprehensive fire safety services across commercial, industrial, and residential sectors in Chattanooga, Knoxville, Woodstock, and Calhoun. While it does not exhibit a strong unique advantage, its consistent operational track record and potential succession opportunity, with the founder likely approaching retirement, position it as a strategic buy-and-build platform.\n\n**Company Overview:**  \nChattanooga Fire Protection provides essential services including fire extinguisher maintenance, fire alarms, sprinkler systems, and emergency response. With a workforce of approximately 110 employees, the company serves a diverse clientele in multiple Tennessee locations, indicating an estimated EBITDA range of $1.9M\u2013$3.9M, subject to further verification.\n\n**Differentiated Value Proposition:**  \nThe company's primary value proposition lies in its longevity and regional presence across a broad service area. However, it lacks distinct differentiation such as proprietary technology or regulatory advantages that could constitute a defensible moat.\n\n**Market Opportunity & Growth:**  \nThe fire safety services market is buoyed by secular growth drivers including regulatory compliance needs and the essential nature of fire protection services. The industry is fragmented, presenting consolidation opportunities. High growth potential exists with increased urban development and regulatory mandates increasing the demand for fire safety compliance.\n\n**NCP Fit Rationale:**  \nThe acquisition aligns with NCP's focus on investing in lower middle-market, services-oriented companies. Chattanooga Fire Protection, as a founder-owned business potentially approaching a leadership transition, provides a platform for further regional expansion and a foundation for a buy-and-build strategy in a non-cyclical industry.\n\n**Key Risks & Diligence Items:**  \n1. **Lack of Differentiation:** Need to assess the company's competitive positioning and any unique selling propositions.\n2. **Financial Validation:** Confirm the estimated EBITDA and perform a detailed financial review.\n3. **Leadership Transition:** Evaluate the founder's exit strategy and potential successor planning.\n4. **Market Competition:** Analyze local/regional competitors and identify barriers to entry.\n5. **Revenue Mix:** Investigate the proportion of recurring revenue from contractual services for stability analysis. \n\nOverall, Chattanooga Fire Protection represents a potentially strategic but initially low-priority acquisition for NCP, given the absence of immediate competitive advantages but bolstered by its market presence and growth prospects.",
+      "promoted_from_near_miss": true
     }
   ],
   "chat_history": [
@@ -12227,37 +12324,68 @@
         "Conviction Reasoning": "The company operates in an essential and non-cyclical service industry with high growth potential, but lacks a clear standout feature or competitive edge that aligns strongly with our investment mandate and past successful deals."
       },
       "reason": "Conviction 5/10: The company operates in an essential and non-cyclical service industry with high growth potential, but lacks a clear standout feature or competitive edge that aligns strongly with our investment mandate and past successful deals."
+    },
+    {
+      "row": {
+        "Company": "Nova Fire Protection",
+        "Description": "Nova Fire Protection, Inc. is a fire safety company based in Schaumburg, Illinois, specializing in the design, installation, repair, inspection, and testing of fire sprinkler systems and fire pumps. They serve homeowners, businesses, and property managers across the Chicago area, offering services that include emergency response and system retrofitting.",
+        "Website": "http://www.novafp.com",
+        "City": "Schaumburg",
+        "State": "Illinois",
+        "LinkedIn": "http://www.linkedin.com/company/nova-fire-protection",
+        "Employees": 59,
+        "Est. EBITDA": "$1.0M\u2013$2.1M",
+        "CEO/Owner Name": "N/A",
+        "Title": "N/A",
+        "Email": "N/A",
+        "Email Estimate": "",
+        "Phone": "847-885-1605",
+        "Source": "Web (contact only)",
+        "Notes": "",
+        "Confidence": "Medium",
+        "Latest News": "N/A",
+        "Previously Sourced": "No",
+        "Differentiated": "Low",
+        "_niche": "Fire extinguisher recharge and fire extinguisher compliance",
+        "Priority": "Low",
+        "Growth": "Low",
+        "Txn Readiness": "Medium",
+        "Conviction": 4,
+        "Conviction Pitch": "Nova Fire Protection offers essential fire safety services, focusing on fire sprinkler systems and pumps in the Chicago area. While their services are necessary, the company's differentiation is low, and they operate in a highly competitive market with limited growth potential.",
+        "Conviction Reasoning": "The company's lack of unique differentiation and low growth opportunity diminishes its attractiveness despite being in an essential service industry."
+      },
+      "reason": "Conviction 4/10: The company's lack of unique differentiation and low growth opportunity diminishes its attractiveness despite being in an essential service industry."
     }
   ],
   "reviewed_near_misses": [],
   "filter_stats": {
-    "total_sourced": 750,
-    "pre_filtered_size": 697,
-    "pre_filtered_structural": 6,
+    "total_sourced": 756,
+    "pre_filtered_size": 698,
+    "pre_filtered_structural": 7,
     "pre_filtered_blocklist": 3,
     "pre_filtered_niche": 17,
-    "deep_analysis_failed": 11,
+    "deep_analysis_failed": 13,
     "pe_backed": 0,
     "portfolio_conflict": 0,
-    "low_differentiation": 14,
-    "qualified": 2
+    "low_differentiation": 15,
+    "qualified": 3
   },
   "cost_tracker": {
-    "openai": 6.8334,
-    "firecrawl": 2.215,
+    "openai": 7.7102,
+    "firecrawl": 2.495,
     "apollo": 0.0,
-    "total": 9.0484,
+    "total": 10.2052,
     "call_counts": {
-      "openai": 31,
-      "firecrawl": 443,
+      "openai": 37,
+      "firecrawl": 499,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "writing_memo",
-    "message": "Generating investment memo for AKE Safety Equipment.",
-    "timestamp": "2026-06-23T19:06:55.785423+00:00",
-    "severity": "info"
+    "type": "done",
+    "message": "Pipeline complete! All 2 memos generated. Click 'Investment Memos' tab to review.",
+    "timestamp": "2026-06-23T19:07:46.923589+00:00",
+    "severity": "success"
   },
   "created_at": "2026-06-23T18:50:42.139968+00:00",
   "config": {
@@ -12269,5 +12397,5 @@
     "override_size_min": 10,
     "override_size_max": 200
   },
-  "status": "running"
+  "status": "idle"
 }
