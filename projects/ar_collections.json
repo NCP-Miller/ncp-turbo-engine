@@ -1,7 +1,7 @@
 {
   "bot_status": {
     "search": "idle",
-    "analysis": "filtering",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -14145,28 +14145,90 @@
         "Conviction Reasoning": "The company's lack of differentiation and slow growth, along with low transactional readiness, limit its appeal as an investment opportunity for NCP."
       },
       "reason": "Conviction 3/10: The company's lack of differentiation and slow growth, along with low transactional readiness, limit its appeal as an investment opportunity for NCP."
+    },
+    {
+      "row": {
+        "Company": "Euronet Software Solutions",
+        "Description": "Euronet Software Solutions, a division of Euronet Worldwide Inc., specializes in developing advanced payment technologies and solutions for financial institutions, retail, corporate, and government channels globally. The company focuses on modernizing payment infrastructures with real-time processing, enhanced security, and seamless interoperability, supporting services such as instant payments, ATM management, and cross-border transactions.",
+        "Website": "http://www.euronetsoftware.com",
+        "City": "Little Rock",
+        "State": "Arkansas",
+        "LinkedIn": "http://www.linkedin.com/company/euronet-software",
+        "Employees": 42,
+        "Est. EBITDA": "$1.6M\u2013$3.1M",
+        "CEO/Owner Name": "Tony Warren",
+        "Title": "President & Managing Director, Euronet Software Solutions",
+        "Email": "N/A",
+        "Email Estimate": "tony.warren@euronetsoftware.com",
+        "Phone": "N/A",
+        "Source": "Web Path (/about)",
+        "Notes": "",
+        "Confidence": "Medium",
+        "Latest News": "Euronet USA\u2019s Advanced Technology Solution Selected by Banco de Mo\u00e7ambique for Their National Payment Network - Koreabizwire | https://news.google.com/rss/articles/CBMi1gFBVV95cUxQa18tOE5pdzI0emdvZ0dfVHFJUWFLbjJHakI2d1hvUXZid09Fd3pOc0labkgyTWpadG1taFVDUm1DUzAwTUE0SDdGdGdkSk1vRWljWm4yQ1J6SlptRmk2dnRHR3ZzekJZMS1QLUd6R2ZpYU5WWkZ1aTZudzk3XzBDWnh1aXFQUDV2S3VEN1hrc2RnSnY2Qmg0VUFJWkZpN2RzcExkZGx0cExwVnpnaHdGN0laQzBrX3pRdDZ4T0dtRnBIN1J0WHhzR2tRSVpRcElNaUhGRTh3?oc=5",
+        "Previously Sourced": "No",
+        "Differentiated": "Low",
+        "_niche": "Software and tech enabled services companies that improve the collections of accounts receivable\n\nEXCLUDE these types of companies: Factoring",
+        "Priority": "Medium",
+        "Growth": "Low",
+        "Txn Readiness": "Low",
+        "Conviction": 3,
+        "Conviction Pitch": "Euronet Software Solutions does not present a compelling investment opportunity for New Capital Partners. The company's differentiation is low, and it operates in a mature market segment with established competitors. Without a unique edge or promising growth patterns, it lacks the distinctiveness we prioritize in potential acquisitions.",
+        "Conviction Reasoning": "The company's low differentiation and growth, combined with a lack of compelling 'right to win,' prevent it from meeting our investment criteria."
+      },
+      "reason": "Conviction 3/10: The company's low differentiation and growth, combined with a lack of compelling 'right to win,' prevent it from meeting our investment criteria."
+    },
+    {
+      "row": {
+        "Company": "Nationwide Credit & Collection, Inc.",
+        "Description": "Nationwide Credit & Collection, Inc. provides debt collection and revenue recovery services, focusing on the healthcare sector. They offer a range of services including bad debt collection, insurance facilitation, and business office outsourcing, with an emphasis on maintaining patient satisfaction and compliance with financial regulations.",
+        "Website": "http://www.ncc.us",
+        "City": "Oak Brook",
+        "State": "Illinois",
+        "LinkedIn": "http://www.linkedin.com/company/nationwide-credit-&-collection-inc.",
+        "Employees": 54,
+        "Est. EBITDA": "$2.0M\u2013$4.0M",
+        "CEO/Owner Name": "N/A",
+        "Title": "N/A",
+        "Email": "N/A",
+        "Email Estimate": "",
+        "Phone": "N/A",
+        "Source": "Not Found",
+        "Notes": "",
+        "Confidence": "Low",
+        "Latest News": "Pinstripes sells to Florida lender, closes another Illinois location - Crain's Chicago Business | https://news.google.com/rss/articles/CBMipwFBVV95cUxPUGVVQ0gtRWNmeWUyU1JpcjVDMGJNMTdRZWpydEdyN3F6N2pRV2pYa2dnMTUxbnZHbDJwSHB5UnNoeWp6UExWUnJGY0liQzl0cDF4Q1EwXzdWelNZN1R3S3B6bmNTQ0FIVGF5T2R2elZnX2tpa0kzSW1Pd19PTmpwNGJXZWlTYmNNX211bkR6cTdaQWQydnJFOUVWUEY5SkprZU9pVXB4aw?oc=5",
+        "Previously Sourced": "No",
+        "Differentiated": "Medium",
+        "_niche": "Software and tech enabled services companies that improve the collections of accounts receivable\n\nEXCLUDE these types of companies: Factoring",
+        "Priority": "High",
+        "Growth": "Low",
+        "Txn Readiness": "Low",
+        "Conviction": 5,
+        "Conviction Pitch": "Nationwide Credit & Collection, Inc. provides niche-focused debt collection services in the healthcare sector, a market with consistent demand due to regulatory complexities and the non-discretionary nature of healthcare payments. However, the company's differentiation is only medium and it lacks significant growth and transaction readiness, suggesting limited uniqueness or an immediate 'right to win' in its space.",
+        "Conviction Reasoning": "The company's specialization in healthcare and compliant practices is valuable, but medium differentiation and low growth potential prevent it from standing out significantly."
+      },
+      "reason": "Conviction 5/10: The company's specialization in healthcare and compliant practices is valuable, but medium differentiation and low growth potential prevent it from standing out significantly."
     }
   ],
   "filter_stats": {
-    "total_sourced": 3092,
+    "total_sourced": 3095,
     "pre_filtered_size": 2225,
     "pre_filtered_structural": 165,
     "pre_filtered_blocklist": 29,
-    "pre_filtered_niche": 171,
+    "pre_filtered_niche": 172,
     "deep_analysis_failed": 363,
     "pe_backed": 30,
     "portfolio_conflict": 17,
-    "low_differentiation": 86,
+    "low_differentiation": 88,
     "qualified": 6
   },
   "cost_tracker": {
-    "openai": 53.6961,
-    "firecrawl": 21.94,
+    "openai": 54.5209,
+    "firecrawl": 22.19,
     "apollo": 0.0,
-    "total": 75.6361,
+    "total": 76.7109,
     "call_counts": {
-      "openai": 522,
-      "firecrawl": 4388,
+      "openai": 524,
+      "firecrawl": 4438,
       "apollo": 0
     }
   },
