@@ -12496,5 +12496,8 @@
     "override_size_min": 10,
     "override_size_max": 200
   },
-  "status": "idle"
+  "status": "idle",
+  "memo_verdicts": {
+    "Jarrett Fire Protection, Inc.": "liked"
+  }
 }
