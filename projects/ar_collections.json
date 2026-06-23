@@ -28676,12 +28676,6 @@
     "override_size_max": 150,
     "_budget_gate_cleared": 60
   },
-  "memo_verdicts": {
-    "Tilli Software": "rejected",
-    "Itemize": "rejected",
-    "TEC Services Group": "liked",
-    "Hito": "rejected"
-  },
   "status": "paused",
   "reviewed_near_misses": [
     "UQUAL",
@@ -28779,5 +28773,12 @@
     "AdminaHealth\u00ae",
     "AmeriFactors Financial Group, LLC.",
     "Navisync"
-  ]
+  ],
+  "memo_verdicts": {
+    "Tilli Software": "rejected",
+    "Itemize": "rejected",
+    "TEC Services Group": "liked",
+    "Hito": "rejected",
+    "RC Billing": "rejected"
+  }
 }
