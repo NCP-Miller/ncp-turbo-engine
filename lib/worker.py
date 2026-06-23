@@ -161,6 +161,7 @@ def process_single_company(
         desc_future = inner.submit(
             generate_company_description,
             openai_client, _scrape, comp_name, domain, desc, tags,
+            niche=specific_niche,
         )
         apollo_people = apollo_future.result()
         web_person, web_source, web_email, web_phone = web_future.result()
@@ -255,14 +256,17 @@ def process_single_company(
 
     # Stage 7: scoring
     if strat_code == "A":
+        _li_url = org.get("linkedin_url")
+        _ebitda_est = row.get("Est. EBITDA")
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as score_ex:
             pri_fut = score_ex.submit(
                 assess_priority, openai_client, comp_name, row["Description"],
                 org.get("state"), org.get("estimated_num_employees"),
-                tags, specific_niche,
+                tags, specific_niche, ebitda_estimate=_ebitda_est,
             )
             growth_fut = score_ex.submit(
-                assess_growth_score, openai_client, _scrape, comp_name, domain, apollo_people,
+                assess_growth_score, openai_client, _scrape, comp_name, domain,
+                apollo_people, linkedin_url=_li_url,
             )
             txn_fut = score_ex.submit(
                 assess_transaction_readiness, openai_client, _scrape, comp_name,
@@ -272,12 +276,12 @@ def process_single_company(
                 assess_differentiation, openai_client, comp_name,
                 row["Description"], specific_niche,
             )
-            row["Priority"], _ = pri_fut.result()
-            row["Growth"], _ = growth_fut.result()
-            row["Txn Readiness"], _ = txn_fut.result()
-            row["Differentiated"], _ = diff_fut.result()
+            row["Priority"], _, row["Priority Confidence"] = pri_fut.result()
+            row["Growth"], _, row["Growth Confidence"] = growth_fut.result()
+            row["Txn Readiness"], _, row["Txn Readiness Confidence"] = txn_fut.result()
+            row["Differentiated"], _, row["Differentiated Confidence"] = diff_fut.result()
     else:
-        row["Differentiated"], _ = assess_differentiation(
+        row["Differentiated"], _, row["Differentiated Confidence"] = assess_differentiation(
             openai_client, comp_name, row["Description"], specific_niche,
         )
 

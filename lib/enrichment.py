@@ -57,8 +57,9 @@ def generate_company_description(
     domain,
     apollo_desc,
     apollo_keywords,
+    niche=None,
 ):
-    """Generate a 2-3 sentence factual description from website + Apollo data."""
+    """Generate a 2-3 sentence factual description from website + Apollo + Google."""
     snippets = []
     if domain:
         urls = [f"https://{domain}", f"https://{domain}/about", f"https://{domain}/about-us"]
@@ -68,6 +69,16 @@ def generate_company_description(
                 content = f.result()
                 if content and len(content) >= 100:
                     snippets.append(content[:8000])
+
+    from urllib.parse import quote as _url_quote
+    _gq = f"{company_name} {niche}" if niche else company_name
+    _google_url = f"https://www.google.com/search?q={_url_quote(_gq)}"
+    try:
+        _gc = firecrawl_scrape_fn(_google_url)
+        if _gc and len(_gc) >= 100:
+            snippets.append(f"GOOGLE SEARCH RESULTS:\n{_gc[:6000]}")
+    except Exception:
+        pass
 
     web_text = "\n---\n".join(snippets) if snippets else "(no website content available)"
 
@@ -106,7 +117,7 @@ Rules:
 # DIFFERENTIATION
 # ---------------------------------------------------------------------------
 def assess_differentiation(client, company_name, description, niche):
-    """Rate company differentiation within its niche (High/Medium/Low)."""
+    """Rate company differentiation within its niche (High/Medium/Low) + confidence."""
     prompt = f"""You are evaluating whether a company is meaningfully differentiated within its niche market.
 
 Search niche: "{niche}"
@@ -128,7 +139,12 @@ IMPORTANT: Do NOT rate a company as "High" simply because it seems out of place 
 the niche. A company that slipped through filters and doesn't truly belong in this search should
 be rated LOW, not HIGH.
 
-Return JSON only: {{"differentiation": "High", "reason": "one sentence"}}"""
+Also rate your CONFIDENCE in this assessment:
+- HIGH confidence: You have detailed info about the company's services, approach, and market position.
+- MEDIUM confidence: You have a reasonable description but lack specifics about their competitive edge.
+- LOW confidence: Very limited information — the description is vague or generic.
+
+Return JSON only: {{"differentiation": "High", "reason": "one sentence", "confidence": "High"}}"""
 
     try:
         resp = client.chat.completions.create(
@@ -141,29 +157,37 @@ Return JSON only: {{"differentiation": "High", "reason": "one sentence"}}"""
         d = (data.get("differentiation") or "Medium").strip().capitalize()
         if d not in ("High", "Medium", "Low"):
             d = "Medium"
-        return d, data.get("reason", "")
+        conf = (data.get("confidence") or "Medium").strip().capitalize()
+        if conf not in ("High", "Medium", "Low"):
+            conf = "Medium"
+        return d, data.get("reason", ""), conf
     except Exception:
-        return "Medium", "Unable to assess"
+        return "Medium", "Unable to assess", "Low"
 
 
 # ---------------------------------------------------------------------------
 # PRIORITY (NCP investment criteria fit)
 # ---------------------------------------------------------------------------
-def assess_priority(client, company_name, description, state, employees, keywords, niche):
-    """Rate acquisition priority (High/Medium/Low) for Strategy A."""
+def assess_priority(client, company_name, description, state, employees, keywords, niche,
+                    ebitda_estimate=None):
+    """Rate acquisition priority (High/Medium/Low) for Strategy A + confidence."""
+    ebitda_line = ""
+    if ebitda_estimate and ebitda_estimate != "Unknown":
+        ebitda_line = f"\nEstimated EBITDA (industry-adjusted): {ebitda_estimate}"
+
     prompt = f"""You are prioritizing acquisition targets for New Capital Partners (NCP).
 
 NCP's investment criteria:
 1. Founder-owned (not public, not PE/VC backed) — already pre-filtered, assume satisfied
 2. US-based, preferably eastern US (Denver/Colorado and east)
-3. $2M–$4M EBITDA (use ~20–80 employees as a rough proxy)
+3. $2M–$4M EBITDA target range
 4. Niche, high-growth (>10%) markets with limited competitors
 5. Focus sectors: tech-enabled healthcare, financial services, governance risk & compliance (GRC)
 
 Company: "{company_name}"
 Description: "{description}"
 State: "{state}"
-Estimated employees: {employees}
+Estimated employees: {employees}{ebitda_line}
 Keywords: {keywords}
 Search niche: "{niche}"
 
@@ -172,12 +196,17 @@ LA, MA, MD, ME, MI, MN, MO, MS, NC, ND, NE, NH, NJ, NY, OH, OK, PA, RI, SC, SD,
 TN, TX, VA, VT, WI, WV
 
 Scoring guidance:
-- HIGH: Strong fit on geography (eastern US), size (20–80 employees), AND sector
+- HIGH: Strong fit on geography (eastern US), EBITDA in or near $2M-$4M range, AND sector
   alignment with NCP's focus areas (tech-enabled healthcare, financial services, or GRC)
 - MEDIUM: Fits most criteria but has one notable weakness
 - LOW: Matches the search niche but weak fit on multiple NCP criteria
 
-Return JSON only: {{"priority": "High", "reason": "one sentence"}}"""
+Also rate your CONFIDENCE in this assessment:
+- HIGH confidence: Clear data on geography, size, and sector alignment.
+- MEDIUM confidence: Some criteria are uncertain or data is incomplete.
+- LOW confidence: Major gaps in data (no state, unclear sector, unknown size).
+
+Return JSON only: {{"priority": "High", "reason": "one sentence", "confidence": "High"}}"""
 
     try:
         resp = client.chat.completions.create(
@@ -190,7 +219,10 @@ Return JSON only: {{"priority": "High", "reason": "one sentence"}}"""
         p = (data.get("priority") or "Medium").strip().capitalize()
         if p not in ("High", "Medium", "Low"):
             p = "Medium"
-        return p, data.get("reason", "")
+        conf = (data.get("confidence") or "Medium").strip().capitalize()
+        if conf not in ("High", "Medium", "Low"):
+            conf = "Medium"
+        return p, data.get("reason", ""), conf
     except Exception:
         pass
 
@@ -205,17 +237,18 @@ Return JSON only: {{"priority": "High", "reason": "one sentence"}}"""
     elif 10 <= emp <= 150:
         score += 1
     if score >= 4:
-        return "High", "Good geography and size fit"
+        return "High", "Good geography and size fit", "Medium"
     elif score >= 2:
-        return "Medium", "Partial criteria match"
-    return "Low", "Weak criteria match"
+        return "Medium", "Partial criteria match", "Medium"
+    return "Low", "Weak criteria match", "Medium"
 
 
 # ---------------------------------------------------------------------------
 # GROWTH SCORE
 # ---------------------------------------------------------------------------
-def assess_growth_score(client, firecrawl_scrape_fn, company_name, domain, apollo_people):
-    """Rate growth trajectory (High/Medium/Low) from hiring activity."""
+def assess_growth_score(client, firecrawl_scrape_fn, company_name, domain,
+                        apollo_people, linkedin_url=None):
+    """Rate growth trajectory (High/Medium/Low) from hiring, Google, LinkedIn + confidence."""
     signals = []
 
     if domain:
@@ -238,6 +271,33 @@ def assess_growth_score(client, firecrawl_scrape_fn, company_name, domain, apoll
                     if content and len(content) >= 200:
                         signals.append(f"CAREERS PAGE ({futs[f]}):\n{content[:6000]}")
 
+    from urllib.parse import quote as _url_quote
+    _growth_queries = [
+        f"{company_name} hiring jobs",
+        f"{company_name} expansion new location",
+    ]
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as ex:
+        _gfuts = {
+            ex.submit(firecrawl_scrape_fn,
+                      f"https://www.google.com/search?q={_url_quote(q)}"): q
+            for q in _growth_queries
+        }
+        for f in concurrent.futures.as_completed(_gfuts):
+            try:
+                content = f.result()
+                if content and len(content) >= 100:
+                    signals.append(f"GOOGLE ({_gfuts[f]}):\n{content[:5000]}")
+            except Exception:
+                pass
+
+    if linkedin_url:
+        try:
+            li_content = firecrawl_scrape_fn(linkedin_url)
+            if li_content and len(li_content) >= 200:
+                signals.append(f"LINKEDIN COMPANY PAGE:\n{li_content[:6000]}")
+        except Exception:
+            pass
+
     if apollo_people:
         team_lines = [
             f"- {p.get('first_name', '')} {p.get('last_name', '')} — {p.get('title', '')}"
@@ -249,19 +309,30 @@ def assess_growth_score(client, firecrawl_scrape_fn, company_name, domain, apoll
 
 Indicators of growth:
 - Open job postings (more = growing; especially operational/clinical roles)
-- Team size increases or many recent hires
+- Team size increases or many recent hires (LinkedIn headcount trends)
 - Expansion language (new locations, new services, new markets)
 - Hiring for roles that indicate scaling (operations, sales, regional managers)
+- Google search results showing recent hiring or expansion news
+- LinkedIn page showing employee growth trends or recent headcount increases
 
 Available data:
-{chr(10).join(signals) if signals else "(no careers page found; limited data)"}
+{chr(10).join(signals) if signals else "(no careers page or Google results found; limited data)"}
 
 Rating guidance:
-- HIGH: Clear evidence of active hiring (3+ open positions) or explicit expansion plans
-- MEDIUM: Some hiring activity or moderate growth signals (1-2 open roles, growing team)
+- HIGH: Clear evidence of active hiring (3+ open positions), explicit expansion plans,
+  or LinkedIn/Google showing recent growth news
+- MEDIUM: Some hiring activity or moderate growth signals (1-2 open roles, growing team,
+  some expansion mentions in search results)
 - LOW: No evidence of active hiring or growth; appears stable or contracting
 
-Return JSON only: {{"growth_score": "High", "reason": "one sentence"}}"""
+Also rate your CONFIDENCE in this assessment:
+- HIGH confidence: Rich data from careers pages, Google results, and/or LinkedIn showing
+  clear hiring or expansion activity.
+- MEDIUM confidence: Some data available but incomplete (e.g., only Google results, or only
+  team roster without careers page).
+- LOW confidence: Very limited data — no careers page found, minimal Google results.
+
+Return JSON only: {{"growth_score": "High", "reason": "one sentence", "confidence": "High"}}"""
 
     try:
         resp = client.chat.completions.create(
@@ -274,10 +345,13 @@ Return JSON only: {{"growth_score": "High", "reason": "one sentence"}}"""
         g = (data.get("growth_score") or "Low").strip().capitalize()
         if g not in ("High", "Medium", "Low"):
             g = "Low"
-        return g, data.get("reason", "")
+        conf = (data.get("confidence") or "Low").strip().capitalize()
+        if conf not in ("High", "Medium", "Low"):
+            conf = "Low"
+        return g, data.get("reason", ""), conf
     except Exception:
         pass
-    return "Low", "Unable to assess"
+    return "Low", "Unable to assess", "Low"
 
 
 # ---------------------------------------------------------------------------
@@ -357,7 +431,13 @@ Rating guidance:
   founder age plausibly 55-65 but uncertain)
 - LOW: Young founder, no CFO hire signal, no transition indicators, or insufficient data
 
-Return JSON only: {{"readiness": "High", "reason": "one sentence"}}"""
+Also rate your CONFIDENCE in this assessment:
+- HIGH confidence: LinkedIn profile with graduation dates, clear career timeline, or explicit
+  succession language found.
+- MEDIUM confidence: Some founder data available but age/tenure is uncertain.
+- LOW confidence: No founder LinkedIn found, no career timeline, guessing from limited data.
+
+Return JSON only: {{"readiness": "High", "reason": "one sentence", "confidence": "High"}}"""
 
     try:
         resp = client.chat.completions.create(
@@ -370,10 +450,13 @@ Return JSON only: {{"readiness": "High", "reason": "one sentence"}}"""
         r = (data.get("readiness") or "Low").strip().capitalize()
         if r not in ("High", "Medium", "Low"):
             r = "Low"
-        return r, data.get("reason", "")
+        conf = (data.get("confidence") or "Low").strip().capitalize()
+        if conf not in ("High", "Medium", "Low"):
+            conf = "Low"
+        return r, data.get("reason", ""), conf
     except Exception:
         pass
-    return "Low", "Unable to assess"
+    return "Low", "Unable to assess", "Low"
 
 
 # ---------------------------------------------------------------------------

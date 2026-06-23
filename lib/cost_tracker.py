@@ -65,7 +65,7 @@ _DEEP_ANALYSIS_COSTS = {
         + COST_OPENAI["contact_extraction"] * 3  # avg 3 pages scraped
         + COST_OPENAI["email_guess"] * 0.3        # ~30% need email guess
     ),
-    "firecrawl": COST_FIRECRAWL * 25,  # avg 25 scrapes per candidate
+    "firecrawl": COST_FIRECRAWL * 30,  # avg 30 scrapes per candidate (incl Google/LinkedIn)
 }
 
 COST_PER_DEEP_CANDIDATE = _DEEP_ANALYSIS_COSTS["openai"] + _DEEP_ANALYSIS_COSTS["firecrawl"]
