@@ -1,7 +1,7 @@
 {
   "bot_status": {
     "search": "idle",
-    "analysis": "filtering",
+    "analysis": "error",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -28603,36 +28603,67 @@
         "Conviction Reasoning": "Element Medical Billing lacks a clear 'right to win' or significant differentiation, limiting our enthusiasm despite serving a growing market segment."
       },
       "reason": "Conviction 5/10: Element Medical Billing lacks a clear 'right to win' or significant differentiation, limiting our enthusiasm despite serving a growing market segment."
+    },
+    {
+      "row": {
+        "Company": "Microwize Technology, Inc.",
+        "Description": "Microwize Technology, Inc. is a company that provides medical office software and IT services, specializing in solutions for small and midsized healthcare practices in the United States. Since 1997, they have offered a range of services including electronic health records (EHR) software, medical billing services, and managed IT support to help healthcare professionals improve reimbursement, increase revenues, and enhance productivity.",
+        "Website": "http://www.microwize.com",
+        "City": "Paramus",
+        "State": "New Jersey",
+        "LinkedIn": "http://www.linkedin.com/company/microwize-technology",
+        "Employees": 99,
+        "Est. EBITDA": "$3.7M\u2013$7.4M",
+        "CEO/Owner Name": "Robert Gabriel",
+        "Title": "N/A",
+        "Email": "robertg@microwize.com",
+        "Email Estimate": "",
+        "Phone": "800-955-0321",
+        "Source": "Web Path (/about) \u2192 Verified",
+        "Notes": "",
+        "Confidence": "High",
+        "Latest News": "Microwize Technology, Inc. Revenue 2025: $14.4M ARR - GetLatka | https://news.google.com/rss/articles/CBMiV0FVX3lxTE1FZFU4QmctamJaMnBiOWpWbDBQeWlvWWlPSEM0d29OOVBKN3lkZ3B3Q3pPTDZaZFZIUzIwTlNBZG1OSHRROTNHLW9pUXRuY2FmaGI0bldsTQ?oc=5",
+        "Previously Sourced": "No",
+        "Differentiated": "Low",
+        "_niche": "Software and tech enabled services companies that improve the collections of accounts receivable\n\nEXCLUDE these types of companies: Factoring",
+        "Priority": "Medium",
+        "Growth": "High",
+        "Txn Readiness": "Medium",
+        "Conviction": 5,
+        "Conviction Pitch": "Microwize Technology, Inc. is a well-established provider of medical office software and IT services, with over two decades of experience serving small and midsized healthcare practices. The company offers essential services like EHR software and medical billing, which are crucial in the growing healthcare market driven by technological adoption. However, the differentiation is low, with no clear 'right to win' differentiator in a competitive industry.",
+        "Conviction Reasoning": "While Microwize operates in a high-growth healthcare market, its low differentiation and medium transactional readiness limit its appeal as a standout investment."
+      },
+      "reason": "Conviction 5/10: While Microwize operates in a high-growth healthcare market, its low differentiation and medium transactional readiness limit its appeal as a standout investment."
     }
   ],
   "filter_stats": {
-    "total_sourced": 3419,
-    "pre_filtered_size": 2427,
+    "total_sourced": 3425,
+    "pre_filtered_size": 2430,
     "pre_filtered_structural": 182,
     "pre_filtered_blocklist": 42,
     "pre_filtered_niche": 201,
-    "deep_analysis_failed": 400,
+    "deep_analysis_failed": 401,
     "pe_backed": 31,
-    "portfolio_conflict": 36,
-    "low_differentiation": 94,
+    "portfolio_conflict": 37,
+    "low_differentiation": 95,
     "qualified": 6
   },
   "cost_tracker": {
-    "openai": 63.8988,
-    "firecrawl": 25.735,
+    "openai": 64.6471,
+    "firecrawl": 25.985,
     "apollo": 0.0,
-    "total": 89.6338,
+    "total": 90.6321,
     "call_counts": {
-      "openai": 592,
-      "firecrawl": 5147,
+      "openai": 595,
+      "firecrawl": 5197,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "analyzing",
-    "message": "Analyzing 3 candidates in parallel. 158 more in queue.",
-    "timestamp": "2026-06-23T14:30:00.653670+00:00",
-    "severity": "info"
+    "type": "budget_pause",
+    "message": "Estimated spend reached $90.07 (gate: $90). Pipeline paused \u2014 click Resume to approve the next $30 of spend.",
+    "timestamp": "2026-06-23T14:30:05.020381+00:00",
+    "severity": "warning"
   },
   "created_at": "2026-06-19T15:29:52.553306+00:00",
   "config": {
@@ -28645,6 +28676,13 @@
     "override_size_max": 150,
     "_budget_gate_cleared": 60
   },
+  "memo_verdicts": {
+    "Tilli Software": "rejected",
+    "Itemize": "rejected",
+    "TEC Services Group": "liked",
+    "Hito": "rejected"
+  },
+  "status": "paused",
   "reviewed_near_misses": [
     "UQUAL",
     "QuikQ",
@@ -28663,6 +28701,7 @@
     "Clinical Research Billing, Inc",
     "Monarch Recovery Management, Inc.",
     "NewCo Capital Group",
+    "Revenue Recovery Firm",
     "Autocash.ai",
     "Credit Management Company",
     "RTS International",
@@ -28682,7 +28721,6 @@
     "Velocity Investments",
     "CISCO, Inc.",
     "PFC USA",
-    "Navisync",
     "Atika Technologies & BPM",
     "Regal Credit Management",
     "Avivatech",
@@ -28702,6 +28740,7 @@
     "Frontline Asset Strategies",
     "Accounts Receivable Financing",
     "BU Consultants",
+    "BYL Risk Management",
     "Cresc Datasoft Pvt. Ltd.",
     "Peridot",
     "RXNT",
@@ -28716,15 +28755,8 @@
     "AmeriFactors Financial Group, LLC.",
     "Quadient Accounts Receivable Automation",
     "Kore Capital",
-    "BYL Risk Management",
+    "Navisync",
     "JDi",
     "AirPay"
-  ],
-  "memo_verdicts": {
-    "Tilli Software": "rejected",
-    "Itemize": "rejected",
-    "TEC Services Group": "liked",
-    "Hito": "rejected"
-  },
-  "status": "running"
+  ]
 }
