@@ -1,7 +1,7 @@
 {
   "bot_status": {
     "search": "idle",
-    "analysis": "filtering",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -15609,25 +15609,25 @@
     }
   ],
   "filter_stats": {
-    "total_sourced": 2885,
+    "total_sourced": 2888,
     "pre_filtered_size": 2128,
     "pre_filtered_structural": 151,
     "pre_filtered_blocklist": 25,
-    "pre_filtered_niche": 140,
+    "pre_filtered_niche": 142,
     "deep_analysis_failed": 317,
-    "pe_backed": 27,
+    "pe_backed": 28,
     "portfolio_conflict": 13,
     "low_differentiation": 79,
     "qualified": 5
   },
   "cost_tracker": {
-    "openai": 48.0311,
-    "firecrawl": 19.51,
+    "openai": 48.2785,
+    "firecrawl": 19.61,
     "apollo": 0.0,
-    "total": 67.5411,
+    "total": 67.8885,
     "call_counts": {
-      "openai": 459,
-      "firecrawl": 3902,
+      "openai": 460,
+      "firecrawl": 3922,
       "apollo": 0
     }
   },
