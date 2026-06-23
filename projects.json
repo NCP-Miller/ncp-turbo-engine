@@ -138,11 +138,22 @@
     "name": "AR Collections",
     "slug": "ar_collections",
     "db_file": "project_ar_collections.db",
-    "created_at": "2026-06-23T18:49:51.749832+00:00",
-    "niche": "Software and tech enabled services companies that improve the collections of accounts receivable",
-    "geography": "NCP Priority Geography (Eastern US)",
-    "memo_count": 6,
-    "active": true,
+    "created_at": "2026-06-23T18:50:00.971642+00:00",
+    "niche": "",
+    "geography": "",
+    "memo_count": 0,
+    "active": false,
     "backup_status": "not_configured"
+  },
+  {
+    "name": "Fire Extinguishers",
+    "slug": "fire_extinguishers",
+    "db_file": "project_fire_extinguishers.db",
+    "created_at": "2026-06-23T18:50:01.287660+00:00",
+    "niche": "Fire extinguisher recharge and fire extinguisher compliance",
+    "geography": "NCP Priority Geography (Eastern US)",
+    "memo_count": 0,
+    "active": true,
+    "status": "running"
   }
 ]
