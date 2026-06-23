@@ -1,7 +1,7 @@
 {
   "bot_status": {
     "search": "searching_apollo",
-    "analysis": "filtering",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [],
@@ -9169,32 +9169,32 @@
     }
   ],
   "filter_stats": {
-    "total_sourced": 3122,
+    "total_sourced": 3125,
     "pre_filtered_size": 2239,
     "pre_filtered_structural": 165,
     "pre_filtered_blocklist": 29,
     "pre_filtered_niche": 173,
-    "deep_analysis_failed": 371,
-    "pe_backed": 30,
+    "deep_analysis_failed": 373,
+    "pe_backed": 31,
     "portfolio_conflict": 19,
     "low_differentiation": 90,
     "qualified": 6
   },
   "cost_tracker": {
-    "openai": 56.0615,
-    "firecrawl": 22.78,
+    "openai": 56.3209,
+    "firecrawl": 22.91,
     "apollo": 0.0,
-    "total": 78.8415,
+    "total": 79.2309,
     "call_counts": {
-      "openai": 537,
-      "firecrawl": 4556,
+      "openai": 540,
+      "firecrawl": 4582,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "analyzing",
-    "message": "Analyzing 3 candidates in parallel. 0 more in queue.",
-    "timestamp": "2026-06-23T14:07:29.796426+00:00",
+    "type": "searching_apollo",
+    "message": "Searching Apollo for Accounting companies in NCP Priority Geography (Eastern US) (round 1 of 4).",
+    "timestamp": "2026-06-23T14:08:42.881009+00:00",
     "severity": "info"
   },
   "created_at": "2026-06-19T15:29:52.553306+00:00",
