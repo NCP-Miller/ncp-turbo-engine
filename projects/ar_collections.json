@@ -1,7 +1,7 @@
 {
   "bot_status": {
     "search": "idle",
-    "analysis": "filtering",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -16206,28 +16206,59 @@
         "Conviction Reasoning": "The main factors contributing to the score are the low differentiation and lack of a defensible moat, which makes it less appealing compared to those in the THUMBS-UP list."
       },
       "reason": "Conviction 4/10: The main factors contributing to the score are the low differentiation and lack of a defensible moat, which makes it less appealing compared to those in the THUMBS-UP list."
+    },
+    {
+      "row": {
+        "Company": "Element Medical Billing",
+        "Description": "Element Medical Billing provides comprehensive medical billing services, specializing in behavioral health facilities across the United States. They focus on optimizing the billing process, reducing errors, ensuring compliance, and improving cash flow for their clients.",
+        "Website": "http://www.elementmedicalbilling.com",
+        "City": "Port Saint Lucie",
+        "State": "Florida",
+        "LinkedIn": "http://www.linkedin.com/company/element-medical-billing",
+        "Employees": 18,
+        "Est. EBITDA": "$675K\u2013$1.4M",
+        "CEO/Owner Name": "N/A",
+        "Title": "N/A",
+        "Email": "info@elementmedicalbilling.com",
+        "Email Estimate": "",
+        "Phone": "772-200-2995",
+        "Source": "Web (contact only)",
+        "Notes": "",
+        "Confidence": "Medium",
+        "Latest News": "N/A",
+        "Previously Sourced": "No",
+        "Differentiated": "Medium",
+        "_niche": "Software and tech enabled services companies that improve the collections of accounts receivable\n\nEXCLUDE these types of companies: Factoring",
+        "Priority": "Medium",
+        "Growth": "Low",
+        "Txn Readiness": "Low",
+        "Conviction": 5,
+        "Conviction Pitch": "Element Medical Billing operates in the specialized niche of behavioral health billing, a field that is expanding with increasing demand for mental health services. However, the company's medium differentiation and lower readiness for transaction suggests they lack the distinctive edge we prioritize. They operate in a growing market but don't present a uniquely compelling advantage over competitors.",
+        "Conviction Reasoning": "Element Medical Billing lacks a clear 'right to win' or significant differentiation, limiting our enthusiasm despite serving a growing market segment."
+      },
+      "reason": "Conviction 5/10: Element Medical Billing lacks a clear 'right to win' or significant differentiation, limiting our enthusiasm despite serving a growing market segment."
     }
   ],
   "filter_stats": {
-    "total_sourced": 3344,
-    "pre_filtered_size": 2377,
+    "total_sourced": 3347,
+    "pre_filtered_size": 2378,
     "pre_filtered_structural": 182,
     "pre_filtered_blocklist": 36,
-    "pre_filtered_niche": 196,
+    "pre_filtered_niche": 197,
     "deep_analysis_failed": 398,
     "pe_backed": 31,
     "portfolio_conflict": 25,
-    "low_differentiation": 93,
+    "low_differentiation": 94,
     "qualified": 6
   },
   "cost_tracker": {
-    "openai": 59.8455,
-    "firecrawl": 24.37,
+    "openai": 60.2579,
+    "firecrawl": 24.495,
     "apollo": 0.0,
-    "total": 84.2155,
+    "total": 84.7529,
     "call_counts": {
-      "openai": 578,
-      "firecrawl": 4874,
+      "openai": 579,
+      "firecrawl": 4899,
       "apollo": 0
     }
   },
