@@ -1,6 +1,6 @@
 {
   "bot_status": {
-    "search": "searching_apollo",
+    "search": "idle",
     "analysis": "idle",
     "writeup": "idle"
   },
@@ -1634,7 +1634,8 @@
     "dsheatingandcooling.com",
     "lawyerowen.com",
     "colom.com",
-    "eckankar-mississippi.org"
+    "eckankar-mississippi.org",
+    "info.koorsen.com"
   ],
   "seen_names": [
     "ted conferences",
@@ -3040,7 +3041,8 @@
     "d\u2019s all weather heating & cooling",
     "david owen, attorney at law",
     "colom law office",
-    "mississippi satsang society inc"
+    "mississippi satsang society inc",
+    "koorsen fire & security"
   ],
   "near_misses": [
     {
@@ -3789,8 +3791,8 @@
     }
   ],
   "filter_stats": {
-    "total_sourced": 1482,
-    "pre_filtered_size": 1273,
+    "total_sourced": 1483,
+    "pre_filtered_size": 1274,
     "pre_filtered_structural": 62,
     "pre_filtered_blocklist": 9,
     "pre_filtered_niche": 73,
@@ -3801,20 +3803,20 @@
     "qualified": 6
   },
   "cost_tracker": {
-    "openai": 13.253,
-    "firecrawl": 4.45,
+    "openai": 13.332,
+    "firecrawl": 4.475,
     "apollo": 0.0,
-    "total": 17.703,
+    "total": 17.807,
     "call_counts": {
-      "openai": 85,
-      "firecrawl": 890,
+      "openai": 87,
+      "firecrawl": 895,
       "apollo": 0
     }
   },
   "last_event": {
     "type": "searching_apollo",
-    "message": "Searching Apollo for Industrial Automation companies in Alabama, Mississippi (round 2 of 4).",
-    "timestamp": "2026-06-24T15:15:14.016633+00:00",
+    "message": "Searching Apollo for Facilities Services companies in Alabama, Mississippi (round 3 of 4).",
+    "timestamp": "2026-06-24T15:15:41.520676+00:00",
     "severity": "info"
   },
   "created_at": "2026-06-23T18:50:42.139968+00:00",
