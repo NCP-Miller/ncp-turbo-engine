@@ -2,7 +2,7 @@
   "bot_status": {
     "search": "exhausted",
     "analysis": "filtering",
-    "writeup": "idle"
+    "writeup": "generating_memo"
   },
   "candidate_queue": [
     {
@@ -4784,8 +4784,8 @@
     }
   ],
   "filter_stats": {
-    "total_sourced": 807,
-    "pre_filtered_size": 725,
+    "total_sourced": 810,
+    "pre_filtered_size": 727,
     "pre_filtered_structural": 15,
     "pre_filtered_blocklist": 4,
     "pre_filtered_niche": 17,
@@ -4793,23 +4793,23 @@
     "pe_backed": 0,
     "portfolio_conflict": 0,
     "low_differentiation": 21,
-    "qualified": 4
+    "qualified": 5
   },
   "cost_tracker": {
-    "openai": 10.665,
-    "firecrawl": 3.49,
+    "openai": 11.0774,
+    "firecrawl": 3.615,
     "apollo": 0.0,
-    "total": 14.155,
+    "total": 14.6924,
     "call_counts": {
-      "openai": 53,
-      "firecrawl": 698,
+      "openai": 54,
+      "firecrawl": 723,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "analyzing",
-    "message": "Analyzing 3 candidates in parallel. 20 more in queue.",
-    "timestamp": "2026-06-24T13:38:07.727473+00:00",
+    "type": "writing_memo",
+    "message": "Generating investment memo for Capital Fire Protection Co..",
+    "timestamp": "2026-06-24T13:40:25.979128+00:00",
     "severity": "info"
   },
   "created_at": "2026-06-23T18:50:42.139968+00:00",
