@@ -1,7 +1,7 @@
 {
   "bot_status": {
-    "search": "discovering_web",
-    "analysis": "filtering",
+    "search": "searching_apollo",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -1021,6 +1021,39 @@
         "Conviction Reasoning": "The combination of regulatory defensibility and a proven commitment to service, coupled with the potential for market consolidation, makes this a solid candidate despite low differentiation."
       },
       "memo": "---\n\n**Investment Memo: Commonwealth Fire Protection**\n\n**Why We're Excited**\n\nCommonwealth Fire Protection presents a compelling acquisition opportunity due to its distinctive regulatory moat, validated by licensing across over 50 local jurisdictions in the mid-Atlantic region. This extensive licensing network not only provides significant barriers to entry for competitors but also underscores the company's entrenched position in the market, making it a desirable target for expansion strategies. The 100% employee-owned structure further enhances operational commitment and reliability, a crucial factor in the compliance-intensive fire protection industry.\n\n**Company Overview**\n\nCommonwealth Fire Protection specializes in the design, installation, inspection, and emergency services for fire sprinkler systems, catering to commercial, industrial, and residential clients primarily across Pennsylvania, New Jersey, Maryland, and Delaware. With 49 employees, the company's estimated EBITDA ranges between $858K\u2013$1.7M, although this figure requires confirmation. The company is well-positioned as it operates across a fragmented geographic area.\n\n**Differentiated Value Proposition**\n\nThe company's regulatory moat is its key differentiator, established through accreditations and certifications in over 50 jurisdictions, offering significant competitive protection. This broad licensing not only facilitates smoother operations but also provides potential for an accretive buy-and-build strategy to scale further across the fragmented market.\n\n**Market Opportunity & Growth**\n\nThe fire protection industry is characterized by steady demand driven by rigorous safety regulations and ongoing maintenance needs, positioning it as an essential, non-cyclical service. While the market's total addressable market (TAM) and serviceable available market (SAM) specifics are pending detailed analysis, the sector benefits from secular tailwinds such as increased urban infrastructure development and stringent safety standard enforcement, providing ample growth levers.\n\n**NCP Fit Rationale**\n\nCommonwealth Fire Protection aligns well with New Capital Partners' strategy in the lower middle market, focusing on service-oriented companies ripe for a buy-and-build approach. As an employee-owned company, it dovetails with NCP's emphasis on founder- or employee-owned businesses where a natural leadership transition could catalyze operational improvements and growth scalability.\n\n**Key Risks & Diligence Items**\n\n1. **Est. EBITDA Accuracy**: The current EBITDA figures are based on heuristics; precise financial diligence is crucial to confirm profitability.\n   \n2. **Growth Potential**: With initial indicators suggesting low growth and priority, it is paramount to validate market expansion capabilities and stress-test growth assumptions.\n\n3. **Regulatory Compliance**: Further diligence is needed on the sustainability of its regulatory licenses and the financial implications of maintaining them.\n\n4. **Cultural Integration**: As an employee-owned entity, understanding potential integration challenges and employee retention in a possible acquisition context is critical.\n\n5. **Competitive Landscape**: Although suggested as low differentiation, further analysis is essential to comprehend the competitive pressure and potential for significant market share capture.\n\n---"
+    },
+    {
+      "company": "Kodiak Fire Protection, Inc.",
+      "row": {
+        "Company": "Kodiak Fire Protection, Inc.",
+        "Description": "Kodiak Fire Protection, Inc. is a veteran-owned fire protection services company based in Allen, Texas, serving the Dallas-Fort Worth area since 2008. The company provides a range of services including the design, installation, inspection, and repair of fire alarm and sprinkler systems, as well as fire extinguisher services and backflow prevention for commercial, multifamily housing, and hospitality sectors.",
+        "Website": "http://www.kodiakfiretexas.com",
+        "City": "Allen",
+        "State": "Texas",
+        "LinkedIn": "http://www.linkedin.com/company/kodiak-fire-protection-inc-",
+        "Employees": 16,
+        "Est. EBITDA": "$280K\u2013$560K",
+        "CEO/Owner Name": "Casey L. Edwards",
+        "Title": "President/CEO",
+        "Email": "N/A",
+        "Email Estimate": "casey@kodiakfiretexas.com",
+        "Phone": "(469) 342-6819",
+        "Source": "Web Path (/staff)",
+        "Notes": "",
+        "Confidence": "Medium",
+        "Latest News": "N/A",
+        "Previously Sourced": "No",
+        "Differentiated": "Low",
+        "_niche": "Fire extinguisher recharge and fire extinguisher compliance",
+        "Priority": "Low",
+        "Growth": "Low",
+        "Txn Readiness": "Low",
+        "Conviction": 5,
+        "Conviction Pitch": "Kodiak Fire Protection, Inc. offers comprehensive fire protection services in the Dallas-Fort Worth area, with a strong focus on commercial and multifamily sectors. However, the company's differentiation and growth opportunities appear limited, and the market presence suggests Kodiak is more of a generic operator without a distinct competitive edge.",
+        "Conviction Reasoning": "The lack of differentiation and low growth trajectory, coupled with a low priority in their niche search, suggests Kodiak might struggle to stand out in a competitive market and lacks a clear 'right to win' or defensible moat."
+      },
+      "memo": "**Investment Memo for New Capital Partners on Kodiak Fire Protection, Inc.**\n\n**Why We're Excited**  \nKodiak Fire Protection, Inc. is a well-established player in the fire protection services sector within the Dallas-Fort Worth area, a region that continues to see rapid commercial and residential development. While the company does not currently exhibit a distinct competitive edge, its long-standing presence and comprehensive service offerings position it as a potential platform for a buy-and-build strategy in a fragmented market. Importantly, the owner is a veteran who might be nearing retirement, presenting NCP with a potential natural succession opportunity.\n\n**Company Overview**  \nKodiak Fire Protection, Inc. is headquartered in Allen, Texas, operating within the Dallas-Fort Worth metroplex. Founded in 2008, the company provides a broad spectrum of fire protection services including design, installation, inspection, and repair of fire alarm systems, sprinkler systems, fire extinguishers, and backflow prevention. The company, currently employing 16 staff members, serves the commercial, multifamily housing, and hospitality sectors. The estimated EBITDA falls between $280K and $560K, but this requires confirmation through further diligence.\n\n**Differentiated Value Proposition**  \nKodiak Fire Protection holds a comprehensive suite of services, a factor that could be leveraged as a one-stop service platform. However, the company's differentiation is low with no clear competitive moat. The business could benefit from establishing multi-location operations or developing proprietary processes to enhance its market position.\n\n**Market Opportunity & Growth**  \nThe fire protection services market benefits from several secular tailwinds such as increasing regulatory compliance requirements and ongoing urban development in Texas. The potential for expansion within the Dallas-Fort Worth area and beyond is significant given that the market remains fragmented without a clear dominant player. However, current growth levers for Kodiak remain under-explored, necessitating strategic development to enhance market penetration and service differentiation.\n\n**NCP Fit Rationale**  \nKodiak aligns with NCP\u2019s thesis of investing in lower middle-market, services-oriented, founder-owned businesses. The company could potentially serve as a foundational cornerstone for regional expansion through a buy-and-build approach, capitalizing on the fragmented nature of the market. Additionally, with the owner being a veteran potentially nearing retirement, the acquisition could facilitate a seamless transition in leadership with strategic guidance from NCP.\n\n**Key Risks & Diligence Items**  \n1. **EBITDA Confirmation**: Validate the accuracy of the estimated EBITDA and assess financial health.\n2. **Competitive Landscape**: Thoroughly analyze local competition to understand Kodiak's positioning.\n3. **Ownership Transition**: Explore the readiness and potential challenges associated with the owner's retirement.\n4. **Service Differentiation**: Assess opportunities to create meaningful differentiation or advantages.\n5. **Growth Strategy**: Identify actionable growth levers and expansion whitespace within and outside the current operational regions.\n\nThis memo outlines Kodiak\u2019s potential as an acquisition target, emphasizing the need for rigorous due diligence to assess financials, growth prospects, and strategic fit.",
+      "promoted_from_near_miss": true
     }
   ],
   "chat_history": [
@@ -5056,32 +5089,32 @@
     }
   ],
   "filter_stats": {
-    "total_sourced": 1768,
-    "pre_filtered_size": 1497,
+    "total_sourced": 1771,
+    "pre_filtered_size": 1499,
     "pre_filtered_structural": 73,
     "pre_filtered_blocklist": 11,
     "pre_filtered_niche": 103,
-    "deep_analysis_failed": 54,
+    "deep_analysis_failed": 55,
     "pe_backed": 0,
     "portfolio_conflict": 0,
     "low_differentiation": 24,
     "qualified": 6
   },
   "cost_tracker": {
-    "openai": 14.312,
-    "firecrawl": 5.035,
+    "openai": 14.318,
+    "firecrawl": 5.05,
     "apollo": 0.0,
-    "total": 19.347,
+    "total": 19.368,
     "call_counts": {
-      "openai": 128,
-      "firecrawl": 1007,
+      "openai": 129,
+      "firecrawl": 1010,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "analyzing",
-    "message": "Analyzing 3 candidates in parallel. 6 more in queue.",
-    "timestamp": "2026-06-24T22:21:49.211915+00:00",
+    "type": "searching_apollo",
+    "message": "Searching Apollo for Facilities Services companies in southeastern US (round 2 of 4).",
+    "timestamp": "2026-06-24T22:22:26.180669+00:00",
     "severity": "info"
   },
   "created_at": "2026-06-23T18:50:42.139968+00:00",
@@ -5109,23 +5142,24 @@
     "AKE Safety Equipment": "rejected"
   },
   "reviewed_near_misses": [
-    "Approved Fire Protection & Security",
-    "Universal Fire Protection - A Termac Company",
-    "Fire Protection Industries Inc",
-    "Chattanooga Fire Protection",
-    "ABC Fire & Safety Inc",
-    "Fire Protection Services, LLC",
-    "Fire Protection Team",
-    "Blair Fire Protection",
     "Rich Fire Protection",
     "Boyer Fire Protection",
-    "AIE Fire Protection",
-    "Brigade Fire Protection",
-    "ABCO Fire Protection",
     "USA Fire Protection",
-    "Platinum Fire Protection",
+    "Approved Fire Protection & Security",
+    "Fire Protection Team",
+    "AIE Fire Protection",
+    "IFSC International Fire Safety Consulting",
+    "Fire Safety Consultants, Inc.",
+    "Universal Fire Protection - A Termac Company",
+    "Chattanooga Fire Protection",
+    "Brigade Fire Protection",
     "Nova Fire Protection",
     "Jarrett Fire Protection, Inc.",
-    "Fire Safety Consultants, Inc."
+    "Fire Protection Industries Inc",
+    "ABC Fire & Safety Inc",
+    "Fire Protection Services, LLC",
+    "Blair Fire Protection",
+    "ABCO Fire Protection",
+    "Platinum Fire Protection"
   ]
 }
