@@ -1,6 +1,6 @@
 {
   "bot_status": {
-    "search": "searching_apollo",
+    "search": "exhausted",
     "analysis": "idle",
     "writeup": "idle"
   },
@@ -3803,21 +3803,21 @@
     "qualified": 6
   },
   "cost_tracker": {
-    "openai": 13.411,
-    "firecrawl": 4.5,
+    "openai": 13.481,
+    "firecrawl": 4.525,
     "apollo": 0.0,
-    "total": 17.911,
+    "total": 18.006,
     "call_counts": {
-      "openai": 89,
-      "firecrawl": 900,
+      "openai": 90,
+      "firecrawl": 905,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "searching_apollo",
-    "message": "Searching Apollo for Facilities Services companies in Alabama, Mississippi (round 4 of 4).",
-    "timestamp": "2026-06-24T15:16:14.387568+00:00",
-    "severity": "info"
+    "type": "exhausted",
+    "message": "Search exhausted \u2014 found 10/12 memos. Try broadening niche or geography, or ask for more in a different region.",
+    "timestamp": "2026-06-24T15:16:45.407095+00:00",
+    "severity": "warning"
   },
   "created_at": "2026-06-23T18:50:42.139968+00:00",
   "config": {
@@ -3840,5 +3840,5 @@
     "Chattanooga Fire Protection": "liked",
     "Fire Protection Services, LLC": "liked"
   },
-  "status": "running"
+  "status": "stopped"
 }
