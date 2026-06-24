@@ -1,6 +1,6 @@
 {
   "bot_status": {
-    "search": "searching_apollo",
+    "search": "exhausted",
     "analysis": "idle",
     "writeup": "idle"
   },
@@ -356,6 +356,14 @@
     {
       "role": "assistant",
       "content": "Got it. I'll narrow the search to Alabama and Mississippi only. I'll identify two differentiated companies in these states and prepare investment memos for your review."
+    },
+    {
+      "role": "user",
+      "content": "OK. Please focus the search on the southeastern US."
+    },
+    {
+      "role": "assistant",
+      "content": "Understood. I'll expand the search back to the southeastern US, which includes Alabama and Mississippi. I'll find two differentiated companies in this region and prepare the investment memos for you."
     }
   ],
   "user_feedback": [],
@@ -3803,26 +3811,26 @@
     "qualified": 6
   },
   "cost_tracker": {
-    "openai": 14.041,
-    "firecrawl": 4.7,
+    "openai": 14.111,
+    "firecrawl": 4.725,
     "apollo": 0.0,
-    "total": 18.741,
+    "total": 18.836,
     "call_counts": {
-      "openai": 105,
-      "firecrawl": 940,
+      "openai": 106,
+      "firecrawl": 945,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "searching_apollo",
-    "message": "Searching Apollo for Building Materials companies in Alabama, Mississippi (round 4 of 4).",
-    "timestamp": "2026-06-24T15:43:59.034684+00:00",
+    "type": "starting",
+    "message": "Pipeline starting. Niche: Fire extinguisher recharge and fire extinguisher compliance, geography: southeastern US, target: 12 memos.",
+    "timestamp": "2026-06-24T22:19:20.425345+00:00",
     "severity": "info"
   },
   "created_at": "2026-06-23T18:50:42.139968+00:00",
   "config": {
     "niche": "Fire extinguisher recharge and fire extinguisher compliance",
-    "geography": "Alabama, Mississippi",
+    "geography": "southeastern US",
     "strategy": "A",
     "target_count": 12,
     "exclusions": "",
