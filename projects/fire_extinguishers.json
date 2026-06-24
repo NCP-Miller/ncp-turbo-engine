@@ -1,7 +1,7 @@
 {
   "bot_status": {
     "search": "exhausted",
-    "analysis": "filtering",
+    "analysis": "error",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -11457,7 +11457,6 @@
     "override_size_min": 10,
     "override_size_max": 200
   },
-  "status": "running",
   "reviewed_near_misses": [
     "Chattanooga Fire Protection",
     "Jarrett Fire Protection, Inc.",
@@ -11467,5 +11466,6 @@
     "Jarrett Fire Protection, Inc.": "liked",
     "Chattanooga Fire Protection": "liked",
     "Fire Protection Services, LLC": "liked"
-  }
+  },
+  "status": "paused"
 }
