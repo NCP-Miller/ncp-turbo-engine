@@ -154,6 +154,6 @@
     "geography": "Alabama, Tennessee, Mississippi, Georgia",
     "memo_count": 7,
     "active": true,
-    "status": "running"
+    "status": "paused"
   }
 ]
