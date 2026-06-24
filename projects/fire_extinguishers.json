@@ -1,6 +1,6 @@
 {
   "bot_status": {
-    "search": "searching_apollo",
+    "search": "waiting_for_round",
     "analysis": "idle",
     "writeup": "idle"
   },
@@ -3803,20 +3803,20 @@
     "qualified": 6
   },
   "cost_tracker": {
-    "openai": 13.568,
-    "firecrawl": 4.55,
+    "openai": 13.647,
+    "firecrawl": 4.575,
     "apollo": 0.0,
-    "total": 18.118,
+    "total": 18.222,
     "call_counts": {
-      "openai": 93,
-      "firecrawl": 910,
+      "openai": 95,
+      "firecrawl": 915,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "searching_apollo",
-    "message": "Searching Apollo for Machinery companies in Alabama, Mississippi (round 2 of 4).",
-    "timestamp": "2026-06-24T15:18:11.099503+00:00",
+    "type": "refined",
+    "message": "Round 3 refined: Shifted to industries more directly related to safety and compliance services and broadened keywords to encompass general safety and compliance, aiming to capture companies involved in fire safety and compliance services.",
+    "timestamp": "2026-06-24T15:18:42.136190+00:00",
     "severity": "info"
   },
   "created_at": "2026-06-23T18:50:42.139968+00:00",
