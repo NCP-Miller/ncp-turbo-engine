@@ -9098,10 +9098,10 @@
     "Jarrett Fire Protection, Inc.",
     "Fire Protection Services, LLC"
   ],
+  "status": "running",
   "memo_verdicts": {
-    "Jarrett Fire Protection, Inc.": "liked",
+    "Jarrett Fire Protection, Inc.": "rejected",
     "Chattanooga Fire Protection": "liked",
     "Fire Protection Services, LLC": "liked"
-  },
-  "status": "running"
+  }
 }
