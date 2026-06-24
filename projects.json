@@ -154,6 +154,6 @@
     "geography": "Alabama, Mississippi",
     "memo_count": 10,
     "active": true,
-    "status": "running"
+    "status": "stopped"
   }
 ]
