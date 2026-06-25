@@ -1,6 +1,6 @@
 {
   "bot_status": {
-    "search": "exhausted",
+    "search": "searching_apollo",
     "analysis": "idle",
     "writeup": "idle"
   },
@@ -6550,21 +6550,21 @@
     "qualified": 0
   },
   "cost_tracker": {
-    "openai": 9.0293,
+    "openai": 9.0373,
     "firecrawl": 6.215,
     "apollo": 0.0,
-    "total": 15.2443,
+    "total": 15.2523,
     "call_counts": {
-      "openai": 299,
+      "openai": 300,
       "firecrawl": 1243,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "exhausted",
-    "message": "Search exhausted \u2014 found 0/5 memos. Try broadening niche or geography, or ask for more in a different region.",
-    "timestamp": "2026-06-25T23:14:20.379392+00:00",
-    "severity": "warning"
+    "type": "searching_apollo",
+    "message": "Searching Apollo for Computer Software companies in NCP Priority Geography (Eastern US) (round 1 of 4).",
+    "timestamp": "2026-06-25T23:19:37.060191+00:00",
+    "severity": "info"
   },
   "created_at": "2026-06-25T21:30:53.707393+00:00",
   "config": {
@@ -6592,5 +6592,5 @@
     "Hilldun Corporation",
     "Weiss Ratings"
   ],
-  "status": "stopped"
+  "status": "running"
 }
