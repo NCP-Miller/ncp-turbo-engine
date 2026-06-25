@@ -154,6 +154,7 @@
     "geography": "southeastern US",
     "memo_count": 15,
     "active": true,
-    "backup_status": "not_configured"
+    "backup_status": "not_configured",
+    "status": "paused"
   }
 ]
