@@ -1,7 +1,7 @@
 {
   "bot_status": {
-    "search": "idle",
-    "analysis": "filtering",
+    "search": "searching_apollo",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -9890,35 +9890,70 @@
         "Conviction Reasoning": "The low differentiation and absence of a strong competitive advantage make it less compelling, with the added risk that transaction readiness is also rated low."
       },
       "reason": "Conviction 4/10: The low differentiation and absence of a strong competitive advantage make it less compelling, with the added risk that transaction readiness is also rated low."
+    },
+    {
+      "row": {
+        "Company": "Monogram",
+        "Description": "Monogram specializes in developing personalized private student loan products by leveraging decades of industry data and expertise. They provide data-driven lending solutions to enhance product offerings for banks, credit unions, and affinity organizations, focusing on risk management beyond traditional FICO scores.",
+        "Website": "http://www.monogramllc.com",
+        "City": "Boston",
+        "State": "Massachusetts",
+        "LinkedIn": "http://www.linkedin.com/company/monogramllc",
+        "Employees": 76,
+        "Est. EBITDA": "$2.3M\u2013$3.8M",
+        "CEO/Owner Name": "N/A",
+        "Title": "N/A",
+        "Email": "info@monogramllc.com",
+        "Email Estimate": "",
+        "Phone": "866-296-3637",
+        "Source": "Web (contact only)",
+        "Notes": "",
+        "Confidence": "Medium",
+        "Latest News": "Hot Property: This Waban Colonial has back - Boston Herald | https://news.google.com/rss/articles/CBMiigFBVV95cUxPUkRUTl9yT2l1a0VpSmNXX3NGQ295RVBNWG45dVZueHZNMW1qZ0tBdzRPQ0E0cFBqT2Z2S3pMaWdGcWFwTjlYdUtrZ1dRTVNOeVFPWlV1X3E4dDdXbGlYbDc2VDlWN0ZvRUpXeGswUTNVVnBtZ3dCbDF2X1c5R0c4VnpVYTk1V2Z4aEE?oc=5",
+        "Previously Sourced": "No",
+        "Differentiated": "Low",
+        "_niche": "Companies that provide proactive, leading-indicator credit risk signals on businesses \u2014 flagging elevated risk of non-payment, bad debt, or financial distress either at customer onboarding or through ongoing portfolio monitoring.\n\nEXCLUDE these types of companies: Not order-to-cash, AR automation, collections, invoicing, or cash-application workflow software.  Not tax-resolution or debt-relief firms.",
+        "Priority": "High",
+        "Growth": "Low",
+        "Txn Readiness": "Medium",
+        "Priority Confidence": "High",
+        "Growth Confidence": "Low",
+        "Txn Readiness Confidence": "Low",
+        "Differentiated Confidence": "High",
+        "Conviction": 3,
+        "Conviction Pitch": "Monogram's approach to leveraging decades of industry data for personalized private student loans does not present a strong differentiating factor in a market already saturated with similar data-driven lending solutions. It lacks an essential service component or defensible moat such as accreditation or proprietary technology.",
+        "Conviction Reasoning": "The company operates in a declining growth area with low differentiation and does not align with the essential/non-cyclical service model or the multi-location operational strategy that has been successful in past picks."
+      },
+      "reason": "Conviction 3/10: The company operates in a declining growth area with low differentiation and does not align with the essential/non-cyclical service model or the multi-location operational strategy that has been successful in past picks."
     }
   ],
   "filter_stats": {
-    "total_sourced": 3290,
-    "pre_filtered_size": 2638,
-    "pre_filtered_structural": 301,
+    "total_sourced": 3293,
+    "pre_filtered_size": 2639,
+    "pre_filtered_structural": 302,
     "pre_filtered_blocklist": 18,
     "pre_filtered_niche": 8,
     "deep_analysis_failed": 305,
     "pe_backed": 2,
     "portfolio_conflict": 3,
-    "low_differentiation": 15,
+    "low_differentiation": 16,
     "qualified": 0
   },
   "cost_tracker": {
-    "openai": 10.5565,
-    "firecrawl": 7.155,
+    "openai": 10.9939,
+    "firecrawl": 7.28,
     "apollo": 0.0,
-    "total": 17.7115,
+    "total": 18.2739,
     "call_counts": {
-      "openai": 344,
-      "firecrawl": 1431,
+      "openai": 345,
+      "firecrawl": 1456,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "analyzing",
-    "message": "Analyzing 3 candidates in parallel. 17 more in queue.",
-    "timestamp": "2026-06-25T23:25:53.509891+00:00",
+    "type": "searching_apollo",
+    "message": "Searching Apollo for Insurance companies in NCP Priority Geography (Eastern US) (round 3 of 4).",
+    "timestamp": "2026-06-25T23:27:52.982327+00:00",
     "severity": "info"
   },
   "created_at": "2026-06-25T21:30:53.707393+00:00",
