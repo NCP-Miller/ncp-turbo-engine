@@ -29529,17 +29529,18 @@
     "additional_keywords": "",
     "_budget_gate_cleared": 0
   },
+  "status": "running",
   "reviewed_near_misses": [
     "CEIS Review Inc.",
+    "Adapt Ready, Inc.",
     "Anderson Agency LLC",
     "GCS Risk Management",
-    "CORRTEC",
+    "Weiss Ratings",
     "Rosenberg & Fecci Consulting",
     "Advancly",
     "2nd Order Solutions",
     "Expert Choice US LLC",
     "Hilldun Corporation",
-    "Weiss Ratings"
-  ],
-  "status": "running"
+    "CORRTEC"
+  ]
 }
