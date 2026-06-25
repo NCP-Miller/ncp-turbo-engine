@@ -1,7 +1,7 @@
 {
   "bot_status": {
-    "search": "idle",
-    "analysis": "filtering",
+    "search": "searching_apollo",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -9763,35 +9763,105 @@
         "Conviction Reasoning": "Although Invictus Analytics benefits from a growing demand in regulatory compliance, its low differentiation and medium growth potential limit its appeal. The absence of a unique offering that distinguishes it from competitors weakens the conviction to an average level."
       },
       "reason": "Conviction 5/10: Although Invictus Analytics benefits from a growing demand in regulatory compliance, its low differentiation and medium growth potential limit its appeal. The absence of a unique offering that distinguishes it from competitors weakens the conviction to an average level."
+    },
+    {
+      "row": {
+        "Company": "NACM Southwest",
+        "Description": "NACM Southwest is a resource for credit and financial management professionals, providing information, products, and services to business-to-business credit professionals since 1908. They offer credit reports, education, certification courses, and industry credit groups to support credit risk management and decision-making. NACM Southwest operates in various industries and engages in advocacy efforts to influence legislation affecting the credit industry.",
+        "Website": "http://www.nacmsw.com",
+        "City": "Lewisville",
+        "State": "Texas",
+        "LinkedIn": "http://www.linkedin.com/company/nacm-southwest",
+        "Employees": 39,
+        "Est. EBITDA": "$1.2M\u2013$1.9M",
+        "CEO/Owner Name": "N/A",
+        "Title": "N/A",
+        "Email": "info@nacmsw.com",
+        "Email Estimate": "",
+        "Phone": "972-518-0019",
+        "Source": "Web (contact only)",
+        "Notes": "",
+        "Confidence": "Medium",
+        "Latest News": "N/A",
+        "Previously Sourced": "No",
+        "Differentiated": "Low",
+        "_niche": "Companies that provide proactive, leading-indicator credit risk signals on businesses \u2014 flagging elevated risk of non-payment, bad debt, or financial distress either at customer onboarding or through ongoing portfolio monitoring.\n\nEXCLUDE these types of companies: Not order-to-cash, AR automation, collections, invoicing, or cash-application workflow software.  Not tax-resolution or debt-relief firms.",
+        "Priority": "Low",
+        "Growth": "Low",
+        "Txn Readiness": "Low",
+        "Priority Confidence": "Medium",
+        "Growth Confidence": "Low",
+        "Txn Readiness Confidence": "Low",
+        "Differentiated Confidence": "Medium",
+        "Conviction": 3,
+        "Conviction Pitch": "NACM Southwest, while having a long-standing presence in the credit management industry, lacks differentiation and does not operate in a rapidly growing market with secular tailwinds. It provides generic services in credit management that are unlikely to afford a 'right to win' or present a defensible moat. Therefore, it doesn't align with our investment mandate of targeting unique, high-growth opportunities with clear expansion potential.",
+        "Conviction Reasoning": "The company's offerings are not unique or in a high-growth sector, and it lacks recurring revenue models or regional dominance in a fragmented market."
+      },
+      "reason": "Conviction 3/10: The company's offerings are not unique or in a high-growth sector, and it lacks recurring revenue models or regional dominance in a fragmented market."
+    },
+    {
+      "row": {
+        "Company": "ComzAfrica",
+        "Description": "ComzAfrica is a financial technology company that specializes in providing credit infrastructure solutions, payment services, and data-driven financial services across Africa. Operating in 11 countries, the company offers AI-powered credit scoring, automated disbursements, and consulting services to enhance credit accessibility and operational efficiency for businesses and individuals.",
+        "Website": "http://www.comzafrica.com",
+        "City": "Pike Road",
+        "State": "Alabama",
+        "LinkedIn": "http://www.linkedin.com/company/comzafrica",
+        "Employees": 31,
+        "Est. EBITDA": "$930K\u2013$1.6M",
+        "CEO/Owner Name": "N/A",
+        "Title": "N/A",
+        "Email": "info@comzafrica.com",
+        "Email Estimate": "",
+        "Phone": "N/A",
+        "Source": "Web (contact only)",
+        "Notes": "",
+        "Confidence": "Medium",
+        "Latest News": "N/A",
+        "Previously Sourced": "No",
+        "Differentiated": "Low",
+        "_niche": "Companies that provide proactive, leading-indicator credit risk signals on businesses \u2014 flagging elevated risk of non-payment, bad debt, or financial distress either at customer onboarding or through ongoing portfolio monitoring.\n\nEXCLUDE these types of companies: Not order-to-cash, AR automation, collections, invoicing, or cash-application workflow software.  Not tax-resolution or debt-relief firms.",
+        "Priority": "Low",
+        "Growth": "Medium",
+        "Txn Readiness": "Low",
+        "Priority Confidence": "High",
+        "Growth Confidence": "Medium",
+        "Txn Readiness Confidence": "Low",
+        "Differentiated Confidence": "Medium",
+        "Conviction": 4,
+        "Conviction Pitch": "ComzAfrica operates in the growing fintech market across Africa, providing credit infrastructure solutions that enhance credit accessibility and operational efficiency. However, its low differentiation and medium growth, combined with limited transactional readiness, do not offer a compelling advantage over competitors in an already fragmented market.",
+        "Conviction Reasoning": "ComzAfrica lacks a distinct competitive edge or defensible moat that aligns with our investment mandate, such as clear differentiation, strong recurring revenue, or significant expansion potential."
+      },
+      "reason": "Conviction 4/10: ComzAfrica lacks a distinct competitive edge or defensible moat that aligns with our investment mandate, such as clear differentiation, strong recurring revenue, or significant expansion potential."
     }
   ],
   "filter_stats": {
-    "total_sourced": 3467,
-    "pre_filtered_size": 2678,
-    "pre_filtered_structural": 372,
+    "total_sourced": 3473,
+    "pre_filtered_size": 2679,
+    "pre_filtered_structural": 373,
     "pre_filtered_blocklist": 21,
     "pre_filtered_niche": 8,
-    "deep_analysis_failed": 362,
+    "deep_analysis_failed": 364,
     "pe_backed": 2,
     "portfolio_conflict": 3,
-    "low_differentiation": 21,
+    "low_differentiation": 23,
     "qualified": 0
   },
   "cost_tracker": {
-    "openai": 13.5229,
-    "firecrawl": 8.76,
+    "openai": 14.4177,
+    "firecrawl": 9.04,
     "apollo": 0.0,
-    "total": 22.2829,
+    "total": 23.4577,
     "call_counts": {
-      "openai": 407,
-      "firecrawl": 1752,
+      "openai": 412,
+      "firecrawl": 1808,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "analyzing",
-    "message": "Analyzing 3 candidates in parallel. 17 more in queue.",
-    "timestamp": "2026-06-25T23:43:29.773957+00:00",
+    "type": "searching_apollo",
+    "message": "Searching Apollo for Financial Services companies in NCP Priority Geography (Eastern US) (round 1 of 4).",
+    "timestamp": "2026-06-25T23:44:47.172982+00:00",
     "severity": "info"
   },
   "created_at": "2026-06-25T21:30:53.707393+00:00",
