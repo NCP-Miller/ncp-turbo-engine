@@ -1,7 +1,7 @@
 {
   "bot_status": {
-    "search": "idle",
-    "analysis": "filtering",
+    "search": "searching_apollo",
+    "analysis": "error",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -10457,9 +10457,9 @@
     }
   },
   "last_event": {
-    "type": "analyzing",
-    "message": "Analyzing 3 candidates in parallel. 17 more in queue.",
-    "timestamp": "2026-06-25T23:51:36.599456+00:00",
+    "type": "searching_apollo",
+    "message": "Searching Apollo for Security and Investigations companies in NCP Priority Geography (Eastern US) (round 3 of 4).",
+    "timestamp": "2026-06-25T23:52:53.535509+00:00",
     "severity": "info"
   },
   "created_at": "2026-06-25T21:30:53.707393+00:00",
