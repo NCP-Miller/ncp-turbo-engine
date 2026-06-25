@@ -1,0 +1,65 @@
+{
+  "bot_status": {
+    "search": "idle",
+    "analysis": "idle",
+    "writeup": "idle"
+  },
+  "candidate_queue": [],
+  "qualified_queue": [],
+  "completed_memos": [],
+  "chat_history": [
+    {
+      "role": "user",
+      "content": "Find me 5 differentiated Companies that provide proactive, leading-indicator credit risk signals on businesses \u2014 flagging elevated risk of non-payment, bad debt, or financial distress either at customer onboarding or through ongoing portfolio monitoring. The core value is a proprietary, privileged, or hard-to-assemble data source that surfaces distress before it becomes public or appears in traditional credit bureau data. Relevant signals include: payroll/tax-deposit delinquency, IRS or state tax compliance data, UCC filing velocity, MCA (merchant cash advance) stacking, days-to-pay / trade-payment-behavior drift, lien and judgment activity, WARN/layoff notices, executive departures, and adverse media. Buyers are lenders, factorers, MCA funders, insurers, or any B2B company carrying accounts-receivable risk. Ideal target is founder-owned with no PE backing, $2\u20134M EBITDA, defensible differentiation rooted in unique data access, in financial-services/IT, healthcare-services/IT, or business-services/IT. companies in NCP Priority Geography (Eastern US). Exclude: Not order-to-cash, AR automation, collections, invoicing, or cash-application workflow software. Not consumer credit, credit repair, or personal-finance products. Not tax-resolution or debt-relief firms. Not commodity data resellers or aggregators that simply repackage public records or licensed bureau data with no proprietary access point. Not pure business-verification/KYB tools where the data is public and free at the source. Not large, well-funded, or PE/VC-backed incumbents. Not trade-credit insurers themselves. Differentiation must come from unique data, not workflow convenience."
+    },
+    {
+      "role": "assistant",
+      "content": "Got it. I know what NCP looks for \u2014 founder-owned, differentiated, right to win, growing market, no PE on the cap table. I'll search multiple channels and only bring you companies I'm genuinely excited about (conviction 6+/10). You'll get 5 with investment memos. Give me feedback on each one and I'll learn your preferences."
+    }
+  ],
+  "user_feedback": [],
+  "seen_domains": [],
+  "seen_names": [],
+  "near_misses": [],
+  "reviewed_near_misses": [],
+  "filter_stats": {
+    "total_sourced": 0,
+    "pre_filtered_size": 0,
+    "pre_filtered_structural": 0,
+    "pre_filtered_blocklist": 0,
+    "pre_filtered_niche": 0,
+    "deep_analysis_failed": 0,
+    "pe_backed": 0,
+    "portfolio_conflict": 0,
+    "low_differentiation": 0,
+    "qualified": 0
+  },
+  "cost_tracker": {
+    "openai": 0.0,
+    "firecrawl": 0.0,
+    "apollo": 0.0,
+    "total": 0.0,
+    "call_counts": {
+      "openai": 0,
+      "firecrawl": 0,
+      "apollo": 0
+    }
+  },
+  "last_event": {
+    "type": "idle",
+    "message": "Pipeline ready. Configure and click Start.",
+    "timestamp": null,
+    "severity": "info"
+  },
+  "created_at": "2026-06-25T20:43:49.975637+00:00",
+  "config": {
+    "niche": "Companies that provide proactive, leading-indicator credit risk signals on businesses \u2014 flagging elevated risk of non-payment, bad debt, or financial distress either at customer onboarding or through ongoing portfolio monitoring. The core value is a proprietary, privileged, or hard-to-assemble data source that surfaces distress before it becomes public or appears in traditional credit bureau data. Relevant signals include: payroll/tax-deposit delinquency, IRS or state tax compliance data, UCC filing velocity, MCA (merchant cash advance) stacking, days-to-pay / trade-payment-behavior drift, lien and judgment activity, WARN/layoff notices, executive departures, and adverse media. Buyers are lenders, factorers, MCA funders, insurers, or any B2B company carrying accounts-receivable risk. Ideal target is founder-owned with no PE backing, $2\u20134M EBITDA, defensible differentiation rooted in unique data access, in financial-services/IT, healthcare-services/IT, or business-services/IT.",
+    "geography": "NCP Priority Geography (Eastern US)",
+    "strategy": "A",
+    "target_count": 5,
+    "exclusions": "Not order-to-cash, AR automation, collections, invoicing, or cash-application workflow software. Not consumer credit, credit repair, or personal-finance products. Not tax-resolution or debt-relief firms. Not commodity data resellers or aggregators that simply repackage public records or licensed bureau data with no proprietary access point. Not pure business-verification/KYB tools where the data is public and free at the source. Not large, well-funded, or PE/VC-backed incumbents. Not trade-credit insurers themselves. Differentiation must come from unique data, not workflow convenience.",
+    "override_size_min": 15,
+    "override_size_max": 150
+  },
+  "status": "running"
+}
