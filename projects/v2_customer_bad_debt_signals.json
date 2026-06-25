@@ -1,7 +1,7 @@
 {
   "bot_status": {
-    "search": "idle",
-    "analysis": "filtering",
+    "search": "searching_apollo",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -4192,36 +4192,71 @@
         "Conviction Reasoning": "The company's services lack unique differentiation and operate in a highly competitive global market, which are not aligned with our investment mandate priorities."
       },
       "reason": "Conviction 4/10: The company's services lack unique differentiation and operate in a highly competitive global market, which are not aligned with our investment mandate priorities."
+    },
+    {
+      "row": {
+        "Company": "Rosenberg & Fecci Consulting",
+        "Description": "Rosenberg & Fecci Consulting is a financial consulting firm founded in 1996, specializing in asset-based lending field examinations and other financial services. They provide due diligence and financial analysis services to a diverse range of clients, including global banks, regional banks, and private equity groups, primarily operating along the East Coast of the United States. The firm is known for its expertise in areas such as credit risk management, forensic examinations, and collateral valuation.",
+        "Website": "http://www.rosenbergandfecci.com",
+        "City": "Red Bank",
+        "State": "New Jersey",
+        "LinkedIn": "http://www.linkedin.com/company/rosenbergandfecci",
+        "Employees": 23,
+        "Est. EBITDA": "$690K\u2013$1.1M",
+        "CEO/Owner Name": "Robert Rosenberg",
+        "Title": "N/A",
+        "Email": "robertr@rosenbergandfecci.com",
+        "Email Estimate": "",
+        "Phone": "732-933-4815",
+        "Source": "Web Path (/contact)",
+        "Notes": "",
+        "Confidence": "Medium",
+        "Latest News": "N/A",
+        "Previously Sourced": "No",
+        "Differentiated": "Low",
+        "_niche": "Companies that provide proactive, leading-indicator credit risk signals on businesses \u2014 flagging elevated risk of non-payment, bad debt, or financial distress either at customer onboarding or through ongoing portfolio monitoring.\n\nEXCLUDE these types of companies: Not order-to-cash, AR automation, collections, invoicing, or cash-application workflow software.  Not tax-resolution or debt-relief firms.",
+        "Priority": "Low",
+        "Growth": "Low",
+        "Txn Readiness": "Medium",
+        "Priority Confidence": "High",
+        "Growth Confidence": "Low",
+        "Txn Readiness Confidence": "Low",
+        "Differentiated Confidence": "Medium",
+        "Conviction": 4,
+        "Conviction Pitch": "Rosenberg & Fecci Consulting offers specialized financial consulting services such as asset-based lending field examinations and credit risk management. They have a solid reputation along the East Coast with a diverse client base, including global and regional banks. However, the firm lacks a significant differentiation or defensible moat in a competitive market.",
+        "Conviction Reasoning": "The company's low differentiation and growth potential, along with a competitive landscape without a clear 'right to win' or unique advantage, make it less appealing according to our criteria."
+      },
+      "reason": "Conviction 4/10: The company's low differentiation and growth potential, along with a competitive landscape without a clear 'right to win' or unique advantage, make it less appealing according to our criteria."
     }
   ],
   "reviewed_near_misses": [],
   "filter_stats": {
-    "total_sourced": 915,
+    "total_sourced": 918,
     "pre_filtered_size": 789,
-    "pre_filtered_structural": 61,
+    "pre_filtered_structural": 62,
     "pre_filtered_blocklist": 1,
     "pre_filtered_niche": 7,
-    "deep_analysis_failed": 47,
+    "deep_analysis_failed": 48,
     "pe_backed": 1,
     "portfolio_conflict": 2,
-    "low_differentiation": 7,
+    "low_differentiation": 8,
     "qualified": 0
   },
   "cost_tracker": {
-    "openai": 4.393,
-    "firecrawl": 1.925,
+    "openai": 4.8444,
+    "firecrawl": 2.065,
     "apollo": 0.0,
-    "total": 6.318,
+    "total": 6.9094,
     "call_counts": {
-      "openai": 60,
-      "firecrawl": 385,
+      "openai": 63,
+      "firecrawl": 413,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "analyzing",
-    "message": "Analyzing 3 candidates in parallel. 17 more in queue.",
-    "timestamp": "2026-06-25T21:55:06.580198+00:00",
+    "type": "searching_apollo",
+    "message": "Searching Apollo for Financial Services companies in NCP Priority Geography (Eastern US) (round 3 of 4).",
+    "timestamp": "2026-06-25T21:56:26.969747+00:00",
     "severity": "info"
   },
   "created_at": "2026-06-25T21:30:53.707393+00:00",
