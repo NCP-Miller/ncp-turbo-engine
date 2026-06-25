@@ -1,6 +1,6 @@
 {
   "bot_status": {
-    "search": "searching_apollo",
+    "search": "discovering_web",
     "analysis": "idle",
     "writeup": "idle"
   },
@@ -5943,20 +5943,20 @@
     "qualified": 6
   },
   "cost_tracker": {
-    "openai": 15.3214,
+    "openai": 15.3294,
     "firecrawl": 6.46,
     "apollo": 0.0,
-    "total": 21.7814,
+    "total": 21.7894,
     "call_counts": {
-      "openai": 217,
+      "openai": 218,
       "firecrawl": 1292,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "starting",
-    "message": "Pipeline starting. Niche: Fire extinguisher recharge and fire extinguisher compliance, geography: southeastern US, target: 20 memos.",
-    "timestamp": "2026-06-25T19:49:06.665446+00:00",
+    "type": "discovering_web",
+    "message": "Web discovery pass \u2014 round 1 of 4.",
+    "timestamp": "2026-06-25T19:49:32.647237+00:00",
     "severity": "info"
   },
   "created_at": "2026-06-23T18:50:42.139968+00:00",
