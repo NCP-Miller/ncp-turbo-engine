@@ -23,6 +23,14 @@
     {
       "role": "assistant",
       "content": "[QA Bot] 88% of candidates failing AI relevance. Refining search parameters."
+    },
+    {
+      "role": "user",
+      "content": "Can you adjust the search prompt to only include: Companies that provide proactive, leading-indicator credit risk signals on businesses? Keep the same other parameters including exclusions"
+    },
+    {
+      "role": "assistant",
+      "content": "I've adjusted the search prompt to focus solely on companies providing proactive, leading-indicator credit risk signals on businesses, while maintaining your specified exclusions. Let's see if this yields better results."
     }
   ],
   "user_feedback": [],
@@ -4548,13 +4556,17 @@
     "override_size_min": null,
     "override_size_max": 100,
     "pivot_signal": false,
-    "broaden_signal": false
+    "broaden_signal": false,
+    "additional_keywords": "proactive, leading-indicator credit risk signals"
   },
   "status": "stopped",
   "reviewed_near_misses": [
-    "GCS Risk Management",
+    "CEIS Review Inc.",
     "Anderson Agency LLC",
+    "GCS Risk Management",
+    "CORRTEC",
     "Rosenberg & Fecci Consulting",
+    "Advancly",
     "2nd Order Solutions",
     "Expert Choice US LLC",
     "Hilldun Corporation",
