@@ -4782,9 +4782,13 @@
   },
   "status": "stopped",
   "reviewed_near_misses": [
+    "Brown & Joseph AR Management | an ARMStrong IS Company",
     "bolt",
     "bcs software",
-    "Injala",
-    "Brown & Joseph AR Management | an ARMStrong IS Company"
-  ]
+    "Builders",
+    "Injala"
+  ],
+  "memo_verdicts": {
+    "myCOI": "rejected"
+  }
 }
