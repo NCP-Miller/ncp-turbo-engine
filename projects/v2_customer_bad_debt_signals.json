@@ -1,7 +1,7 @@
 {
   "bot_status": {
     "search": "exhausted",
-    "analysis": "filtering",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [],
@@ -10279,33 +10279,33 @@
     }
   ],
   "filter_stats": {
-    "total_sourced": 4498,
+    "total_sourced": 4501,
     "pre_filtered_size": 3082,
     "pre_filtered_structural": 769,
     "pre_filtered_blocklist": 30,
     "pre_filtered_niche": 8,
-    "deep_analysis_failed": 565,
+    "deep_analysis_failed": 568,
     "pe_backed": 4,
     "portfolio_conflict": 3,
     "low_differentiation": 37,
     "qualified": 0
   },
   "cost_tracker": {
-    "openai": 22.6111,
-    "firecrawl": 14.105,
+    "openai": 22.6291,
+    "firecrawl": 14.15,
     "apollo": 0.0,
-    "total": 36.7161,
+    "total": 36.7791,
     "call_counts": {
-      "openai": 640,
-      "firecrawl": 2821,
+      "openai": 643,
+      "firecrawl": 2830,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "analyzing",
-    "message": "Analyzing 3 candidates in parallel. 0 more in queue.",
-    "timestamp": "2026-06-26T14:33:01.698542+00:00",
-    "severity": "info"
+    "type": "exhausted",
+    "message": "Search exhausted \u2014 found 0/5 memos. Try broadening niche or geography, or ask for more in a different region.",
+    "timestamp": "2026-06-26T14:33:18.844739+00:00",
+    "severity": "warning"
   },
   "created_at": "2026-06-25T21:30:53.707393+00:00",
   "config": {
@@ -10321,15 +10321,15 @@
     "additional_keywords": "",
     "_budget_gate_cleared": 30
   },
-  "status": "running",
+  "status": "stopped",
   "reviewed_near_misses": [
     "Adapt Ready, Inc.",
     "Weiss Ratings",
-    "Axion Risk Management Strategies",
-    "Expert Choice US LLC",
+    "2nd Order Solutions",
     "RiskSpan",
     "Van Epps LLC",
     "GCS Risk Management",
+    "Digital Matrix Systems",
     "CEIS Review Inc.",
     "CORRTEC",
     "Hilldun Corporation",
@@ -10337,8 +10337,9 @@
     "Monogram",
     "Advancly",
     "Anderson Agency LLC",
-    "2nd Order Solutions",
+    "Axion Risk Management Strategies",
     "Rosenberg & Fecci Consulting",
+    "Expert Choice US LLC",
     "Baselayer"
   ]
 }
