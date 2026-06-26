@@ -1,0 +1,53 @@
+{
+  "config": {
+    "niche": null,
+    "geography": null,
+    "strategy": null,
+    "target_count": null
+  },
+  "status": "idle",
+  "bot_status": {
+    "search": "idle",
+    "analysis": "idle",
+    "writeup": "idle"
+  },
+  "candidate_queue": [],
+  "qualified_queue": [],
+  "completed_memos": [],
+  "chat_history": [],
+  "user_feedback": [],
+  "seen_domains": [],
+  "seen_names": [],
+  "near_misses": [],
+  "reviewed_near_misses": [],
+  "filter_stats": {
+    "total_sourced": 0,
+    "pre_filtered_size": 0,
+    "pre_filtered_structural": 0,
+    "pre_filtered_blocklist": 0,
+    "pre_filtered_niche": 0,
+    "deep_analysis_failed": 0,
+    "pe_backed": 0,
+    "portfolio_conflict": 0,
+    "low_differentiation": 0,
+    "qualified": 0
+  },
+  "cost_tracker": {
+    "openai": 0.0,
+    "firecrawl": 0.0,
+    "apollo": 0.0,
+    "total": 0.0,
+    "call_counts": {
+      "openai": 0,
+      "firecrawl": 0,
+      "apollo": 0
+    }
+  },
+  "last_event": {
+    "type": "idle",
+    "message": "Pipeline ready. Configure and click Start.",
+    "timestamp": null,
+    "severity": "info"
+  },
+  "created_at": "2026-06-26T20:02:43.110978+00:00"
+}
