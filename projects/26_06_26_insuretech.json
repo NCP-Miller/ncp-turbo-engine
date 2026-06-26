@@ -1,7 +1,7 @@
 {
   "bot_status": {
     "search": "idle",
-    "analysis": "filtering",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -40064,29 +40064,64 @@
         "Conviction Reasoning": "Despite operating in an attractive sector with a focus on enhancing operational efficiency, Injala lacks a distinctive edge or compelling growth signal, which prevents it from standing out as a truly exciting investment opportunity."
       },
       "reason": "Conviction 4/10: Despite operating in an attractive sector with a focus on enhancing operational efficiency, Injala lacks a distinctive edge or compelling growth signal, which prevents it from standing out as a truly exciting investment opportunity."
+    },
+    {
+      "row": {
+        "Company": "bcs software",
+        "Description": "BCS Software is a leading provider of automated certificate of insurance (COI) tracking solutions, designed to streamline insurance tracking and vendor compliance processes. The platform serves industries such as construction, real estate, and manufacturing, offering features like insurance renewal automation, compliance analytics, and AI-powered document extraction to help organizations manage risk and ensure regulatory compliance efficiently.",
+        "Website": "http://www.getbcs.com",
+        "City": "Parsippany-Troy Hills",
+        "State": "New Jersey",
+        "LinkedIn": "http://www.linkedin.com/company/getbcs",
+        "Employees": 410,
+        "Est. EBITDA": "$12.3M\u2013$20.5M",
+        "CEO/Owner Name": "David Gubbay",
+        "Title": "CEO",
+        "Email": "dgubbay@getbcs.com",
+        "Email Estimate": "",
+        "Phone": "N/A",
+        "Source": "Web Path (/about) \u2192 Verified",
+        "Notes": "",
+        "Confidence": "High",
+        "Latest News": "N/A",
+        "Previously Sourced": "No",
+        "Differentiated": "Medium",
+        "_niche": "insurance technology companies providing certificate of insurance tracking, premium audits, specialty inspection services\n\nEXCLUDE these types of companies: MGA, managing general agents, MGU, managing general underwriters",
+        "Priority": "Low",
+        "Growth": "Medium",
+        "Txn Readiness": "Low",
+        "Priority Confidence": "High",
+        "Growth Confidence": "Medium",
+        "Txn Readiness Confidence": "Low",
+        "Differentiated Confidence": "Medium",
+        "Conviction": 5,
+        "Conviction Pitch": "BCS Software offers a niche solution in the insurance technology space with its automated COI tracking, catering to industries with significant regulatory compliance needs like construction and real estate. While it has a medium level of differentiation through its AI-powered document extraction, it lacks standout traits such as a clear defensible moat or significant market expansion opportunities. The company shows some promise if further tailored towards a more proprietary offering or gains a stronger competitive advantage.",
+        "Conviction Reasoning": "BCS Software does not strongly align with our investment criteria, particularly lacking in exclusive competitive advantages and immediate growth potential, and thus scores a lower conviction."
+      },
+      "reason": "Conviction 5/10: BCS Software does not strongly align with our investment criteria, particularly lacking in exclusive competitive advantages and immediate growth potential, and thus scores a lower conviction."
     }
   ],
   "reviewed_near_misses": [],
   "filter_stats": {
-    "total_sourced": 1299,
+    "total_sourced": 1302,
     "pre_filtered_size": 0,
-    "pre_filtered_structural": 1144,
+    "pre_filtered_structural": 1146,
     "pre_filtered_blocklist": 19,
     "pre_filtered_niche": 52,
     "deep_analysis_failed": 81,
     "pe_backed": 0,
     "portfolio_conflict": 0,
-    "low_differentiation": 2,
+    "low_differentiation": 3,
     "qualified": 1
   },
   "cost_tracker": {
-    "openai": 1.8422,
-    "firecrawl": 1.59,
+    "openai": 2.2796,
+    "firecrawl": 1.715,
     "apollo": 0.0,
-    "total": 3.4322,
+    "total": 3.9946,
     "call_counts": {
-      "openai": 88,
-      "firecrawl": 318,
+      "openai": 89,
+      "firecrawl": 343,
       "apollo": 0
     }
   },
