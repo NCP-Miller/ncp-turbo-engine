@@ -1,7 +1,7 @@
 {
   "bot_status": {
-    "search": "idle",
-    "analysis": "filtering",
+    "search": "searching_apollo",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -5649,36 +5649,71 @@
         "Conviction Reasoning": "The company's lack of differentiation and low growth prospects, combined with limited standout features, result in a lower score and less compelling investment opportunity."
       },
       "reason": "Conviction 4/10: The company's lack of differentiation and low growth prospects, combined with limited standout features, result in a lower score and less compelling investment opportunity."
+    },
+    {
+      "row": {
+        "Company": "McCracken",
+        "Description": "McCracken is a software company specializing in commercial real estate and loan servicing solutions. Their platform, STRATEGY, automates the management of commercial and multifamily loans for financial organizations such as banks, insurance companies, and private lenders.",
+        "Website": "http://www.mccrackenfs.com",
+        "City": "Billerica",
+        "State": "Massachusetts",
+        "LinkedIn": "http://www.linkedin.com/company/mccracken",
+        "Employees": 29,
+        "Est. EBITDA": "$870K\u2013$1.4M",
+        "CEO/Owner Name": "N/A",
+        "Title": "N/A",
+        "Email": "N/A",
+        "Email Estimate": "",
+        "Phone": "978.439.9000",
+        "Source": "Web (contact only)",
+        "Notes": "",
+        "Confidence": "Medium",
+        "Latest News": "Ruth M. (McCracken) McIlwrath - Obituary - Easton, MA / Needham, MA - Eaton Funeral Home - CurrentObituary.com | https://news.google.com/rss/articles/CBMiVEFVX3lxTE9RQk81MHk4WXVoc0M0ZGs3N0NtY2FhUUhrOVJ5dVhJMVR3VDV5eEtRN2NmZzFGMlNQakxOZjFNcm93dWlyczJpdWZRX0dMQVg4ZWk3Yw?oc=5",
+        "Previously Sourced": "No",
+        "Differentiated": "Low",
+        "_niche": "me 5 differentiated Companies that provide proactive, leading-indicator Accounts Receivable and credit risk signals on businesses \u2014 flagging elevated risk of non-payment, bad debt, or financial distress either at customer onboarding or through ongoing portfolio monitoring.\n\nEXCLUDE these types of companies: factoring, order-to-cash, collections, or invoicing. Not tax-resolution, consulting or debt-relief firms.",
+        "Priority": "Low",
+        "Growth": "Low",
+        "Txn Readiness": "Low",
+        "Priority Confidence": "High",
+        "Growth Confidence": "Low",
+        "Txn Readiness Confidence": "Low",
+        "Differentiated Confidence": "High",
+        "Conviction": 2,
+        "Conviction Pitch": "McCracken is a software company in the commercial real estate and loan servicing sector. While they provide a platform that automates loan management for financial organizations, their differentiation is low with limited growth opportunities. The company does not demonstrate a clear right to win or have a defensible moat pertinent to our investment mandate.",
+        "Conviction Reasoning": "The company lacks traits associated with our positive evaluations, such as significant market growth, defensible moat, recurring revenue structure, or an essential non-cyclical nature. It also doesn't present compelling secular tailwinds or an unfair advantage, leading to the low conviction score."
+      },
+      "reason": "Conviction 2/10: The company lacks traits associated with our positive evaluations, such as significant market growth, defensible moat, recurring revenue structure, or an essential non-cyclical nature. It also doesn't present compelling secular tailwinds or an unfair advantage, leading to the low conviction score."
     }
   ],
   "reviewed_near_misses": [],
   "filter_stats": {
-    "total_sourced": 1515,
+    "total_sourced": 1518,
     "pre_filtered_size": 0,
-    "pre_filtered_structural": 1256,
+    "pre_filtered_structural": 1258,
     "pre_filtered_blocklist": 20,
     "pre_filtered_niche": 13,
     "deep_analysis_failed": 222,
     "pe_backed": 1,
     "portfolio_conflict": 0,
-    "low_differentiation": 3,
+    "low_differentiation": 4,
     "qualified": 0
   },
   "cost_tracker": {
-    "openai": 3.0096,
-    "firecrawl": 3.83,
+    "openai": 3.447,
+    "firecrawl": 3.955,
     "apollo": 0.0,
-    "total": 6.8396,
+    "total": 7.402,
     "call_counts": {
-      "openai": 231,
-      "firecrawl": 766,
+      "openai": 232,
+      "firecrawl": 791,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "analyzing",
-    "message": "Analyzing 3 candidates in parallel. 19 more in queue.",
-    "timestamp": "2026-06-26T20:29:13.485546+00:00",
+    "type": "searching_apollo",
+    "message": "Searching Apollo for Information Services companies in NCP Priority Geography (Eastern US) (round 4 of 4).",
+    "timestamp": "2026-06-26T20:32:03.591856+00:00",
     "severity": "info"
   },
   "created_at": "2026-06-26T20:03:28.825702+00:00",
