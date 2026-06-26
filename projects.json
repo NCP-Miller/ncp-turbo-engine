@@ -182,12 +182,22 @@
     "name": "v2 Customer Bad Debt Signals",
     "slug": "v2_customer_bad_debt_signals",
     "db_file": "project_v2_customer_bad_debt_signals.db",
-    "created_at": "2026-06-26T21:06:05.783605+00:00",
+    "created_at": "2026-06-26T21:06:33.271668+00:00",
     "niche": "Find me 5 differentiated Companies that provide proactive, leading-indicator Accounts Receivable and credit risk signals on businesses \u2014 flagging elevated risk of non-payment, bad debt, or financial distress either at customer onboarding or through ongoing portfolio monitoring.",
     "geography": "NCP Priority Geography (Eastern US)",
     "memo_count": 0,
+    "active": false,
+    "backup_status": "not_configured"
+  },
+  {
+    "name": "26.06.26 InsureTech",
+    "slug": "26_06_26_insuretech",
+    "db_file": "project_26_06_26_insuretech.db",
+    "created_at": "2026-06-26T21:06:36.809982+00:00",
+    "niche": "insurance technology companies providing certificate of insurance tracking, premium audits, specialty inspection services",
+    "geography": "NCP Priority Geography (Eastern US)",
+    "memo_count": 0,
     "active": true,
-    "backup_status": "not_configured",
-    "status": "stopped"
+    "status": "running"
   }
 ]
