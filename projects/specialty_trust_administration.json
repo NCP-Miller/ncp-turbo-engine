@@ -19568,12 +19568,13 @@
     "override_size_max": null,
     "broaden_signal": false
   },
-  "memo_verdicts": {
-    "Cumberland Trust": "liked"
-  },
   "reviewed_near_misses": [
     "Kassouf",
     "The Trust Company of Tennessee"
   ],
-  "status": "paused"
+  "status": "paused",
+  "memo_verdicts": {
+    "Cumberland Trust": "liked",
+    "Pendleton Square Trust Company": "liked"
+  }
 }
