@@ -1,7 +1,7 @@
 {
   "bot_status": {
     "search": "idle",
-    "analysis": "filtering",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -20003,28 +20003,63 @@
         "Conviction Reasoning": "The company's low differentiation in a competitive market and the absence of standout traits limit its potential appeal, making it less exciting than other candidates scoring higher on unique advantages or market positions."
       },
       "reason": "Conviction 4/10: The company's low differentiation in a competitive market and the absence of standout traits limit its potential appeal, making it less exciting than other candidates scoring higher on unique advantages or market positions."
+    },
+    {
+      "row": {
+        "Company": "Ventura Trust",
+        "Description": "Ventura Trust is a Minnesota-chartered trust company specializing in ESOP (Employee Stock Ownership Plan) trustee services. They provide fiduciary services, ESOP transaction support, and plan administration for clients across over 30 states, focusing on large and complex ESOP transactions. The company is fully employee-owned and serves a wide range of businesses with enterprise values from $2 million to $377 million.",
+        "Website": "http://www.venturaesop.com",
+        "City": "Minneapolis",
+        "State": "Minnesota",
+        "LinkedIn": "http://www.linkedin.com/company/ventura-esop-fiduciary-services",
+        "Employees": 26,
+        "Est. EBITDA": "$455K\u2013$910K",
+        "CEO/Owner Name": "Neil Brozen",
+        "Title": "President",
+        "Email": "nbrozen@venturaesop.com",
+        "Email Estimate": "",
+        "Phone": "N/A",
+        "Source": "Web Path (/meet-the-team) \u2192 Verified",
+        "Notes": "",
+        "Confidence": "High",
+        "Latest News": "Jamal Osman: Why I\u2019m voting to reappoint MPD Chief Brian O\u2019Hara - Star Tribune | https://news.google.com/rss/articles/CBMikwFBVV95cUxQb2JnekY1bGRrbVJLN01BSjh0QnVuQ3I5bi15cjNtLTFEQmFfbEJJNWFHNTNQM2VIRXZEd3diMG4tTXFlN19hT3VFTjl1YlVjSW1LNjJPNGo2dmRPaWU0cUdzY1h0MlZ6Y1ZWN1l1eFNYQ2RjOUhnVjk1RV9EeVBsem95VjRabjNZa1R0Tk1LaGdYTVk?oc=5",
+        "Previously Sourced": "No",
+        "Differentiated": "Low",
+        "_niche": "Specialty trust administration providers serving RIAs and family offices",
+        "Priority": "Low",
+        "Growth": "Low",
+        "Txn Readiness": "Low",
+        "Priority Confidence": "High",
+        "Growth Confidence": "High",
+        "Txn Readiness Confidence": "High",
+        "Differentiated Confidence": "Medium",
+        "Conviction": 3,
+        "Conviction Pitch": "Ventura Trust lacks a unique differentiator and presents low growth potential. Their focus on ESOP trustee services, while specialized, does not offer a clear competitive edge or demonstrate a defensible moat. The fragmented nature of the market without clear expansion opportunities further limits the appeal.",
+        "Conviction Reasoning": "The company doesn't align with our key excitement factors such as high growth, differentiation, or a clear 'right to win,' resulting in a low conviction score."
+      },
+      "reason": "Conviction 3/10: The company doesn't align with our key excitement factors such as high growth, differentiation, or a clear 'right to win,' resulting in a low conviction score."
     }
   ],
   "filter_stats": {
-    "total_sourced": 1362,
+    "total_sourced": 1365,
     "pre_filtered_size": 0,
-    "pre_filtered_structural": 1162,
+    "pre_filtered_structural": 1164,
     "pre_filtered_blocklist": 24,
     "pre_filtered_niche": 62,
     "deep_analysis_failed": 63,
     "pe_backed": 4,
     "portfolio_conflict": 0,
-    "low_differentiation": 44,
+    "low_differentiation": 45,
     "qualified": 3
   },
   "cost_tracker": {
-    "openai": 22.1484,
-    "firecrawl": 7.245,
+    "openai": 22.5858,
+    "firecrawl": 7.37,
     "apollo": 0.0,
-    "total": 29.3934,
+    "total": 29.9558,
     "call_counts": {
-      "openai": 122,
-      "firecrawl": 1449,
+      "openai": 123,
+      "firecrawl": 1474,
       "apollo": 0
     }
   },
