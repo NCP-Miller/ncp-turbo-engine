@@ -22930,29 +22930,63 @@
         "Conviction Reasoning": "The company lacks distinct differentiation, essential for standing out in a fragmented market, and doesn't align well with our criteria based on past successful deals."
       },
       "reason": "Conviction 4/10: The company lacks distinct differentiation, essential for standing out in a fragmented market, and doesn't align well with our criteria based on past successful deals."
+    },
+    {
+      "row": {
+        "Company": "Choate Wealth",
+        "Description": "Choate Wealth is a wealth management firm that has been serving multigenerational families, entrepreneurs, and charitable entities for over 100 years. The firm provides a range of services including estate planning, tax optimization, fiduciary services, and customized investment portfolios, with a team of attorneys, investment professionals, tax specialists, and trust advisors.",
+        "Website": "http://www.choatewealth.com",
+        "City": "Boston",
+        "State": "Massachusetts",
+        "LinkedIn": "http://www.linkedin.com/company/choate-investment-advisors",
+        "Employees": 37,
+        "Est. EBITDA": "$648K\u2013$1.3M",
+        "CEO/Owner Name": "N/A",
+        "Title": "N/A",
+        "Email": "N/A",
+        "Email Estimate": "",
+        "Phone": "N/A",
+        "Source": "Not Found",
+        "Notes": "",
+        "Confidence": "Low",
+        "Latest News": "Choate Expands Fund Formation and Investment Management Practice - The National Law Review | https://news.google.com/rss/articles/CBMisAFBVV95cUxNUFB2eVhWbUZqZzYxVnRmckktVjV4aktHcjg1T1FJUktfUDdzb01oUjhoa3BOSzBUejBlMUNZeTA0eHR5SDM1RHpJSl8zanhzR3JOZlJKdC00Nl9rWmNmd2lkaFB5U0gwb2g5UkRub3hTT3JhYjlEckVkUVF2V1ppUndGeTIta2Q0VnJHV2VzUkt2V2VzMk9VaGhDNjBLOWd3TlhiTm9yMnJIV2J1UFZrYw?oc=5",
+        "Previously Sourced": "No",
+        "Differentiated": "Medium",
+        "_niche": "Specialty trust administration providers serving RIAs and family offices",
+        "Priority": "Low",
+        "Growth": "Medium",
+        "Txn Readiness": "Medium",
+        "Priority Confidence": "High",
+        "Growth Confidence": "Medium",
+        "Txn Readiness Confidence": "Low",
+        "Differentiated Confidence": "Medium",
+        "Conviction": 5,
+        "Conviction Pitch": "Choate Wealth is a well-established wealth management firm, providing comprehensive services for over a century. However, it operates in a competitive landscape with medium differentiation, limiting its distinctiveness against peers. The growth potential and transaction readiness are medium, lacking the standout traits needed for an enthusiastic pitch.",
+        "Conviction Reasoning": "The company has a long history and comprehensive service offerings, but lacks a unique edge or significant market tailwinds that align with past successful patterns."
+      },
+      "reason": "Conviction 5/10: The company has a long history and comprehensive service offerings, but lacks a unique edge or significant market tailwinds that align with past successful patterns."
     }
   ],
-  "reviewed_near_misses": [],
   "filter_stats": {
-    "total_sourced": 1344,
+    "total_sourced": 1347,
     "pre_filtered_size": 0,
-    "pre_filtered_structural": 1148,
+    "pre_filtered_structural": 1150,
     "pre_filtered_blocklist": 23,
     "pre_filtered_niche": 62,
     "deep_analysis_failed": 62,
     "pe_backed": 4,
     "portfolio_conflict": 0,
-    "low_differentiation": 42,
+    "low_differentiation": 43,
     "qualified": 3
   },
   "cost_tracker": {
-    "openai": 21.2676,
-    "firecrawl": 6.98,
+    "openai": 21.705,
+    "firecrawl": 7.105,
     "apollo": 0.0,
-    "total": 28.2476,
+    "total": 28.81,
     "call_counts": {
-      "openai": 119,
-      "firecrawl": 1396,
+      "openai": 120,
+      "firecrawl": 1421,
       "apollo": 0
     }
   },
@@ -22976,5 +23010,8 @@
   "status": "running",
   "memo_verdicts": {
     "Cumberland Trust": "liked"
-  }
+  },
+  "reviewed_near_misses": [
+    "Kassouf"
+  ]
 }
