@@ -123,6 +123,93 @@ def log_outreach_activity(sf, account_id, contact_id, subject, body):
     return result["id"]
 
 
+_SF_TASK_TYPES = {
+    "Call": "Call", "Email": "Email", "Meeting": "Meeting",
+    "LinkedIn": "Other", "Text": "Other", "Note": "Other",
+}
+
+
+def sync_deal_to_salesforce(sf, deal, activities):
+    """Mirror a Deal Tracker record into Salesforce.
+
+    Ensures the Account (and Contact when we have a name) exists, then
+    pushes each un-synced activity as a completed Task and logs the
+    current tracker status/notes as one summary Task.
+
+    Args:
+        sf: authenticated Salesforce client.
+        deal: deal dict from lib.crm (company, status, notes, sf ids, row_json...).
+        activities: list of un-synced activity dicts from lib.crm.
+
+    Returns (account_id, contact_id, synced_activity_ids).
+    """
+    import json as _json
+
+    company = deal.get("company", "Unknown")
+    row = {}
+    if deal.get("row_json"):
+        try:
+            row = _json.loads(deal["row_json"])
+        except (ValueError, TypeError):
+            row = {}
+
+    account_id = deal.get("sf_account_id") or find_existing_account(sf, company)
+    if not account_id:
+        account_id = create_account(sf, row or {
+            "Company": company,
+            "Website": deal.get("website"),
+            "City": deal.get("city"),
+            "State": deal.get("state"),
+        })
+
+    contact_id = deal.get("sf_contact_id") or find_contact_for_account(sf, account_id)
+    if not contact_id and (deal.get("contact_name") or row.get("CEO/Owner Name")):
+        try:
+            contact_id = create_contact(sf, account_id, row or {
+                "CEO/Owner Name": deal.get("contact_name", ""),
+                "Title": deal.get("title"),
+                "Email": deal.get("email"),
+                "Phone": deal.get("phone"),
+            })
+        except Exception:
+            contact_id = None
+
+    synced_ids = []
+    for act in activities:
+        ts = (act.get("timestamp") or "")[:10]
+        payload = {
+            "WhatId": account_id,
+            "WhoId": contact_id,
+            "Subject": f"NCP Tracker — {act.get('type', 'Note')}: {act.get('summary', '')[:200]}",
+            "Description": act.get("detail") or act.get("summary", ""),
+            "Status": "Completed",
+            "Priority": "Normal",
+            "Type": _SF_TASK_TYPES.get(act.get("type"), "Other"),
+            "ActivityDate": ts or None,
+        }
+        payload = {k: v for k, v in payload.items() if v is not None}
+        sf.Task.create(payload)
+        synced_ids.append(act["id"])
+
+    status_payload = {
+        "WhatId": account_id,
+        "WhoId": contact_id,
+        "Subject": f"NCP Tracker — Status: {deal.get('status', 'New')}",
+        "Description": (
+            f"Deal Tracker sync on {date.today().isoformat()}.\n"
+            f"Status: {deal.get('status', 'New')}\n"
+            f"Notes: {deal.get('notes') or '(none)'}"
+        ),
+        "Status": "Completed",
+        "Priority": "Normal",
+        "Type": "Other",
+    }
+    status_payload = {k: v for k, v in status_payload.items() if v is not None}
+    sf.Task.create(status_payload)
+
+    return account_id, contact_id, synced_ids
+
+
 def create_followup_tasks(sf, account_id, contact_id, company_name):
     """Create two open follow-up Tasks after initial outreach:
       1. Phone call — due 1 day from now

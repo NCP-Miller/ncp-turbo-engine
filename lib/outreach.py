@@ -205,6 +205,82 @@ def make_mailto_url(to_email, subject, body):
     return f"mailto:{addr}?{query}" if query else f"mailto:{addr}"
 
 
+RECURRENCE_OPTIONS = {
+    "One-time": None,
+    "Daily": "FREQ=DAILY",
+    "Weekly": "FREQ=WEEKLY",
+    "Every 2 weeks": "FREQ=WEEKLY;INTERVAL=2",
+    "Monthly": "FREQ=MONTHLY",
+}
+
+
+def generate_custom_reminder_ics(company, action_type, start_dt,
+                                 duration_minutes=15, contact_name="",
+                                 phone="", email="", notes="",
+                                 recurrence="One-time", occurrences=1):
+    """Generate a single tailored Outlook reminder, optionally recurring.
+
+    Args:
+        company: Company name.
+        action_type: "Call", "Email", "LinkedIn", or "Text".
+        start_dt: datetime for the event start (naive = user's local time).
+        duration_minutes: event length.
+        contact_name/phone/email: contact details for the description.
+        notes: free-text appended to the description.
+        recurrence: key from RECURRENCE_OPTIONS.
+        occurrences: how many times a recurring event fires (COUNT).
+
+    Returns the .ics content as a string.
+    """
+    def _fmt(dt):
+        return dt.strftime("%Y%m%dT%H%M%S")
+
+    end_dt = start_dt + timedelta(minutes=duration_minutes)
+    safe = company.replace(" ", "").replace("'", "")[:20]
+    uid = f"ncp-{safe}-{_fmt(start_dt)}-{action_type.lower()}@ncpengine"
+
+    contact_bits = []
+    if contact_name:
+        contact_bits.append(f"Contact: {contact_name}")
+    if phone:
+        contact_bits.append(f"Phone: {phone}")
+    if email:
+        contact_bits.append(f"Email: {email}")
+    desc = f"{action_type} outreach for {company}."
+    if contact_bits:
+        desc += "\\n" + "\\n".join(contact_bits)
+    if notes:
+        desc += f"\\nNotes: {notes}"
+
+    summary = f"{action_type}: {contact_name or 'contact'} at {company}"
+
+    lines = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//NCP//Deal Tracker//EN",
+        "METHOD:PUBLISH",
+        "BEGIN:VEVENT",
+        f"UID:{uid}",
+        f"DTSTART:{_fmt(start_dt)}",
+        f"DTEND:{_fmt(end_dt)}",
+        f"SUMMARY:{summary}",
+        f"DESCRIPTION:{desc}",
+    ]
+    rrule = RECURRENCE_OPTIONS.get(recurrence)
+    if rrule and occurrences and occurrences > 1:
+        lines.append(f"RRULE:{rrule};COUNT={int(occurrences)}")
+    lines += [
+        "BEGIN:VALARM",
+        "TRIGGER:-PT15M",
+        "ACTION:DISPLAY",
+        f"DESCRIPTION:{summary} in 15 minutes",
+        "END:VALARM",
+        "END:VEVENT",
+        "END:VCALENDAR",
+    ]
+    return "\r\n".join(lines)
+
+
 def generate_followup_ics(company, contact_name, phone="", email="",
                           send_date=None):
     """Generate an .ics file with 6 follow-up reminders timed from click:
