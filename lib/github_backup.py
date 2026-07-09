@@ -247,6 +247,48 @@ def backup_feedback(feedback_entries):
     return _write_file(token, repo, "feedback_log.json", content, message="Update feedback log")
 
 
+def read_projects_index():
+    """Read the project index from the data branch. Returns list or []."""
+    token, repo = _get_credentials()
+    if not token or not repo:
+        return []
+    content, _ = _read_file(token, repo, "projects.json")
+    if not content:
+        return []
+    try:
+        return json.loads(content)
+    except json.JSONDecodeError:
+        return []
+
+
+def read_project_backup(slug):
+    """Read one project's full state backup from the data branch."""
+    token, repo = _get_credentials()
+    if not token or not repo:
+        return None
+    content, _ = _read_file(token, repo, f"projects/{slug}.json")
+    if not content:
+        return None
+    try:
+        return json.loads(content)
+    except json.JSONDecodeError:
+        return None
+
+
+def read_feedback_backup():
+    """Read the feedback log from the data branch. Returns list or []."""
+    token, repo = _get_credentials()
+    if not token or not repo:
+        return []
+    content, _ = _read_file(token, repo, "feedback_log.json")
+    if not content:
+        return []
+    try:
+        return json.loads(content)
+    except json.JSONDecodeError:
+        return []
+
+
 def backup_crm(crm_dict):
     """Push the full CRM export (deals + activities) to the data branch."""
     token, repo = _get_credentials()

@@ -391,37 +391,59 @@ def _read_project_db(db_path):
     return memos, verdicts, niche
 
 
+def backfill_sources():
+    """Preview what the backfill can see: local DBs, GitHub backups, feedback."""
+    local_dbs = sorted(glob.glob(os.path.join(_CRM_DIR, "project_*.db")))
+    if os.path.exists(os.path.join(_CRM_DIR, "state.db")):
+        local_dbs.append(os.path.join(_CRM_DIR, "state.db"))
+
+    github_projects = []
+    try:
+        from lib.github_backup import is_configured, read_projects_index
+        if is_configured():
+            github_projects = [
+                p.get("slug") for p in read_projects_index() if p.get("slug")
+            ]
+    except Exception:
+        pass
+
+    feedback_count = 0
+    try:
+        with open(_FEEDBACK_PATH) as f:
+            feedback_count = len(json.load(f))
+    except (FileNotFoundError, json.JSONDecodeError):
+        pass
+
+    return {
+        "local_dbs": [os.path.basename(p) for p in local_dbs],
+        "github_projects": github_projects,
+        "feedback_entries": feedback_count,
+    }
+
+
 def backfill_from_history():
     """Seed the CRM from past searches: every memo + every liked company.
 
+    Reads local project DBs first, then the GitHub data-branch backups
+    (the durable record on Streamlit Cloud, where local disk is ephemeral).
     Skips companies the user explicitly rejected. Returns a summary dict.
     """
     init_db()
-    created, skipped_rejected, already = 0, 0, 0
-
-    # 1. All project DBs + the active state DB
-    db_paths = sorted(glob.glob(os.path.join(_CRM_DIR, "project_*.db")))
-    state_db = os.path.join(_CRM_DIR, "state.db")
-    if os.path.exists(state_db):
-        db_paths.append(state_db)
-
+    counters = {"created": 0, "skipped_rejected": 0, "already_tracked": 0}
     seen = set()
-    for db_path in db_paths:
-        project = os.path.basename(db_path).replace("project_", "").replace(".db", "")
-        if project == "state":
-            project = "active search"
-        memos, verdicts, niche = _read_project_db(db_path)
-        for memo in memos:
+
+    def _ingest(memos, verdicts, niche, project):
+        for memo in memos or []:
             company = memo.get("company")
             if not company or _key(company) in seen:
                 continue
             seen.add(_key(company))
-            verdict = verdicts.get(company)
+            verdict = (verdicts or {}).get(company)
             if verdict == "rejected":
-                skipped_rejected += 1
+                counters["skipped_rejected"] += 1
                 continue
             if get_deal(company):
-                already += 1
+                counters["already_tracked"] += 1
                 continue
             source = "backfill-liked" if verdict == "liked" else "backfill-memo"
             deal_id = upsert_deal(
@@ -432,14 +454,59 @@ def backfill_from_history():
             if verdict == "liked":
                 note += " — you marked this one 👍 Interested"
             log_activity(deal_id, "Note", note)
-            created += 1
+            counters["created"] += 1
 
-    # 2. Liked companies from the feedback log that had no memo row
+    # 1. Local project DBs + the active state DB
+    db_paths = sorted(glob.glob(os.path.join(_CRM_DIR, "project_*.db")))
+    state_db = os.path.join(_CRM_DIR, "state.db")
+    if os.path.exists(state_db):
+        db_paths.append(state_db)
+    scanned_slugs = set()
+    for db_path in db_paths:
+        project = os.path.basename(db_path).replace("project_", "").replace(".db", "")
+        if project == "state":
+            project = "active search"
+        else:
+            scanned_slugs.add(project)
+        memos, verdicts, niche = _read_project_db(db_path)
+        _ingest(memos, verdicts, niche, project)
+
+    # 2. GitHub data-branch backups for projects missing locally
+    github_scanned = 0
+    try:
+        from lib.github_backup import (
+            is_configured, read_projects_index, read_project_backup,
+        )
+        if is_configured():
+            for proj in read_projects_index():
+                slug = proj.get("slug")
+                if not slug or slug in scanned_slugs:
+                    continue
+                data = read_project_backup(slug)
+                if not data:
+                    continue
+                github_scanned += 1
+                _ingest(
+                    data.get("completed_memos"),
+                    data.get("memo_verdicts"),
+                    (data.get("config") or {}).get("niche"),
+                    proj.get("name") or slug,
+                )
+    except Exception:
+        pass
+
+    # 3. Liked companies from the feedback log (local, else GitHub backup)
     try:
         with open(_FEEDBACK_PATH) as f:
             feedback = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         feedback = []
+    if not feedback:
+        try:
+            from lib.github_backup import read_feedback_backup
+            feedback = read_feedback_backup()
+        except Exception:
+            feedback = []
     for fb in feedback:
         if (fb.get("verdict") or "").lower() != "liked":
             continue
@@ -453,10 +520,12 @@ def backfill_from_history():
         log_activity(deal_id, "Note",
                      "Imported from feedback log (👍 Interested)",
                      detail=fb.get("feedback", ""))
-        created += 1
+        counters["created"] += 1
 
-    return {"created": created, "skipped_rejected": skipped_rejected,
-            "already_tracked": already}
+    counters["local_dbs_scanned"] = len(db_paths)
+    counters["github_projects_scanned"] = github_scanned
+    counters["feedback_entries"] = len(feedback)
+    return counters
 
 
 # ---------------------------------------------------------------------------
