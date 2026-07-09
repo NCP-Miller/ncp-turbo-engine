@@ -247,6 +247,30 @@ def backup_feedback(feedback_entries):
     return _write_file(token, repo, "feedback_log.json", content, message="Update feedback log")
 
 
+def backup_crm(crm_dict):
+    """Push the full CRM export (deals + activities) to the data branch."""
+    token, repo = _get_credentials()
+    if not token or not repo:
+        return False
+    _ensure_branch(token, repo)
+    content = json.dumps(crm_dict, indent=2, default=str)
+    return _write_file(token, repo, "crm_data.json", content, message="Backup CRM")
+
+
+def restore_crm():
+    """Read the CRM backup from the data branch. Returns dict or None."""
+    token, repo = _get_credentials()
+    if not token or not repo:
+        return None
+    content, _ = _read_file(token, repo, "crm_data.json")
+    if not content:
+        return None
+    try:
+        return json.loads(content)
+    except json.JSONDecodeError:
+        return None
+
+
 def restore_all():
     """Pull all projects and feedback from GitHub into pipeline_data/.
 

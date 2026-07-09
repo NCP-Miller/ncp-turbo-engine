@@ -43,6 +43,26 @@ WRITEUP_STATUS_LABELS = {
 }
 
 
+def _crm_capture(company, row=None, niche=None, activity=None,
+                 activity_type="Note", status=None, synced_to_sf=0,
+                 sf_account_id=None, sf_contact_id=None, backup=True):
+    """Best-effort Deal Tracker capture — never breaks the pipeline UI."""
+    try:
+        from lib import crm as _crm
+        deal_id = _crm.upsert_deal(company, row=row, niche=niche,
+                                   status=status)
+        if sf_account_id:
+            _crm.update_deal(deal_id, sf_account_id=sf_account_id,
+                             sf_contact_id=sf_contact_id)
+        if activity:
+            _crm.log_activity(deal_id, activity_type, activity,
+                              synced_to_sf=synced_to_sf)
+        if backup:
+            _crm.backup_to_github()
+    except Exception:
+        pass
+
+
 def _label(d, key):
     return d.get(key, ("❓", key))
 
@@ -897,6 +917,14 @@ with tab_memos:
                                 )
                             else:
                                 acct_id, contact_id = push_to_salesforce(sf, row)
+                                _crm_capture(
+                                    memo["company"], row=row,
+                                    niche=cfg.get("niche"),
+                                    status="Outreach Active",
+                                    activity="Added to Salesforce",
+                                    sf_account_id=acct_id,
+                                    sf_contact_id=contact_id,
+                                )
                                 st.success(
                                     f"Created in Salesforce — "
                                     f"Account: `{acct_id}` | Contact: `{contact_id}`"
@@ -926,6 +954,13 @@ with tab_memos:
                             draft = draft_cold_email(_oc, enriched, _thesis)
                             st.session_state[f"_pipe_draft_subj_{_co_key}"] = draft["subject"]
                             st.session_state[f"_pipe_draft_body_{_co_key}"] = draft["body"]
+                            _crm_capture(
+                                memo["company"], row=row,
+                                niche=cfg.get("niche"),
+                                activity=f"Drafted outreach email: {draft['subject']}",
+                                activity_type="Email",
+                                backup=False,
+                            )
                             st.rerun()
                         except Exception as e:
                             st.error(f"Email drafting error: {e}")
@@ -989,6 +1024,14 @@ with tab_memos:
                             mime="text/calendar",
                             key=f"ics_{_wk}",
                             use_container_width=True,
+                            on_click=_crm_capture,
+                            kwargs={
+                                "company": memo["company"],
+                                "row": row,
+                                "niche": cfg.get("niche"),
+                                "activity": "Downloaded follow-up calendar reminders",
+                                "backup": False,
+                            },
                         )
                     with _act_c3:
                         st.caption(
@@ -1025,6 +1068,19 @@ with tab_memos:
                                 call_id, fu_id = create_followup_tasks(
                                     sf, acct_id, contact_id, memo["company"],
                                 )
+                                _crm_capture(
+                                    memo["company"], row=row,
+                                    niche=cfg.get("niche"),
+                                    status="Outreach Active",
+                                    activity=(
+                                        "Outreach email logged to Salesforce: "
+                                        + st.session_state.get(f"_pipe_draft_subj_{_co_key}", "")
+                                    ),
+                                    activity_type="Email",
+                                    synced_to_sf=1,
+                                    sf_account_id=acct_id,
+                                    sf_contact_id=contact_id,
+                                )
                                 st.success(
                                     f"Logged — Email: `{task_id}` | "
                                     f"Call follow-up (tomorrow): `{call_id}` | "
@@ -1047,6 +1103,11 @@ with tab_memos:
                             state.update(memo_verdicts=dict(_verdicts))
                         except Exception:
                             pass
+                        _crm_capture(
+                            memo["company"], row=row,
+                            niche=cfg.get("niche"),
+                            activity="Marked 👍 Interested in memo review",
+                        )
                         st.rerun()
                 with fb_cols[1]:
                     if st.button("👎 Pass", key=f"{fb_key}_no"):
@@ -1055,6 +1116,14 @@ with tab_memos:
                         _verdicts[memo["company"]] = "rejected"
                         try:
                             state.update(memo_verdicts=dict(_verdicts))
+                        except Exception:
+                            pass
+                        try:
+                            from lib import crm as _crm
+                            _deal = _crm.get_deal(memo["company"])
+                            if _deal and _deal["status"] != "Not a Fit":
+                                _crm.set_status(_deal["id"], "Not a Fit", _deal["status"])
+                                _crm.backup_to_github()
                         except Exception:
                             pass
                         st.rerun()
