@@ -1270,6 +1270,10 @@ with tab_near:
                                 "memo": memo_text,
                                 "promoted_from_near_miss": True,
                             })
+                            _crm_capture(
+                                company, row=row, niche=_niche,
+                                activity="Promoted from Worth a Second Look — memo generated",
+                            )
                             st.success(f"Memo created for {company}.")
                             st.rerun()
                         except Exception as e:
