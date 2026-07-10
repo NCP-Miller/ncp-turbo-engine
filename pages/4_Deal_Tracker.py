@@ -82,17 +82,29 @@ with st.expander("⚙️ Import & add deals"):
         st.markdown("**Import from past searches**")
         st.caption(
             "Pulls in every investment memo and every company you marked "
-            "👍 Interested, across all saved projects. Skips companies you rejected."
+            "👍 Interested — from local project files, the GitHub backup, "
+            "and the feedback log. Skips companies you rejected."
+        )
+        sources = crm.backfill_sources()
+        st.caption(
+            f"Sources found: {len(sources['local_dbs'])} local project file(s), "
+            f"{len(sources['github_projects'])} GitHub-backed project(s), "
+            f"{sources['feedback_entries']} feedback entries."
         )
         if st.button("Import past deals", use_container_width=True):
-            result = crm.backfill_from_history()
-            crm.backup_to_github()
+            with st.spinner("Scanning local projects, GitHub backups, and feedback..."):
+                result = crm.backfill_from_history()
+                crm.backup_to_github()
             st.success(
-                f"Imported {result['created']} deals. "
+                f"Imported {result['created']} deals "
+                f"(scanned {result['local_dbs_scanned']} local + "
+                f"{result['github_projects_scanned']} GitHub projects, "
+                f"{result['feedback_entries']} feedback entries). "
                 f"Skipped {result['skipped_rejected']} rejected, "
                 f"{result['already_tracked']} already tracked."
             )
-            st.rerun()
+            if result["created"]:
+                st.rerun()
     with add_col:
         st.markdown("**Add a deal manually**")
         with st.form("manual_add", clear_on_submit=True):
