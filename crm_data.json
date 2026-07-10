@@ -965,6 +965,29 @@
       "row_json": null,
       "created_at": "2026-07-10T00:01:46.463163+00:00",
       "updated_at": "2026-07-10T13:14:58.571005+00:00"
+    },
+    {
+      "id": 43,
+      "company": "CIC Services, LLC",
+      "company_key": "cic services, llc",
+      "website": "http://www.captivatingthinking.com",
+      "contact_name": null,
+      "title": null,
+      "email": null,
+      "phone": "865.248.3044",
+      "city": "Knoxville",
+      "state": "Tennessee",
+      "niche": "captive management firm providing outsourced administration, regulatory compliance, financial management, and operational oversight for captive insurance companies, allowing owners to operate their captives without maintaining dedicated internal staff.",
+      "project": null,
+      "status": "New",
+      "source": "memo",
+      "notes": "",
+      "next_followup": null,
+      "sf_account_id": null,
+      "sf_contact_id": null,
+      "row_json": "{\"Company\": \"CIC Services, LLC\", \"Description\": \"CIC Services, LLC is a risk management consulting firm that specializes in the use of Captive Insurance Companies (CICs) to help organizations achieve their Enterprise Risk Management goals. Since 2005, they have provided full-service, turn-key captive management services to over 125 business owners across the United States, focusing on middle-market companies.\", \"Website\": \"http://www.captivatingthinking.com\", \"City\": \"Knoxville\", \"State\": \"Tennessee\", \"LinkedIn\": \"http://www.linkedin.com/company/cic-services-llc\", \"Employees\": 33, \"Est. EBITDA\": \"$990K\\u2013$1.6M\", \"CEO/Owner Name\": \"N/A\", \"Title\": \"N/A\", \"Email\": \"N/A\", \"Email Estimate\": \"\", \"Phone\": \"865.248.3044\", \"Source\": \"Web (contact only)\", \"Notes\": \"\", \"Confidence\": \"Medium\", \"Latest News\": \"IRS microcaptive rule faces renewed legal challenge in 6th Circuit - Insurance Business | https://news.google.com/rss/articles/CBMi0wFBVV95cUxQZUZEUE5vVnE1ZlJKRE1LdlZkR3BoNXUwQm8tTVRrbWFXTW9KWFQ2RWpHS2VnLUZKUm0yNVN5RG9tQllMa3ppTkNqWk9odXJPcVNDZUJPSHpXcUtobXl3QTB3cFd6aEltM3RTUV93cXBZMUl1TXVwWi1uX2FtMmdsZVN1TUxNNGlwdjFJZ1FmdzN0c2VyVGtLRlJZVUktbEZmQ2M0V2FSYlFMR29nckY5T295WXRIa2k0eE0zMGsyejJmOEFMTF9YU3U2MkRiWUNNUEpz?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Medium\", \"_niche\": \"captive management firm providing outsourced administration, regulatory compliance, financial management, and operational oversight for captive insurance companies, allowing owners to operate their captives without maintaining dedicated internal staff.\", \"Priority\": \"Medium\", \"Growth\": \"Low\", \"Txn Readiness\": \"Medium\", \"Priority Confidence\": \"Medium\", \"Growth Confidence\": \"Low\", \"Txn Readiness Confidence\": \"Low\", \"Differentiated Confidence\": \"Medium\", \"Conviction\": 7, \"Conviction Pitch\": \"CIC Services, LLC operates in a niche market of captive insurance management, providing essential outsourced administration and compliance for over 125 middle-market businesses across the U.S. The company's specialized focus on Enterprise Risk Management and turnkey solutions offer a defensible moat via regulatory expertise and reduces the need for internal staffing. This model could be attractive for our mandate, especially if further due diligence reveals strong regional dominance or unique market advantages.\", \"Conviction Reasoning\": \"The score is driven by CIC Services' niche focus and essential service offering, but lacks clear standout traits in differentiation and growth potential.\"}",
+      "created_at": "2026-07-10T14:28:42.175621+00:00",
+      "updated_at": "2026-07-10T14:28:42.184702+00:00"
     }
   ],
   "activities": [
@@ -1471,6 +1494,15 @@
       "detail": "",
       "timestamp": "2026-07-10T14:13:35.130992+00:00",
       "synced_to_sf": 1
+    },
+    {
+      "id": 57,
+      "deal_id": 43,
+      "type": "Note",
+      "summary": "Investment memo generated",
+      "detail": "",
+      "timestamp": "2026-07-10T14:28:42.184478+00:00",
+      "synced_to_sf": 0
     }
   ]
 }
