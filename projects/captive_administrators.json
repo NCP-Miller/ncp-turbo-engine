@@ -1,11 +1,4 @@
 {
-  "config": {
-    "niche": null,
-    "geography": null,
-    "strategy": null,
-    "target_count": null
-  },
-  "status": "idle",
   "bot_status": {
     "search": "idle",
     "analysis": "idle",
@@ -14,7 +7,16 @@
   "candidate_queue": [],
   "qualified_queue": [],
   "completed_memos": [],
-  "chat_history": [],
+  "chat_history": [
+    {
+      "role": "user",
+      "content": "Find me 5 differentiated captive management firm providing outsourced administration, regulatory compliance, financial management, and operational oversight for captive insurance companies, allowing owners to operate their captives without maintaining dedicated internal staff. companies in NCP Priority Geography (Eastern US)."
+    },
+    {
+      "role": "assistant",
+      "content": "Got it. I know what NCP looks for \u2014 founder-owned, differentiated, right to win, growing market, no PE on the cap table. I'll search multiple channels and only bring you companies I'm genuinely excited about (conviction 6+/10). You'll get 5 with investment memos. Give me feedback on each one and I'll learn your preferences."
+    }
+  ],
   "user_feedback": [],
   "seen_domains": [],
   "seen_names": [],
@@ -44,10 +46,20 @@
     }
   },
   "last_event": {
-    "type": "idle",
-    "message": "Pipeline ready. Configure and click Start.",
-    "timestamp": null,
+    "type": "starting",
+    "message": "Pipeline starting. Niche: captive management firm providing outsourced administration, regulatory compliance, financial management, and operational oversight for captive insurance companies, allowing owners to operate their captives without maintaining dedicated internal staff., geography: NCP Priority Geography (Eastern US), target: 5 memos.",
+    "timestamp": "2026-07-10T14:16:01.934545+00:00",
     "severity": "info"
   },
-  "created_at": "2026-07-10T14:15:35.216204+00:00"
+  "created_at": "2026-07-10T14:16:01.623595+00:00",
+  "config": {
+    "niche": "captive management firm providing outsourced administration, regulatory compliance, financial management, and operational oversight for captive insurance companies, allowing owners to operate their captives without maintaining dedicated internal staff.",
+    "geography": "NCP Priority Geography (Eastern US)",
+    "strategy": "A",
+    "target_count": 5,
+    "exclusions": "",
+    "override_size_min": null,
+    "override_size_max": null
+  },
+  "status": "running"
 }
