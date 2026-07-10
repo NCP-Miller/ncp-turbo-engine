@@ -933,7 +933,7 @@
       "state": null,
       "niche": "Fire extinguisher recharge and fire extinguisher compliance",
       "project": null,
-      "status": "New",
+      "status": "Not a Fit",
       "source": "backfill-liked",
       "notes": "",
       "next_followup": null,
@@ -941,7 +941,7 @@
       "sf_contact_id": null,
       "row_json": null,
       "created_at": "2026-07-10T00:01:46.447163+00:00",
-      "updated_at": "2026-07-10T00:01:46.453907+00:00"
+      "updated_at": "2026-07-10T13:16:11.470845+00:00"
     },
     {
       "id": 42,
@@ -1371,6 +1371,15 @@
       "summary": "Status: Not a Fit \u2192 Contacted \u2013 No Opportunity",
       "detail": "",
       "timestamp": "2026-07-10T13:14:58.570563+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 46,
+      "deal_id": 41,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-07-10T13:16:11.470704+00:00",
       "synced_to_sf": 0
     }
   ]
