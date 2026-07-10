@@ -849,7 +849,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"Cumberland Trust\", \"Description\": \"Cumberland Trust is an independent trust company founded in 2001 in Nashville, Tennessee, specializing in trust and estate administration. The company collaborates with families and professional advisors to manage complex estate plans and unique assets, serving clients nationwide through its 11 offices.\", \"Website\": \"http://www.cumberlandtrust.com\", \"City\": \"Nashville\", \"State\": \"Tennessee\", \"LinkedIn\": \"http://www.linkedin.com/company/cumberland-trust\", \"Employees\": 150, \"Est. EBITDA\": \"$2.6M\\u2013$5.2M\", \"CEO/Owner Name\": \"Jennie Menzie\", \"Title\": \"CEO & President\", \"Email\": \"jmenzie@cumberlandtrust.com\", \"Email Estimate\": \"\", \"Phone\": \"N/A\", \"Source\": \"Web Path (/our-team) \\u2192 Verified\", \"Notes\": \"\", \"Confidence\": \"High\", \"Latest News\": \"Cumberland Trust BizSpotlight - The Business Journals | https://news.google.com/rss/articles/CBMihwFBVV95cUxNN2UzNDhVQ2dZb2dPMEZkeHFiY2wyRFd2eUpIaHBUeWsyeGtlSktjajlqTVZwTzFiZHlYc3hUM0tDdzdpTlBfa3JVZ3dvZUExSzdPMmVBNVdCTFJUZTlvSHZCRE8tbERGbktwTUdleXpkVzdfYUljS3JDYUYzakU3WUplQXhvLVE?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Medium\", \"_niche\": \"Specialty trust administration providers serving RIAs and family offices\", \"Priority\": \"High\", \"Growth\": \"High\", \"Txn Readiness\": \"Medium\", \"Priority Confidence\": \"High\", \"Growth Confidence\": \"High\", \"Txn Readiness Confidence\": \"Low\", \"Differentiated Confidence\": \"Medium\", \"Conviction\": 6, \"Conviction Pitch\": \"Cumberland Trust stands out in the crowded trust administration market with its specialized services tailored for RIAs and family offices, providing a unique partnership model that assists in managing complex estate plans. The company\\u2019s multi-location presence across 11 offices offers substantial potential for regional expansion, tapping into a growing market with limited direct competition. However, while Cumberland's differentiation is medium, the lack of a distinct 'right to win' or proprietary process limits the overall excitement.\", \"Conviction Reasoning\": \"The score is driven by the company's niche focus and expansion potential, but is moderated by medium differentiation and the absence of a strong, unique advantage.\"}",
       "created_at": "2026-07-10T00:01:45.893429+00:00",
-      "updated_at": "2026-07-10T13:17:12.419558+00:00"
+      "updated_at": "2026-07-10T13:17:40.618911+00:00"
     },
     {
       "id": 38,
@@ -1398,6 +1398,15 @@
       "summary": "Status: New \u2192 In Dialogue",
       "detail": "",
       "timestamp": "2026-07-10T13:16:56.055320+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 49,
+      "deal_id": 37,
+      "type": "Email",
+      "summary": "Email responded. Two sons who went to Alpine. Daughter studying at LSE this summer",
+      "detail": "",
+      "timestamp": "2026-07-10T13:17:40.618472+00:00",
       "synced_to_sf": 0
     }
   ]
