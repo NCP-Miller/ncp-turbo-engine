@@ -208,7 +208,18 @@
     "niche": "Specialty trust administration providers serving RIAs and family offices",
     "geography": "NCP Priority Geography (Eastern US)",
     "memo_count": 3,
-    "active": true,
+    "active": false,
     "backup_status": "not_configured"
+  },
+  {
+    "name": "Captive Administrators",
+    "slug": "captive_administrators",
+    "db_file": "project_captive_administrators.db",
+    "created_at": "2026-07-10T14:15:35.216631+00:00",
+    "niche": "",
+    "geography": "",
+    "memo_count": 0,
+    "active": true,
+    "status": "idle"
   }
 ]
