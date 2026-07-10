@@ -149,10 +149,18 @@ with f1:
 with f2:
     search = st.text_input("Search", placeholder="Company, contact, niche...")
 
-deals = crm.list_deals(
+_all_matching = crm.list_deals(
     statuses=status_filter or None,
     search=search.strip() or None,
 )
+
+# Terminal-status deals live in the Archive unless explicitly filtered for
+if status_filter:
+    deals = _all_matching
+    archived = []
+else:
+    deals = [d for d in _all_matching if d["status"] not in TERMINAL_STATUSES]
+    archived = [d for d in _all_matching if d["status"] in TERMINAL_STATUSES]
 
 if not deals:
     if not all_deals:
@@ -160,6 +168,8 @@ if not deals:
             "No deals tracked yet. Use **Import past deals** above to seed the "
             "tracker from your search history, or add one manually."
         )
+    elif archived:
+        st.info("No active deals — everything matching is in the Archive below.")
     else:
         st.info("No deals match the current filters.")
 
@@ -393,3 +403,42 @@ for deal in deals:
                 "Sync pushes un-synced activities as completed Tasks and logs "
                 "the current status + notes to the Salesforce Account."
             )
+
+# ---------------------------------------------------------------------------
+# Archive — terminal-status deals, grouped and out of the way
+# ---------------------------------------------------------------------------
+if archived:
+    st.markdown("---")
+    with st.expander(f"🗄️ Archive ({len(archived)})"):
+        st.caption(
+            "Deals marked Closed – No Response, Contacted – No Opportunity, "
+            "or Not a Fit. Sorted by date sourced (newest first). "
+            "Reopen moves a deal back to New."
+        )
+        for arch_status in [
+            "Closed – No Response",
+            "Contacted – No Opportunity",
+            "Not a Fit",
+        ]:
+            group = [d for d in archived if d["status"] == arch_status]
+            if not group:
+                continue
+            group.sort(key=lambda d: d.get("created_at") or "", reverse=True)
+            st.markdown(
+                f"**{STATUS_ICONS.get(arch_status, '')} {arch_status} ({len(group)})**"
+            )
+            for d in group:
+                c1, c2, c3, c4 = st.columns([4, 2, 3, 1])
+                label = f"**{d['company']}**"
+                if d.get("niche"):
+                    label += f" · {d['niche']}"
+                c1.markdown(label)
+                c2.caption(f"Sourced {(d.get('created_at') or '?')[:10]}")
+                c3.caption(
+                    f"Last activity: "
+                    f"{_fmt_ts(d.get('last_activity') or d.get('created_at'))}"
+                )
+                if c4.button("Reopen", key=f"reopen_{d['id']}"):
+                    crm.set_status(d["id"], "New", d["status"])
+                    crm.backup_to_github()
+                    st.rerun()
