@@ -253,6 +253,29 @@ for deal in deals:
                 st.rerun()
             if deal.get("next_followup"):
                 st.caption(f"Currently: {deal['next_followup'][:10]}")
+                try:
+                    _fu_dt = datetime.combine(
+                        datetime.fromisoformat(deal["next_followup"]).date(),
+                        dtime(9, 0),
+                    )
+                    _fu_ics = generate_custom_reminder_ics(
+                        deal["company"], "Follow-up", _fu_dt,
+                        duration_minutes=15,
+                        contact_name=deal.get("contact_name") or "",
+                        phone=deal.get("phone") or "",
+                        email=deal.get("email") or "",
+                        notes=deal.get("notes") or "",
+                    )
+                    st.download_button(
+                        "📅 Add to Outlook (9:00 AM)",
+                        data=_fu_ics,
+                        file_name=f"followup_{deal['company'].replace(' ', '_')}.ics",
+                        mime="text/calendar",
+                        key=f"fuics_{_id}",
+                        use_container_width=True,
+                    )
+                except (ValueError, TypeError):
+                    pass
 
         # ── Log activity ─────────────────────────────────────────
         st.markdown("**Log activity**")

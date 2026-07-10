@@ -417,6 +417,18 @@ def _analyze_single(org, niche, strategy, config, search_params,
             "row": row, "score": conv_score, "reason": conv_reason}
 
 
+def _crm_capture_memo(company, row, niche, note):
+    """Best-effort Deal Tracker capture when an investment memo is created."""
+    try:
+        from lib import crm as _crm
+        deal_id = _crm.upsert_deal(company, row=row or {}, niche=niche,
+                                   source="memo")
+        _crm.log_activity(deal_id, "Note", note)
+        _crm.backup_to_github()
+    except Exception:
+        pass
+
+
 def _process_candidate_batch(batch, niche, strategy, config, search_params,
                              client, apollo_key, firecrawl_key, user_agent,
                              thesis, state, feedback_history=None):
@@ -951,6 +963,10 @@ def _run_loop():
                                         "closest_fit_reason": best_reason,
                                     }
                                     state.add_memo(memo)
+                                    _crm_capture_memo(
+                                        best_name, best_row, niche,
+                                        "Investment memo generated (closest fit)",
+                                    )
                                     state.set_event(
                                         "exhausted",
                                         f"Search exhausted. No companies met conviction bar. Closest fit: {best_name} ({best_reason}). Review in Investment Memos tab.",
@@ -1081,6 +1097,10 @@ def _run_loop():
                             "memo": memo_text,
                         }
                         state.add_memo(memo)
+                        _crm_capture_memo(
+                            comp_name, memo.get("row"), niche,
+                            "Investment memo generated",
+                        )
                         state.set_event("memo_complete", f"Memo complete: {comp_name}. {len(state.completed_memos)}/{target_count} done.", "success")
                         print(f"[Write-up Bot] Memo complete: {comp_name} ({len(state.completed_memos)}/{target_count})")
 
