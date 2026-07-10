@@ -29883,7 +29883,6 @@
       "reason": "Conviction 4/10: Harbor Compliance lacks a clear differentiator or moat that sets it apart in a crowded compliance market, and its transactional readiness is low, making it less exciting compared to companies with stronger competitive edges and growth metrics."
     }
   ],
-  "reviewed_near_misses": [],
   "filter_stats": {
     "total_sourced": 2127,
     "pre_filtered_size": 0,
@@ -29925,5 +29924,8 @@
     "broaden_signal": false,
     "pivot_signal": false
   },
-  "status": "running"
+  "status": "running",
+  "reviewed_near_misses": [
+    "Ascentt"
+  ]
 }
