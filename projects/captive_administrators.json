@@ -2548,7 +2548,13 @@
     "mdanderson.org",
     "epiqsolutions.com",
     "snapsheetclaims.com",
-    "openzeppelin.com"
+    "openzeppelin.com",
+    "mpgtalentsolutions.com",
+    "nonprofitrisk.org",
+    "accesshealthcare.com",
+    "noblesoft-solutions.com",
+    "istasolutions.com",
+    "eccoselect.com"
   ],
   "seen_names": [
     "ted conferences",
@@ -5091,7 +5097,13 @@
     "ut md anderson",
     "epiq",
     "snapsheet inc",
-    "openzeppelin"
+    "openzeppelin",
+    "manpowergroup talent solutions",
+    "nonprofit risk management center",
+    "access healthcare",
+    "noblesoft solutions",
+    "ista solutions",
+    "ecco select"
   ],
   "near_misses": [
     {
@@ -5586,32 +5598,32 @@
     }
   ],
   "filter_stats": {
-    "total_sourced": 2532,
+    "total_sourced": 2538,
     "pre_filtered_size": 0,
-    "pre_filtered_structural": 1915,
+    "pre_filtered_structural": 1919,
     "pre_filtered_blocklist": 47,
     "pre_filtered_niche": 30,
-    "deep_analysis_failed": 520,
+    "deep_analysis_failed": 522,
     "pe_backed": 3,
     "portfolio_conflict": 1,
     "low_differentiation": 14,
     "qualified": 2
   },
   "cost_tracker": {
-    "openai": 11.6505,
-    "firecrawl": 10.31,
+    "openai": 11.6625,
+    "firecrawl": 10.34,
     "apollo": 0.0,
-    "total": 21.9605,
+    "total": 22.0025,
     "call_counts": {
-      "openai": 555,
-      "firecrawl": 2062,
+      "openai": 557,
+      "firecrawl": 2068,
       "apollo": 0
     }
   },
   "last_event": {
     "type": "searching_apollo",
-    "message": "Searching Apollo for Financial Services companies in NCP Priority Geography (Eastern US) (round 2 of 4).",
-    "timestamp": "2026-07-11T13:28:48.389035+00:00",
+    "message": "Searching Apollo for Insurance companies in NCP Priority Geography (Eastern US) (round 2 of 4).",
+    "timestamp": "2026-07-11T13:29:23.036864+00:00",
     "severity": "info"
   },
   "created_at": "2026-07-10T14:16:01.623595+00:00",
