@@ -6590,12 +6590,12 @@
     "qualified": 2
   },
   "cost_tracker": {
-    "openai": 13.1319,
+    "openai": 13.1419,
     "firecrawl": 12.55,
     "apollo": 0.0,
-    "total": 25.6819,
+    "total": 25.6919,
     "call_counts": {
-      "openai": 697,
+      "openai": 698,
       "firecrawl": 2510,
       "apollo": 0
     }
