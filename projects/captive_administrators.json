@@ -5610,20 +5610,20 @@
     "qualified": 2
   },
   "cost_tracker": {
-    "openai": 11.6625,
-    "firecrawl": 10.34,
+    "openai": 11.7415,
+    "firecrawl": 10.365,
     "apollo": 0.0,
-    "total": 22.0025,
+    "total": 22.1065,
     "call_counts": {
-      "openai": 557,
-      "firecrawl": 2068,
+      "openai": 559,
+      "firecrawl": 2073,
       "apollo": 0
     }
   },
   "last_event": {
     "type": "searching_apollo",
-    "message": "Searching Apollo for Insurance companies in NCP Priority Geography (Eastern US) (round 2 of 4).",
-    "timestamp": "2026-07-11T13:29:23.036864+00:00",
+    "message": "Searching Apollo for Financial Services companies in NCP Priority Geography (Eastern US) (round 3 of 4).",
+    "timestamp": "2026-07-11T13:29:50.635386+00:00",
     "severity": "info"
   },
   "created_at": "2026-07-10T14:16:01.623595+00:00",
