@@ -1183,6 +1183,74 @@ with tab_near:
             f"**{reviewed_ct} reviewed**, {len(near_sorted) - reviewed_ct} remaining."
         )
 
+        # ── AI exclusion filter: bulk-review near-misses matching a description ──
+        with st.container(border=True):
+            _exc_c1, _exc_c2 = st.columns([3, 1])
+            _ai_exclusion = _exc_c1.text_input(
+                "AI exclusion filter",
+                placeholder='Describe what to dismiss — e.g., "digital transformation" or "consulting"',
+                key="nm_ai_exclusion",
+            )
+            _exc_c2.markdown("<div style='height:1.8em'></div>", unsafe_allow_html=True)
+            _run_exclusion = _exc_c2.button(
+                "Review with AI",
+                use_container_width=True,
+                disabled=not _ai_exclusion.strip(),
+            )
+            st.caption(
+                "The AI reads every **unreviewed** company below and marks the ones "
+                "matching your exclusion as ✅ reviewed (they drop to the bottom)."
+            )
+            if st.session_state.get("_nm_ai_result"):
+                st.success(st.session_state["_nm_ai_result"])
+
+            if _run_exclusion and _ai_exclusion.strip():
+                _unreviewed = [
+                    {
+                        "company": (m.get("row") or {}).get("Company", ""),
+                        "description": (m.get("row") or {}).get("Description", "")
+                        or m.get("reason", ""),
+                    }
+                    for m in near_misses
+                    if (m.get("row") or {}).get("Company", "")
+                    and (m.get("row") or {}).get("Company", "") not in _reviewed
+                ]
+                if not _unreviewed:
+                    st.session_state["_nm_ai_result"] = "Nothing to review — all companies are already marked reviewed."
+                    st.rerun()
+                with st.spinner(
+                    f"AI reviewing {len(_unreviewed)} companies against "
+                    f"'{_ai_exclusion.strip()}'..."
+                ):
+                    try:
+                        from lib.api_clients import load_api_keys, make_openai_client
+                        from lib.filters import match_exclusion_batch
+                        _keys = load_api_keys()
+                        _oc = make_openai_client(api_key=_keys["OPENAI_API_KEY"])
+                        _matched = match_exclusion_batch(
+                            _oc, _ai_exclusion.strip(), _unreviewed,
+                        )
+                        try:
+                            _chunks = (len(_unreviewed) + 24) // 25
+                            state.record_cost("openai", 0.01 * _chunks, calls=_chunks)
+                        except Exception:
+                            pass
+                        if _matched:
+                            _reviewed.update(_matched)
+                            state.update(reviewed_near_misses=list(_reviewed))
+                            _names = ", ".join(sorted(_matched))
+                            st.session_state["_nm_ai_result"] = (
+                                f"Marked {len(_matched)} companies as reviewed "
+                                f"(matched '{_ai_exclusion.strip()}'): {_names}"
+                            )
+                        else:
+                            st.session_state["_nm_ai_result"] = (
+                                f"No companies matched '{_ai_exclusion.strip()}' — nothing marked."
+                            )
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"AI exclusion review failed: {e}")
+
         for _nm_idx, nm in enumerate(near_sorted):
             row = nm.get("row") or {}
             conv = row.get("Conviction", 0)

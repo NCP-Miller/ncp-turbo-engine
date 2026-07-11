@@ -637,6 +637,66 @@ Return JSON only:
 
 
 # ---------------------------------------------------------------------------
+# AI EXCLUSION MATCHER — bulk-triage near-misses against a user exclusion
+# ---------------------------------------------------------------------------
+def match_exclusion_batch(client, exclusion, companies):
+    """Ask GPT which companies match a user-supplied exclusion description.
+
+    Args:
+        client: OpenAI client.
+        exclusion: free-text exclusion, e.g. "digital transformation consulting".
+        companies: list of {"company": str, "description": str} dicts.
+
+    Returns:
+        set of company names that MATCH the exclusion (i.e. should be
+        marked reviewed / dismissed). Conservative on failure — returns
+        only confident matches, empty set on error.
+    """
+    matches = set()
+    valid_names = {c["company"] for c in companies if c.get("company")}
+
+    for i in range(0, len(companies), 25):
+        chunk = companies[i:i + 25]
+        listing = "\n".join(
+            f'{idx + 1}. "{c["company"]}" — {(c.get("description") or "(no description)")[:400]}'
+            for idx, c in enumerate(chunk)
+        )
+        prompt = f"""A private equity user is triaging acquisition candidates. They want to
+dismiss every company that matches this exclusion description:
+
+EXCLUSION: "{exclusion}"
+
+For each company below, decide whether it MATCHES the exclusion — meaning
+its core business fits what the user wants to exclude. Be reasonably strict:
+only mark a company as matching when its description clearly fits the
+exclusion. A passing mention is not enough; the exclusion should describe
+what the company primarily does.
+
+Companies:
+{listing}
+
+Return JSON only:
+{{"matches": ["Exact Company Name 1", "Exact Company Name 2"]}}
+Use the exact company names as written above. Return an empty list if none match."""
+
+        try:
+            resp = client.chat.completions.create(
+                model=OPENAI_MODEL,
+                messages=[{"role": "user", "content": prompt}],
+                response_format={"type": "json_object"},
+                timeout=30,
+            )
+            data = json.loads(resp.choices[0].message.content or "{}")
+            for name in data.get("matches") or []:
+                if name in valid_names:
+                    matches.add(name)
+        except Exception:
+            continue
+
+    return matches
+
+
+# ---------------------------------------------------------------------------
 # NEWS HEADLINE PE/VC SCAN
 # ---------------------------------------------------------------------------
 def check_news_for_pe_vc(news_title):
