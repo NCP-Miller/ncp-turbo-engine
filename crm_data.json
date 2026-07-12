@@ -1033,7 +1033,7 @@
       "sf_contact_id": "003Pp000028ZbdNIAS",
       "row_json": "{\"Company\": \"VNAS Risk Solutions\", \"Description\": \"VNAS Risk Solutions specializes in the design, implementation, and management of captive insurance companies both in the U.S. and internationally. They provide comprehensive services including feasibility studies, regulatory compliance, financial management, and operational oversight to support various industries in managing their risk through captive insurance.\", \"Website\": \"https://vnasrisk.com\", \"City\": \"\", \"State\": \"\", \"LinkedIn\": null, \"Employees\": null, \"Est. EBITDA\": \"Unknown\", \"CEO/Owner Name\": \"Robert Barker\", \"Title\": \"Managing Director\", \"Email\": \"robertbarker@vnasrisk.com\", \"Email Estimate\": \"\", \"Phone\": \"N/A\", \"Source\": \"Web Path (/about-us) \\u2192 Verified\", \"Notes\": \"\", \"Confidence\": \"High\", \"Latest News\": \"Top leader orders shift to proactive disaster risk management - vietnamnews.vn | https://news.google.com/rss/articles/CBMiqAFBVV95cUxPRGZOdktnM2tBZUdndUtCZUhXRm5TMVVMVTZlMkdlcjVGUmR6b25XWDNhRDM1Y2w3MFducEg5MEgxRnJYZWNUT29wQThnbHZScWRrbnVnUzVWVzNiVnVyS2NHWW0xZWNFbTE1VzNqZm1YSER4UlZMQXRHZW1fMXVndWk0QWMxRGV5NjljMlFhU29LNEhfTG9aSWhrTFM3T2VYT24wR3oybm4?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"captive management firm providing outsourced administration, regulatory compliance, financial management, and operational oversight for captive insurance companies, allowing owners to operate their captives without maintaining dedicated internal staff.\", \"Priority\": \"Medium\", \"Growth\": \"Low\", \"Txn Readiness\": \"Low\", \"Priority Confidence\": \"Medium\", \"Growth Confidence\": \"Low\", \"Txn Readiness Confidence\": \"Low\", \"Differentiated Confidence\": \"Medium\", \"Conviction\": 4, \"Conviction Pitch\": \"VNAS Risk Solutions operates in the niche market of captive insurance management, offering outsourced administration and compliance services. However, it lacks differentiation in a highly specialized segment and does not present clear drivers for significant growth or a defendable moat, limiting its appeal as a unique investment opportunity.\", \"Conviction Reasoning\": \"The company operates in a specialized but low-growth market with no clear competitive edge or unique attributes to leverage.\"}",
       "created_at": "2026-07-11T15:27:34.477253+00:00",
-      "updated_at": "2026-07-12T18:11:14.432836+00:00"
+      "updated_at": "2026-07-12T18:11:23.590086+00:00"
     }
   ],
   "activities": [
@@ -1657,6 +1657,24 @@
       "detail": "",
       "timestamp": "2026-07-12T18:11:14.432597+00:00",
       "synced_to_sf": 0
+    },
+    {
+      "id": 70,
+      "deal_id": 45,
+      "type": "Email",
+      "summary": "Drafted outreach email: robert",
+      "detail": "",
+      "timestamp": "2026-07-12T18:11:19.012928+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 71,
+      "deal_id": 45,
+      "type": "Email",
+      "summary": "Outreach email logged to Salesforce: robert",
+      "detail": "",
+      "timestamp": "2026-07-12T18:11:23.590002+00:00",
+      "synced_to_sf": 1
     }
   ]
 }
