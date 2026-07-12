@@ -215,11 +215,11 @@
     "name": "Captive Administrators",
     "slug": "captive_administrators",
     "db_file": "project_captive_administrators.db",
-    "created_at": "2026-07-10T14:15:35.216631+00:00",
+    "created_at": "2026-07-12T18:12:45.135422+00:00",
     "niche": "captive management firm providing outsourced administration, regulatory compliance, financial management, and operational oversight for captive insurance companies, allowing owners to operate their captives without maintaining dedicated internal staff.",
     "geography": "NCP Priority Geography (Eastern US)",
     "memo_count": 3,
     "active": true,
-    "status": "stopped"
+    "backup_status": "not_configured"
   }
 ]
