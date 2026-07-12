@@ -208,8 +208,9 @@
     "niche": "Specialty trust administration providers serving RIAs and family offices",
     "geography": "NCP Priority Geography (Eastern US)",
     "memo_count": 3,
-    "active": false,
-    "backup_status": "not_configured"
+    "active": true,
+    "backup_status": "not_configured",
+    "status": "paused"
   },
   {
     "name": "Captive Administrators",
@@ -219,7 +220,7 @@
     "niche": "captive management firm providing outsourced administration, regulatory compliance, financial management, and operational oversight for captive insurance companies, allowing owners to operate their captives without maintaining dedicated internal staff.",
     "geography": "NCP Priority Geography (Eastern US)",
     "memo_count": 3,
-    "active": true,
+    "active": false,
     "backup_status": "not_configured"
   }
 ]
