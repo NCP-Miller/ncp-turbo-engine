@@ -611,7 +611,7 @@
       "state": "New Jersey",
       "niche": "I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.",
       "project": "Wealth management and RIA compliance",
-      "status": "New",
+      "status": "Not a Fit",
       "source": "backfill-memo",
       "notes": "acquired by acxellrms",
       "next_followup": null,
@@ -619,7 +619,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"P&G Associates\", \"Description\": \"P&G Associates, now known as Acxell, provides risk management and internal audit services primarily to financial institutions. They specialize in areas such as regulatory compliance, cybersecurity assessments, and enterprise risk management, operating out of East Brunswick, New Jersey.\", \"Website\": \"http://www.acxellrms.com\", \"City\": \"East Brunswick\", \"State\": \"New Jersey\", \"LinkedIn\": \"http://www.linkedin.com/company/p&g-associates\", \"Employees\": 51, \"Est. EBITDA\": \"$1.5M\\u2013$2.5M\", \"CEO/Owner Name\": \"N/A\", \"Title\": \"N/A\", \"Email\": \"info@acxellrms.com\", \"Email Estimate\": \"\", \"Phone\": \"877-651-1700\", \"Source\": \"Web (contact only)\", \"Notes\": \"\", \"Confidence\": \"Medium\", \"Latest News\": \"Accountants Behaving Badly: Busted with Meth, Stealing From Clients, Bank Fraud - Going Concern | https://news.google.com/rss/articles/CBMiqgFBVV95cUxPTzEzUnJIRHJMVUhOajc2R011R000RzZOMHFEVG5SRmtQUF9wQ3htLWZCcnJyNTVLbENmUGs3TmFrcjdqX1p0b1ZrZWQyUE1NbjJ6cnp1emJjcTZzU3A0aEpma1VGMm5TYmotY1ZiTjFrMG5sNjNVdjQ2N3FiUURBaVRFNURfM0pQSURiVzk4Z1k2SlVkLTduMWxKUktYZjdpYWsxNktXY3VQZw?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.\", \"Priority\": \"High\", \"Growth\": \"Low\", \"Txn Readiness\": \"Medium\", \"Conviction\": 4, \"Conviction Pitch\": \"P&G Associates, rebranded as Acxell, specializes in risk management and internal audit services for financial institutions, with a focus on regulatory compliance and cybersecurity. While the company operates in the critical financial compliance sector, it lacks significant differentiation and seems not to be a leader in this fragmented market. Without a clear unique advantage or notable growth indicators, it's not compelling enough for our current investment mandate.\", \"Conviction Reasoning\": \"Despite operating in a necessary space, the company does not present a distinctive edge or an evident 'right to win' strongly enough to overcome its low differentiation and growth.\"}",
       "created_at": "2026-07-10T00:01:38.153446+00:00",
-      "updated_at": "2026-07-14T21:30:24.834522+00:00"
+      "updated_at": "2026-07-14T21:30:27.850344+00:00"
     },
     {
       "id": 28,
@@ -1845,6 +1845,15 @@
       "summary": "Status: New \u2192 Not a Fit",
       "detail": "",
       "timestamp": "2026-07-14T21:29:20.410009+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 91,
+      "deal_id": 27,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-07-14T21:30:27.850216+00:00",
       "synced_to_sf": 0
     }
   ]
