@@ -772,7 +772,7 @@
       "state": "New York",
       "niche": "I am looking for tech enabled companies providing compliance and risk solutions to banks, community banks/lenders, and credit unions. The solutions may be related to vendor third party risk management, Bank Secrecy Act (BSA), Anti-Money Laundering (AML), loan review, fair lending, and complaint management.",
       "project": "Community Bank and Credit Union Compliance 26.06.16",
-      "status": "New",
+      "status": "In Dialogue",
       "source": "backfill-liked",
       "notes": "",
       "next_followup": null,
@@ -780,7 +780,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"Adapt Ready, Inc.\", \"Description\": \"Adapt Ready, Inc. is a company that provides risk intelligence solutions through its platform, which integrates external data to help clients manage operational and financial risks. The company serves the commercial insurance sector, offering tools for risk assessment, mitigation, and prediction, and operates globally, focusing on enhancing growth and profitability for its clients.\", \"Website\": \"http://www.adaptready.com\", \"City\": \"New York\", \"State\": \"New York\", \"LinkedIn\": \"http://www.linkedin.com/company/adapt-ready\", \"Employees\": 23, \"Est. EBITDA\": \"$690K\\u2013$1.1M\", \"CEO/Owner Name\": \"Shruthi Rao\", \"Title\": \"Chief Executive Officer\", \"Email\": \"srao@adaptready.com\", \"Email Estimate\": \"\", \"Phone\": \"N/A\", \"Source\": \"Web Path (/about) \\u2192 Verified\", \"Notes\": \"\", \"Confidence\": \"High\", \"Latest News\": \"Coca-Cola to adapt via three principles - Food Business News | https://news.google.com/rss/articles/CBMikAFBVV95cUxORF94aTRLVWRQNjZQeV9FTS0zd1B0dllERnZDRTZsVVhUVlVOMWJENnNSaVdwaE5CbEJvRkNXVGhId1JOUnYxQm5nVTlwOUlpaGlrTWtOelNBd0IyUnNxRjBhQ3pmSElMdUFUU3dBOWNCUTh5QUpXbHhzWERnYlAwd0R5RE1fM29oZnpTOXJHUjg?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"I am looking for tech enabled companies providing compliance and risk solutions to banks, community banks/lenders, and credit unions. The solutions may be related to vendor third party risk management, Bank Secrecy Act (BSA), Anti-Money Laundering (AML), loan review, fair lending, and complaint management.\\n\\nEXCLUDE these types of companies: Consulting\", \"Priority\": \"High\", \"Growth\": \"High\", \"Txn Readiness\": \"Low\", \"Conviction\": 4, \"Conviction Pitch\": \"Adapt Ready, Inc. offers a risk intelligence platform for the commercial insurance sector, but lacks the unique attributes that would make it a standout candidate for our lower middle market investment mandate focused on founder-owned businesses. The company's global operations and focus on enhancing growth and profitability for clients are commendable, yet it does not exhibit a clear 'right to win' nor possess substantial differentiation or defensible moat in a fragmented market ripe for consolidation.\", \"Conviction Reasoning\": \"The inclusion of a professional investor is a significant deal breaker, and the lack of clear differentiation and readiness for transaction diminishes its appeal.\"}",
       "created_at": "2026-07-10T00:01:38.914286+00:00",
-      "updated_at": "2026-07-10T00:01:38.920853+00:00"
+      "updated_at": "2026-07-14T19:38:24.386750+00:00"
     },
     {
       "id": 35,
@@ -1764,6 +1764,15 @@
       "summary": "Status: Outreach Active \u2192 Closed \u2013 No Response",
       "detail": "",
       "timestamp": "2026-07-14T19:38:14.272436+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 82,
+      "deal_id": 34,
+      "type": "Note",
+      "summary": "Status: New \u2192 In Dialogue",
+      "detail": "",
+      "timestamp": "2026-07-14T19:38:24.386493+00:00",
       "synced_to_sf": 0
     }
   ]
