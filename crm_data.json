@@ -795,7 +795,7 @@
       "state": "North Carolina",
       "niche": "I am looking for tech enabled companies providing compliance and risk solutions to banks, community banks/lenders, and credit unions. The solutions may be related to vendor third party risk management, Bank Secrecy Act (BSA), Anti-Money Laundering (AML), loan review, fair lending, and complaint management.",
       "project": "Community Bank and Credit Union Compliance 26.06.16",
-      "status": "New",
+      "status": "Revisit Later",
       "source": "backfill-liked",
       "notes": "Too small. Introduced to ControlCase",
       "next_followup": null,
@@ -803,7 +803,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"Vero AI\", \"Description\": \"Vero AI is a company that specializes in AI-driven audit automation, designed to enhance the audit profession by combining AI agents with auditor review to evaluate evidence and produce audit-ready outputs. The platform supports compliance with various regulatory frameworks such as ISO 27001, NIST CSF, and HIPAA, and is used across enterprise, assurance, and public sector environments. Vero AI operates with a focus on providing consistent, traceable, and defensible audit findings.\", \"Website\": \"http://www.vero-ai.com\", \"City\": \"Raleigh\", \"State\": \"North Carolina\", \"LinkedIn\": \"http://www.linkedin.com/company/veroai\", \"Employees\": 16, \"Est. EBITDA\": \"$480K\\u2013$800K\", \"CEO/Owner Name\": \"Eric Sydell\", \"Title\": \"CEO\", \"Email\": \"eric.sydell@vero-ai.com\", \"Email Estimate\": \"\", \"Phone\": \"N/A\", \"Source\": \"Web Path (/about) \\u2192 Verified\", \"Notes\": \"\", \"Confidence\": \"High\", \"Latest News\": \"N/A\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"I am looking for tech enabled companies providing compliance and risk solutions to banks, community banks/lenders, and credit unions. The solutions may be related to vendor third party risk management, Bank Secrecy Act (BSA), Anti-Money Laundering (AML), loan review, fair lending, and complaint management.\\n\\nEXCLUDE these types of companies: Consulting\", \"Priority\": \"High\", \"Growth\": \"Low\", \"Txn Readiness\": \"Low\", \"Conviction\": 3, \"Conviction Pitch\": \"Vero AI specializes in AI-driven audit automation for compliance across various regulatory frameworks, but it lacks significant differentiation in a competitive market. Additionally, the growth and transaction readiness are both low, indicating it may not be a strong fit for our investment mandate focused on founder-owned service businesses with a clear right to win and expansion potential.\", \"Conviction Reasoning\": \"The company's low differentiation and lack of growth potential, combined with the competitive nature of the market, resulted in a low conviction score. It does not align with previous successful investments that had a clear unique advantage and strong growth incentives.\"}",
       "created_at": "2026-07-10T00:01:38.929033+00:00",
-      "updated_at": "2026-07-14T19:17:49.425063+00:00"
+      "updated_at": "2026-07-14T19:18:02.828077+00:00"
     },
     {
       "id": 36,
@@ -1746,6 +1746,15 @@
       "summary": "Status: New \u2192 Not a Fit",
       "detail": "",
       "timestamp": "2026-07-14T19:16:56.118146+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 80,
+      "deal_id": 35,
+      "type": "Note",
+      "summary": "Status: New \u2192 Revisit Later",
+      "detail": "",
+      "timestamp": "2026-07-14T19:18:02.827449+00:00",
       "synced_to_sf": 0
     }
   ]
