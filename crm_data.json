@@ -703,7 +703,7 @@
       "state": "New York",
       "niche": "I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.",
       "project": "Wealth management and RIA compliance",
-      "status": "New",
+      "status": "Not a Fit",
       "source": "backfill-memo",
       "notes": "",
       "next_followup": null,
@@ -711,7 +711,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"Orical LLC\", \"Description\": \"Orical LLC is a consulting and software company that specializes in compliance and operational certification programs for the investment management industry. They provide services such as regulatory compliance, investment adviser registration, and broker-dealer compliance, offering cost-effective solutions and personalized support to help clients navigate complex regulatory environments. The company operates in partnership with Florio Leahy LLP, leveraging extensive industry experience to serve investment management firms.\", \"Website\": \"http://www.orical.org\", \"City\": \"New York\", \"State\": \"New York\", \"LinkedIn\": \"http://www.linkedin.com/company/orical-llp\", \"Employees\": 49, \"Est. EBITDA\": \"$1.5M\\u2013$2.5M\", \"CEO/Owner Name\": \"Gregory Florio\", \"Title\": \"Principal\", \"Email\": \"gflorio@orical.org\", \"Email Estimate\": \"\", \"Phone\": \"(212) 257-5781\", \"Source\": \"Web Path (/our-team)\", \"Notes\": \"\", \"Confidence\": \"Medium\", \"Latest News\": \"Bronstein, Gewirtz & Grossman LLC Urges Oracle Corporation - GlobeNewswire | https://news.google.com/rss/articles/CBMilAJBVV95cUxOWDlQaWpadjJ1cnpvN0w0NkpsSldfdzRwb09rc0Y5c1hsakNTZ2c2Y1FRLTlyQVRYcVJCWndkYlJQU0c0R2lDb080ajhBdDU4b1hZMENITjlPY01qa2ZpejdtamxHald2LXJ6R2lpWXRhOG1Mejd0YTUyMDdoSVJzd014MnZJNXNwanM3alMyRnBfWHo0b2w4bHQ1dkRrUWl0Nmd0a0tqMUx5ckpiNEtKb0FydUMwZlA4dF9WWHlwZ3NnT1pqNHhzQmdUdDlqZ2xTSnFPajlIcWxHY3hUVkkyQzkzUVN4UWxDQWRYX1oyWnBGaTZDczBNdDR4VDVqR2FHcTEwMzFEcTBaZGtLWnVkX3ZxMlQ?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Medium\", \"_niche\": \"I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.\", \"Priority\": \"High\", \"Growth\": \"Low\", \"Txn Readiness\": \"Medium\", \"Conviction\": 8, \"Conviction Pitch\": \"Orical LLC presents a compelling opportunity in a niche market by offering uniquely tailored compliance and operational certification programs for the rapidly evolving investment management industry. Partnering with Florio Leahy LLP, they leverage deep industry expertise to navigate complex regulatory challenges, positioning them strongly in a market where regulatory pressure continues to mount. Their strategic focus on a specialized niche, combined with a potential for repeat business due to recurring compliance needs, creates a defensible market position with room for expansion.\", \"Conviction Reasoning\": \"The combination of specialized expertise, increasing regulatory demands in the investment management sector, and the potential for recurring revenue gives Orical LLC a distinct advantage in its market.\"}",
       "created_at": "2026-07-10T00:01:38.215808+00:00",
-      "updated_at": "2026-07-10T00:01:38.223067+00:00"
+      "updated_at": "2026-07-14T21:25:13.803207+00:00"
     },
     {
       "id": 32,
@@ -1809,6 +1809,15 @@
       "summary": "Status: New \u2192 Closed \u2013 No Response",
       "detail": "",
       "timestamp": "2026-07-14T20:32:03.793432+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 87,
+      "deal_id": 31,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-07-14T21:25:13.803021+00:00",
       "synced_to_sf": 0
     }
   ]
