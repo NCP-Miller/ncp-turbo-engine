@@ -634,7 +634,7 @@
       "state": "Ohio",
       "niche": "I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.",
       "project": "Wealth management and RIA compliance",
-      "status": "New",
+      "status": "Not a Fit",
       "source": "backfill-memo",
       "notes": "Owned by a law firm",
       "next_followup": null,
@@ -642,7 +642,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"Dinsmore Compliance Services\", \"Description\": \"Dinsmore Compliance Services (DCS), an affiliate of Dinsmore & Shohl LLP, provides comprehensive compliance solutions for the financial investment industry, including services for wealth managers, portfolio managers, hedge funds, and municipal advisers. Established in 2016, DCS specializes in investment advisor compliance, offering outsourced compliance programs, consulting, and assessments to help firms navigate regulatory requirements.\", \"Website\": \"http://www.dinsmorecomplianceservices.com\", \"City\": \"Cincinnati\", \"State\": \"Ohio\", \"LinkedIn\": \"http://www.linkedin.com/company/dinsmore-compliance-services\", \"Employees\": 24, \"Est. EBITDA\": \"$720K\\u2013$1.2M\", \"CEO/Owner Name\": \"Kevin Woodard\", \"Title\": \"Attorney\", \"Email\": \"kevin.woodard@dinsmorecomplianceservices.com\", \"Email Estimate\": \"\", \"Phone\": \"(513) 977-8646\", \"Source\": \"Web Path (/contact) \\u2192 Verified\", \"Notes\": \"\", \"Confidence\": \"High\", \"Latest News\": \"George Vincent Named as Kroger Secretary and General Counsel - Kroger | https://news.google.com/rss/articles/CBMiugFBVV95cUxPcGZBQXF4ZlBVaUNuZEJvWDhMQ1pPSGh6dWhRdkNEQl9BanJSYjF4RVVmZ05WOUFsR28xcDlkQVBKcURUSnVFZzRtWUlZT1ZsNkZEVmxjMmNNdjVTWGVwU3dMQzQ3OGF4UnI5cXoyaFBHSGJrZU1wZ2VvUFJCQndHVVQyeG9oZ24tRkYzb1A0ZTFIcUhrbE9SV2kzWThUSkpKalRvbFoyUjZQdDlQbmQ3VmdiX2w5VFpQb2c?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.\", \"Priority\": \"High\", \"Growth\": \"Medium\", \"Txn Readiness\": \"Low\", \"Conviction\": 4, \"Conviction Pitch\": \"Dinsmore Compliance Services provides vital compliance solutions tailored for the financial investment industry, particularly aiding RIAs and private wealth advisors in navigating regulatory requirements. Despite being embedded within Dinsmore & Shohl LLP, their differentiation within the space remains low, lacking a compelling edge against competitors and in essential service diversification.\", \"Conviction Reasoning\": \"The company's alignment with a growing compliance need in financial services is notable, but without distinct differentiation or a proprietary offering, it does not present an evident right to win compared to more unique market participants.\"}",
       "created_at": "2026-07-10T00:01:38.167984+00:00",
-      "updated_at": "2026-07-14T21:29:16.611807+00:00"
+      "updated_at": "2026-07-14T21:29:20.410292+00:00"
     },
     {
       "id": 29,
@@ -1836,6 +1836,15 @@
       "summary": "Status: New \u2192 Not a Fit",
       "detail": "",
       "timestamp": "2026-07-14T21:27:40.581429+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 90,
+      "deal_id": 28,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-07-14T21:29:20.410009+00:00",
       "synced_to_sf": 0
     }
   ]
