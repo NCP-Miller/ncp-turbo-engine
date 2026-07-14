@@ -749,7 +749,7 @@
       "state": "Illinois",
       "niche": "I am looking for tech enabled companies providing compliance and risk solutions to banks, community banks/lenders, and credit unions. The solutions may be related to vendor third party risk management, Bank Secrecy Act (BSA), Anti-Money Laundering (AML), loan review, fair lending, and complaint management.",
       "project": "Community Bank and Credit Union Compliance 26.06.16",
-      "status": "New",
+      "status": "Closed \u2013 No Response",
       "source": "backfill-liked",
       "notes": "Three voicemails, three emails and LinkedIn. No response. Handed to Caddo Lake",
       "next_followup": null,
@@ -757,7 +757,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"Pegasus Knowledge Solutions, Inc.\", \"Description\": \"Pegasus Knowledge Solutions, Inc. (PKSI), founded in 1997, is an independent analytics software and services company that specializes in advanced analytics, data integration, predictive modeling, and machine learning. They serve various industries, including financial services, healthcare, logistics, and marketing, providing solutions to enhance customer and operational insights. PKSI operates globally with ISO 9001-2008 and ISMS 27001-2013 certified solution delivery centers.\", \"Website\": \"http://www.pksi.com\", \"City\": \"Schaumburg\", \"State\": \"Illinois\", \"LinkedIn\": \"http://www.linkedin.com/company/pegasus-knowledge-solutions\", \"Employees\": 69, \"Est. EBITDA\": \"$2.1M\\u2013$3.5M\", \"CEO/Owner Name\": \"N/A\", \"Title\": \"N/A\", \"Email\": \"info@pksi.com\", \"Email Estimate\": \"\", \"Phone\": \"+1 847 995 1100\", \"Source\": \"Web (contact only)\", \"Notes\": \"\", \"Confidence\": \"Medium\", \"Latest News\": \"N/A\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"I am looking for tech enabled companies providing compliance and risk solutions to banks, community banks/lenders, and credit unions. The solutions may be related to vendor third party risk management, Bank Secrecy Act (BSA), Anti-Money Laundering (AML), loan review, fair lending, and complaint management.\\n\\nEXCLUDE these types of companies: Consulting\", \"Priority\": \"Medium\", \"Growth\": \"Low\", \"Txn Readiness\": \"Low\", \"Conviction\": 4, \"Conviction Pitch\": \"Pegasus Knowledge Solutions, Inc. offers a solid foundation in analytics software and services with industry certifications, but lacks a clear and compelling differentiation in the competitive landscape. Although they possess strong accreditation, the low growth and medium priority in a niche not entirely aligned with our strategic interests reduce its allure. PKSI also lacks essential characteristics such as recurring revenue models or standout market opportunities that drive exceptional conviction.\", \"Conviction Reasoning\": \"The score is driven by PKSI's lack of differentiation and alignment with the ideal target profile, compounded by low growth and limited transaction readiness.\"}",
       "created_at": "2026-07-10T00:01:38.900890+00:00",
-      "updated_at": "2026-07-14T19:55:43.831149+00:00"
+      "updated_at": "2026-07-14T19:55:48.166066+00:00"
     },
     {
       "id": 34,
@@ -1773,6 +1773,15 @@
       "summary": "Status: New \u2192 In Dialogue",
       "detail": "",
       "timestamp": "2026-07-14T19:38:24.386493+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 83,
+      "deal_id": 33,
+      "type": "Note",
+      "summary": "Status: New \u2192 Closed \u2013 No Response",
+      "detail": "",
+      "timestamp": "2026-07-14T19:55:48.165926+00:00",
       "synced_to_sf": 0
     }
   ]
