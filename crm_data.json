@@ -659,13 +659,13 @@
       "project": "Wealth management and RIA compliance",
       "status": "New",
       "source": "backfill-memo",
-      "notes": "",
+      "notes": "Small tam. Competitive space",
       "next_followup": null,
       "sf_account_id": null,
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"Trillium Surveyor\", \"Description\": \"Trillium Surveyor is a financial services software company based in the United States, specializing in trade surveillance and best execution analytics platforms. It was founded over a decade ago by Trillium Trading and provides solutions for risk, compliance, and trading teams at capital markets firms and financial institutions globally. The company offers two main products: Surveyor Trade Surveillance, which focuses on trade monitoring and manipulation detection, and Surveyor Best Ex, an analytics engine for organizing trade data and enhancing performance analytics.\", \"Website\": \"http://www.trilliumsurveyor.com\", \"City\": \"New York\", \"State\": \"New York\", \"LinkedIn\": \"http://www.linkedin.com/company/trillium-surveyor\", \"Employees\": 20, \"Est. EBITDA\": \"$600K\\u2013$1.0M\", \"CEO/Owner Name\": \"Lee Maschler\", \"Title\": \"Founder & Owner\", \"Email\": \"N/A\", \"Email Estimate\": \"\", \"Phone\": \"N/A\", \"Source\": \"Web Path (/about)\", \"Notes\": \"\", \"Confidence\": \"Medium\", \"Latest News\": \"Trillium Surveyor and Crypto.com Expand Surveillance Readiness for Prediction Markets - PR Newswire | https://news.google.com/rss/articles/CBMi1wFBVV95cUxQUGRUQm9RdnZwN194WnI2RW15djU3ajVWT1ZpRU5YZ0FzSEljSENpNlVrbDI5NXdkeG5LdVpqaXYzX3JnMndLUGlUSk1VMUQtWTJBX1JmamV5NVExSDlIR254bnh2X0pLbC1RS3BFRFItUkJDcXBWSENLeTFuMFpjMkpnT1RIRlJjM2RJeEVZTF9lOWxSeC1oU18xMmp0WmRJT2JvcU12aGhTbUNrX05aTlc2VDJYWlItOUVzeHhjZ0tqM3pLU3dtRFNDdDdHRDhlVnk1ckZudw?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.\", \"Priority\": \"High\", \"Growth\": \"Low\", \"Txn Readiness\": \"Low\", \"Conviction\": 3, \"Conviction Pitch\": \"Trillium Surveyor does not stand out due to its lack of differentiation in the crowded financial services software space. The market for trade surveillance and best execution analytics is competitive, with established players offering similar capabilities. Moreover, it lacks the compelling growth and transactional readiness we require to justify entry.\", \"Conviction Reasoning\": \"The company's low differentiation and lack of high growth prospects significantly diminish its attractiveness, making it an unsuitable candidate given our investment criteria.\"}",
       "created_at": "2026-07-10T00:01:38.183684+00:00",
-      "updated_at": "2026-07-10T00:01:38.190621+00:00"
+      "updated_at": "2026-07-14T21:27:36.703944+00:00"
     },
     {
       "id": 30,
