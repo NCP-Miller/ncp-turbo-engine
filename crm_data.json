@@ -596,7 +596,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"Trans World Compliance\", \"Description\": \"Trans World Compliance, founded in 2014 and headquartered in Washington, DC, provides software solutions to assist financial institutions, tax regulatory bodies, and governments in meeting compliance and regulatory requirements. Their products, such as CRS/FATCA One and Tax Authority Compliance Software (TACS), support the automation and accuracy of reporting processes related to international tax regulations like FATCA, CRS, and BEPS, serving a global client base.\", \"Website\": \"http://www.transworldcompliance.com\", \"City\": \"Rockville\", \"State\": \"Maryland\", \"LinkedIn\": \"http://www.linkedin.com/company/trans-world-compliance\", \"Employees\": 22, \"Est. EBITDA\": \"$660K\\u2013$1.1M\", \"CEO/Owner Name\": \"N/A\", \"Title\": \"N/A\", \"Email\": \"N/A\", \"Email Estimate\": \"\", \"Phone\": \"N/A\", \"Source\": \"Not Found\", \"Notes\": \"\", \"Confidence\": \"Low\", \"Latest News\": \"N/A\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.\", \"Priority\": \"High\", \"Growth\": \"Low\", \"Txn Readiness\": \"Low\", \"Conviction\": 4, \"Conviction Pitch\": \"Trans World Compliance operates in a niche market providing compliance solutions linked to international tax regulations like FATCA, CRS, and BEPS. While the company serves a global client base, it lacks a strong differentiation in a crowded market of compliance software providers.\", \"Conviction Reasoning\": \"The score was driven by the low differentiation and growth potential of the company, making it not compelling enough to pursue.\"}",
       "created_at": "2026-07-10T00:01:38.138627+00:00",
-      "updated_at": "2026-07-10T00:01:38.145990+00:00"
+      "updated_at": "2026-07-14T21:34:49.771728+00:00"
     },
     {
       "id": 27,
@@ -1854,6 +1854,15 @@
       "summary": "Status: New \u2192 Not a Fit",
       "detail": "",
       "timestamp": "2026-07-14T21:30:27.850216+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 92,
+      "deal_id": 26,
+      "type": "Note",
+      "summary": "Created Email reminder for 2026-07-16 13:30",
+      "detail": "",
+      "timestamp": "2026-07-14T21:34:49.771492+00:00",
       "synced_to_sf": 0
     }
   ]
