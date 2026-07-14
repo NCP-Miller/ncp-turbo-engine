@@ -682,13 +682,13 @@
       "project": "Wealth management and RIA compliance",
       "status": "New",
       "source": "backfill-memo",
-      "notes": "",
+      "notes": "TAM is too small. ",
       "next_followup": null,
       "sf_account_id": null,
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"BornTec\", \"Description\": \"BornTec is a financial technology solutions firm based in Chicago, Illinois, founded in 2002. The company specializes in data-driven software for capital markets, offering infrastructure, connectivity, and advanced analytics solutions designed for trade monitoring, risk management, and regulatory compliance. Their flagship product, CrossCheck\\u2122, provides real-time market surveillance and regulatory reporting by aggregating and normalizing global trade data.\", \"Website\": \"http://www.borntec.com\", \"City\": \"Chicago\", \"State\": \"Illinois\", \"LinkedIn\": \"http://www.linkedin.com/company/borntec\", \"Employees\": 18, \"Est. EBITDA\": \"$540K\\u2013$900K\", \"CEO/Owner Name\": \"Andrew Jennings\", \"Title\": \"EMEA Director\", \"Email\": \"andy.jennings@borntec.com\", \"Email Estimate\": \"\", \"Phone\": \"N/A\", \"Source\": \"Web Spider \\u2192 Verified\", \"Notes\": \"\", \"Confidence\": \"High\", \"Latest News\": \"N/A\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.\", \"Priority\": \"High\", \"Growth\": \"Medium\", \"Txn Readiness\": \"Low\", \"Conviction\": 3, \"Conviction Pitch\": \"BornTec offers financial technology solutions for capital markets with a focus on trade monitoring and regulatory compliance, but lacks unique differentiation in a crowded space. While their CrossCheck\\u2122 product provides real-time market surveillance, similar capabilities are offered by larger, more established players in the industry. The company's lack of standout traits and high transaction readiness diminishes the potential for a strong investment thesis.\", \"Conviction Reasoning\": \"The company appears to be a generic operator in a competitive space without clear differentiation or an unfair advantage, closely aligning with past feedback regarding undifferentiated companies.\"}",
       "created_at": "2026-07-10T00:01:38.198523+00:00",
-      "updated_at": "2026-07-10T00:01:38.206022+00:00"
+      "updated_at": "2026-07-14T21:26:55.421919+00:00"
     },
     {
       "id": 31,
