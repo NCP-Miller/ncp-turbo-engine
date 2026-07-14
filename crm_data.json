@@ -1002,7 +1002,7 @@
       "state": null,
       "niche": "captive management firm providing outsourced administration, regulatory compliance, financial management, and operational oversight for captive insurance companies, allowing owners to operate their captives without maintaining dedicated internal staff.",
       "project": null,
-      "status": "New",
+      "status": "Not a Fit",
       "source": "memo",
       "notes": "",
       "next_followup": null,
@@ -1010,7 +1010,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"Risk Services\", \"Description\": \"Risk Services specializes in the alternative insurance market by providing support in captive application, licensure, multi-state registration, and compliance. The company manages various forms of captive insurance, including single parent captives and Risk Retention Groups, across multiple onshore and offshore domiciles such as Vermont, Bermuda, and Turks & Caicos.\", \"Website\": \"https://www.riskcompanies.com\", \"City\": \"\", \"State\": \"\", \"LinkedIn\": null, \"Employees\": null, \"Est. EBITDA\": \"Unknown\", \"CEO/Owner Name\": \"Michael Rogers\", \"Title\": \"CEO\", \"Email\": \"N/A\", \"Email Estimate\": \"\", \"Phone\": \"N/A\", \"Source\": \"Web Path (/about)\", \"Notes\": \"\", \"Confidence\": \"Medium\", \"Latest News\": \"3 Stocks Tied To Rising Demand For Risk Management And Compliance Tools - simplywall.st | https://news.google.com/rss/articles/CBMi2AFBVV95cUxPc2FKbUg5c1Aya2VVbFBDQXlHdGx2SUdXd0NPQkV0NGJNcnVIY18xSHYtdXI3U2puakJKcDlzTE5JMWpmdDc2TlFYR3B1Mk9GVF9qSm14a3loT0hHdVMtSlVIVlNNX0VjQ016MkZTcE5URnJKbUpHWEsxVWRGRk1Kc1VmQVYwdG1telMzczlOUkNVbDVjTjB4UTVXOTNSUExmV3lKdEp0ZExIYjF0d2ZfNHhKV052cmVJWG1Kc1Y2RlZEN0NBb2JPSklKb2sybHVoSndyOTROYW7SAd4BQVVfeXFMT0ZVcWlrQnBWeE9iWFQwbmdGQWdRSVVBOTJJM0ZZcHlIMk44VmdMQ2ZWZG16X28ybExUQ0RscG8zaGlaSW81NVpObnZ0amc2SXdWZV9acEJzb1VOdmF4a2xZeEEtVFY1QlVycFJPOGVGSHJTanpad1l4WXZWRTh3WGlDYW52bkM4YmxCOWhpaEkxWjlyOE5iUlNhU3h0MG04Mmc0bzBZNDN0NGtGQnZKOWpLbi0zVUZRTy1Nbk4xNGx3QThwX1hQaHBXTkpKaTJTM3J1QjNCb1pCN3lVczNB?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Medium\", \"_niche\": \"captive management firm providing outsourced administration, regulatory compliance, financial management, and operational oversight for captive insurance companies, allowing owners to operate their captives without maintaining dedicated internal staff.\", \"Priority\": \"Medium\", \"Growth\": \"Medium\", \"Txn Readiness\": \"Medium\", \"Priority Confidence\": \"Medium\", \"Growth Confidence\": \"Medium\", \"Txn Readiness Confidence\": \"Low\", \"Differentiated Confidence\": \"Medium\", \"Conviction\": 6, \"Conviction Pitch\": \"Risk Services operates in the alternative insurance market, providing essential captive management services that streamline compliance and administration for captive insurance companies. This ensures a recurring revenue model through ongoing service agreements, which aligns with our interest in essential and recurring services. However, the firm's medium differentiation and growth potential suggest it may not have a significant competitive edge to create a compelling 'right to win' in this fragmented market.\", \"Conviction Reasoning\": \"While the company demonstrates some attractive features such as essential services and recurring revenue, its medium differentiation and growth limit its unfair advantage, positioning it more as a solid candidate rather than a standout opportunity.\"}",
       "created_at": "2026-07-10T15:20:22.521964+00:00",
-      "updated_at": "2026-07-14T19:14:39.570548+00:00"
+      "updated_at": "2026-07-14T19:14:59.074543+00:00"
     },
     {
       "id": 45,
@@ -1728,6 +1728,15 @@
       "summary": "Status: Not a Fit \u2192 New",
       "detail": "",
       "timestamp": "2026-07-14T19:14:39.569974+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 78,
+      "deal_id": 44,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-07-14T19:14:59.074240+00:00",
       "synced_to_sf": 0
     }
   ]
