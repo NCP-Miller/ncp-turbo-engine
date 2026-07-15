@@ -452,13 +452,13 @@
       "project": "Wealth management and RIA compliance",
       "status": "New",
       "source": "backfill-liked",
-      "notes": "",
+      "notes": "Already sold",
       "next_followup": null,
       "sf_account_id": null,
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"Smart-RIA Ventures, Inc.\", \"Description\": \"Smart-RIA Ventures, Inc., based in Tennessee, provides a compliance management platform designed to assist businesses with employee trade monitoring and vendor due diligence. The platform is tailored for SEC and FINRA compliance and is utilized by registered investment advisors (RIAs), chief compliance officers (CCOs), and compliance consultants.\", \"Website\": \"http://www.smart-ria.com\", \"City\": \"Knoxville\", \"State\": \"Tennessee\", \"LinkedIn\": null, \"Employees\": 0, \"Est. EBITDA\": \"Unknown\", \"CEO/Owner Name\": \"N/A\", \"Title\": \"N/A\", \"Email\": \"hello@smartria.com\", \"Email Estimate\": \"\", \"Phone\": \"N/A\", \"Source\": \"Web (contact only)\", \"Notes\": \"\", \"Confidence\": \"Medium\", \"Latest News\": \"SmartRIA co-founder Mac Bartine unveils new AI venture - Citywire | https://news.google.com/rss/articles/CBMimAFBVV95cUxPZ29teHlTdlZDeVVFNC1YNldUZ2gtWHVyaTRRMHR6cWl2alNIM0NoWUd3Nm1jaG5ZWEluR0Y2a2xORG1UUVJubGw4eVphSHN4Ri1WdmdoYmZlY3dtMVdLejVGaE4zMXl3dGRVeVBwWmFya1pNUjFHTEVXOTlzeFFtMkgzMmlJWG1nQWEtTHpPMmdhd0hsOWZ3dA?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Medium\", \"_niche\": \"I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.\", \"Priority\": \"High\", \"Growth\": \"Low\", \"Txn Readiness\": \"Low\", \"Conviction\": 4, \"Conviction Pitch\": \"Smart-RIA Ventures, Inc. operates in the niche of compliance for RIAs and private wealth advisors, but the differentiation is only medium and growth prospects low, limiting its appeal. While the platform is specifically tailored for SEC and FINRA compliance, the company's features may not be sufficiently unique to establish a clear competitive advantage. Additionally, with transaction readiness rated low, this opportunity lacks immediate potential for a successful acquisition.\", \"Conviction Reasoning\": \"The company is interesting due to its niche focus, but without significant differentiation or growth potential, it does not offer a compelling reason to pursue aggressively.\"}",
       "created_at": "2026-07-10T00:01:38.041272+00:00",
-      "updated_at": "2026-07-10T00:01:38.048236+00:00"
+      "updated_at": "2026-07-15T22:21:58.217900+00:00"
     },
     {
       "id": 21,
