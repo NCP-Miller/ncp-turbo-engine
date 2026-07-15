@@ -127,6 +127,7 @@ def _render_deal_card(deal):
             )
             if new_status != deal["status"]:
                 crm.set_status(_id, new_status, deal["status"])
+                crm.auto_sync_deal(_id)
                 crm.backup_to_github()
                 st.rerun()
 
@@ -141,8 +142,9 @@ def _render_deal_card(deal):
             )
             if st.button("Save Notes", key=f"savenotes_{_id}"):
                 crm.update_deal(_id, notes=notes_val)
+                _synced = crm.auto_sync_deal(_id)
                 crm.backup_to_github()
-                st.success("Notes saved.")
+                st.success("Notes saved." + (" Synced to Salesforce." if _synced else ""))
         with f_col:
             existing_fu = None
             if deal.get("next_followup"):
@@ -161,10 +163,12 @@ def _render_deal_card(deal):
             if fu_set.button("Set", key=f"fuset_{_id}"):
                 crm.update_deal(_id, next_followup=fu_date.isoformat())
                 crm.log_activity(_id, "Note", f"Follow-up set for {fu_date.isoformat()}")
+                crm.auto_sync_deal(_id)
                 crm.backup_to_github()
                 st.rerun()
             if deal.get("next_followup") and fu_clear.button("Clear", key=f"fuclear_{_id}"):
                 crm.update_deal(_id, next_followup=None)
+                crm.auto_sync_deal(_id)
                 crm.backup_to_github()
                 st.rerun()
             if deal.get("next_followup"):
@@ -205,6 +209,7 @@ def _render_deal_card(deal):
             )
             if st.form_submit_button("Log") and a_summary.strip():
                 crm.log_activity(_id, a_type, a_summary.strip())
+                crm.auto_sync_deal(_id)
                 crm.backup_to_github()
                 st.rerun()
 
@@ -266,6 +271,7 @@ def _render_deal_card(deal):
                     f"Created {r_action} reminder for "
                     f"{r_date.isoformat()} {r_time.strftime('%H:%M')}{recur_label}",
                 )
+                crm.auto_sync_deal(_id)
                 crm.backup_to_github()
 
         if st.session_state.get(f"_rem_ics_{_id}"):
@@ -283,8 +289,13 @@ def _render_deal_card(deal):
         sf_col, del_col = st.columns([1, 3])
         with sf_col:
             unsynced = crm.unsynced_activities(_id)
+            _linked = bool(deal.get("sf_account_id"))
+            _sync_label = (
+                f"Sync to Salesforce ({len(unsynced)} pending)" if _linked
+                else f"Link to Salesforce & sync ({len(unsynced)} pending)"
+            )
             if st.button(
-                f"Sync to Salesforce ({len(unsynced)} new)",
+                _sync_label,
                 key=f"sfsync_{_id}",
                 use_container_width=True,
             ):
@@ -305,10 +316,19 @@ def _render_deal_card(deal):
                 except Exception as e:
                     st.error(f"Salesforce sync error: {e}")
         with del_col:
-            st.caption(
-                "Sync pushes un-synced activities as completed Tasks and logs "
-                "the current status + notes to the Salesforce Account."
-            )
+            if _linked:
+                st.caption(
+                    "✅ Linked — every status change, note, follow-up, and "
+                    "activity auto-syncs to Salesforce. Activities become "
+                    "completed Tasks; status + notes update one summary Task; "
+                    "the follow-up date maintains an open Task with that due date."
+                )
+            else:
+                st.caption(
+                    "Not linked yet — click once to create/find the Salesforce "
+                    "Account and push everything. After linking, all changes "
+                    "auto-sync from then on."
+                )
 
 
 st.title("📇 Deal Tracker")
@@ -387,6 +407,36 @@ with st.expander("⚙️ Import & add deals"):
                 crm.log_activity(deal_id, "Note", "Added manually")
                 crm.backup_to_github()
                 st.rerun()
+
+    st.markdown("---")
+    st.markdown("**Salesforce catch-up**")
+    st.caption(
+        "Push everything logged so far — statuses, notes, follow-up dates, "
+        "and activities — to Salesforce in one pass. Linked deals always "
+        "sync; check the box to also link deals you've worked on that "
+        "aren't in Salesforce yet (creates their Accounts). Untouched "
+        "imports are never pushed."
+    )
+    _inc_unlinked = st.checkbox(
+        "Also link deals not yet in Salesforce (creates Accounts)",
+        value=True,
+        key="syncall_unlinked",
+    )
+    if st.button("🔄 Sync All to Salesforce", use_container_width=True):
+        with st.spinner("Syncing all deals to Salesforce..."):
+            _res = crm.sync_all_to_salesforce(include_unlinked=_inc_unlinked)
+            crm.backup_to_github()
+        if _res.get("error"):
+            st.error(_res["error"])
+        else:
+            st.success(
+                f"Synced {_res['deals_synced']} deals "
+                f"({_res['activities_synced']} activities). "
+                f"Newly linked: {_res['newly_linked']}. "
+                f"Skipped unlinked: {_res['skipped_unlinked']}."
+            )
+            for _err in _res.get("errors", [])[:5]:
+                st.warning(_err)
 
 # ---------------------------------------------------------------------------
 # Metrics + search
@@ -483,5 +533,6 @@ if _all_matching:
                     )
                     if c4.button("Reopen", key=f"reopen_{d['id']}"):
                         crm.set_status(d["id"], "New", d["status"])
+                        crm.auto_sync_deal(d["id"])
                         crm.backup_to_github()
                         st.rerun()

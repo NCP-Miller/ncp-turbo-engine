@@ -191,21 +191,72 @@ def sync_deal_to_salesforce(sf, deal, activities):
         sf.Task.create(payload)
         synced_ids.append(act["id"])
 
-    status_payload = {
-        "WhatId": account_id,
-        "WhoId": contact_id,
-        "Subject": f"NCP Tracker — Status: {deal.get('status', 'New')}",
-        "Description": (
-            f"Deal Tracker sync on {date.today().isoformat()}.\n"
+    # Status + notes — ONE summary Task per Account, updated in place so
+    # frequent auto-syncs don't pile up duplicate records.
+    status_subject = f"NCP Tracker - Status: {deal.get('status', 'New')}"
+    status_desc = (
+        f"Deal Tracker sync on {date.today().isoformat()}.\n"
+        f"Status: {deal.get('status', 'New')}\n"
+        f"Notes: {deal.get('notes') or '(none)'}"
+    )
+    try:
+        existing_status = sf.query(
+            f"SELECT Id FROM Task WHERE WhatId = '{account_id}' "
+            f"AND Subject LIKE 'NCP Tracker - Status:%' LIMIT 1"
+        )
+        if existing_status["totalSize"] > 0:
+            sf.Task.update(existing_status["records"][0]["Id"], {
+                "Subject": status_subject,
+                "Description": status_desc,
+            })
+        else:
+            payload = {
+                "WhatId": account_id,
+                "WhoId": contact_id,
+                "Subject": status_subject,
+                "Description": status_desc,
+                "Status": "Completed",
+                "Priority": "Normal",
+                "Type": "Other",
+            }
+            sf.Task.create({k: v for k, v in payload.items() if v is not None})
+    except Exception:
+        pass
+
+    # Follow-up date — ONE open Task per Account with the due date, updated
+    # in place whenever the tracker's next-follow-up changes.
+    nf = (deal.get("next_followup") or "")[:10]
+    if nf:
+        fu_desc = (
+            f"Follow up with {company} (from NCP Deal Tracker).\n"
             f"Status: {deal.get('status', 'New')}\n"
             f"Notes: {deal.get('notes') or '(none)'}"
-        ),
-        "Status": "Completed",
-        "Priority": "Normal",
-        "Type": "Other",
-    }
-    status_payload = {k: v for k, v in status_payload.items() if v is not None}
-    sf.Task.create(status_payload)
+        )
+        try:
+            existing_fu = sf.query(
+                f"SELECT Id FROM Task WHERE WhatId = '{account_id}' "
+                f"AND Subject LIKE 'NCP Tracker - Follow up%' "
+                f"AND Status = 'Not Started' LIMIT 1"
+            )
+            if existing_fu["totalSize"] > 0:
+                sf.Task.update(existing_fu["records"][0]["Id"], {
+                    "ActivityDate": nf,
+                    "Description": fu_desc,
+                })
+            else:
+                payload = {
+                    "WhatId": account_id,
+                    "WhoId": contact_id,
+                    "Subject": f"NCP Tracker - Follow up: {company}",
+                    "Description": fu_desc,
+                    "Status": "Not Started",
+                    "Priority": "High",
+                    "Type": "Call",
+                    "ActivityDate": nf,
+                }
+                sf.Task.create({k: v for k, v in payload.items() if v is not None})
+        except Exception:
+            pass
 
     return account_id, contact_id, synced_ids
 
