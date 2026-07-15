@@ -565,7 +565,7 @@
       "state": "Florida",
       "niche": "I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.",
       "project": "Wealth management and RIA compliance",
-      "status": "New",
+      "status": "Not a Fit",
       "source": "backfill-memo",
       "notes": "",
       "next_followup": null,
@@ -573,7 +573,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"Simplify Contract Compliance Solutions\", \"Description\": \"Simplify Contract Compliance Solutions, founded in 2014 by Big 4 alumni, specializes in contract compliance audits and risk management services. They leverage technology, including AI and machine learning, to enhance transparency and optimize contractual relationships for clients, including Fortune 500 companies, from their offices in Miami, Lima, and Barcelona.\", \"Website\": \"http://www.simplifyccs.com\", \"City\": \"Miami\", \"State\": \"Florida\", \"LinkedIn\": \"http://www.linkedin.com/company/simplify-contract-compliance-solutions-llc-\", \"Employees\": 17, \"Est. EBITDA\": \"$510K\\u2013$850K\", \"CEO/Owner Name\": \"Ana Carolina Bettencourt\", \"Title\": \"Co-founder or Partner\", \"Email\": \"N/A\", \"Email Estimate\": \"\", \"Phone\": \"N/A\", \"Source\": \"Web Path (/our-team)\", \"Notes\": \"\", \"Confidence\": \"Medium\", \"Latest News\": \"SolSource Solutions and TriBeam Financial Launch Propel: A Simplified TPO Solution for Residential Solar and Battery Financing - Business Wire | https://news.google.com/rss/articles/CBMijwJBVV95cUxQOE9FcjFQeG9VUW8yWVZ2NkVsY192TldIUTRKWTA1UE1lMGd4dF8tTUJxMXlhNUlNNGszSF96MHBwSGRPM1dZcGlacFdma19nbjlUQ1JkcmYwUXl3TlNqdzY3X2NjbUN3eDg3bzdHQ25QUS11eV9fOTFfZEVYYnVmRHBfM1NCLVFEdXI4cUZSemdFekR4YUNSSHhoV2V5YW83ZWxkVGJzSGx5Qzg0R0RrZk56Z1pVT0Q2T2ltX0xPMW5TN3VLaFJfZFBNbTlycUQzeXJOM3hzU0w4QzJmUjFTODZ0YnFCOHdTbmV1MFNmN2NQaF9EeGh6Y2ZyQWJnMEFwa2xfOUxETlNRamxIbFhz?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.\", \"Priority\": \"High\", \"Growth\": \"Low\", \"Txn Readiness\": \"Low\", \"Conviction\": 4, \"Conviction Pitch\": \"Simplify Contract Compliance Solutions offers contract compliance audits and risk management services utilizing AI and machine learning. However, despite their technological angle, they operate in a highly competitive market with limited differentiation from other service providers. Additionally, their growth and transaction readiness are low, which diminishes the opportunity for investment at this time.\", \"Conviction Reasoning\": \"The company lacks a unique differentiation or compelling advantage in a competitive and technology-heavy space, and their low growth and readiness do not align with our investment mandate.\"}",
       "created_at": "2026-07-10T00:01:38.124305+00:00",
-      "updated_at": "2026-07-10T00:01:38.130721+00:00"
+      "updated_at": "2026-07-15T22:17:17.525239+00:00"
     },
     {
       "id": 26,
@@ -1872,6 +1872,15 @@
       "summary": "Status: New \u2192 Outreach Active",
       "detail": "",
       "timestamp": "2026-07-14T21:35:02.969636+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 94,
+      "deal_id": 25,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-07-15T22:17:17.525077+00:00",
       "synced_to_sf": 0
     }
   ]
