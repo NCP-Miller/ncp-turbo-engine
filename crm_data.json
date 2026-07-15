@@ -151,7 +151,7 @@
       "state": "Ohio",
       "niche": "Pleasen find employee benefit administrators with ICHRA (Individual Coverage Health Reimbursement Arrangement) service offerings. Find more companies similar to Leap. Anchor traits: Leap is a healthcare company focused on transforming the specialty infusion care process by eliminating hidden drug markups and enabling at-home treatments. They serve employers and patients by providing a transparent, patient-centered model that integrates directly with health plans to reduce costs and improve access to infusion therapies. Leap operates within the healthcare sector, aiming to simplify and make life-sustaining treatments more affordable and accessible. | Differentiated: Low | Industry:  | Size: 39 employees.. Find more companies similar to myLaurel\u00ae. Anchor traits: myLaurel\u00ae is a healthcare organization that specializes in delivering acute and transitional care at home, aiming to improve patient outcomes and reduce hospital capacity constraints. They work with health systems and payers to provide a hybrid model of hands-on clinical care supported by virtual technology, focusing on high-risk patients to prevent unnecessary hospitalizations and lower healthcare costs. | Differentiated: Low | Industry:  | Size: 71 employees.. Find more companies similar to KSA Insurance. Anchor traits: KSA Insurance is an independent insurance agency headquartered in Charleston, South Carolina, serving clients throughout the South and across the East Coast. The company offers a comprehensive range of personal and commercial insurance products, including property, casualty, health, and life insurance, through an extensive carrier network. | Differentiated: Low | Industry:  | Size: 36 employees.",
       "project": "ICHRA 26.05.26",
-      "status": "New",
+      "status": "Not a Fit",
       "source": "backfill-memo",
       "notes": "RCM provider",
       "next_followup": null,
@@ -159,7 +159,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"ACU-Serve\", \"Description\": \"ACU-Serve is a revenue cycle management company that provides end-to-end solutions for home medical equipment (HME) and infusion providers across the United States. With over 500 U.S.-based employees and 1000 global resources, the company offers services from intake to cash posting, utilizing proprietary software to manage over $2 billion annually.\", \"Website\": \"http://www.acuservecorp.com\", \"City\": \"Akron\", \"State\": \"Ohio\", \"LinkedIn\": \"http://www.linkedin.com/company/acu-serve-corp.\", \"Employees\": 180, \"Est. EBITDA\": \"$2.7M\\u2013$5.4M\", \"CEO/Owner Name\": \"Jim Knight\", \"Title\": \"Chief Executive Officer\", \"Email\": \"jknight@acuservecorp.com\", \"Email Estimate\": \"\", \"Phone\": \"N/A\", \"Source\": \"Web Path (/about) \\u2192 Verified\", \"Notes\": \"\", \"Confidence\": \"High\", \"Latest News\": \"ACU-Serve promotes Kyle Neese to VP - HME News | https://news.google.com/rss/articles/CBMidkFVX3lxTFBSbERmWndxcnFzQ1dSUWZVRFB3eVY0alhlVU13TmpqMU5LZkhRUk9wSDRzLWVVT2FXWk1fc01PLVdpUGNuVGRsaXFmakNmRGZGTXhJV3MyTUdXV0tEb0VaX2FoMXhRUTBCV3VwakpsWjBsV0ZPVEE?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"Pleasen find employee benefit administrators with ICHRA (Individual Coverage Health Reimbursement Arrangement) service offerings. Find more companies similar to Leap. Anchor traits: Leap is a healthcare company focused on transforming the specialty infusion care process by eliminating hidden drug markups and enabling at-home treatments. They serve employers and patients by providing a transparent, patient-centered model that integrates directly with health plans to reduce costs and improve access to infusion therapies. Leap operates within the healthcare sector, aiming to simplify and make life-sustaining treatments more affordable and accessible. | Differentiated: Low | Industry:  | Size: 39 employees.\", \"Priority\": \"Medium\", \"Growth\": \"High\", \"Txn Readiness\": \"Medium\", \"Conviction\": 7, \"Conviction Pitch\": \"ACU-Serve stands out by leveraging proprietary software that enables it to efficiently manage over $2 billion annually in revenue cycle management for home medical equipment and infusion providers. This creates a strong moat in the specialized niche of healthcare services, combining technological advantage with a substantial operational footprint. Their focus on a fragmented healthcare niche positions them strategically for a buy-and-build strategy in the expanding home healthcare market.\", \"Conviction Reasoning\": \"ACU-Serve's use of proprietary software and focus on a specialized healthcare niche with secular growth trends (home healthcare) aligns well with our investment mandate, though the differentiation within the competitive landscape could be stronger.\"}",
       "created_at": "2026-07-10T00:01:36.876896+00:00",
-      "updated_at": "2026-07-15T22:48:59.544663+00:00"
+      "updated_at": "2026-07-15T22:49:02.793246+00:00"
     },
     {
       "id": 8,
@@ -2061,6 +2061,15 @@
       "summary": "Status: New \u2192 Not a Fit",
       "detail": "",
       "timestamp": "2026-07-15T22:48:32.091679+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 115,
+      "deal_id": 7,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-07-15T22:49:02.792838+00:00",
       "synced_to_sf": 0
     }
   ]
