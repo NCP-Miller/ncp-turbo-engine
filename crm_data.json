@@ -243,7 +243,7 @@
       "state": "Indiana",
       "niche": "Pleasen find employee benefit administrators with ICHRA (Individual Coverage Health Reimbursement Arrangement) service offerings. Find more companies similar to Leap. Anchor traits: Leap is a healthcare company focused on transforming the specialty infusion care process by eliminating hidden drug markups and enabling at-home treatments. They serve employers and patients by providing a transparent, patient-centered model that integrates directly with health plans to reduce costs and improve access to infusion therapies. Leap operates within the healthcare sector, aiming to simplify and make life-sustaining treatments more affordable and accessible. | Differentiated: Low | Industry:  | Size: 39 employees.. Find more companies similar to myLaurel\u00ae. Anchor traits: myLaurel\u00ae is a healthcare organization that specializes in delivering acute and transitional care at home, aiming to improve patient outcomes and reduce hospital capacity constraints. They work with health systems and payers to provide a hybrid model of hands-on clinical care supported by virtual technology, focusing on high-risk patients to prevent unnecessary hospitalizations and lower healthcare costs. | Differentiated: Low | Industry:  | Size: 71 employees.. Find more companies similar to KSA Insurance. Anchor traits: KSA Insurance is an independent insurance agency headquartered in Charleston, South Carolina, serving clients throughout the South and across the East Coast. The company offers a comprehensive range of personal and commercial insurance products, including property, casualty, health, and life insurance, through an extensive carrier network. | Differentiated: Low | Industry:  | Size: 36 employees.",
       "project": "ICHRA 26.05.26",
-      "status": "New",
+      "status": "Not a Fit",
       "source": "backfill-memo",
       "notes": "",
       "next_followup": null,
@@ -251,7 +251,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"HomeTown Pharmacy\", \"Description\": \"HomeTown Pharmacy is an independent pharmacy chain that provides a range of services including prescription refills, compounding, medication management, and infusion therapy. They serve local communities with a focus on personalized care and offer additional services such as immunizations and a free children's vitamin program.\", \"Website\": \"http://www.hometownpharmacy.com\", \"City\": \"Mishawaka\", \"State\": \"Indiana\", \"LinkedIn\": \"http://www.linkedin.com/company/hometown-pharmacy\", \"Employees\": 420, \"Est. EBITDA\": \"$6.3M\\u2013$12.6M\", \"CEO/Owner Name\": \"N/A\", \"Title\": \"N/A\", \"Email\": \"N/A\", \"Email Estimate\": \"\", \"Phone\": \"231-861-6900\", \"Source\": \"Web (contact only)\", \"Notes\": \"\", \"Confidence\": \"Medium\", \"Latest News\": \"Merrill Pharmacy sold to small chain - South Bend Tribune | https://news.google.com/rss/articles/CBMipwFBVV95cUxPVUl0UG82M1gzV09vTFdsRkpqOHlULUFzREpYNEROVWNJZUpfb3VHMnp4REdMWUV0LW1RTldINFVHNXBOSjk0c3J2Q1VJcFZkR1RDMms5MVlQNEI2Nk16SzlCbWRmNUpxdC1lTlZQcXB1RE5VUVdsS0xxVFl3UWxDM0s4Uzl5bElyXzNjcFBiRDBlWUc4TVpGSkVqV3ZseDE3VWVwTWRYbw?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"Pleasen find employee benefit administrators with ICHRA (Individual Coverage Health Reimbursement Arrangement) service offerings. Find more companies similar to Leap. Anchor traits: Leap is a healthcare company focused on transforming the specialty infusion care process by eliminating hidden drug markups and enabling at-home treatments. They serve employers and patients by providing a transparent, patient-centered model that integrates directly with health plans to reduce costs and improve access to infusion therapies. Leap operates within the healthcare sector, aiming to simplify and make life-sustaining treatments more affordable and accessible. | Differentiated: Low | Industry:  | Size: 39 employees.. Find more companies similar to myLaurel\\u00ae. Anchor traits: myLaurel\\u00ae is a healthcare organization that specializes in delivering acute and transitional care at home, aiming to improve patient outcomes and reduce hospital capacity constraints. They work with health systems and payers to provide a hybrid model of hands-on clinical care supported by virtual technology, focusing on high-risk patients to prevent unnecessary hospitalizations and lower healthcare costs. | Differentiated: Low | Industry:  | Size: 71 employees.. Find more companies similar to KSA Insurance. Anchor traits: KSA Insurance is an independent insurance agency headquartered in Charleston, South Carolina, serving clients throughout the South and across the East Coast. The company offers a comprehensive range of personal and commercial insurance products, including property, casualty, health, and life insurance, through an extensive carrier network. | Differentiated: Low | Industry:  | Size: 36 employees.\", \"Priority\": \"Low\", \"Growth\": \"High\", \"Txn Readiness\": \"Low\", \"Conviction\": 8, \"Conviction Pitch\": \"HomeTown Pharmacy stands out as a multi-location operator in a non-cyclical and essential industry\\u2014community pharmacies\\u2014where personalized care and community trust serve as a significant moat. With the founder nearing retirement, there's a clear opportunity for succession in a fragmented market ripe for a buy-and-build strategy. Combining prescription services with additional health programs like immunizations and vitamins underscores their unique approach to comprehensive wellness.\", \"Conviction Reasoning\": \"The combination of essential services, multi-location presence, and a fragmented market with a succession opportunity meets several of our investment mandates, making this a compelling opportunity.\"}",
       "created_at": "2026-07-10T00:01:36.947476+00:00",
-      "updated_at": "2026-07-10T00:01:36.954949+00:00"
+      "updated_at": "2026-07-15T22:45:13.316540+00:00"
     },
     {
       "id": 12,
@@ -2025,6 +2025,15 @@
       "summary": "Status: New \u2192 Revisit Later",
       "detail": "",
       "timestamp": "2026-07-15T22:41:11.456755+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 111,
+      "deal_id": 11,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-07-15T22:45:13.316188+00:00",
       "synced_to_sf": 0
     }
   ]
