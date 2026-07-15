@@ -201,18 +201,6 @@
     "backup_status": "not_configured"
   },
   {
-    "name": "Specialty Trust Administration",
-    "slug": "specialty_trust_administration",
-    "db_file": "project_specialty_trust_administration.db",
-    "created_at": "2026-07-10T14:15:30.168385+00:00",
-    "niche": "Specialty trust administration providers serving RIAs and family offices",
-    "geography": "NCP Priority Geography (Eastern US)",
-    "memo_count": 3,
-    "active": true,
-    "backup_status": "not_configured",
-    "status": "paused"
-  },
-  {
     "name": "Captive Administrators",
     "slug": "captive_administrators",
     "db_file": "project_captive_administrators.db",
@@ -221,6 +209,17 @@
     "geography": "NCP Priority Geography (Eastern US)",
     "memo_count": 3,
     "active": false,
+    "backup_status": "not_configured"
+  },
+  {
+    "name": "Specialty Trust Administration",
+    "slug": "specialty_trust_administration",
+    "db_file": "project_specialty_trust_administration.db",
+    "created_at": "2026-07-15T22:33:45.150270+00:00",
+    "niche": "Specialty trust administration providers serving RIAs and family offices",
+    "geography": "NCP Priority Geography (Eastern US)",
+    "memo_count": 3,
+    "active": true,
     "backup_status": "not_configured"
   }
 ]
