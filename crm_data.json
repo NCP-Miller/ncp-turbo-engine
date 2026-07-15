@@ -519,7 +519,7 @@
       "state": "Texas",
       "niche": "I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.",
       "project": "Wealth management and RIA compliance",
-      "status": "New",
+      "status": "Not a Fit",
       "source": "backfill-memo",
       "notes": "",
       "next_followup": null,
@@ -527,7 +527,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"S3\", \"Description\": \"S3 is a privately held software company founded in 2003 and based in Austin, Texas, specializing in compliance reporting and trade analytics for the financial services industry. The company provides a comprehensive software platform that includes tools for transaction cost analysis, trade surveillance, and regulatory compliance reporting across various asset classes such as equities, options, and fixed income. S3 serves brokers, traders, and compliance teams, helping them optimize trades and meet regulatory requirements.\", \"Website\": \"http://www.s3.com\", \"City\": \"Austin\", \"State\": \"Texas\", \"LinkedIn\": \"http://www.linkedin.com/company/s3-matching-technologies\", \"Employees\": 94, \"Est. EBITDA\": \"$2.8M\\u2013$4.7M\", \"CEO/Owner Name\": \"N/A\", \"Title\": \"N/A\", \"Email\": \"N/A\", \"Email Estimate\": \"\", \"Phone\": \"N/A\", \"Source\": \"Not Found\", \"Notes\": \"\", \"Confidence\": \"Low\", \"Latest News\": \"Austin's S3 Ventures Celebrates 20 Years and Announces $250M Fund VIII - Business Wire | https://news.google.com/rss/articles/CBMixwFBVV95cUxQR25ZQzl3UVdUVmVSbk9vZklxUzh2SnBrU2R0ck1xbmdSNWl1TlF3Z1djaWxfVHVpLXFmbml6UmhMeWRUaVpmQVlwLWszamVnQWpqVVNHQndWSlZVcDJEX1FPaFcwWlB1MnI5elJkdkVfZHRzS0R6WDk0TS1iR19KT1NaRWt0TWVzb0RHd09KQ04wTXE1NHdmWExSN1VPd1NsLVoydkJoUEczak1HVlY1S2s1cjFxRTgzOVhWVTJtY29LMUNjQjE0?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.\", \"Priority\": \"Medium\", \"Growth\": \"Low\", \"Txn Readiness\": \"Low\", \"Conviction\": 4, \"Conviction Pitch\": \"S3 is a software company that specializes in compliance reporting and trade analytics for the financial services industry. While it offers a comprehensive platform for transaction cost analysis, trade surveillance, and regulatory compliance, it lacks strong differentiation in a competitive market. Additionally, growth and transaction readiness appear low, which diminishes its attractiveness under our investment mandate.\", \"Conviction Reasoning\": \"S3 shares traits with past thumbs-down companies like 17a-4, as it's undifferentiated and operates in a crowded field without a unique competitive advantage.\"}",
       "created_at": "2026-07-10T00:01:38.089475+00:00",
-      "updated_at": "2026-07-10T00:01:38.097432+00:00"
+      "updated_at": "2026-07-15T22:20:16.790613+00:00"
     },
     {
       "id": 24,
@@ -1890,6 +1890,15 @@
       "summary": "Status: New \u2192 Not a Fit",
       "detail": "",
       "timestamp": "2026-07-15T22:18:29.556610+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 96,
+      "deal_id": 23,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-07-15T22:20:16.790331+00:00",
       "synced_to_sf": 0
     }
   ]
