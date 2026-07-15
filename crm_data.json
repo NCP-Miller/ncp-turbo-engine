@@ -274,7 +274,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"Terrapin Technologies, Inc.\", \"Description\": \"Terrapin Technologies, Inc. is a financial software company founded in 1995 and based in Bloomington, Minnesota. It specializes in providing data aggregation, reporting, compliance, and automation solutions for wealth management firms, utilizing web-based technology to enhance visibility, profitability, and regulatory adherence. The company's digital platform automates processes related to compensation, compliance, and reporting, supporting wealth management firms in achieving operational efficiency and scalable growth.\", \"Website\": \"http://www.terrapintech.com\", \"City\": \"Bloomington\", \"State\": \"Minnesota\", \"LinkedIn\": \"http://www.linkedin.com/company/terrapin-technologies-inc\", \"Employees\": 17, \"Est. EBITDA\": \"$510K\\u2013$850K\", \"CEO/Owner Name\": \"Kristefor Lysne\", \"Title\": \"President\", \"Email\": \"N/A\", \"Email Estimate\": \"kristefor.lysne@terrapintech.com\", \"Phone\": \"N/A\", \"Source\": \"Web Path (/about)\", \"Notes\": \"\", \"Confidence\": \"Medium\", \"Latest News\": \"N/A\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Medium\", \"_niche\": \"I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.\", \"Priority\": \"High\", \"Growth\": \"Low\", \"Txn Readiness\": \"Low\", \"Conviction\": 5, \"Conviction Pitch\": \"Terrapin Technologies, Inc. offers a robust digital platform for data aggregation and compliance solutions catering specifically to wealth management firms. While the technology supports operational efficiency and regulatory adherence, the differentiation appears medium and the company's growth and transaction readiness are currently low. The deal lacks the clear, distinctive edge necessary to stand out significantly from other operators in the space.\", \"Conviction Reasoning\": \"The company's offering aligns with our investment mandate in providing essential services with some level of differentiation, but it lacks the standout characteristics or high growth potential we prioritize for strong conviction deals.\"}",
       "created_at": "2026-07-10T00:01:37.922407+00:00",
-      "updated_at": "2026-07-10T00:01:37.928817+00:00"
+      "updated_at": "2026-07-15T22:40:45.134263+00:00"
     },
     {
       "id": 13,
@@ -987,7 +987,7 @@
       "sf_contact_id": "003Pp000028ZZq7IAG",
       "row_json": "{\"Company\": \"CIC Services, LLC\", \"Description\": \"CIC Services, LLC is a risk management consulting firm that specializes in the use of Captive Insurance Companies (CICs) to help organizations achieve their Enterprise Risk Management goals. Since 2005, they have provided full-service, turn-key captive management services to over 125 business owners across the United States, focusing on middle-market companies.\", \"Website\": \"http://www.captivatingthinking.com\", \"City\": \"Knoxville\", \"State\": \"Tennessee\", \"LinkedIn\": \"http://www.linkedin.com/company/cic-services-llc\", \"Employees\": 33, \"Est. EBITDA\": \"$990K\\u2013$1.6M\", \"CEO/Owner Name\": \"N/A\", \"Title\": \"N/A\", \"Email\": \"N/A\", \"Email Estimate\": \"\", \"Phone\": \"865.248.3044\", \"Source\": \"Web (contact only)\", \"Notes\": \"\", \"Confidence\": \"Medium\", \"Latest News\": \"IRS microcaptive rule faces renewed legal challenge in 6th Circuit - Insurance Business | https://news.google.com/rss/articles/CBMi0wFBVV95cUxQZUZEUE5vVnE1ZlJKRE1LdlZkR3BoNXUwQm8tTVRrbWFXTW9KWFQ2RWpHS2VnLUZKUm0yNVN5RG9tQllMa3ppTkNqWk9odXJPcVNDZUJPSHpXcUtobXl3QTB3cFd6aEltM3RTUV93cXBZMUl1TXVwWi1uX2FtMmdsZVN1TUxNNGlwdjFJZ1FmdzN0c2VyVGtLRlJZVUktbEZmQ2M0V2FSYlFMR29nckY5T295WXRIa2k0eE0zMGsyejJmOEFMTF9YU3U2MkRiWUNNUEpz?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Medium\", \"_niche\": \"captive management firm providing outsourced administration, regulatory compliance, financial management, and operational oversight for captive insurance companies, allowing owners to operate their captives without maintaining dedicated internal staff.\", \"Priority\": \"Medium\", \"Growth\": \"Low\", \"Txn Readiness\": \"Medium\", \"Priority Confidence\": \"Medium\", \"Growth Confidence\": \"Low\", \"Txn Readiness Confidence\": \"Low\", \"Differentiated Confidence\": \"Medium\", \"Conviction\": 7, \"Conviction Pitch\": \"CIC Services, LLC operates in a niche market of captive insurance management, providing essential outsourced administration and compliance for over 125 middle-market businesses across the U.S. The company's specialized focus on Enterprise Risk Management and turnkey solutions offer a defensible moat via regulatory expertise and reduces the need for internal staffing. This model could be attractive for our mandate, especially if further due diligence reveals strong regional dominance or unique market advantages.\", \"Conviction Reasoning\": \"The score is driven by CIC Services' niche focus and essential service offering, but lacks clear standout traits in differentiation and growth potential.\"}",
       "created_at": "2026-07-10T14:28:42.175621+00:00",
-      "updated_at": "2026-07-14T19:16:56.118315+00:00"
+      "updated_at": "2026-07-15T22:34:19.942400+00:00"
     },
     {
       "id": 44,
@@ -1989,6 +1989,33 @@
       "summary": "Status: New \u2192 Not a Fit",
       "detail": "",
       "timestamp": "2026-07-15T22:32:24.522600+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 107,
+      "deal_id": 43,
+      "type": "Email",
+      "summary": "Drafted outreach email: cic",
+      "detail": "",
+      "timestamp": "2026-07-15T22:34:16.346270+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 108,
+      "deal_id": 43,
+      "type": "Note",
+      "summary": "Downloaded follow-up calendar reminders",
+      "detail": "",
+      "timestamp": "2026-07-15T22:34:19.942263+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 109,
+      "deal_id": 12,
+      "type": "Note",
+      "summary": "Created Email reminder for 2026-07-17 09:00, monthly \u00d724",
+      "detail": "",
+      "timestamp": "2026-07-15T22:40:45.133983+00:00",
       "synced_to_sf": 0
     }
   ]
