@@ -291,13 +291,13 @@
       "project": "Wealth management and RIA compliance",
       "status": "New",
       "source": "backfill-liked",
-      "notes": "",
+      "notes": "Commoditized industry",
       "next_followup": null,
       "sf_account_id": null,
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"Flyer Financial Technologies\", \"Description\": \"Flyer Financial Technologies provides trading tools, connectivity, and infrastructure for wealth management and equity markets. They offer a unified portfolio and order management system designed for wealth and asset managers, facilitating direct connectivity to numerous custodians and brokers. The company operates with a focus on automating trade lifecycle management and providing cloud-based solutions to streamline operations for financial services firms.\", \"Website\": \"http://www.flyerft.com\", \"City\": \"New York\", \"State\": \"New York\", \"LinkedIn\": \"http://www.linkedin.com/company/flyerft\", \"Employees\": 94, \"Est. EBITDA\": \"$2.8M\\u2013$4.7M\", \"CEO/Owner Name\": \"Brian Ross\", \"Title\": \"Chief Executive Officer\", \"Email\": \"N/A\", \"Email Estimate\": \"brian.ross@flyerft.com\", \"Phone\": \"N/A\", \"Source\": \"Web Path (/about)\", \"Notes\": \"\", \"Confidence\": \"Medium\", \"Latest News\": \"Trading biz Flyer Financial Technologies exploring sale: Sources - Citywire | https://news.google.com/rss/articles/CBMipAFBVV95cUxNUjVoRUZoSy15bEVDc2lTSHBpUFgya3k5RllTZTh6NVRBTzRTZmRhd0drR2Vkc0R4NUtfdG1LMVlKcl9KaFQ1akYtSEZwbk5RSVlvNFFJSmVCVnh2S3FNSXVYUXpDU3pncUxVakg0cVR4dlBsUXpZSzJIVjRkVUF3Snc4c1ZhX0xObFFYYlMtYlNETjVHREthWGNGWDJBQ25scTRnNQ?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.\", \"Priority\": \"Medium\", \"Growth\": \"High\", \"Txn Readiness\": \"Low\", \"Conviction\": 5, \"Conviction Pitch\": \"Flyer Financial Technologies offers a cloud-based solution that automates trade lifecycle management, potentially appealing to RIAs and private wealth advisors looking for operational efficiency. However, while they cater to a niche market with high growth, their differentiation remains low, limiting their competitive edge.\", \"Conviction Reasoning\": \"The lack of substantial differentiation in Flyer Financial Technologies' offerings reduces their competitive advantage in the growing fintech market, resulting in a moderate score.\"}",
       "created_at": "2026-07-10T00:01:37.936917+00:00",
-      "updated_at": "2026-07-10T00:01:37.943992+00:00"
+      "updated_at": "2026-07-15T22:30:34.725281+00:00"
     },
     {
       "id": 14,
