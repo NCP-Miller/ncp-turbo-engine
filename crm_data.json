@@ -59,7 +59,7 @@
       "state": "Louisiana",
       "niche": "Help me to find a cybersecurity company that is poised to execute on the growth coming in CMMC but that is also not competitive with ControlCase (which I own). The company must be differentiated. There are many angles to take advantage of such as CMMC Level 1 Self Assessment technology tools etc etc (don't let this example limit your logic).",
       "project": "CMMC 26.05.19",
-      "status": "New",
+      "status": "Not a Fit",
       "source": "backfill-memo",
       "notes": "not differentiated",
       "next_followup": null,
@@ -67,7 +67,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"Ingalls Information Security\", \"Description\": \"Ingalls Information Security specializes in providing cybersecurity solutions tailored for the Department of Defense (DoD) and Defense Industrial Base (DIB) contractors. They offer services such as RMF implementation, ATO support, and internal compliance auditing to ensure systems meet federal security standards. Operating since 2010, Ingalls integrates directly with client teams to deliver mission-focused cybersecurity and compliance solutions.\", \"Website\": \"http://www.iinfosec.com\", \"City\": \"Woodworth\", \"State\": \"Louisiana\", \"LinkedIn\": \"http://www.linkedin.com/company/ingalls-information-security-llc\", \"Employees\": 18, \"Est. EBITDA\": \"$675K\\u2013$1.4M\", \"CEO/Owner Name\": \"Marc Pantoni\", \"Title\": \"Chief Executive Officer\", \"Email\": \"N/A\", \"Email Estimate\": \"\", \"Phone\": \"N/A\", \"Source\": \"Web Path (/leadership)\", \"Notes\": \"\", \"Confidence\": \"Medium\", \"Latest News\": \"N/A\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Medium\", \"_niche\": \"Help me to find a cybersecurity company that is poised to execute on the growth coming in CMMC but that is also not competitive with ControlCase (which I own). The company must be differentiated. There are many angles to take advantage of such as CMMC Level 1 Self Assessment technology tools etc etc (don't let this example limit your logic).\", \"Priority\": \"High\", \"Growth\": \"Low\", \"Txn Readiness\": \"Low\", \"Conviction\": 6, \"Conviction Pitch\": \"Ingalls Information Security is uniquely positioned to capitalize on compliance needs within the Department of Defense ecosystem, as it tailors its services specifically for DoD and DIB contractors. Their deep expertise in federal security standards and integration with client teams gives them an edge in delivering mission-focused cybersecurity solutions. While differentiation is moderate, their niche focus and decade-long track record provide a solid foundation for growth against the backdrop of evolving CMMC requirements.\", \"Conviction Reasoning\": \"Ingalls is a solid candidate due to its niche focus on DoD cybersecurity needs and longstanding industry presence, but the moderate differentiation and current low growth potential limit its excitement level.\"}",
       "created_at": "2026-07-10T00:01:35.912695+00:00",
-      "updated_at": "2026-07-15T22:52:08.423130+00:00"
+      "updated_at": "2026-07-15T22:52:11.716548+00:00"
     },
     {
       "id": 4,
@@ -2097,6 +2097,15 @@
       "summary": "Status: New \u2192 Contacted \u2013 No Opportunity",
       "detail": "",
       "timestamp": "2026-07-15T22:50:46.507518+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 119,
+      "deal_id": 3,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-07-15T22:52:11.716399+00:00",
       "synced_to_sf": 0
     }
   ]
