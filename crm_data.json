@@ -197,7 +197,7 @@
       "state": "Alabama",
       "niche": "Pleasen find employee benefit administrators with ICHRA (Individual Coverage Health Reimbursement Arrangement) service offerings. Find more companies similar to Leap. Anchor traits: Leap is a healthcare company focused on transforming the specialty infusion care process by eliminating hidden drug markups and enabling at-home treatments. They serve employers and patients by providing a transparent, patient-centered model that integrates directly with health plans to reduce costs and improve access to infusion therapies. Leap operates within the healthcare sector, aiming to simplify and make life-sustaining treatments more affordable and accessible. | Differentiated: Low | Industry:  | Size: 39 employees.. Find more companies similar to myLaurel\u00ae. Anchor traits: myLaurel\u00ae is a healthcare organization that specializes in delivering acute and transitional care at home, aiming to improve patient outcomes and reduce hospital capacity constraints. They work with health systems and payers to provide a hybrid model of hands-on clinical care supported by virtual technology, focusing on high-risk patients to prevent unnecessary hospitalizations and lower healthcare costs. | Differentiated: Low | Industry:  | Size: 71 employees.. Find more companies similar to KSA Insurance. Anchor traits: KSA Insurance is an independent insurance agency headquartered in Charleston, South Carolina, serving clients throughout the South and across the East Coast. The company offers a comprehensive range of personal and commercial insurance products, including property, casualty, health, and life insurance, through an extensive carrier network. | Differentiated: Low | Industry:  | Size: 36 employees.",
       "project": "ICHRA 26.05.26",
-      "status": "New",
+      "status": "Not a Fit",
       "source": "backfill-memo",
       "notes": "",
       "next_followup": null,
@@ -205,7 +205,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"ContinuumRx Infusion Services\", \"Description\": \"ContinuumRx Infusion Services provides home and site-based infusion therapies, partnering with healthcare systems to enhance post-acute care coordination and management. They serve patients with complex chronic conditions, offering services such as antibiotic therapy, enteral and parenteral nutrition, and biologic therapies, primarily in the United States. The company is accredited by the Accreditation Commission for Health Care (ACHC).\", \"Website\": \"http://www.continuumrx.com\", \"City\": \"Birmingham\", \"State\": \"Alabama\", \"LinkedIn\": \"http://www.linkedin.com/company/continuumrx-infusion\", \"Employees\": 85, \"Est. EBITDA\": \"$1.3M\\u2013$2.5M\", \"CEO/Owner Name\": \"N/A\", \"Title\": \"N/A\", \"Email\": \"N/A\", \"Email Estimate\": \"\", \"Phone\": \"800-665-2850\", \"Source\": \"Web (contact only)\", \"Notes\": \"\", \"Confidence\": \"Medium\", \"Latest News\": \"Inova Health System and ContinuumRX\\u2122 Form Healthcare Joint Venture - PR Newswire | https://news.google.com/rss/articles/CBMivgFBVV95cUxPdVdCWDQ2Vng4RDU4MGU0ZXJzOFdKNlo0RGZmbUJMMFFuS1ljOFd4dnhIekM4djZCcktHSFZkeE8wOVQ3LW5zNlhUa2lydk53cG9tcFVUajhoODZUVFFKTmdtVkQwVUhrSmhGWjBoR3NOdW9aeExOVXdWWVZhMGJvUW8wWkZtUWpMMHhwX1hNdjQzSXlIUTVSVTg0MHJuRjlmcFNQejRHS00tNFRYX2M2c09veGdMR2lDb3dpRVRR?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Medium\", \"_niche\": \"Pleasen find employee benefit administrators with ICHRA (Individual Coverage Health Reimbursement Arrangement) service offerings. Find more companies similar to Leap. Anchor traits: Leap is a healthcare company focused on transforming the specialty infusion care process by eliminating hidden drug markups and enabling at-home treatments. They serve employers and patients by providing a transparent, patient-centered model that integrates directly with health plans to reduce costs and improve access to infusion therapies. Leap operates within the healthcare sector, aiming to simplify and make life-sustaining treatments more affordable and accessible. | Differentiated: Low | Industry:  | Size: 39 employees.. Find more companies similar to myLaurel\\u00ae. Anchor traits: myLaurel\\u00ae is a healthcare organization that specializes in delivering acute and transitional care at home, aiming to improve patient outcomes and reduce hospital capacity constraints. They work with health systems and payers to provide a hybrid model of hands-on clinical care supported by virtual technology, focusing on high-risk patients to prevent unnecessary hospitalizations and lower healthcare costs. | Differentiated: Low | Industry:  | Size: 71 employees.. Find more companies similar to KSA Insurance. Anchor traits: KSA Insurance is an independent insurance agency headquartered in Charleston, South Carolina, serving clients throughout the South and across the East Coast. The company offers a comprehensive range of personal and commercial insurance products, including property, casualty, health, and life insurance, through an extensive carrier network. | Differentiated: Low | Industry:  | Size: 36 employees.\", \"Priority\": \"Medium\", \"Growth\": \"Low\", \"Txn Readiness\": \"High\", \"Conviction\": 7, \"Conviction Pitch\": \"ContinuumRx Infusion Services stands out due to its accredited partnership with healthcare systems, offering essential, non-cyclical home and site-based infusion therapies specifically for complex chronic conditions. The company's defensible moat lies in its ACHC accreditation, enabling a seamless integration into post-acute care systems and ensuring high service standards. This, combined with fragmented market dynamics and a focus on essential healthcare services, provides a promising buy-and-build opportunity in a sector with significant secular tailwinds.\", \"Conviction Reasoning\": \"The company offers a unique value proposition with its strong accreditation credential, essential service offerings, and potential for market consolidation within a fragmented industry.\"}",
       "created_at": "2026-07-10T00:01:36.913168+00:00",
-      "updated_at": "2026-07-10T00:01:36.921763+00:00"
+      "updated_at": "2026-07-15T22:47:30.758630+00:00"
     },
     {
       "id": 10,
@@ -2043,6 +2043,15 @@
       "summary": "Status: New \u2192 Not a Fit",
       "detail": "",
       "timestamp": "2026-07-15T22:47:23.524206+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 113,
+      "deal_id": 9,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-07-15T22:47:30.758484+00:00",
       "synced_to_sf": 0
     }
   ]
