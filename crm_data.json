@@ -36,7 +36,7 @@
       "state": "Texas",
       "niche": "Help me to find a cybersecurity company that is poised to execute on the growth coming in CMMC but that is also not competitive with ControlCase (which I own). The company must be differentiated. There are many angles to take advantage of such as CMMC Level 1 Self Assessment technology tools etc etc (don't let this example limit your logic).",
       "project": "CMMC 26.05.19",
-      "status": "New",
+      "status": "Not a Fit",
       "source": "backfill-memo",
       "notes": "undifferentiated",
       "next_followup": null,
@@ -44,7 +44,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"ON2IT Cybersecurity\", \"Description\": \"ON2IT Cybersecurity is a global cybersecurity service provider founded in 2005, specializing in Zero Trust-based managed security services. They offer 24/7 cybersecurity solutions through their Managed Security Operations Center and Security Orchestration, Automation, and Response platform, serving organizations with complex IT infrastructures worldwide, including an office in Plano, Texas.\", \"Website\": \"http://www.on2it.net\", \"City\": \"Plano\", \"State\": \"Texas\", \"LinkedIn\": \"http://www.linkedin.com/company/on2it-cybersecurity\", \"Employees\": 99, \"Est. EBITDA\": \"$3.7M\\u2013$7.4M\", \"CEO/Owner Name\": \"Marcel van Eemeren\", \"Title\": \"Founder\", \"Email\": \"N/A\", \"Email Estimate\": \"marcel.van.eemeren@on2it.net\", \"Phone\": \"N/A\", \"Source\": \"Web Path (/about)\", \"Notes\": \"\", \"Confidence\": \"Medium\", \"Latest News\": \"ON2IT introduces an industry first: Zero Trust As A Service - PR Newswire | https://news.google.com/rss/articles/CBMitAFBVV95cUxNakVjUktmUFM3aktlVVZnLU45RFNCM0JfSFBZbjN5cEhqazJVclFabENyMUp3WU1BbzJTdmpQdWZwTU8wOTdKVzRrWVFjOWkzMnQya3VxN0cwVmtvRFFjanV2OHVpZ254SUpNZ0dSRDNLWUxrZ1JLWjFmdGZlc3hYQzNad1Q4UzRMTGJwWnRYV3pWVzFkYkpJS1J5SnlpUWRsdWpEdWhocnFjM2wzSWFMTi1KcXY?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Medium\", \"_niche\": \"Help me to find a cybersecurity company that is poised to execute on the growth coming in CMMC but that is also not competitive with ControlCase (which I own). The company must be differentiated. There are many angles to take advantage of such as CMMC Level 1 Self Assessment technology tools etc etc (don't let this example limit your logic).\", \"Priority\": \"Medium\", \"Growth\": \"High\", \"Txn Readiness\": \"Low\", \"Conviction\": 6, \"Conviction Pitch\": \"ON2IT Cybersecurity presents a unique opportunity with its specialization in Zero Trust-based managed security services, an area receiving increased attention due to the rise in sophisticated cyber threats. The company's global reach and 24/7 managed security operations cater to organizations with complex IT infrastructures, providing a solid foundation for growth. However, while they demonstrate thoughtful differentiation, there remains a lack of a fully distinguished edge over peers in the highly competitive cybersecurity landscape.\", \"Conviction Reasoning\": \"The company is in a growing market and showcases a differentiation through Zero Trust specialization, yet its differentiation level does not reach a compelling singularity over competitors.\"}",
       "created_at": "2026-07-10T00:01:35.894767+00:00",
-      "updated_at": "2026-07-15T22:52:46.239862+00:00"
+      "updated_at": "2026-07-15T22:52:49.311494+00:00"
     },
     {
       "id": 3,
@@ -2106,6 +2106,15 @@
       "summary": "Status: New \u2192 Not a Fit",
       "detail": "",
       "timestamp": "2026-07-15T22:52:11.716399+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 120,
+      "deal_id": 2,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-07-15T22:52:49.311405+00:00",
       "synced_to_sf": 0
     }
   ]
