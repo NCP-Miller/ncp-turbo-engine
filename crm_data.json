@@ -427,7 +427,7 @@
       "state": "New York",
       "niche": "I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.",
       "project": "Wealth management and RIA compliance",
-      "status": "New",
+      "status": "Not a Fit",
       "source": "backfill-liked",
       "notes": "",
       "next_followup": null,
@@ -435,7 +435,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"Jordan & Jordan\", \"Description\": \"Jordan & Jordan is a veteran-owned FinTech company based in New York, with additional offices in Chicago and London, specializing in market data management, consulting, and technology solutions for the securities and financial services industry. The company provides services such as market data licensing compliance, regulatory support, audit management, and technology assessments, serving clients like investment banks, asset managers, and global exchanges. They collaborate with industry associations to address regulatory and market data issues.\", \"Website\": \"http://www.jandj.com\", \"City\": \"New York\", \"State\": \"New York\", \"LinkedIn\": \"http://www.linkedin.com/company/jordan-&-jordan\", \"Employees\": 88, \"Est. EBITDA\": \"$2.6M\\u2013$4.4M\", \"CEO/Owner Name\": \"N/A\", \"Title\": \"N/A\", \"Email\": \"N/A\", \"Email Estimate\": \"\", \"Phone\": \"N/A\", \"Source\": \"Not Found\", \"Notes\": \"\", \"Confidence\": \"Low\", \"Latest News\": \"The Dish: NY Knicks spotted eating in Westchester, Cleveland Cavs player seen in Greenwich - Greenwich Time | https://news.google.com/rss/articles/CBMioAFBVV95cUxPOW5lQ0xnZ1BGOG5DMVhFb1pnOWtfN0xjTUNzNjN2RVdmVFV5VUJvVjJGdzFDNFJESGU1d0NsQWJrY19OT0xlMFp5bURHMEtQYkFOWFJ5d2ZrUGRIdXNJdUg4VHMySGtUVmFGOGdVczRhS3NpcTE4SHU4UjFpRU5sWDN3dHZfa21SMUJ1OWRPeEwzYzNGQ1FubGtBTFJVVGtX?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.\", \"Priority\": \"Medium\", \"Growth\": \"Low\", \"Txn Readiness\": \"Medium\", \"Conviction\": 4, \"Conviction Pitch\": \"Jordan & Jordan provides niche compliance solutions for market data and regulatory support to the financial services industry, with a particular focus on market data licensing compliance. However, their differentiation appears low, and they serve a mature market with limited growth potential. While they have an established presence and client base, they lack a clear competitive edge that sets them apart from more prominent players in the industry.\", \"Conviction Reasoning\": \"Jordan & Jordan does not exhibit strong differentiation or growth potential, which limits its attractiveness for a proprietary acquisition strategy focused on unique advantages.\"}",
       "created_at": "2026-07-10T00:01:38.025120+00:00",
-      "updated_at": "2026-07-10T00:01:38.032249+00:00"
+      "updated_at": "2026-07-15T22:22:48.905205+00:00"
     },
     {
       "id": 20,
@@ -1926,6 +1926,15 @@
       "summary": "Status: New \u2192 Not a Fit",
       "detail": "",
       "timestamp": "2026-07-15T22:22:00.853745+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 100,
+      "deal_id": 19,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-07-15T22:22:48.904818+00:00",
       "synced_to_sf": 0
     }
   ]
