@@ -312,7 +312,7 @@
       "state": "North Carolina",
       "niche": "I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.",
       "project": "Wealth management and RIA compliance",
-      "status": "New",
+      "status": "Not a Fit",
       "source": "backfill-liked",
       "notes": "I have tried to contact this guy so many times. ",
       "next_followup": null,
@@ -320,7 +320,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"ViewPoint Partners\", \"Description\": \"ViewPoint Partners specializes in regulatory technology, providing compliance, regulatory, and reporting services to investment advisers and investment companies. Through its companies, Fairview and FilePoint, ViewPoint Partners helps clients in the financial services industry meet evolving regulatory requirements with tailored solutions.\", \"Website\": \"http://www.viewpointpartners.co\", \"City\": \"Raleigh\", \"State\": \"North Carolina\", \"LinkedIn\": \"http://www.linkedin.com/company/viewpoint-partnersllc\", \"Employees\": 130, \"Est. EBITDA\": \"$3.9M\\u2013$6.5M\", \"CEO/Owner Name\": \"N/A\", \"Title\": \"N/A\", \"Email\": \"N/A\", \"Email Estimate\": \"\", \"Phone\": \"N/A\", \"Source\": \"Not Found\", \"Notes\": \"\", \"Confidence\": \"Low\", \"Latest News\": \"Viewpoint: Public-private partnerships could be Portland gamechanger - The Business Journals | https://news.google.com/rss/articles/CBMiogFBVV95cUxQYlVvd0w2MXBOUTgya2UtVEhjcmpidFloM0lmVDRyaUNqZjhuSHN5TU1rMFk3V2dDcFRoU08wUHhOTEQzZU1BVHZJTTN2ZnloSG5nUThZU0k0amdvX3RNWHYtSFlvMDRVbmx5d1Y4Q19HckVqRXdjclZvM2pxek1ISWpKTDlEOXl3YWhKWmY3R3VLZjNuNDVfZGtxY0RHcXBaY0E?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Medium\", \"_niche\": \"I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.\", \"Priority\": \"Medium\", \"Growth\": \"Low\", \"Txn Readiness\": \"Medium\", \"Conviction\": 5, \"Conviction Pitch\": \"ViewPoint Partners operates in the regulatory technology space, offering compliance solutions for investment advisers and companies through Fairview and FilePoint. While the regulatory landscape offers growth potential, the company's differentiation is medium and the growth has been low. Without a unique competitive edge or defensible moat, it's unclear how ViewPoint stands out in this competitive field.\", \"Conviction Reasoning\": \"The company lacks a clear competitive advantage or exciting growth prospects, making it a less compelling opportunity according to our investment criteria.\"}",
       "created_at": "2026-07-10T00:01:37.951080+00:00",
-      "updated_at": "2026-07-15T22:28:50.829206+00:00"
+      "updated_at": "2026-07-15T22:28:54.011976+00:00"
     },
     {
       "id": 15,
@@ -1971,6 +1971,15 @@
       "summary": "Status: New \u2192 Not a Fit",
       "detail": "",
       "timestamp": "2026-07-15T22:28:25.517744+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 105,
+      "deal_id": 14,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-07-15T22:28:54.011583+00:00",
       "synced_to_sf": 0
     }
   ]
