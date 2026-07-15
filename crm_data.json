@@ -381,7 +381,7 @@
       "state": "Texas",
       "niche": "I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.",
       "project": "Wealth management and RIA compliance",
-      "status": "New",
+      "status": "Not a Fit",
       "source": "backfill-liked",
       "notes": "",
       "next_followup": null,
@@ -389,7 +389,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"Empact Technologies\", \"Description\": \"Empact Technologies provides compliance and risk management solutions for renewable energy projects, utilizing their AI-native NexusIQ\\u2122 software platform. They assist developers and partners in managing compliance burdens, maximizing tax credits, and reducing transaction risks throughout the project lifecycle.\", \"Website\": \"http://www.empacttechnologies.com\", \"City\": \"Houston\", \"State\": \"Texas\", \"LinkedIn\": \"http://www.linkedin.com/company/empacttechnologiesiracompliance\", \"Employees\": 99, \"Est. EBITDA\": \"$3.0M\\u2013$5.0M\", \"CEO/Owner Name\": \"Charles Dauber\", \"Title\": \"Chief Executive Officer\", \"Email\": \"N/A\", \"Email Estimate\": \"\", \"Phone\": \"N/A\", \"Source\": \"Web Path (/about/leadership)\", \"Notes\": \"\", \"Confidence\": \"Medium\", \"Latest News\": \"Empact Technologies Secures Long-Term Tax Credit Compliance Partnership with Sabanci Renewables for 286 MW of Solar - PR Newswire | https://news.google.com/rss/articles/CBMigAJBVV95cUxOaHJPWDBJNm5jeDZJaFU5N3FOejNhalJrZ3FfcGNuVG9XWVBpVUhEeS1sMTFUTUtVbzBoeVR3b1JpNlFfclQ1dEQ1UDZTdXFxWFRsYW9oS1dPcHdwYWpUVHpRV2w1bXZwbmY4UERmOXZyTVNkeERsWjhNbFY1SGVvSnZveEtpaUxPWFl4UjlLLVlwMGdJMUhVTVBlb0hzYUlJbUZvcm5JSWd1NHM5ekRKaWRoSEtyZXlRLWlXNVVpNGJKRE9sb0hlNG1OaGllSUxnZDdmRXBWSkZkRzdlaVRzamwtNVM3c1p2bnpVNVhPTDJVM2VnTGpQeUJJWG5yR182?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.\", \"Priority\": \"Medium\", \"Growth\": \"High\", \"Txn Readiness\": \"Low\", \"Conviction\": 4, \"Conviction Pitch\": \"Empact Technologies leverages its AI-native NexusIQ\\u2122 software platform to optimize compliance and risk management for renewable energy projects, capitalizing on a growing market trend. However, the differentiation seems low and the demonstrated edge or unique advantage in the market is unclear. Additionally, the company's transaction readiness is low, and without clearer defensible features, it lacks the compelling traits we seek in potential investments.\", \"Conviction Reasoning\": \"While the company operates in a high-growth area with secular tailwinds, its lack of distinctive differentiation and limited readiness for transaction diminishes its appeal.\"}",
       "created_at": "2026-07-10T00:01:37.993909+00:00",
-      "updated_at": "2026-07-10T00:01:38.000079+00:00"
+      "updated_at": "2026-07-15T22:26:36.943722+00:00"
     },
     {
       "id": 18,
@@ -1944,6 +1944,15 @@
       "summary": "Status: New \u2192 Revisit Later",
       "detail": "",
       "timestamp": "2026-07-15T22:25:02.325256+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 102,
+      "deal_id": 17,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-07-15T22:26:36.943501+00:00",
       "synced_to_sf": 0
     }
   ]
