@@ -360,13 +360,13 @@
       "project": "Wealth management and RIA compliance",
       "status": "New",
       "source": "backfill-liked",
-      "notes": "",
+      "notes": "Spoke with investment bankers (Macquarie) who have this mandate",
       "next_followup": null,
       "sf_account_id": null,
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"InnReg\", \"Description\": \"InnReg is a compliance consulting firm that specializes in providing outsourced compliance services to fintech companies. They assist clients with licensing, regulatory strategy, and compliance operations, serving sectors such as broker-dealers, investment advisors, and digital banking. Based in Miami, Florida, InnReg supports fintechs in navigating complex regulatory environments to ensure compliance with evolving financial regulations.\", \"Website\": \"http://www.innreg.com\", \"City\": \"Miami\", \"State\": \"Florida\", \"LinkedIn\": \"http://www.linkedin.com/company/innreg\", \"Employees\": 29, \"Est. EBITDA\": \"$870K\\u2013$1.4M\", \"CEO/Owner Name\": \"Francesco Matteini\", \"Title\": \"CEO and Founder\", \"Email\": \"francesco@innreg.com\", \"Email Estimate\": \"\", \"Phone\": \"305-908-1160\", \"Source\": \"Web Spider \\u2192 Verified\", \"Notes\": \"\", \"Confidence\": \"High\", \"Latest News\": \"N/A\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.\", \"Priority\": \"High\", \"Growth\": \"Low\", \"Txn Readiness\": \"Medium\", \"Conviction\": 5, \"Conviction Pitch\": \"InnReg provides critical compliance services tailored for the burgeoning fintech industry, helping companies navigate complex regulatory landscapes. However, the firm's differentiation appears low, as many players offer similar compliance consulting in the crowded fintech service space.\", \"Conviction Reasoning\": \"The lack of standout differentiation and low growth prospects keeps InnReg from being a highly compelling opportunity, despite its focus on fintech compliance.\"}",
       "created_at": "2026-07-10T00:01:37.978146+00:00",
-      "updated_at": "2026-07-10T00:01:37.985388+00:00"
+      "updated_at": "2026-07-15T22:27:58.405583+00:00"
     },
     {
       "id": 17,
