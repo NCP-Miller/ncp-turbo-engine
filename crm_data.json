@@ -475,13 +475,13 @@
       "project": "Wealth management and RIA compliance",
       "status": "New",
       "source": "backfill-liked",
-      "notes": "",
+      "notes": "Already sold",
       "next_followup": null,
       "sf_account_id": null,
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"Smartria\\u00ae\", \"Description\": \"Smartria\\u00ae is a compliance software company that provides solutions for SEC and FINRA compliance, focusing on simplifying compliance processes for registered investment advisors (RIAs), chief compliance officers (CCOs), and compliance consultants. The company offers tools for compliance management, marketing reviews, employee attestations, trade monitoring, and vendor management, and operates primarily in the financial services sector.\", \"Website\": \"http://www.smartria.com\", \"City\": \"Knoxville\", \"State\": \"Tennessee\", \"LinkedIn\": \"http://www.linkedin.com/company/smartria\", \"Employees\": 15, \"Est. EBITDA\": \"$450K\\u2013$750K\", \"CEO/Owner Name\": \"N/A\", \"Title\": \"N/A\", \"Email\": \"N/A\", \"Email Estimate\": \"\", \"Phone\": \"N/A\", \"Source\": \"Not Found\", \"Notes\": \"\", \"Confidence\": \"Low\", \"Latest News\": \"Smartria Appoints Clayton Webster, PhD as Head of AI and Engineering to Lead Next Phase of Innovation - PR Newswire | https://news.google.com/rss/articles/CBMi7AFBVV95cUxOVy1HZy1ZOHFPdGxaeXVXTTZhbzJlTDMyeVFRZmNKVzFrNklUUDNxaDVPaGh3ajE5ZXZlZWMzbGtob2NXdm5yb2piS2RoYzNIR3NmYW83SmdFVENwaFkzMUFtY0o4cUdmSGlsSG1GQXE1QTZGblA4ei1sdmdxNDVmckZlNUxidVdnOVdUR2ZsVTRza3NpRHNkMlQxRU1ZLUJGcnhhTDZwb1JwbUUxamlSeWFLZmo1T3kweGFqdjVVZ0NrTWR4YjJWcXQwUVJHR09iaC1COTFESkRXdFpOdEh0Q3dET2RKVHRaV3FkVw?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Medium\", \"_niche\": \"I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.\", \"Priority\": \"Medium\", \"Growth\": \"Low\", \"Txn Readiness\": \"Low\", \"Conviction\": 4, \"Conviction Pitch\": \"Smartria\\u00ae provides compliance solutions tailored for SEC and FINRA requirements, making it vital for registered investment advisors and compliance officers. While it operates in a niche market, the differentiation is only medium and it faces low growth and transaction readiness challenges. Without significant differentiation or a unique advantage, it's unlikely to resonate with our investment criteria.\", \"Conviction Reasoning\": \"The primary driver for the low score is the medium level of differentiation and low growth prospects \\u2014 key aspects missing are scalability and a distinct moat.\"}",
       "created_at": "2026-07-10T00:01:38.057146+00:00",
-      "updated_at": "2026-07-10T00:01:38.064162+00:00"
+      "updated_at": "2026-07-15T22:21:48.346551+00:00"
     },
     {
       "id": 22,
