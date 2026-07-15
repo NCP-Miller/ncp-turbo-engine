@@ -128,7 +128,7 @@
       "state": "Texas",
       "niche": "Pleasen find employee benefit administrators with ICHRA (Individual Coverage Health Reimbursement Arrangement) service offerings. Find more companies similar to Leap. Anchor traits: Leap is a healthcare company focused on transforming the specialty infusion care process by eliminating hidden drug markups and enabling at-home treatments. They serve employers and patients by providing a transparent, patient-centered model that integrates directly with health plans to reduce costs and improve access to infusion therapies. Leap operates within the healthcare sector, aiming to simplify and make life-sustaining treatments more affordable and accessible. | Differentiated: Low | Industry:  | Size: 39 employees.. Find more companies similar to myLaurel\u00ae. Anchor traits: myLaurel\u00ae is a healthcare organization that specializes in delivering acute and transitional care at home, aiming to improve patient outcomes and reduce hospital capacity constraints. They work with health systems and payers to provide a hybrid model of hands-on clinical care supported by virtual technology, focusing on high-risk patients to prevent unnecessary hospitalizations and lower healthcare costs. | Differentiated: Low | Industry:  | Size: 71 employees.. Find more companies similar to KSA Insurance. Anchor traits: KSA Insurance is an independent insurance agency headquartered in Charleston, South Carolina, serving clients throughout the South and across the East Coast. The company offers a comprehensive range of personal and commercial insurance products, including property, casualty, health, and life insurance, through an extensive carrier network. | Differentiated: Low | Industry:  | Size: 36 employees.",
       "project": "ICHRA 26.05.26",
-      "status": "New",
+      "status": "Not a Fit",
       "source": "backfill-memo",
       "notes": "home infusion",
       "next_followup": null,
@@ -136,7 +136,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"CSI Pharmacy\", \"Description\": \"CSI Pharmacy is a nationwide specialty infusion pharmacy that provides home-based infusion therapies for patients with rare and chronic diseases. They focus on individualized care, offering treatments such as intravenous immunoglobulin (IVIg) and subcutaneous immunoglobulin (SCIg) therapies, while also assisting with patient advocacy and care coordination.\", \"Website\": \"http://www.csipharmacy.com\", \"City\": \"Nash\", \"State\": \"Texas\", \"LinkedIn\": \"http://www.linkedin.com/company/csi-pharmacy\", \"Employees\": 73, \"Est. EBITDA\": \"$1.1M\\u2013$2.2M\", \"CEO/Owner Name\": \"James Sheets\", \"Title\": \"Chief Executive Officer\", \"Email\": \"james.sheets@csipharmacy.com\", \"Email Estimate\": \"\", \"Phone\": \"N/A\", \"Source\": \"Web Path (/team) \\u2192 Verified\", \"Notes\": \"\", \"Confidence\": \"High\", \"Latest News\": \"CSI Pharmacy Becomes First Multi-Location Specialty Pharmacy to Achieve ACHC Distinction in Ig Therapy in Partnership with IgNS - PR Newswire | https://news.google.com/rss/articles/CBMikAJBVV95cUxOUXV6TndLb0JSREV5Tkh1dWkxNWFobGRSUkNKTWZLVTdiSDAwUzNJcHBIMWxnUjZVRU50cG1rUWdFb1NJVXcySzBqclJ0M0M1XzBXeXU0M19lTUlaUEdfUXJPdVM2MEtOVXhuQ1ZzV0Q0VFM2Wmt0OXRqelNZZjZ3eTIySWFKc3YxSW8xb1ZwZGk3X2UzNEduTjIwZE1NQlVCUkc1dXlJUzBmV2FJOFBBNHBmSUc4bzdqVE0yUFV3cVhwLUNFUzFPSERDRmpONXJYa3RuT25GSEFXay1vQ3M1OXF1Mm9NQUNCMURGY1BoLTBCaHM4UWZfNXJURnNFQzRfRU9ZVkxrdjExektJZ3NTTQ?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"Pleasen find employee benefit administrators with ICHRA (Individual Coverage Health Reimbursement Arrangement) service offerings. Find more companies similar to Leap. Anchor traits: Leap is a healthcare company focused on transforming the specialty infusion care process by eliminating hidden drug markups and enabling at-home treatments. They serve employers and patients by providing a transparent, patient-centered model that integrates directly with health plans to reduce costs and improve access to infusion therapies. Leap operates within the healthcare sector, aiming to simplify and make life-sustaining treatments more affordable and accessible. | Differentiated: Low | Industry:  | Size: 39 employees.\", \"Priority\": \"Medium\", \"Growth\": \"High\", \"Txn Readiness\": \"Low\", \"Conviction\": 7, \"Conviction Pitch\": \"CSI Pharmacy stands out for its nationwide reach and focus on home-based infusion therapies, which align with the increasing trend towards home healthcare solutions, especially for rare and chronic conditions. The company's individualized care approach and patient advocacy support potentially create a defensible niche in a sector characterized by complex regulations and patient needs. While differentiation is noted as low, the unique model of personalized patient management and advocacy presents a targeted opportunity in a fragmented market with continued growth prospects.\", \"Conviction Reasoning\": \"The company's alignment with healthcare trends towards home-based solutions and patient advocacy presents a compelling opportunity, although differentiation could be improved.\"}",
       "created_at": "2026-07-10T00:01:36.861237+00:00",
-      "updated_at": "2026-07-15T22:49:28.620192+00:00"
+      "updated_at": "2026-07-15T22:49:31.479267+00:00"
     },
     {
       "id": 7,
@@ -2070,6 +2070,15 @@
       "summary": "Status: New \u2192 Not a Fit",
       "detail": "",
       "timestamp": "2026-07-15T22:49:02.792838+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 116,
+      "deal_id": 6,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-07-15T22:49:31.479172+00:00",
       "synced_to_sf": 0
     }
   ]
