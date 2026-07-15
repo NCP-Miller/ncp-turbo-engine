@@ -337,13 +337,13 @@
       "project": "Wealth management and RIA compliance",
       "status": "New",
       "source": "backfill-liked",
-      "notes": "",
+      "notes": "Called and emailed MANY times. Probably too small and consulting anyway",
       "next_followup": null,
       "sf_account_id": null,
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"True West\", \"Description\": \"True West is a business consulting firm specializing in regulatory compliance and risk management for independent Registered Investment Advisors (RIAs). They offer tailored solutions in compliance, legal services, IT governance, and financial advisory to help firms navigate complex regulatory environments. True West operates with a focus on aligning their services with the unique needs of each client to ensure compliance and operational efficiency.\", \"Website\": \"http://www.truewest-consulting.com\", \"City\": \"Denver\", \"State\": \"Colorado\", \"LinkedIn\": \"http://www.linkedin.com/company/truewest-consulting\", \"Employees\": 16, \"Est. EBITDA\": \"$480K\\u2013$800K\", \"CEO/Owner Name\": \"Nancy Harry\", \"Title\": \"Founder\", \"Email\": \"nancy.harry@truewest-consulting.com\", \"Email Estimate\": \"\", \"Phone\": \"N/A\", \"Source\": \"Web Path (/about) \\u2192 Verified\", \"Notes\": \"\", \"Confidence\": \"High\", \"Latest News\": \"Matt Zambrano: Last by letter, first by feats - Denver Gazette | https://news.google.com/rss/articles/CBMijgFBVV95cUxQaWNhZ1BJejNWN2duMjF6NVN5UW5UYkZ5b3RnUDJpZWtYRENibTdMYjVkTmJpMk5peUtiTXBobEFCNHFhblFwY2ZneHJiZEFwa3BGMXNYcWlHU2wxYlFGZFNtc2lFWF83aUFtV2RZMVEwMTlWc1FMR24yVkt2ZWlBLS1nM1NoaFFzX2dZWi1n?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Medium\", \"_niche\": \"I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.\", \"Priority\": \"High\", \"Growth\": \"Low\", \"Txn Readiness\": \"Medium\", \"Conviction\": 5, \"Conviction Pitch\": \"True West is a business consulting firm offering regulatory compliance and risk management solutions for RIAs, a niche market with specific needs. While their tailored approach is commendable, the company lacks significant differentiation that sets it apart in the growing compliance solutions space. Additionally, the current growth and transaction readiness levels do not suggest immediate strategic value.\", \"Conviction Reasoning\": \"The company operates in a niche market with potential, but there is no clear standout feature or defensible moat that gives it a unique edge over competitors.\"}",
       "created_at": "2026-07-10T00:01:37.964552+00:00",
-      "updated_at": "2026-07-10T00:01:37.970902+00:00"
+      "updated_at": "2026-07-15T22:28:22.822454+00:00"
     },
     {
       "id": 16,
