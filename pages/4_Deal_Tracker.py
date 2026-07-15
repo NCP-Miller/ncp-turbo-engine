@@ -5,6 +5,36 @@ from lib import crm
 from lib.crm import STATUSES, TERMINAL_STATUSES, ACTIVITY_TYPES
 from lib.outreach import generate_custom_reminder_ics, RECURRENCE_OPTIONS
 
+def _check_password():
+    try:
+        app_password = st.secrets["APP_PASSWORD"]
+    except (FileNotFoundError, KeyError):
+        st.error("APP_PASSWORD is not configured. Add it to .streamlit/secrets.toml.")
+        return False
+
+    def _password_entered():
+        if st.session_state.get("password") == app_password:
+            st.session_state["password_correct"] = True
+        else:
+            st.session_state["password_correct"] = False
+            st.session_state["password_attempted"] = True
+
+    if st.session_state.get("password_correct"):
+        return True
+
+    st.text_input(
+        "Enter Password", type="password",
+        on_change=_password_entered, key="password",
+    )
+    if st.session_state.get("password_attempted"):
+        st.error("Password incorrect")
+    return False
+
+
+if not _check_password():
+    st.stop()
+
+
 STATUS_ICONS = {
     "New": "🆕",
     "Outreach Active": "📤",
@@ -16,6 +46,8 @@ STATUS_ICONS = {
     "Contacted – No Opportunity": "🚫",
     "Not a Fit": "❌",
 }
+
+ACTIVE_STATUSES = [s for s in STATUSES if s not in TERMINAL_STATUSES]
 
 
 def _fmt_ts(iso_str):
@@ -48,139 +80,11 @@ def _sf_login():
     )
 
 
-st.title("📇 Deal Tracker")
-st.caption(
-    "Every target prospect in one place — statuses, notes, activity log, "
-    "tailored Outlook reminders, and Salesforce sync."
-)
-
-crm.init_db()
-crm.restore_from_github_if_empty()
-
-# ---------------------------------------------------------------------------
-# Needs Attention
-# ---------------------------------------------------------------------------
-attention = crm.deals_needing_attention()
-if attention:
-    with st.container(border=True):
-        st.markdown(f"### 🔔 Needs Attention ({len(attention)})")
-        for d in attention[:15]:
-            icon = STATUS_ICONS.get(d["status"], "•")
-            st.markdown(
-                f"- {icon} **{d['company']}** — {d['attention_reason']}"
-                f" · last touch: {_fmt_ts(d.get('last_activity') or d.get('created_at'))}"
-            )
-        if len(attention) > 15:
-            st.caption(f"...and {len(attention) - 15} more below.")
-
-# ---------------------------------------------------------------------------
-# Import + manual add
-# ---------------------------------------------------------------------------
-with st.expander("⚙️ Import & add deals"):
-    imp_col, add_col = st.columns(2)
-    with imp_col:
-        st.markdown("**Import from past searches**")
-        st.caption(
-            "Pulls in every investment memo and every company you marked "
-            "👍 Interested — from local project files, the GitHub backup, "
-            "and the feedback log. Skips companies you rejected."
-        )
-        sources = crm.backfill_sources()
-        st.caption(
-            f"Sources found: {len(sources['local_dbs'])} local project file(s), "
-            f"{len(sources['github_projects'])} GitHub-backed project(s), "
-            f"{sources['feedback_entries']} feedback entries."
-        )
-        if st.button("Import past deals", use_container_width=True):
-            with st.spinner("Scanning local projects, GitHub backups, and feedback..."):
-                result = crm.backfill_from_history()
-                crm.backup_to_github()
-            st.success(
-                f"Imported {result['created']} deals "
-                f"(scanned {result['local_dbs_scanned']} local + "
-                f"{result['github_projects_scanned']} GitHub projects, "
-                f"{result['feedback_entries']} feedback entries). "
-                f"Skipped {result['skipped_rejected']} rejected, "
-                f"{result['already_tracked']} already tracked."
-            )
-            if result["created"]:
-                st.rerun()
-    with add_col:
-        st.markdown("**Add a deal manually**")
-        with st.form("manual_add", clear_on_submit=True):
-            m_company = st.text_input("Company name")
-            m_contact = st.text_input("Contact name")
-            m_email = st.text_input("Email")
-            m_phone = st.text_input("Phone")
-            m_niche = st.text_input("Niche / sector")
-            if st.form_submit_button("Add Deal") and m_company.strip():
-                deal_id = crm.upsert_deal(
-                    m_company.strip(),
-                    row={"CEO/Owner Name": m_contact, "Email": m_email,
-                         "Phone": m_phone},
-                    niche=m_niche or None, source="manual",
-                )
-                crm.log_activity(deal_id, "Note", "Added manually")
-                crm.backup_to_github()
-                st.rerun()
-
-# ---------------------------------------------------------------------------
-# Metrics + filters
-# ---------------------------------------------------------------------------
-all_deals = crm.list_deals()
-active_deals = [d for d in all_deals if d["status"] not in TERMINAL_STATUSES]
-opps = [d for d in all_deals if d["status"] == "Opportunity"]
-
-m1, m2, m3, m4 = st.columns(4)
-m1.metric("Total Deals", len(all_deals))
-m2.metric("Active", len(active_deals))
-m3.metric("Opportunities", len(opps))
-m4.metric("Needs Attention", len(attention))
-
-f1, f2 = st.columns([2, 1])
-with f1:
-    status_filter = st.multiselect(
-        "Filter by status",
-        STATUSES,
-        default=[],
-        placeholder="All statuses",
-        format_func=lambda s: f"{STATUS_ICONS.get(s, '')} {s}",
-    )
-with f2:
-    search = st.text_input("Search", placeholder="Company, contact, niche...")
-
-_all_matching = crm.list_deals(
-    statuses=status_filter or None,
-    search=search.strip() or None,
-)
-
-# Terminal-status deals live in the Archive unless explicitly filtered for
-if status_filter:
-    deals = _all_matching
-    archived = []
-else:
-    deals = [d for d in _all_matching if d["status"] not in TERMINAL_STATUSES]
-    archived = [d for d in _all_matching if d["status"] in TERMINAL_STATUSES]
-
-if not deals:
-    if not all_deals:
-        st.info(
-            "No deals tracked yet. Use **Import past deals** above to seed the "
-            "tracker from your search history, or add one manually."
-        )
-    elif archived:
-        st.info("No active deals — everything matching is in the Archive below.")
-    else:
-        st.info("No deals match the current filters.")
-
-# ---------------------------------------------------------------------------
-# Deal cards
-# ---------------------------------------------------------------------------
-for deal in deals:
+def _render_deal_card(deal):
+    """Full editable deal card inside an expander."""
     _id = deal["id"]
-    icon = STATUS_ICONS.get(deal["status"], "•")
     header = (
-        f"{icon} {deal['company']} — {deal['status']} · "
+        f"{deal['company']} · "
         f"last activity: {_fmt_ts(deal.get('last_activity') or deal.get('created_at'))}"
     )
     with st.expander(header):
@@ -207,6 +111,7 @@ for deal in deals:
             ]
             if meta_bits:
                 st.caption(" · ".join(meta_bits))
+            st.caption(f"Sourced {(deal.get('created_at') or '?')[:10]}")
             if deal.get("sf_account_id"):
                 st.caption(f"Salesforce Account: `{deal['sf_account_id']}`")
 
@@ -218,9 +123,11 @@ for deal in deals:
                 index=STATUSES.index(current),
                 key=f"status_{_id}",
                 format_func=lambda s: f"{STATUS_ICONS.get(s, '')} {s}",
+                help="Changing the status moves this deal to that folder.",
             )
             if new_status != deal["status"]:
                 crm.set_status(_id, new_status, deal["status"])
+                crm.auto_sync_deal(_id)
                 crm.backup_to_github()
                 st.rerun()
 
@@ -235,8 +142,9 @@ for deal in deals:
             )
             if st.button("Save Notes", key=f"savenotes_{_id}"):
                 crm.update_deal(_id, notes=notes_val)
+                _synced = crm.auto_sync_deal(_id)
                 crm.backup_to_github()
-                st.success("Notes saved.")
+                st.success("Notes saved." + (" Synced to Salesforce." if _synced else ""))
         with f_col:
             existing_fu = None
             if deal.get("next_followup"):
@@ -255,10 +163,12 @@ for deal in deals:
             if fu_set.button("Set", key=f"fuset_{_id}"):
                 crm.update_deal(_id, next_followup=fu_date.isoformat())
                 crm.log_activity(_id, "Note", f"Follow-up set for {fu_date.isoformat()}")
+                crm.auto_sync_deal(_id)
                 crm.backup_to_github()
                 st.rerun()
             if deal.get("next_followup") and fu_clear.button("Clear", key=f"fuclear_{_id}"):
                 crm.update_deal(_id, next_followup=None)
+                crm.auto_sync_deal(_id)
                 crm.backup_to_github()
                 st.rerun()
             if deal.get("next_followup"):
@@ -299,6 +209,7 @@ for deal in deals:
             )
             if st.form_submit_button("Log") and a_summary.strip():
                 crm.log_activity(_id, a_type, a_summary.strip())
+                crm.auto_sync_deal(_id)
                 crm.backup_to_github()
                 st.rerun()
 
@@ -360,6 +271,7 @@ for deal in deals:
                     f"Created {r_action} reminder for "
                     f"{r_date.isoformat()} {r_time.strftime('%H:%M')}{recur_label}",
                 )
+                crm.auto_sync_deal(_id)
                 crm.backup_to_github()
 
         if st.session_state.get(f"_rem_ics_{_id}"):
@@ -377,8 +289,13 @@ for deal in deals:
         sf_col, del_col = st.columns([1, 3])
         with sf_col:
             unsynced = crm.unsynced_activities(_id)
+            _linked = bool(deal.get("sf_account_id"))
+            _sync_label = (
+                f"Sync to Salesforce ({len(unsynced)} pending)" if _linked
+                else f"Link to Salesforce & sync ({len(unsynced)} pending)"
+            )
             if st.button(
-                f"Sync to Salesforce ({len(unsynced)} new)",
+                _sync_label,
                 key=f"sfsync_{_id}",
                 use_container_width=True,
             ):
@@ -399,46 +316,223 @@ for deal in deals:
                 except Exception as e:
                     st.error(f"Salesforce sync error: {e}")
         with del_col:
-            st.caption(
-                "Sync pushes un-synced activities as completed Tasks and logs "
-                "the current status + notes to the Salesforce Account."
-            )
+            if _linked:
+                st.caption(
+                    "✅ Linked — every status change, note, follow-up, and "
+                    "activity auto-syncs to Salesforce. Activities become "
+                    "completed Tasks; status + notes update one summary Task; "
+                    "the follow-up date maintains an open Task with that due date."
+                )
+            else:
+                st.caption(
+                    "Not linked yet — click once to create/find the Salesforce "
+                    "Account and push everything. After linking, all changes "
+                    "auto-sync from then on."
+                )
+
+
+st.title("📇 Deal Tracker")
+st.caption(
+    "Every target prospect in one place — statuses, notes, activity log, "
+    "tailored Outlook reminders, and Salesforce sync."
+)
+
+crm.init_db()
+crm.restore_from_github_if_empty()
 
 # ---------------------------------------------------------------------------
-# Archive — terminal-status deals, grouped and out of the way
+# Needs Attention
 # ---------------------------------------------------------------------------
-if archived:
-    st.markdown("---")
-    with st.expander(f"🗄️ Archive ({len(archived)})"):
-        st.caption(
-            "Deals marked Closed – No Response, Contacted – No Opportunity, "
-            "or Not a Fit. Sorted by date sourced (newest first). "
-            "Reopen moves a deal back to New."
-        )
-        for arch_status in [
-            "Closed – No Response",
-            "Contacted – No Opportunity",
-            "Not a Fit",
-        ]:
-            group = [d for d in archived if d["status"] == arch_status]
-            if not group:
-                continue
-            group.sort(key=lambda d: d.get("created_at") or "", reverse=True)
+attention = crm.deals_needing_attention()
+if attention:
+    with st.container(border=True):
+        st.markdown(f"### 🔔 Needs Attention ({len(attention)})")
+        for d in attention[:15]:
+            icon = STATUS_ICONS.get(d["status"], "•")
             st.markdown(
-                f"**{STATUS_ICONS.get(arch_status, '')} {arch_status} ({len(group)})**"
+                f"- {icon} **{d['company']}** — {d['attention_reason']}"
+                f" · last touch: {_fmt_ts(d.get('last_activity') or d.get('created_at'))}"
+                f" · in folder: {d['status']}"
             )
-            for d in group:
-                c1, c2, c3, c4 = st.columns([4, 2, 3, 1])
-                label = f"**{d['company']}**"
-                if d.get("niche"):
-                    label += f" · {d['niche']}"
-                c1.markdown(label)
-                c2.caption(f"Sourced {(d.get('created_at') or '?')[:10]}")
-                c3.caption(
-                    f"Last activity: "
-                    f"{_fmt_ts(d.get('last_activity') or d.get('created_at'))}"
+        if len(attention) > 15:
+            st.caption(f"...and {len(attention) - 15} more in the folders below.")
+
+# ---------------------------------------------------------------------------
+# Import + manual add
+# ---------------------------------------------------------------------------
+with st.expander("⚙️ Import & add deals"):
+    imp_col, add_col = st.columns(2)
+    with imp_col:
+        st.markdown("**Import from past searches**")
+        st.caption(
+            "Pulls in every investment memo and every company you marked "
+            "👍 Interested — from local project files, the GitHub backup, "
+            "and the feedback log. Skips companies you rejected."
+        )
+        sources = crm.backfill_sources()
+        st.caption(
+            f"Sources found: {len(sources['local_dbs'])} local project file(s), "
+            f"{len(sources['github_projects'])} GitHub-backed project(s), "
+            f"{sources['feedback_entries']} feedback entries."
+        )
+        if st.button("Import past deals", use_container_width=True):
+            with st.spinner("Scanning local projects, GitHub backups, and feedback..."):
+                result = crm.backfill_from_history()
+                crm.backup_to_github()
+            st.success(
+                f"Imported {result['created']} deals "
+                f"(scanned {result['local_dbs_scanned']} local + "
+                f"{result['github_projects_scanned']} GitHub projects, "
+                f"{result['feedback_entries']} feedback entries). "
+                f"Skipped {result['skipped_rejected']} rejected, "
+                f"{result['already_tracked']} already tracked."
+            )
+            if result["created"]:
+                st.rerun()
+    with add_col:
+        st.markdown("**Add a deal manually**")
+        with st.form("manual_add", clear_on_submit=True):
+            m_company = st.text_input("Company name")
+            m_contact = st.text_input("Contact name")
+            m_email = st.text_input("Email")
+            m_phone = st.text_input("Phone")
+            m_niche = st.text_input("Niche / sector")
+            if st.form_submit_button("Add Deal") and m_company.strip():
+                deal_id = crm.upsert_deal(
+                    m_company.strip(),
+                    row={"CEO/Owner Name": m_contact, "Email": m_email,
+                         "Phone": m_phone},
+                    niche=m_niche or None, source="manual",
                 )
-                if c4.button("Reopen", key=f"reopen_{d['id']}"):
-                    crm.set_status(d["id"], "New", d["status"])
-                    crm.backup_to_github()
-                    st.rerun()
+                crm.log_activity(deal_id, "Note", "Added manually")
+                crm.backup_to_github()
+                st.rerun()
+
+    st.markdown("---")
+    st.markdown("**Salesforce catch-up**")
+    st.caption(
+        "Push everything logged so far — statuses, notes, follow-up dates, "
+        "and activities — to Salesforce in one pass. Linked deals always "
+        "sync; check the box to also link deals you've worked on that "
+        "aren't in Salesforce yet (creates their Accounts). Untouched "
+        "imports are never pushed."
+    )
+    _inc_unlinked = st.checkbox(
+        "Also link deals not yet in Salesforce (creates Accounts)",
+        value=True,
+        key="syncall_unlinked",
+    )
+    if st.button("🔄 Sync All to Salesforce", use_container_width=True):
+        with st.spinner("Syncing all deals to Salesforce..."):
+            _res = crm.sync_all_to_salesforce(include_unlinked=_inc_unlinked)
+            crm.backup_to_github()
+        if _res.get("error"):
+            st.error(_res["error"])
+        else:
+            st.success(
+                f"Synced {_res['deals_synced']} deals "
+                f"({_res['activities_synced']} activities). "
+                f"Newly linked: {_res['newly_linked']}. "
+                f"Skipped unlinked: {_res['skipped_unlinked']}."
+            )
+            for _err in _res.get("errors", [])[:5]:
+                st.warning(_err)
+
+# ---------------------------------------------------------------------------
+# Metrics + search
+# ---------------------------------------------------------------------------
+all_deals = crm.list_deals()
+active_deals = [d for d in all_deals if d["status"] not in TERMINAL_STATUSES]
+opps = [d for d in all_deals if d["status"] == "Opportunity"]
+
+m1, m2, m3, m4 = st.columns(4)
+m1.metric("Total Deals", len(all_deals))
+m2.metric("Active", len(active_deals))
+m3.metric("Opportunities", len(opps))
+m4.metric("Needs Attention", len(attention))
+
+search = st.text_input("Search", placeholder="Company, contact, niche...")
+
+_all_matching = crm.list_deals(search=search.strip() or None)
+
+if not all_deals:
+    st.info(
+        "No deals tracked yet. Use **Import past deals** above to seed the "
+        "tracker from your search history, or add one manually."
+    )
+elif not _all_matching:
+    st.info("No deals match the current search.")
+
+# ---------------------------------------------------------------------------
+# Status folders — persistent selector so you never lose your spot
+# ---------------------------------------------------------------------------
+if _all_matching:
+    buckets = {
+        s: [d for d in _all_matching if d["status"] == s]
+        for s in ACTIVE_STATUSES
+    }
+    archived = [d for d in _all_matching if d["status"] in TERMINAL_STATUSES]
+
+    _folder_counts = {s: len(buckets[s]) for s in ACTIVE_STATUSES}
+    _folder_counts["Archive"] = len(archived)
+    _folder_options = ACTIVE_STATUSES + ["Archive"]
+
+    def _folder_label(s):
+        icon = "🗄️" if s == "Archive" else STATUS_ICONS.get(s, "")
+        return f"{icon} {s} ({_folder_counts[s]})"
+
+    selected_folder = st.radio(
+        "Folder",
+        _folder_options,
+        format_func=_folder_label,
+        horizontal=True,
+        key="deal_folder",
+        label_visibility="collapsed",
+    )
+    st.markdown("---")
+
+    if selected_folder != "Archive":
+        bucket = buckets[selected_folder]
+        if not bucket:
+            st.caption(f"No deals in {selected_folder}.")
+        for deal in bucket:
+            _render_deal_card(deal)
+
+    # ── Archive folder: terminal statuses, grouped, sorted by date sourced ──
+    else:
+        if not archived:
+            st.caption("Nothing archived yet.")
+        else:
+            st.caption(
+                "Deals marked Closed – No Response, Contacted – No Opportunity, "
+                "or Not a Fit. Sorted by date sourced (newest first). "
+                "Reopen moves a deal back to New."
+            )
+            for arch_status in [
+                "Closed – No Response",
+                "Contacted – No Opportunity",
+                "Not a Fit",
+            ]:
+                group = [d for d in archived if d["status"] == arch_status]
+                if not group:
+                    continue
+                group.sort(key=lambda d: d.get("created_at") or "", reverse=True)
+                st.markdown(
+                    f"**{STATUS_ICONS.get(arch_status, '')} {arch_status} ({len(group)})**"
+                )
+                for d in group:
+                    c1, c2, c3, c4 = st.columns([4, 2, 3, 1])
+                    label = f"**{d['company']}**"
+                    if d.get("niche"):
+                        label += f" · {d['niche']}"
+                    c1.markdown(label)
+                    c2.caption(f"Sourced {(d.get('created_at') or '?')[:10]}")
+                    c3.caption(
+                        f"Last activity: "
+                        f"{_fmt_ts(d.get('last_activity') or d.get('created_at'))}"
+                    )
+                    if c4.button("Reopen", key=f"reopen_{d['id']}"):
+                        crm.set_status(d["id"], "New", d["status"])
+                        crm.auto_sync_deal(d["id"])
+                        crm.backup_to_github()
+                        st.rerun()

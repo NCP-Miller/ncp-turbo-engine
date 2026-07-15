@@ -572,6 +572,105 @@ def import_crm_from_json(data):
         conn.close()
 
 
+def get_deal_by_id(deal_id):
+    init_db()
+    conn = _connect()
+    try:
+        r = conn.execute(
+            "SELECT * FROM deals WHERE id = ?", (deal_id,)
+        ).fetchone()
+        return dict(r) if r else None
+    finally:
+        conn.close()
+
+
+def auto_sync_deal(deal_id):
+    """Push status, notes, follow-up, and pending activities to Salesforce.
+
+    Best-effort and silent: no-ops when Salesforce isn't configured or the
+    deal isn't linked yet (no sf_account_id — use the manual Sync button
+    once to link/create the Account). Returns True when a sync happened.
+    """
+    try:
+        deal = get_deal_by_id(deal_id)
+        if not deal or not deal.get("sf_account_id"):
+            return False
+        from lib.api_clients import get_secret
+        from lib.salesforce import sf_login, sync_deal_to_salesforce
+        username = get_secret("SF_USERNAME", "")
+        if not username:
+            return False
+        sf = sf_login(
+            username,
+            get_secret("SF_PASSWORD", ""),
+            get_secret("SF_CONSUMER_KEY", ""),
+            get_secret("SF_CONSUMER_SECRET", ""),
+            get_secret("SF_SECURITY_TOKEN", ""),
+        )
+        acts = unsynced_activities(deal_id)
+        acct, cont, synced_ids = sync_deal_to_salesforce(sf, deal, acts)
+        mark_activities_synced(synced_ids)
+        update_deal(deal_id, sf_account_id=acct, sf_contact_id=cont)
+        return True
+    except Exception:
+        return False
+
+
+def sync_all_to_salesforce(include_unlinked=False):
+    """Catch-up sync: push every deal's status, notes, follow-up, and
+    pending activities to Salesforce in one pass.
+
+    Linked deals (sf_account_id set) always sync. Unlinked deals sync only
+    when include_unlinked=True — that creates their Salesforce Accounts —
+    and only if they have real user activity beyond the initial import
+    note, so untouched backfilled imports never spam the org.
+
+    Returns a summary dict.
+    """
+    init_db()
+    from lib.api_clients import get_secret
+    from lib.salesforce import sf_login, sync_deal_to_salesforce
+
+    username = get_secret("SF_USERNAME", "")
+    if not username:
+        return {"error": "Salesforce is not configured (SF_USERNAME missing)."}
+    sf = sf_login(
+        username,
+        get_secret("SF_PASSWORD", ""),
+        get_secret("SF_CONSUMER_KEY", ""),
+        get_secret("SF_CONSUMER_SECRET", ""),
+        get_secret("SF_SECURITY_TOKEN", ""),
+    )
+
+    summary = {"deals_synced": 0, "activities_synced": 0,
+               "newly_linked": 0, "skipped_unlinked": 0, "errors": []}
+
+    for deal in list_deals():
+        acts = unsynced_activities(deal["id"])
+        is_linked = bool(deal.get("sf_account_id"))
+        if not is_linked:
+            real_acts = [
+                a for a in acts
+                if not (a.get("summary") or "").startswith("Imported from")
+            ]
+            if not include_unlinked or not real_acts:
+                if acts:
+                    summary["skipped_unlinked"] += 1
+                continue
+        try:
+            acct, cont, synced_ids = sync_deal_to_salesforce(sf, deal, acts)
+            mark_activities_synced(synced_ids)
+            update_deal(deal["id"], sf_account_id=acct, sf_contact_id=cont)
+            summary["deals_synced"] += 1
+            summary["activities_synced"] += len(synced_ids)
+            if not is_linked:
+                summary["newly_linked"] += 1
+        except Exception as e:
+            summary["errors"].append(f"{deal['company']}: {e}")
+
+    return summary
+
+
 def backup_to_github():
     """Push the full CRM to the GitHub data branch. Best-effort."""
     try:
