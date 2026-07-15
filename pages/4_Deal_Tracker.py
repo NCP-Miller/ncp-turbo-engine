@@ -414,7 +414,7 @@ elif not _all_matching:
     st.info("No deals match the current search.")
 
 # ---------------------------------------------------------------------------
-# Status folders — one tab per bucket, plus the Archive
+# Status folders — persistent selector so you never lose your spot
 # ---------------------------------------------------------------------------
 if _all_matching:
     buckets = {
@@ -423,23 +423,33 @@ if _all_matching:
     }
     archived = [d for d in _all_matching if d["status"] in TERMINAL_STATUSES]
 
-    tab_labels = [
-        f"{STATUS_ICONS[s]} {s} ({len(buckets[s])})" for s in ACTIVE_STATUSES
-    ]
-    tab_labels.append(f"🗄️ Archive ({len(archived)})")
-    tabs = st.tabs(tab_labels)
+    _folder_counts = {s: len(buckets[s]) for s in ACTIVE_STATUSES}
+    _folder_counts["Archive"] = len(archived)
+    _folder_options = ACTIVE_STATUSES + ["Archive"]
 
-    for tab, status in zip(tabs[:-1], ACTIVE_STATUSES):
-        with tab:
-            bucket = buckets[status]
-            if not bucket:
-                st.caption(f"No deals in {status}.")
-                continue
-            for deal in bucket:
-                _render_deal_card(deal)
+    def _folder_label(s):
+        icon = "🗄️" if s == "Archive" else STATUS_ICONS.get(s, "")
+        return f"{icon} {s} ({_folder_counts[s]})"
+
+    selected_folder = st.radio(
+        "Folder",
+        _folder_options,
+        format_func=_folder_label,
+        horizontal=True,
+        key="deal_folder",
+        label_visibility="collapsed",
+    )
+    st.markdown("---")
+
+    if selected_folder != "Archive":
+        bucket = buckets[selected_folder]
+        if not bucket:
+            st.caption(f"No deals in {selected_folder}.")
+        for deal in bucket:
+            _render_deal_card(deal)
 
     # ── Archive folder: terminal statuses, grouped, sorted by date sourced ──
-    with tabs[-1]:
+    else:
         if not archived:
             st.caption("Nothing archived yet.")
         else:
