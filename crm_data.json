@@ -105,7 +105,7 @@
       "state": "South Carolina",
       "niche": "Pleasen find employee benefit administrators with ICHRA (Individual Coverage Health Reimbursement Arrangement) service offerings. Find more companies similar to Leap. Anchor traits: Leap is a healthcare company focused on transforming the specialty infusion care process by eliminating hidden drug markups and enabling at-home treatments. They serve employers and patients by providing a transparent, patient-centered model that integrates directly with health plans to reduce costs and improve access to infusion therapies. Leap operates within the healthcare sector, aiming to simplify and make life-sustaining treatments more affordable and accessible. | Differentiated: Low | Industry:  | Size: 39 employees.. Find more companies similar to myLaurel\u00ae. Anchor traits: myLaurel\u00ae is a healthcare organization that specializes in delivering acute and transitional care at home, aiming to improve patient outcomes and reduce hospital capacity constraints. They work with health systems and payers to provide a hybrid model of hands-on clinical care supported by virtual technology, focusing on high-risk patients to prevent unnecessary hospitalizations and lower healthcare costs. | Differentiated: Low | Industry:  | Size: 71 employees.. Find more companies similar to KSA Insurance. Anchor traits: KSA Insurance is an independent insurance agency headquartered in Charleston, South Carolina, serving clients throughout the South and across the East Coast. The company offers a comprehensive range of personal and commercial insurance products, including property, casualty, health, and life insurance, through an extensive carrier network. | Differentiated: Low | Industry:  | Size: 36 employees.",
       "project": "ICHRA 26.05.26",
-      "status": "New",
+      "status": "Closed \u2013 No Response",
       "source": "backfill-memo",
       "notes": "Tried to contact these guys repeatedly. ",
       "next_followup": null,
@@ -113,7 +113,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"KSA Insurance\", \"Description\": \"KSA Insurance is an independent insurance agency headquartered in Charleston, South Carolina, serving clients throughout the South and across the East Coast. The company offers a comprehensive range of personal and commercial insurance products, including property, casualty, health, and life insurance, through an extensive carrier network.\", \"Website\": \"http://www.ksa-insurance.com\", \"City\": \"Charleston\", \"State\": \"South Carolina\", \"LinkedIn\": \"http://www.linkedin.com/company/ksa-insurance\", \"Employees\": 36, \"Est. EBITDA\": \"$540K\\u2013$1.1M\", \"CEO/Owner Name\": \"John Foreman\", \"Title\": \"Principal\", \"Email\": \"jforeman@ksa-insurance.com\", \"Email Estimate\": \"\", \"Phone\": \"(843) 300-1266\", \"Source\": \"Web Path (/about) \\u2192 Verified\", \"Notes\": \"\", \"Confidence\": \"High\", \"Latest News\": \"King Street Agency: When Times Get Tough - Mount Pleasant Magazine | https://news.google.com/rss/articles/CBMimwFBVV95cUxNem1sUHhjZHNNRTg0YzFFNXdDOUhTR0hUMHZzUGNXMzZMUE5mekpjeHRuNW9ramk0aXFUSFUtMS1CemgtYnNaWTMzdkhuTmdWNWt4TURyX1NOR3RJTHNNY3Rja3djU1ZsQ0ZJdW5xVUl5RFFsSWJWNTlKRS0tdWh4SEVSZGRmaEJIeDBIdm1pYzEyM0hicXdaSHhVUQ?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"Pleasen find employee benefit administrators with ICHRA (Individual Coverage Health Reimbursement Arrangement) service offerings\", \"Priority\": \"Medium\", \"Growth\": \"Medium\", \"Txn Readiness\": \"Low\", \"Conviction\": 3, \"Conviction Pitch\": \"KSA Insurance is a generic operator in the insurance sector with a comprehensive portfolio of insurance products but lacks distinctive features or competitive differentiation. While they offer a broad range of services, there is no clear moat or competitive advantage evident in their business model. Their medium growth trajectory and low transaction readiness further diminish the appeal, making them less than ideal for our investment criteria.\", \"Conviction Reasoning\": \"The company does not demonstrate a clear 'right to win' or possess an unfair advantage, and it operates in a highly competitive and undifferentiated market.\"}",
       "created_at": "2026-07-10T00:01:36.843546+00:00",
-      "updated_at": "2026-07-15T22:49:46.243032+00:00"
+      "updated_at": "2026-07-15T22:49:49.246592+00:00"
     },
     {
       "id": 6,
@@ -2079,6 +2079,15 @@
       "summary": "Status: New \u2192 Not a Fit",
       "detail": "",
       "timestamp": "2026-07-15T22:49:31.479172+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 117,
+      "deal_id": 5,
+      "type": "Note",
+      "summary": "Status: New \u2192 Closed \u2013 No Response",
+      "detail": "",
+      "timestamp": "2026-07-15T22:49:49.246355+00:00",
       "synced_to_sf": 0
     }
   ]
