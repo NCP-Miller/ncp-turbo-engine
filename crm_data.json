@@ -84,13 +84,13 @@
       "project": "ICHRA 26.05.26",
       "status": "New",
       "source": "backfill-memo",
-      "notes": "",
+      "notes": "VC backed. Connected to shannon",
       "next_followup": null,
       "sf_account_id": null,
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"Leap\", \"Description\": \"Leap is a healthcare company focused on transforming the specialty infusion care process by eliminating hidden drug markups and enabling at-home treatments. They serve employers and patients by providing a transparent, patient-centered model that integrates directly with health plans to reduce costs and improve access to infusion therapies. Leap operates within the healthcare sector, aiming to simplify and make life-sustaining treatments more affordable and accessible.\", \"Website\": \"http://www.leaphealth.com\", \"City\": \"New York\", \"State\": \"New York\", \"LinkedIn\": \"http://www.linkedin.com/company/leap-health-inc\", \"Employees\": 39, \"Est. EBITDA\": \"$585K\\u2013$1.2M\", \"CEO/Owner Name\": \"N/A\", \"Title\": \"N/A\", \"Email\": \"info@leaphealth.com\", \"Email Estimate\": \"\", \"Phone\": \"(929) 998-8932\", \"Source\": \"Web (contact only)\", \"Notes\": \"\", \"Confidence\": \"Medium\", \"Latest News\": \"I moved from Europe to New York last year. I wish I'd known a few things before making the leap. - Business Insider | https://news.google.com/rss/articles/CBMilAFBVV95cUxORW5ZZ0NJcUlSM1k2OGU5NmYxb0FPbXE1RGRRV042eDlxTTY3ejdkSU44aDJtOVhWdTdLUFZUSm9wLVdUNlFjeEM5S1ZwOWFkcFB5VmFyNFRoWmUtYm10R1Q5QUFhazl6TDB6dlhuUDRNQlBSZnp6UGpHS2RadU1kME9xV09YYUNDTlRqanpWaUE2UzM3?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"Pleasen find employee benefit administrators with ICHRA (Individual Coverage Health Reimbursement Arrangement) service offerings\", \"Priority\": \"High\", \"Growth\": \"High\", \"Txn Readiness\": \"Medium\", \"Conviction\": 6, \"Conviction Pitch\": \"Leap is taking a bold step in the healthcare sector by transforming specialty infusion care, a crucial but often expensive treatment area. Their patient-centered model integrates directly with health plans to increase cost transparency and provide more affordable, at-home care options, aligning with modern healthcare trends towards convenience and personalization. While their approach is promising, it's imperative to ensure they have a defensible moat and can sustain their differentiation in a potentially competitive market.\", \"Conviction Reasoning\": \"Despite Leap's strong alignment with the growing healthcare trend of at-home treatments, their differentiation is not clearly articulated and needs further validation to ensure a sustainable competitive edge.\"}",
       "created_at": "2026-07-10T00:01:36.825438+00:00",
-      "updated_at": "2026-07-10T00:01:36.834462+00:00"
+      "updated_at": "2026-07-15T22:50:43.737794+00:00"
     },
     {
       "id": 5,
