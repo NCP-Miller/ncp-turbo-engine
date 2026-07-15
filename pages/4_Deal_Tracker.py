@@ -5,6 +5,36 @@ from lib import crm
 from lib.crm import STATUSES, TERMINAL_STATUSES, ACTIVITY_TYPES
 from lib.outreach import generate_custom_reminder_ics, RECURRENCE_OPTIONS
 
+def _check_password():
+    try:
+        app_password = st.secrets["APP_PASSWORD"]
+    except (FileNotFoundError, KeyError):
+        st.error("APP_PASSWORD is not configured. Add it to .streamlit/secrets.toml.")
+        return False
+
+    def _password_entered():
+        if st.session_state.get("password") == app_password:
+            st.session_state["password_correct"] = True
+        else:
+            st.session_state["password_correct"] = False
+            st.session_state["password_attempted"] = True
+
+    if st.session_state.get("password_correct"):
+        return True
+
+    st.text_input(
+        "Enter Password", type="password",
+        on_change=_password_entered, key="password",
+    )
+    if st.session_state.get("password_attempted"):
+        st.error("Password incorrect")
+    return False
+
+
+if not _check_password():
+    st.stop()
+
+
 STATUS_ICONS = {
     "New": "🆕",
     "Outreach Active": "📤",
