@@ -417,12 +417,12 @@ def _analyze_single(org, niche, strategy, config, search_params,
             "row": row, "score": conv_score, "reason": conv_reason}
 
 
-def _crm_capture_memo(company, row, niche, note):
+def _crm_capture_memo(company, row, niche, note, memo_text=None):
     """Best-effort Deal Tracker capture when an investment memo is created."""
     try:
         from lib import crm as _crm
         deal_id = _crm.upsert_deal(company, row=row or {}, niche=niche,
-                                   source="memo")
+                                   source="memo", memo=memo_text)
         _crm.log_activity(deal_id, "Note", note)
         _crm.backup_to_github()
     except Exception:
@@ -966,6 +966,7 @@ def _run_loop():
                                     _crm_capture_memo(
                                         best_name, best_row, niche,
                                         "Investment memo generated (closest fit)",
+                                        memo_text=memo_text,
                                     )
                                     state.set_event(
                                         "exhausted",
@@ -1100,6 +1101,7 @@ def _run_loop():
                         _crm_capture_memo(
                             comp_name, memo.get("row"), niche,
                             "Investment memo generated",
+                            memo_text=memo_text,
                         )
                         state.set_event("memo_complete", f"Memo complete: {comp_name}. {len(state.completed_memos)}/{target_count} done.", "success")
                         print(f"[Write-up Bot] Memo complete: {comp_name} ({len(state.completed_memos)}/{target_count})")

@@ -45,12 +45,13 @@ WRITEUP_STATUS_LABELS = {
 
 def _crm_capture(company, row=None, niche=None, activity=None,
                  activity_type="Note", status=None, synced_to_sf=0,
-                 sf_account_id=None, sf_contact_id=None, backup=True):
+                 sf_account_id=None, sf_contact_id=None, backup=True,
+                 memo=None):
     """Best-effort Deal Tracker capture — never breaks the pipeline UI."""
     try:
         from lib import crm as _crm
         deal_id = _crm.upsert_deal(company, row=row, niche=niche,
-                                   status=status)
+                                   status=status, memo=memo)
         if sf_account_id:
             _crm.update_deal(deal_id, sf_account_id=sf_account_id,
                              sf_contact_id=sf_contact_id)
@@ -1107,6 +1108,7 @@ with tab_memos:
                             memo["company"], row=row,
                             niche=cfg.get("niche"),
                             activity="Marked 👍 Interested in memo review",
+                            memo=memo.get("memo"),
                         )
                         st.rerun()
                 with fb_cols[1]:
@@ -1341,6 +1343,7 @@ with tab_near:
                             _crm_capture(
                                 company, row=row, niche=_niche,
                                 activity="Promoted from Worth a Second Look — memo generated",
+                                memo=memo_text,
                             )
                             st.success(f"Memo created for {company}.")
                             st.rerun()
