@@ -1,9 +1,13 @@
+import json
 import streamlit as st
 from datetime import datetime, date, time as dtime, timedelta, timezone
 
 from lib import crm
 from lib.crm import STATUSES, TERMINAL_STATUSES, ACTIVITY_TYPES
-from lib.outreach import generate_custom_reminder_ics, RECURRENCE_OPTIONS
+from lib.outreach import (
+    generate_custom_reminder_ics, generate_followup_ics,
+    make_mailto_url, RECURRENCE_OPTIONS,
+)
 
 def _check_password():
     try:
@@ -196,6 +200,104 @@ def _render_deal_card(deal):
                     )
                 except (ValueError, TypeError):
                     pass
+
+        # ── Outreach tools: memo, email draft, reminder sequence ─
+        st.markdown("**Outreach tools**")
+        _row_data = {}
+        if deal.get("row_json"):
+            try:
+                _row_data = json.loads(deal["row_json"])
+            except (ValueError, TypeError):
+                _row_data = {}
+
+        if deal.get("memo"):
+            if st.toggle("📄 Show investment memo", key=f"memo_{_id}"):
+                st.markdown(deal["memo"])
+
+        ot1, ot2, ot3 = st.columns(3)
+        with ot1:
+            if st.button("✉️ Draft Outreach Email", key=f"draft_{_id}",
+                         use_container_width=True):
+                try:
+                    from lib.outreach import draft_cold_email
+                    from lib.api_clients import load_api_keys, make_openai_client
+                    _keys = load_api_keys()
+                    _oc = make_openai_client(api_key=_keys["OPENAI_API_KEY"])
+                    _thesis = {}
+                    try:
+                        with open("ncp_thesis.json") as f:
+                            _thesis = json.load(f)
+                    except Exception:
+                        pass
+                    enriched = dict(_row_data)
+                    enriched["Company"] = deal["company"]
+                    enriched["_niche"] = deal.get("niche") or enriched.get("_niche", "")
+                    if deal.get("contact_name"):
+                        enriched["CEO/Owner Name"] = deal["contact_name"]
+                    if deal.get("email"):
+                        enriched["Email"] = deal["email"]
+                    if deal.get("phone"):
+                        enriched["Phone"] = deal["phone"]
+                    if deal.get("title"):
+                        enriched["Title"] = deal["title"]
+                    draft = draft_cold_email(_oc, enriched, _thesis)
+                    st.session_state[f"_crm_draft_subj_{_id}"] = draft["subject"]
+                    st.session_state[f"_crm_draft_body_{_id}"] = draft["body"]
+                    crm.log_activity(
+                        _id, "Email",
+                        f"Drafted outreach email: {draft['subject']}",
+                    )
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"Email drafting error: {e}")
+        with ot2:
+            _seq_ics = generate_followup_ics(
+                deal["company"],
+                deal.get("contact_name") or "Contact",
+                phone=deal.get("phone") or "",
+                email=deal.get("email") or "",
+            )
+            st.download_button(
+                "📅 Follow-up Sequence (.ics)",
+                data=_seq_ics,
+                file_name=f"followup_{deal['company'].replace(' ', '_')}.ics",
+                mime="text/calendar",
+                key=f"seqics_{_id}",
+                use_container_width=True,
+                help="The standard 6-touch reminder sequence (email, LinkedIn, "
+                     "calls) timed from the moment you download.",
+                on_click=crm.log_activity,
+                args=(_id, "Note", "Downloaded follow-up reminder sequence"),
+            )
+        with ot3:
+            st.page_link(
+                "pages/2_Sourcing_Pipeline.py",
+                label="🔍 Open Sourcing App",
+                use_container_width=True,
+            )
+            if deal.get("project"):
+                st.caption(f"From project: {deal['project']}")
+
+        _draft_body = st.session_state.get(f"_crm_draft_body_{_id}")
+        if _draft_body:
+            st.markdown(
+                f"**Subject:** "
+                f"{st.session_state.get(f'_crm_draft_subj_{_id}', '')}"
+            )
+            _edited_body = st.text_area(
+                "Email draft (edit before sending)",
+                value=_draft_body,
+                height=200,
+                key=f"drafted_{_id}",
+            )
+            _mailto = make_mailto_url(
+                deal.get("email") or "",
+                st.session_state.get(f"_crm_draft_subj_{_id}", ""),
+                _edited_body,
+            )
+            st.link_button("Open in Outlook", url=_mailto)
+
+        st.markdown("---")
 
         # ── Log activity ─────────────────────────────────────────
         st.markdown("**Log activity**")

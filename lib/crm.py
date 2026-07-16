@@ -93,6 +93,9 @@ def init_db():
                 synced_to_sf INTEGER DEFAULT 0,
                 FOREIGN KEY (deal_id) REFERENCES deals(id)
             )""")
+        cols = {r[1] for r in conn.execute("PRAGMA table_info(deals)").fetchall()}
+        if "memo" not in cols:
+            conn.execute("ALTER TABLE deals ADD COLUMN memo TEXT")
         conn.commit()
     finally:
         conn.close()
@@ -111,7 +114,7 @@ def _key(company):
 # ---------------------------------------------------------------------------
 
 def upsert_deal(company, row=None, niche=None, project=None, source="pipeline",
-                status=None):
+                status=None, memo=None):
     """Create a deal if it doesn't exist; refresh contact fields if it does.
 
     Never downgrades an existing deal's status. Returns the deal id.
@@ -142,6 +145,8 @@ def upsert_deal(company, row=None, niche=None, project=None, source="pipeline",
             updates = {k: v for k, v in fields.items() if v}
             if row:
                 updates["row_json"] = json.dumps(row, default=str)
+            if memo:
+                updates["memo"] = memo
             if updates:
                 sets = ", ".join(f"{k} = ?" for k in updates)
                 conn.execute(
@@ -155,12 +160,13 @@ def upsert_deal(company, row=None, niche=None, project=None, source="pipeline",
             """INSERT INTO deals
                (company, company_key, website, contact_name, title, email,
                 phone, city, state, niche, project, status, source,
-                row_json, created_at, updated_at)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                row_json, memo, created_at, updated_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
             (company, _key(company), fields["website"], fields["contact_name"],
              fields["title"], fields["email"], fields["phone"], fields["city"],
              fields["state"], niche, project, status or "New", source,
-             json.dumps(row, default=str) if row else None, _now(), _now()),
+             json.dumps(row, default=str) if row else None, memo,
+             _now(), _now()),
         )
         conn.commit()
         return cur.lastrowid
@@ -448,7 +454,7 @@ def backfill_from_history():
             source = "backfill-liked" if verdict == "liked" else "backfill-memo"
             deal_id = upsert_deal(
                 company, row=memo.get("row") or {}, niche=niche,
-                project=project, source=source,
+                project=project, source=source, memo=memo.get("memo"),
             )
             note = "Imported from past search"
             if verdict == "liked":
