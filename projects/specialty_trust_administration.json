@@ -19043,13 +19043,14 @@
     "broaden_signal": false,
     "_budget_gate_cleared": 30
   },
-  "reviewed_near_misses": [
-    "Kassouf",
-    "The Trust Company of Tennessee"
-  ],
   "memo_verdicts": {
     "Cumberland Trust": "liked",
     "Pendleton Square Trust Company": "liked"
   },
-  "status": "running"
+  "status": "running",
+  "reviewed_near_misses": [
+    "The Trust Company of Tennessee",
+    "Oxford Financial Group, Ltd.",
+    "Kassouf"
+  ]
 }
