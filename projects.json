@@ -201,18 +201,6 @@
     "backup_status": "not_configured"
   },
   {
-    "name": "Captive Administrators",
-    "slug": "captive_administrators",
-    "db_file": "project_captive_administrators.db",
-    "created_at": "2026-07-12T18:12:45.135422+00:00",
-    "niche": "captive management firm providing outsourced administration, regulatory compliance, financial management, and operational oversight for captive insurance companies, allowing owners to operate their captives without maintaining dedicated internal staff.",
-    "geography": "South Carolina",
-    "memo_count": 3,
-    "active": true,
-    "backup_status": "not_configured",
-    "status": "running"
-  },
-  {
     "name": "Specialty Trust Administration",
     "slug": "specialty_trust_administration",
     "db_file": "project_specialty_trust_administration.db",
@@ -221,6 +209,17 @@
     "geography": "NCP Priority Geography (Eastern US)",
     "memo_count": 3,
     "active": false,
+    "backup_status": "not_configured"
+  },
+  {
+    "name": "Captive Administrators",
+    "slug": "captive_administrators",
+    "db_file": "project_captive_administrators.db",
+    "created_at": "2026-07-20T21:38:47.877143+00:00",
+    "niche": "captive management firm providing outsourced administration, regulatory compliance, financial management, and operational oversight for captive insurance companies, allowing owners to operate their captives without maintaining dedicated internal staff.",
+    "geography": "South Carolina",
+    "memo_count": 3,
+    "active": true,
     "backup_status": "not_configured"
   }
 ]
