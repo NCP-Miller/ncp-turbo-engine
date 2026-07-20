@@ -1,6 +1,6 @@
 {
   "bot_status": {
-    "search": "exhausted",
+    "search": "searching_apollo",
     "analysis": "idle",
     "writeup": "idle"
   },
@@ -141,6 +141,14 @@
     {
       "role": "assistant",
       "content": "[QA Bot] 517/536 candidates (96%) failed AI relevance. Forcing search parameter pivot."
+    },
+    {
+      "role": "user",
+      "content": "Find a trust administrator in South Carolina"
+    },
+    {
+      "role": "assistant",
+      "content": "I'll initiate a search for a trust administrator in South Carolina. Expect updates once I identify potential candidates."
     }
   ],
   "user_feedback": [],
@@ -6627,35 +6635,34 @@
     "qualified": 2
   },
   "cost_tracker": {
-    "openai": 13.1519,
+    "openai": 13.1599,
     "firecrawl": 12.55,
     "apollo": 0.0,
-    "total": 25.7019,
+    "total": 25.7099,
     "call_counts": {
-      "openai": 699,
+      "openai": 700,
       "firecrawl": 2510,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "exhausted",
-    "message": "Search exhausted \u2014 found 2/5 memos. Try broadening niche or geography, or ask for more in a different region.",
-    "timestamp": "2026-07-11T13:38:41.913836+00:00",
-    "severity": "warning"
+    "type": "searching_apollo",
+    "message": "Searching Apollo for Insurance companies in South Carolina (round 1 of 4).",
+    "timestamp": "2026-07-20T21:36:10.390449+00:00",
+    "severity": "info"
   },
   "created_at": "2026-07-10T14:16:01.623595+00:00",
   "config": {
     "niche": "captive management firm providing outsourced administration, regulatory compliance, financial management, and operational oversight for captive insurance companies, allowing owners to operate their captives without maintaining dedicated internal staff.",
-    "geography": "NCP Priority Geography (Eastern US)",
+    "geography": "South Carolina",
     "strategy": "A",
-    "target_count": 5,
+    "target_count": 4,
     "exclusions": "",
     "override_size_min": null,
     "override_size_max": null,
     "broaden_signal": false,
     "pivot_signal": false
   },
-  "status": "stopped",
   "reviewed_near_misses": [
     "AVID Risk Solutions",
     "The MJ Companies",
@@ -6677,5 +6684,6 @@
     "CIC Services, LLC": "liked",
     "Risk Services": "liked",
     "VNAS Risk Solutions": "liked"
-  }
+  },
+  "status": "running"
 }
