@@ -1079,6 +1079,30 @@
       "created_at": "2026-07-11T15:27:34.477253+00:00",
       "updated_at": "2026-07-15T23:02:13.046415+00:00",
       "memo": null
+    },
+    {
+      "id": 46,
+      "company": "Sageworth",
+      "company_key": "sageworth",
+      "website": "http://www.sageworth.com",
+      "contact_name": "Tim Brown",
+      "title": "Founder",
+      "email": null,
+      "phone": null,
+      "city": "Lancaster",
+      "state": "Pennsylvania",
+      "niche": "Specialty trust administration providers serving RIAs and family offices",
+      "project": null,
+      "status": "New",
+      "source": "memo",
+      "notes": "",
+      "next_followup": null,
+      "sf_account_id": null,
+      "sf_contact_id": null,
+      "row_json": "{\"Company\": \"Sageworth\", \"Description\": \"Sageworth is a shared family office and private trust company that provides investment, planning, fiduciary, business advisory, and administrative services. Founded in 2001 in Pennsylvania, it serves over 100 family groups globally, focusing on the financial needs of business owners and wealth creators.\", \"Website\": \"http://www.sageworth.com\", \"City\": \"Lancaster\", \"State\": \"Pennsylvania\", \"LinkedIn\": \"http://www.linkedin.com/company/sageworth-trust-company\", \"Employees\": 48, \"Est. EBITDA\": \"$840K\\u2013$1.7M\", \"CEO/Owner Name\": \"Tim Brown\", \"Title\": \"Founder\", \"Email\": \"N/A\", \"Email Estimate\": \"\", \"Phone\": \"N/A\", \"Source\": \"Web Spider\", \"Notes\": \"\", \"Confidence\": \"Medium\", \"Latest News\": \"Executive Education, but Not for Business (Published 2012) - The New York Times | https://news.google.com/rss/articles/CBMidkFVX3lxTE1EclN6RVREdXBBOGZpN0lHdzVuWHBFaVNvYVpSODAzTzNtOUxfQmdvS1EzUnFUdEd3SHgyZHdCYVNlaHZSaDdqSm82bE9lUUxvYVpIcjYwemJxZmM1NDdOUURZb0xRUHE3cHJBR2MweVZRdE13akE?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Medium\", \"_niche\": \"Specialty trust administration providers serving RIAs and family offices\", \"Priority\": \"Medium\", \"Growth\": \"Low\", \"Txn Readiness\": \"Medium\", \"Priority Confidence\": \"High\", \"Growth Confidence\": \"Low\", \"Txn Readiness Confidence\": \"Medium\", \"Differentiated Confidence\": \"Medium\", \"Conviction\": 8, \"Conviction Pitch\": \"Sageworth presents an exciting opportunity with its niche focus in specialty trust administration tailored for RIAs and family offices. Its service offerings create a strong defensible moat through fiduciary and regulatory expertise, while the fragmented market and founder-led nature make it ripe for scaling and expansion. The company's established global presence in a growing market of wealthy families and business owners points to an inherent 'right to win' as a leader in boutique financial services.\", \"Conviction Reasoning\": \"The potential for growth in a fragmented market, combined with a unique service offering and regulatory edge, aligns with past successful investments, thus driving a high conviction score.\"}",
+      "created_at": "2026-07-20T21:51:48.239221+00:00",
+      "updated_at": "2026-07-20T21:51:48.248343+00:00",
+      "memo": "**Investment Memo: Sageworth**\n\n**Why We're Excited**\nSageworth is strategically positioned as a leading specialty trust administration provider with an exceptional focus on RIAs and family offices. Its strong fiduciary and regulatory expertise creates a defensible moat in a fragmented market, providing it with a distinct 'right to win'. The company's founder-led structure is nearing a natural transition point, offering a timely opportunity for NCP to drive scalability and growth in a niche, yet promising, sector.\n\n**Company Overview**\nFounded in 2001 and based in Lancaster, Pennsylvania, Sageworth is a private trust company and shared family office. Employing 48 professionals, it serves over 100 family groups globally. The company offers comprehensive investment, planning, fiduciary, business advisory, and administrative services, tailored predominantly to the financial needs of business owners and wealth creators.\n\n**Differentiated Value Proposition**\nSageworth boasts a defensible moat through its accredited fiduciary and regulatory expertise, ensuring compliance in a highly-regulated industry. Its personalized service offerings, developed over two decades, create proprietary processes that differentiate it from less specialized competitors. This moat is further strengthened by its specialized focus and deep client relationships.\n\n**Market Opportunity & Growth**\nThe specialty trust administration market shows promising expansion potential, driven by secular tailwinds such as an aging population and increasing demands for sophisticated wealth management. Despite its low current growth, Sageworth operates in a highly fragmented market, offering significant whitespace for consolidation and scaling through a buy-and-build approach, supported by demographic shifts and rising global wealth.\n\n**NCP Fit Rationale**\nSageworth aligns with NCP's thesis of acquiring lower middle-market, services-oriented companies with strong growth potential. As a founder-led business nearing a natural succession point, it offers NCP the leverages needed to implement operational efficiencies and strategic expansion, capitalizing on its strong regional positioning and lack of dominant competitors.\n\n**Key Risks & Diligence Items**\n1. **Est. EBITDA Validation**: Current financials, particularly EBITDA estimates, require thorough validation for accuracy.\n2. **Leadership Transition**: Assess the impact of the founder's impending retirement on business continuity and identify potential leadership pipeline.\n3. **Market Competition**: While locally limited, understanding national and international competitor dynamics is crucial.\n4. **Regulatory Environment**: Diligence into potential regulatory changes that might affect operations or compliance costs.\n5. **Growth Trajectory**: Evaluation of current growth strategies and identification of concrete levers for scalability and geographic expansion.\n\nIn summary, Sageworth presents a compelling acquisition target with its defensible niche, impending leadership transition, and potential for growth in a fragmented market. While financial and operational validations remain critical, the opportunity aligns well with NCP's investment criteria."
     }
   ],
   "activities": [
@@ -2197,6 +2221,15 @@
       "detail": "",
       "timestamp": "2026-07-20T20:24:52.121763+00:00",
       "synced_to_sf": 1
+    },
+    {
+      "id": 125,
+      "deal_id": 46,
+      "type": "Note",
+      "summary": "Investment memo generated",
+      "detail": "",
+      "timestamp": "2026-07-20T21:51:48.248221+00:00",
+      "synced_to_sf": 0
     }
   ]
 }
