@@ -901,7 +901,7 @@
       "state": "Tennessee",
       "niche": "Specialty trust administration providers serving RIAs and family offices",
       "project": "Specialty Trust Administration",
-      "status": "In Dialogue",
+      "status": "Revisit Later",
       "source": "backfill-liked",
       "notes": "Reach out to set up a call on 7/16",
       "next_followup": null,
@@ -909,7 +909,7 @@
       "sf_contact_id": "003Pp000026Oki1IAC",
       "row_json": "{\"Company\": \"Pendleton Square Trust Company\", \"Description\": \"Pendleton Square Trust Company is an independent trust company based in Tennessee that focuses on trust and estate administration. They work closely with families and their advisors to customize trust services, ensuring the protection and sustainability of family legacies. The company does not provide investment advice but collaborates with a family's selected advisors to form a comprehensive team.\", \"Website\": \"http://www.pendletonsquaretrust.com\", \"City\": \"Brentwood\", \"State\": \"Tennessee\", \"LinkedIn\": \"http://www.linkedin.com/company/pendleton-square-trust-company\", \"Employees\": 37, \"Est. EBITDA\": \"$648K\\u2013$1.3M\", \"CEO/Owner Name\": \"Betsy Brown\", \"Title\": \"Chief Executive Officer\", \"Email\": \"bbrown@pendletonsquaretrust.com\", \"Email Estimate\": \"\", \"Phone\": \"615-515-1200\", \"Source\": \"Web Path (/our-team) \\u2192 Verified\", \"Notes\": \"\", \"Confidence\": \"High\", \"Latest News\": \"N/A\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Medium\", \"_niche\": \"Specialty trust administration providers serving RIAs and family offices\", \"Priority\": \"Medium\", \"Growth\": \"Medium\", \"Txn Readiness\": \"Low\", \"Priority Confidence\": \"High\", \"Growth Confidence\": \"Medium\", \"Txn Readiness Confidence\": \"Low\", \"Differentiated Confidence\": \"Medium\", \"Conviction\": 7, \"Conviction Pitch\": \"Pendleton Square Trust Company presents a compelling opportunity due to its unique focus on trust and estate administration without offering investment advice, positioning it as a true partner to RIAs and family offices. This specialization allows for seamless collaboration while ensuring family legacies' protection and sustainability, a core service in constant demand given demographic shifts and rising wealth transfers. The company's regional presence in Tennessee offers a ripe market for whitespace expansion in an increasingly fragmented sector.\", \"Conviction Reasoning\": \"The company's specialization in trust administration without investment advice is a distinct trait that aligns with our interests in defensible moats and non-cyclical services, although the growth and transactional readiness are medium, limiting the score.\"}",
       "created_at": "2026-07-10T00:01:45.910725+00:00",
-      "updated_at": "2026-07-20T20:23:59.211872+00:00",
+      "updated_at": "2026-07-20T20:24:11.081550+00:00",
       "memo": null
     },
     {
@@ -2178,6 +2178,15 @@
       "summary": "Great call with Betsy. Really interesting business.",
       "detail": "",
       "timestamp": "2026-07-20T20:23:54.187453+00:00",
+      "synced_to_sf": 1
+    },
+    {
+      "id": 123,
+      "deal_id": 38,
+      "type": "Note",
+      "summary": "Status: In Dialogue \u2192 Revisit Later",
+      "detail": "",
+      "timestamp": "2026-07-20T20:24:08.522454+00:00",
       "synced_to_sf": 1
     }
   ]
