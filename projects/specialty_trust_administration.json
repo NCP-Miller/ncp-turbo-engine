@@ -4,76 +4,7 @@
     "analysis": "idle",
     "writeup": "idle"
   },
-  "candidate_queue": [
-    {
-      "id": "54a134b469702d46f0193200",
-      "name": "Midwest Trust Company",
-      "website_url": "http://www.midwesttrust.com",
-      "angellist_url": null,
-      "linkedin_url": "http://www.linkedin.com/company/midwest-trust-company",
-      "twitter_url": null,
-      "facebook_url": null,
-      "languages": [
-        "English"
-      ],
-      "alexa_ranking": null,
-      "phone": "+1 913-319-0300",
-      "linkedin_uid": "104946",
-      "founded_year": 1993,
-      "publicly_traded_symbol": null,
-      "publicly_traded_exchange": null,
-      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/690dd2a402acb60001eff6e3/picture",
-      "crunchbase_url": null,
-      "primary_domain": "midwesttrust.com",
-      "sic_codes": [
-        "6411",
-        "6282",
-        "6199"
-      ],
-      "naics_codes": [
-        "523940",
-        "523991"
-      ],
-      "primary_phone": {
-        "number": "+1 913-319-0300",
-        "sanitized_number": "+19133190300"
-      },
-      "sanitized_phone": "+19133190300",
-      "industry": "financial services",
-      "estimated_num_employees": 140,
-      "keywords": [],
-      "organization_revenue_printed": "13.5M",
-      "organization_revenue": 13500000.0,
-      "industries": [
-        "financial services",
-        "investment management"
-      ],
-      "secondary_industries": [
-        "investment management"
-      ],
-      "snippets_loaded": true,
-      "industry_tag_id": "5567cdd67369643e64020000",
-      "industry_tag_hash": {
-        "financial services": "5567cdd67369643e64020000",
-        "investment management": "5567e0bc7369641d11550200"
-      },
-      "retail_location_count": 0,
-      "raw_address": "5901 college blvd, overland park, ks 66211, us",
-      "street_address": "5901 College Boulevard",
-      "city": "Overland Park",
-      "state": "Kansas",
-      "country": "United States",
-      "postal_code": "66211",
-      "num_languages": 1,
-      "intent_strength": null,
-      "show_intent": false,
-      "has_intent_signal_account": false,
-      "intent_signal_account": null,
-      "organization_headcount_six_month_growth": null,
-      "organization_headcount_twelve_month_growth": null,
-      "organization_headcount_twenty_four_month_growth": null
-    }
-  ],
+  "candidate_queue": [],
   "qualified_queue": [],
   "completed_memos": [
     {
@@ -219,6 +150,43 @@
         "Conviction Reasoning": "The potential for growth in a fragmented market, combined with a unique service offering and regulatory edge, aligns with past successful investments, thus driving a high conviction score."
       },
       "memo": "**Investment Memo: Sageworth**\n\n**Why We're Excited**\nSageworth is strategically positioned as a leading specialty trust administration provider with an exceptional focus on RIAs and family offices. Its strong fiduciary and regulatory expertise creates a defensible moat in a fragmented market, providing it with a distinct 'right to win'. The company's founder-led structure is nearing a natural transition point, offering a timely opportunity for NCP to drive scalability and growth in a niche, yet promising, sector.\n\n**Company Overview**\nFounded in 2001 and based in Lancaster, Pennsylvania, Sageworth is a private trust company and shared family office. Employing 48 professionals, it serves over 100 family groups globally. The company offers comprehensive investment, planning, fiduciary, business advisory, and administrative services, tailored predominantly to the financial needs of business owners and wealth creators.\n\n**Differentiated Value Proposition**\nSageworth boasts a defensible moat through its accredited fiduciary and regulatory expertise, ensuring compliance in a highly-regulated industry. Its personalized service offerings, developed over two decades, create proprietary processes that differentiate it from less specialized competitors. This moat is further strengthened by its specialized focus and deep client relationships.\n\n**Market Opportunity & Growth**\nThe specialty trust administration market shows promising expansion potential, driven by secular tailwinds such as an aging population and increasing demands for sophisticated wealth management. Despite its low current growth, Sageworth operates in a highly fragmented market, offering significant whitespace for consolidation and scaling through a buy-and-build approach, supported by demographic shifts and rising global wealth.\n\n**NCP Fit Rationale**\nSageworth aligns with NCP's thesis of acquiring lower middle-market, services-oriented companies with strong growth potential. As a founder-led business nearing a natural succession point, it offers NCP the leverages needed to implement operational efficiencies and strategic expansion, capitalizing on its strong regional positioning and lack of dominant competitors.\n\n**Key Risks & Diligence Items**\n1. **Est. EBITDA Validation**: Current financials, particularly EBITDA estimates, require thorough validation for accuracy.\n2. **Leadership Transition**: Assess the impact of the founder's impending retirement on business continuity and identify potential leadership pipeline.\n3. **Market Competition**: While locally limited, understanding national and international competitor dynamics is crucial.\n4. **Regulatory Environment**: Diligence into potential regulatory changes that might affect operations or compliance costs.\n5. **Growth Trajectory**: Evaluation of current growth strategies and identification of concrete levers for scalability and geographic expansion.\n\nIn summary, Sageworth presents a compelling acquisition target with its defensible niche, impending leadership transition, and potential for growth in a fragmented market. While financial and operational validations remain critical, the opportunity aligns well with NCP's investment criteria."
+    },
+    {
+      "company": "Midwest Trust Company",
+      "row": {
+        "Company": "Midwest Trust Company",
+        "Description": "Midwest Trust Company is an independent, state-chartered trust company and full-service wealth management firm located in Overland Park, Kansas. Established in 1993, the company offers personalized fiduciary, investment, and financial planning services, managing over $415 billion in assets across various affiliated entities. It provides services such as personal trust administration, estate administration, corporate trustee services, and family office services to individuals, families, corporations, and institutions.",
+        "Website": "http://www.midwesttrust.com",
+        "City": "Overland Park",
+        "State": "Kansas",
+        "LinkedIn": "http://www.linkedin.com/company/midwest-trust-company",
+        "Employees": 140,
+        "Est. EBITDA": "$2.5M\u2013$4.9M",
+        "CEO/Owner Name": "Bradley Bergman",
+        "Title": "CEO or equivalent top role or null",
+        "Email": "N/A",
+        "Email Estimate": "",
+        "Phone": "N/A",
+        "Source": "Web Path (/people)",
+        "Notes": "",
+        "Confidence": "Medium",
+        "Latest News": "Signature Bank Launches Signature Trust Company in Partnership With Midwest Trust - PR Newswire | https://news.google.com/rss/articles/CBMi0wFBVV95cUxOdHVmcGpwb0EwTHlCNThPV1ZEbUpNV3pUZmw1UjZNNzE5V3VhdzVZYUY0OHRDb1dNVE9PUmhCMVFnRkhsV29zTHFOX0dtN055WFJkS2NMeGgzdVdIYnNSNWNYNnFvQmxBdXl0T05GSFlRU3hBMVBsWjBWOEpqbWNoM2lvdWFjUzVZS3lobUZZcnc0NW5VQnlaY3ZyY08wbWhUMk5ZdmVEcDFMM3hhTER0eEdRYmRmVmVMTE9nTzM5R1JiT0ZjNldVTWFRQlJ1aUFITjZF?oc=5",
+        "Previously Sourced": "No",
+        "Differentiated": "Low",
+        "_niche": "Specialty trust administration providers serving RIAs and family offices",
+        "Priority": "High",
+        "Growth": "Medium",
+        "Txn Readiness": "Medium",
+        "Priority Confidence": "High",
+        "Growth Confidence": "Medium",
+        "Txn Readiness Confidence": "Low",
+        "Differentiated Confidence": "Medium",
+        "Conviction": 5,
+        "Conviction Pitch": "While Midwest Trust Company is a well-established and sizeable player in the wealth management sector, its differentiation appears low in a market crowded with similar service providers. The company's position in a growing market for trust administration services does not, in itself, provide a distinct competitive advantage without unique capabilities or innovations.",
+        "Conviction Reasoning": "The company lacks standout differentiation and any specific competitive edge that aligns with our investment criteria for an acquisition opportunity."
+      },
+      "memo": "**Investment Memo for New Capital Partners: Midwest Trust Company**\n\n---\n\n**Why We're Excited**  \nMidwest Trust Company represents a strategic acquisition opportunity due to its established reputation in the wealth management sector and its considerable asset base of $415 billion across affiliated entities, which offers a unique entry point into a rapidly growing trust administration market. While the company's direct differentiation appears limited, its strategic location in Overland Park, Kansas, with limited regional competition, presents a 'right to win' scenario via regional dominance and growth potential through a buy-and-build strategy.\n\n**Company Overview**  \nMidwest Trust Company is an independent, state-chartered trust company established in 1993. It operates out of Overland Park, Kansas, employing approximately 140 people. The firm provides a comprehensive suite of services, including personal trust administration, estate administration, corporate trustee services, and family office services. Its estimated EBITDA ranges between $2.5 million and $4.9 million, although this requires confirmation.\n\n**Differentiated Value Proposition**  \nWhile the company's service differentiation is low, it benefits from its scale of operations and extensive asset management capabilities. Its state-chartered status may imply regulatory advantages, enabling services across certifications and trust specifications not easily replicated by newcomers.\n\n**Market Opportunity & Growth**  \nThe trust administration sector benefits from secular tailwinds, such as an aging population driving demand for estate planning services. The total addressable market is significant, with opportunities for expansion through a fragmented industry landscape and Midwest Trust Company's existing position. The company has potential growth levers in the regional extension of services and acquiring smaller competitors.\n\n**NCP Fit Rationale**  \nMidwest Trust Company aligns with NCP\u2019s investment thesis focused on lower middle market, services-oriented acquisitions. Founder ownership and size offer a natural succession opportunity, and the services provided are essential, displaying non-cyclical demand. The company's potential for scalability through a buy-and-build approach further supports its fit within NCP's portfolio strategy.\n\n**Key Risks & Diligence Items**  \n1. **EBITDA Verification**: The estimated EBITDA is heuristic and requires financial due diligence to confirm accuracy.\n2. **Differentiation and Moat**: Further analysis needed to uncover any inherent moats or substantial competitive advantages, such as regulatory licensing benefits.\n3. **Market Saturation and Competitor Analysis**: Evaluate the competitive landscape more thoroughly to ascertain regional market dynamics and competition.\n4. **Growth Rate and Scalability**: Determine the realistic growth trajectory and scalability potential given current resource allocation and market conditions.\n5. **Succession Planning**: With a founder potentially nearing retirement, ensuring a seamless leadership transition is critical. \n\nBy addressing these risks and focusing on regional dominance and acquisition synergies, Midwest Trust Company presents a compelling opportunity for strategic growth within NCP\u2019s portfolio.",
+      "promoted_from_near_miss": true
     }
   ],
   "chat_history": [
@@ -8855,32 +8823,32 @@
     }
   ],
   "filter_stats": {
-    "total_sourced": 3126,
+    "total_sourced": 3127,
     "pre_filtered_size": 0,
     "pre_filtered_structural": 2213,
     "pre_filtered_blocklist": 98,
     "pre_filtered_niche": 433,
-    "deep_analysis_failed": 302,
+    "deep_analysis_failed": 303,
     "pe_backed": 5,
     "portfolio_conflict": 0,
     "low_differentiation": 71,
     "qualified": 4
   },
   "cost_tracker": {
-    "openai": 36.388,
-    "firecrawl": 14.505,
+    "openai": 36.394,
+    "firecrawl": 14.52,
     "apollo": 0.0,
-    "total": 50.893,
+    "total": 50.914,
     "call_counts": {
-      "openai": 402,
-      "firecrawl": 2901,
+      "openai": 403,
+      "firecrawl": 2904,
       "apollo": 0
     }
   },
   "last_event": {
     "type": "searching_apollo",
-    "message": "Searching Apollo for Financial Services companies in South Carolina (round 3 of 4).",
-    "timestamp": "2026-07-21T15:14:40.951017+00:00",
+    "message": "Searching Apollo for Banking companies in South Carolina (round 3 of 4).",
+    "timestamp": "2026-07-21T15:15:17.166782+00:00",
     "severity": "info"
   },
   "created_at": "2026-06-29T15:32:12.540513+00:00",
@@ -8904,6 +8872,7 @@
   "reviewed_near_misses": [
     "TCV Trust & Wealth Management",
     "Trust Counsel, P.L.",
+    "Citizens Private Wealth",
     "Family Estate Planning Law Group",
     "Baysore & Christian Fiduciary Services LLC",
     "The Trust Company of Tennessee",
