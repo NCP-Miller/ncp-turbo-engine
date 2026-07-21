@@ -3,6 +3,13 @@ import streamlit as st
 from datetime import datetime, date, time as dtime, timedelta, timezone
 
 from lib import crm
+
+# Self-heal after a partial redeploy: if the server cached an older
+# lib.crm module that predates functions this page calls, reload it.
+if not hasattr(crm, "sync_with_github_backup"):
+    import importlib
+    crm = importlib.reload(crm)
+
 from lib.crm import STATUSES, TERMINAL_STATUSES, ACTIVITY_TYPES
 from lib.outreach import (
     generate_custom_reminder_ics, generate_followup_ics,
@@ -440,7 +447,10 @@ st.caption(
 )
 
 crm.init_db()
-crm.sync_with_github_backup()
+try:
+    crm.sync_with_github_backup()
+except Exception:
+    pass
 
 # ---------------------------------------------------------------------------
 # Needs Attention
