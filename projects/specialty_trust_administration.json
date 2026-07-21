@@ -9721,9 +9721,9 @@
     }
   },
   "last_event": {
-    "type": "searching_apollo",
-    "message": "Searching Apollo for Banking companies in South Carolina (round 4 of 4).",
-    "timestamp": "2026-07-20T22:21:47.440288+00:00",
+    "type": "starting",
+    "message": "Pipeline starting. Niche: Specialty trust administration providers serving RIAs and family offices, geography: South Carolina, target: 5 memos.",
+    "timestamp": "2026-07-21T15:05:53.851126+00:00",
     "severity": "info"
   },
   "created_at": "2026-06-29T15:32:12.540513+00:00",
