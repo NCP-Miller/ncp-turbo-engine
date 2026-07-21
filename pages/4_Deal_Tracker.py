@@ -440,7 +440,7 @@ st.caption(
 )
 
 crm.init_db()
-crm.restore_from_github_if_empty()
+crm.sync_with_github_backup()
 
 # ---------------------------------------------------------------------------
 # Needs Attention
@@ -508,6 +508,31 @@ with st.expander("⚙️ Import & add deals"):
                 )
                 crm.log_activity(deal_id, "Note", "Added manually")
                 crm.backup_to_github()
+                st.rerun()
+
+    st.markdown("---")
+    st.markdown("**🛟 Recover deals from backup history**")
+    st.caption(
+        "If deals or statuses went missing after an app redeploy, this scans "
+        "every saved version of the CRM backup on the GitHub data branch and "
+        "merges them back — restoring lost deals, statuses, notes, and "
+        "activity logs. Safe to run anytime: it only adds, never overwrites "
+        "your current work."
+    )
+    if st.button("Recover from backup history", use_container_width=True):
+        with st.spinner("Scanning backup history on GitHub..."):
+            _rec = crm.recover_from_history()
+        if _rec.get("error"):
+            st.error(_rec["error"])
+        else:
+            st.success(
+                f"Recovered from {_rec['versions_scanned']} backup versions: "
+                f"{_rec['deals_added']} deals restored, "
+                f"{_rec['deals_upgraded']} statuses/fields recovered, "
+                f"{_rec['activities_added']} activities restored."
+            )
+            crm.backup_to_github()
+            if _rec["deals_added"] or _rec["deals_upgraded"]:
                 st.rerun()
 
     st.markdown("---")
