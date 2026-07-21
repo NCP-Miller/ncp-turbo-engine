@@ -289,6 +289,39 @@ def read_feedback_backup():
         return []
 
 
+def read_crm_history(max_commits=30):
+    """Read historical versions of crm_data.json from the data branch.
+
+    Returns a list of export dicts, newest first. This is the recovery
+    path when a fresh container overwrote the current backup.
+    """
+    token, repo = _get_credentials()
+    if not token or not repo:
+        return []
+    commits_url = f"{_API}/repos/{repo}/commits"
+    params = {"sha": _BRANCH, "path": "crm_data.json", "per_page": max_commits}
+    try:
+        r = requests.get(commits_url, headers=_headers(token), params=params, timeout=15)
+        if r.status_code != 200:
+            return []
+        commits = r.json()
+    except Exception:
+        return []
+    versions = []
+    for commit in commits:
+        sha = commit.get("sha")
+        if not sha:
+            continue
+        content, _ = _read_file(token, repo, "crm_data.json", ref=sha)
+        if not content:
+            continue
+        try:
+            versions.append(json.loads(content))
+        except (json.JSONDecodeError, TypeError):
+            continue
+    return versions
+
+
 def backup_crm(crm_dict):
     """Push the full CRM export (deals + activities) to the data branch."""
     token, repo = _get_credentials()

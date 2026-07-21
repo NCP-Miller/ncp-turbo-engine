@@ -578,6 +578,148 @@ def import_crm_from_json(data):
         conn.close()
 
 
+_DEAL_COLUMNS = {
+    "company", "company_key", "website", "contact_name", "title", "email",
+    "phone", "city", "state", "niche", "project", "status", "source",
+    "notes", "next_followup", "sf_account_id", "sf_contact_id", "row_json",
+    "memo", "created_at", "updated_at",
+}
+
+
+def merge_crm_export(data, adopt_status=False):
+    """Merge a CRM export dict into the local DB. Purely additive:
+
+    - Deals missing locally are inserted with their full record.
+    - Existing deals: NULL/empty fields (notes, follow-up, SF ids, memo)
+      are filled from the export; non-empty local values always win.
+    - Statuses on existing deals are adopted ONLY when adopt_status=True
+      and the local deal is still 'New' (used by explicit history
+      recovery, so a freshly-recreated deal gets its real status back).
+    - Activities are inserted unless an identical (timestamp, summary)
+      entry already exists on that deal.
+
+    Never deletes or overwrites deliberate local work. Returns counts.
+    """
+    init_db()
+    result = {"deals_added": 0, "deals_upgraded": 0, "activities_added": 0}
+    deals = data.get("deals") or []
+    acts_by_old_id = {}
+    for a in data.get("activities") or []:
+        acts_by_old_id.setdefault(a.get("deal_id"), []).append(a)
+
+    conn = _connect()
+    try:
+        for d in deals:
+            ck = d.get("company_key") or _key(d.get("company", ""))
+            if not ck or not d.get("company"):
+                continue
+            local = conn.execute(
+                "SELECT * FROM deals WHERE company_key = ?", (ck,)
+            ).fetchone()
+            if local is None:
+                cols = [c for c in d.keys() if c in _DEAL_COLUMNS]
+                if "company_key" not in cols:
+                    cols.append("company_key")
+                    d = {**d, "company_key": ck}
+                conn.execute(
+                    f"INSERT INTO deals ({','.join(cols)}) "
+                    f"VALUES ({','.join('?' * len(cols))})",
+                    [d.get(c) for c in cols],
+                )
+                new_id = conn.execute(
+                    "SELECT id FROM deals WHERE company_key = ?", (ck,)
+                ).fetchone()[0]
+                result["deals_added"] += 1
+            else:
+                new_id = local["id"]
+                updates = {}
+                if (adopt_status
+                        and (local["status"] or "New") == "New"
+                        and (d.get("status") or "New") != "New"):
+                    updates["status"] = d["status"]
+                if not (local["notes"] or "").strip() and (d.get("notes") or "").strip():
+                    updates["notes"] = d["notes"]
+                for f in ("next_followup", "sf_account_id", "sf_contact_id", "memo"):
+                    if not local[f] and d.get(f):
+                        updates[f] = d[f]
+                if updates:
+                    sets = ", ".join(f"{k} = ?" for k in updates)
+                    conn.execute(
+                        f"UPDATE deals SET {sets}, updated_at = ? WHERE id = ?",
+                        (*updates.values(), _now(), new_id),
+                    )
+                    result["deals_upgraded"] += 1
+
+            for a in acts_by_old_id.get(d.get("id"), []):
+                exists = conn.execute(
+                    "SELECT 1 FROM activities WHERE deal_id = ? "
+                    "AND timestamp = ? AND summary = ?",
+                    (new_id, a.get("timestamp"), a.get("summary")),
+                ).fetchone()
+                if not exists:
+                    conn.execute(
+                        """INSERT INTO activities
+                           (deal_id, type, summary, detail, timestamp, synced_to_sf)
+                           VALUES (?, ?, ?, ?, ?, ?)""",
+                        (new_id, a.get("type") or "Note",
+                         a.get("summary") or "", a.get("detail") or "",
+                         a.get("timestamp") or _now(),
+                         a.get("synced_to_sf") or 0),
+                    )
+                    result["activities_added"] += 1
+        conn.commit()
+    finally:
+        conn.close()
+    return result
+
+
+def sync_with_github_backup():
+    """Page-load safety net: merge the current GitHub backup into the
+    local DB (additive only). Handles fresh containers even when the
+    pipeline already recreated a few deals before the tracker opened.
+    """
+    try:
+        from lib.github_backup import restore_crm
+        data = restore_crm()
+        if data:
+            return merge_crm_export(data, adopt_status=False)
+    except Exception:
+        pass
+    return None
+
+
+def recover_from_history(max_versions=30):
+    """Deep recovery: merge every historical version of the GitHub CRM
+    backup (newest first), adopting statuses for deals stuck on 'New'.
+    Use when deals or statuses have gone missing after a redeploy.
+    """
+    try:
+        from lib.github_backup import restore_crm, read_crm_history
+    except Exception:
+        return {"error": "GitHub backup is not available."}
+    totals = {"deals_added": 0, "deals_upgraded": 0,
+              "activities_added": 0, "versions_scanned": 0}
+    versions = []
+    try:
+        current = restore_crm()
+        if current:
+            versions.append(current)
+        versions.extend(read_crm_history(max_versions))
+    except Exception:
+        pass
+    if not versions:
+        return {"error": "No backup versions found on the GitHub data branch."}
+    for v in versions:
+        try:
+            r = merge_crm_export(v, adopt_status=True)
+        except Exception:
+            continue
+        totals["versions_scanned"] += 1
+        for k in ("deals_added", "deals_upgraded", "activities_added"):
+            totals[k] += r[k]
+    return totals
+
+
 def get_deal_by_id(deal_id):
     init_db()
     conn = _connect()
@@ -678,9 +820,23 @@ def sync_all_to_salesforce(include_unlinked=False):
 
 
 def backup_to_github():
-    """Push the full CRM to the GitHub data branch. Best-effort."""
+    """Push the full CRM to the GitHub data branch. Best-effort.
+
+    Clobber-proof: merges the remote backup into the local DB first
+    (additive only), so a freshly-wiped container can never overwrite
+    the backup with fewer deals than it holds.
+    """
     try:
-        from lib.github_backup import backup_crm
+        from lib.github_backup import backup_crm, restore_crm
+        try:
+            remote = restore_crm()
+            if remote:
+                local_count = len(export_crm_to_json().get("deals", []))
+                remote_count = len(remote.get("deals", []))
+                if remote_count > local_count:
+                    merge_crm_export(remote, adopt_status=False)
+        except Exception:
+            pass
         return backup_crm(export_crm_to_json())
     except Exception:
         return False
