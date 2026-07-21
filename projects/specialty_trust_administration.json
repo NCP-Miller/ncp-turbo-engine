@@ -1,403 +1,10 @@
 {
   "bot_status": {
-    "search": "exhausted",
-    "analysis": "idle",
+    "search": "searching_apollo",
+    "analysis": "filtering",
     "writeup": "idle"
   },
-  "candidate_queue": [
-    {
-      "id": "54a134b469702d46f0193200",
-      "name": "Midwest Trust Company",
-      "website_url": "http://www.midwesttrust.com",
-      "angellist_url": null,
-      "linkedin_url": "http://www.linkedin.com/company/midwest-trust-company",
-      "twitter_url": null,
-      "facebook_url": null,
-      "languages": [
-        "English"
-      ],
-      "alexa_ranking": null,
-      "phone": "+1 913-319-0300",
-      "linkedin_uid": "104946",
-      "founded_year": 1993,
-      "publicly_traded_symbol": null,
-      "publicly_traded_exchange": null,
-      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/690dd2a402acb60001eff6e3/picture",
-      "crunchbase_url": null,
-      "primary_domain": "midwesttrust.com",
-      "sic_codes": [
-        "6411",
-        "6282",
-        "6199"
-      ],
-      "naics_codes": [
-        "523940",
-        "523991"
-      ],
-      "primary_phone": {
-        "number": "+1 913-319-0300",
-        "sanitized_number": "+19133190300"
-      },
-      "sanitized_phone": "+19133190300",
-      "industry": "financial services",
-      "estimated_num_employees": 140,
-      "keywords": [],
-      "organization_revenue_printed": "13.5M",
-      "organization_revenue": 13500000.0,
-      "industries": [
-        "financial services",
-        "investment management"
-      ],
-      "secondary_industries": [
-        "investment management"
-      ],
-      "snippets_loaded": true,
-      "industry_tag_id": "5567cdd67369643e64020000",
-      "industry_tag_hash": {
-        "financial services": "5567cdd67369643e64020000",
-        "investment management": "5567e0bc7369641d11550200"
-      },
-      "retail_location_count": 0,
-      "raw_address": "5901 College Blvd, Overland Park, KS 66211, US",
-      "street_address": "5901 College Boulevard",
-      "city": "Overland Park",
-      "state": "Kansas",
-      "postal_code": "66211",
-      "country": "United States",
-      "owned_by_organization_id": null,
-      "num_languages": 1,
-      "num_retail_locations": 0,
-      "short_description": "Midwest Trust Company is an independent, state-chartered trust company and full-service wealth management firm based in Overland Park, Kansas. Established in 1993, it focuses on providing personalized fiduciary, investment, and financial planning services. As part of the Midwest Family of Companies, it manages over $415 billion in assets across various affiliated entities.\n\nThe company offers a wide range of services, including personal trust administration, estate administration, corporate trustee services, and family office services. Its investment management includes customized portfolio strategies and retirement planning. Additionally, Midwest Trust provides comprehensive financial planning, risk management, and philanthropic planning to meet the diverse needs of individuals, families, corporations, and institutions. With a team of over 100 experienced professionals, the firm emphasizes a client-centric approach, ensuring tailored strategies that align with clients' goals and values.",
-      "suborganizations": [
-        {
-          "id": "66f3a4d31399c10001a92bc0",
-          "name": "Midwest Trust Co of Miss",
-          "website_url": "http://www.midwesttrustmo.com",
-          "industries": [
-            "investment management"
-          ],
-          "estimated_num_employees": 0,
-          "country": "United States"
-        }
-      ],
-      "num_suborganizations": 1,
-      "annual_revenue_printed": "13.5M",
-      "annual_revenue": 13500000.0,
-      "total_funding": null,
-      "total_funding_printed": null,
-      "latest_funding_round_date": null,
-      "latest_funding_stage": null,
-      "funding_events": [],
-      "technology_names": [
-        "AMP",
-        "Act!",
-        "Adobe Fonts",
-        "Adobe Fonts",
-        "Apache Spark",
-        "Azure Data Factory",
-        "Azure Devops",
-        "Azure Logic Apps",
-        "Azure Service Fabric",
-        "Bootstrapcdn",
-        "Cisco Collaboration",
-        "Cisco Identity Services Engine",
-        "Cisco Secure Firewall Management Center",
-        "Cisco Stealthwatch",
-        "Cisco Umbrella",
-        "Cisco Webex Control Hub",
-        "Databricks",
-        "Delta Lake",
-        "Gem",
-        "Git",
-        "Google Analytics",
-        "Google Search Central",
-        "Google Search Console",
-        "KnowBe4",
-        "Lucky Orange",
-        "Lytics",
-        "Microsoft 365",
-        "Microsoft SQL Server Reporting Services",
-        "Mimecast",
-        "Mobile Friendly",
-        "Postpresso",
-        "Power BI Documenter",
-        "PySpark",
-        "Python",
-        "Remote",
-        "Rust",
-        "ServiceNow Configuration Management Database",
-        "Splunk",
-        "Splunk Enterprise Security",
-        "Tableau",
-        "Trend Micro XDR",
-        "Viewport Meta",
-        "WordPress.org",
-        "Wordpress",
-        "Yoast",
-        "jQuery"
-      ],
-      "current_technologies": [
-        {
-          "uid": "amp",
-          "name": "AMP",
-          "category": "Cloud Services"
-        },
-        {
-          "uid": "act",
-          "name": "Act!",
-          "category": "Other"
-        },
-        {
-          "uid": "adobe_fonts",
-          "name": "Adobe Fonts",
-          "category": "Fonts"
-        },
-        {
-          "uid": "adobe_fonts",
-          "name": "Adobe Fonts",
-          "category": "Fonts"
-        },
-        {
-          "uid": "apache_spark",
-          "name": "Apache Spark",
-          "category": "Database"
-        },
-        {
-          "uid": "azure_data_factory",
-          "name": "Azure Data Factory",
-          "category": "Cloud Services"
-        },
-        {
-          "uid": "azure devops",
-          "name": "Azure Devops",
-          "category": "Deployment Tools"
-        },
-        {
-          "uid": "azure_logic_apps",
-          "name": "Azure Logic Apps",
-          "category": "Cloud Services"
-        },
-        {
-          "uid": "azure_service_fabric",
-          "name": "Azure Service Fabric",
-          "category": "Cloud Services"
-        },
-        {
-          "uid": "bootstrapcdn",
-          "name": "Bootstrapcdn",
-          "category": "CSS and JavaScript Libraries"
-        },
-        {
-          "uid": "cisco_collaboration",
-          "name": "Cisco Collaboration",
-          "category": "Communication and Collaboration"
-        },
-        {
-          "uid": "cisco_identity_services_engine",
-          "name": "Cisco Identity Services Engine",
-          "category": "Security"
-        },
-        {
-          "uid": "cisco_secure_firewall_management_center",
-          "name": "Cisco Secure Firewall Management Center",
-          "category": "Cloud Services"
-        },
-        {
-          "uid": "cisco_stealthwatch",
-          "name": "Cisco Stealthwatch",
-          "category": "Event Management"
-        },
-        {
-          "uid": "cisco_umbrella",
-          "name": "Cisco Umbrella",
-          "category": "Security"
-        },
-        {
-          "uid": "cisco_webex_control_hub",
-          "name": "Cisco Webex Control Hub",
-          "category": "Communication and Collaboration"
-        },
-        {
-          "uid": "databricks",
-          "name": "Databricks",
-          "category": "Analytics and Tracking"
-        },
-        {
-          "uid": "delta_lake",
-          "name": "Delta Lake",
-          "category": "Data Management Platform"
-        },
-        {
-          "uid": "gem",
-          "name": "Gem",
-          "category": "Frameworks and Programming Languages"
-        },
-        {
-          "uid": "git",
-          "name": "Git",
-          "category": "Deployment Tools"
-        },
-        {
-          "uid": "google_analytics",
-          "name": "Google Analytics",
-          "category": "Analytics and Tracking"
-        },
-        {
-          "uid": "google_search_central",
-          "name": "Google Search Central",
-          "category": "Analytics and Tracking"
-        },
-        {
-          "uid": "google_search_console",
-          "name": "Google Search Console",
-          "category": "Analytics and Tracking"
-        },
-        {
-          "uid": "knowbe4",
-          "name": "KnowBe4",
-          "category": "Security"
-        },
-        {
-          "uid": "lucky_orange",
-          "name": "Lucky Orange",
-          "category": "Analytics and Tracking"
-        },
-        {
-          "uid": "lytics",
-          "name": "Lytics",
-          "category": "Analytics and Tracking"
-        },
-        {
-          "uid": "microsoft_365",
-          "name": "Microsoft 365",
-          "category": "Communication and Collaboration"
-        },
-        {
-          "uid": "microsoft_sql_server_reporting_services",
-          "name": "Microsoft SQL Server Reporting Services",
-          "category": "Analytics and Tracking"
-        },
-        {
-          "uid": "mimecast",
-          "name": "Mimecast",
-          "category": "Email Providers"
-        },
-        {
-          "uid": "mobile_friendly",
-          "name": "Mobile Friendly",
-          "category": "Other"
-        },
-        {
-          "uid": "postpresso",
-          "name": "Postpresso",
-          "category": "Affiliate Advertising Network"
-        },
-        {
-          "uid": "power_bi_documenter",
-          "name": "Power BI Documenter",
-          "category": "Analytics and Tracking"
-        },
-        {
-          "uid": "pyspark",
-          "name": "PySpark",
-          "category": "Frameworks and Programming Languages"
-        },
-        {
-          "uid": "python",
-          "name": "Python",
-          "category": "Frameworks and Programming Languages"
-        },
-        {
-          "uid": "remote",
-          "name": "Remote",
-          "category": "Other"
-        },
-        {
-          "uid": "rust",
-          "name": "Rust",
-          "category": "Frameworks and Programming Languages"
-        },
-        {
-          "uid": "servicenow_configuration_management_database",
-          "name": "ServiceNow Configuration Management Database",
-          "category": "Cloud Services"
-        },
-        {
-          "uid": "splunk",
-          "name": "Splunk",
-          "category": "Analytics and Tracking"
-        },
-        {
-          "uid": "splunk_enterprise_security",
-          "name": "Splunk Enterprise Security",
-          "category": "Event Management"
-        },
-        {
-          "uid": "tableau",
-          "name": "Tableau",
-          "category": "Widgets"
-        },
-        {
-          "uid": "trend_micro_xdr",
-          "name": "Trend Micro XDR",
-          "category": "Event Management"
-        },
-        {
-          "uid": "viewport_meta",
-          "name": "Viewport Meta",
-          "category": "CSS and JavaScript Libraries"
-        },
-        {
-          "uid": "wordpress_org",
-          "name": "WordPress.org",
-          "category": "CMS"
-        },
-        {
-          "uid": "wordpress",
-          "name": "Wordpress",
-          "category": "CMS"
-        },
-        {
-          "uid": "yoast",
-          "name": "Yoast",
-          "category": "Content Management Platform"
-        },
-        {
-          "uid": "jquery",
-          "name": "jQuery",
-          "category": "CSS and JavaScript Libraries"
-        }
-      ],
-      "org_chart_root_people_ids": [],
-      "org_chart_sector": "OrgChart::SectorHierarchy::Rules::Finance",
-      "org_chart_removed": null,
-      "org_chart_show_department_filter": null,
-      "departmental_head_count": {
-        "accounting": 3,
-        "finance": 15,
-        "operations": 6,
-        "legal": 5,
-        "administrative": 8,
-        "support": 1,
-        "business_development": 1,
-        "sales": 0,
-        "marketing": 0,
-        "human_resources": 0,
-        "information_technology": 0,
-        "engineering": 0,
-        "product_management": 0,
-        "consulting": 0,
-        "education": 0,
-        "media_and_commmunication": 0,
-        "arts_and_design": 0,
-        "entrepreneurship": 0,
-        "data_science": 0
-      },
-      "organization_headcount_six_month_growth": 0.01680672268907563,
-      "organization_headcount_twelve_month_growth": 0.1415094339622641,
-      "organization_headcount_twenty_four_month_growth": 0.3296703296703297
-    }
-  ],
+  "candidate_queue": [],
   "qualified_queue": [],
   "completed_memos": [
     {
@@ -9144,20 +8751,20 @@
     "qualified": 4
   },
   "cost_tracker": {
-    "openai": 35.9346,
+    "openai": 35.9426,
     "firecrawl": 14.38,
     "apollo": 0.0,
-    "total": 50.3146,
+    "total": 50.3226,
     "call_counts": {
-      "openai": 399,
+      "openai": 400,
       "firecrawl": 2876,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "manual_add",
-    "message": "Queued 1/1 companies for analysis.",
-    "timestamp": "2026-07-21T15:13:06.959333+00:00",
+    "type": "analyzing",
+    "message": "Analyzing 1 candidates in parallel. 0 more in queue.",
+    "timestamp": "2026-07-21T15:13:13.813580+00:00",
     "severity": "info"
   },
   "created_at": "2026-06-29T15:32:12.540513+00:00",
@@ -9177,6 +8784,7 @@
     "Pendleton Square Trust Company": "liked"
   },
   "status": "running",
+  "manual_companies": [],
   "reviewed_near_misses": [
     "TCV Trust & Wealth Management",
     "Trust Counsel, P.L.",
@@ -9184,12 +8792,12 @@
     "Baysore & Christian Fiduciary Services LLC",
     "The Trust Company of Tennessee",
     "Fiduciary Counselling, Inc.",
+    "Garden State Trust Company",
     "AMG National Trust",
     "Choate Wealth",
     "Kassouf",
     "Johnson Investment Counsel",
     "Wipfli Financial Advisors",
     "Oxford Financial Group, Ltd."
-  ],
-  "manual_companies": []
+  ]
 }
