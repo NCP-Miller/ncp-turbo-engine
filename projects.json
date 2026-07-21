@@ -210,7 +210,7 @@
     "memo_count": 8,
     "active": true,
     "backup_status": "not_configured",
-    "status": "idle"
+    "status": "running"
   },
   {
     "name": "Captive Administrators",
