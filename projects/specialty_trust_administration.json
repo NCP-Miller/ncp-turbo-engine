@@ -196,6 +196,14 @@
     {
       "role": "assistant",
       "content": "I've added Midwest Trust to the pipeline, bringing the target to six companies. Let me know if there's anything else you need."
+    },
+    {
+      "role": "user",
+      "content": "Thank you. Please write a memo on Midwest Trust"
+    },
+    {
+      "role": "assistant",
+      "content": "Currently, the write-up bot is idle, so I'll get started on the memo for Midwest Trust right away. I'll update you once it's ready for review."
     }
   ],
   "user_feedback": [],
@@ -8772,7 +8780,7 @@
     "niche": "Specialty trust administration providers serving RIAs and family offices",
     "geography": "South Carolina",
     "strategy": "A",
-    "target_count": 6,
+    "target_count": 7,
     "exclusions": "",
     "override_size_min": null,
     "override_size_max": null,
@@ -8784,7 +8792,9 @@
     "Pendleton Square Trust Company": "liked"
   },
   "status": "running",
-  "manual_companies": [],
+  "manual_companies": [
+    "Midwest Trust"
+  ],
   "reviewed_near_misses": [
     "TCV Trust & Wealth Management",
     "Trust Counsel, P.L.",
