@@ -525,7 +525,7 @@
       "sf_contact_id": "003Pp000021kkpUIAQ",
       "row_json": "{\"Company\": \"Terrapin Technologies, Inc.\", \"Description\": \"Terrapin Technologies, Inc. is a financial software company founded in 1995 and based in Bloomington, Minnesota. It specializes in providing data aggregation, reporting, compliance, and automation solutions for wealth management firms, utilizing web-based technology to enhance visibility, profitability, and regulatory adherence. The company's digital platform automates processes related to compensation, compliance, and reporting, supporting wealth management firms in achieving operational efficiency and scalable growth.\", \"Website\": \"http://www.terrapintech.com\", \"City\": \"Bloomington\", \"State\": \"Minnesota\", \"LinkedIn\": \"http://www.linkedin.com/company/terrapin-technologies-inc\", \"Employees\": 17, \"Est. EBITDA\": \"$510K\\u2013$850K\", \"CEO/Owner Name\": \"Kristefor Lysne\", \"Title\": \"President\", \"Email\": \"N/A\", \"Email Estimate\": \"kristefor.lysne@terrapintech.com\", \"Phone\": \"N/A\", \"Source\": \"Web Path (/about)\", \"Notes\": \"\", \"Confidence\": \"Medium\", \"Latest News\": \"N/A\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Medium\", \"_niche\": \"I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.\", \"Priority\": \"High\", \"Growth\": \"Low\", \"Txn Readiness\": \"Low\", \"Conviction\": 5, \"Conviction Pitch\": \"Terrapin Technologies, Inc. offers a robust digital platform for data aggregation and compliance solutions catering specifically to wealth management firms. While the technology supports operational efficiency and regulatory adherence, the differentiation appears medium and the company's growth and transaction readiness are currently low. The deal lacks the clear, distinctive edge necessary to stand out significantly from other operators in the space.\", \"Conviction Reasoning\": \"The company's offering aligns with our investment mandate in providing essential services with some level of differentiation, but it lacks the standout characteristics or high growth potential we prioritize for strong conviction deals.\"}",
       "created_at": "2026-07-10T00:01:37.922407+00:00",
-      "updated_at": "2026-07-15T23:00:30.032274+00:00",
+      "updated_at": "2026-07-23T21:53:17.454099+00:00",
       "memo": null
     },
     {
@@ -2628,6 +2628,15 @@
       "summary": "Status: Meeting Scheduled \u2192 Opportunity",
       "detail": "",
       "timestamp": "2026-07-23T21:52:22.277302+00:00",
+      "synced_to_sf": 1
+    },
+    {
+      "id": 141,
+      "deal_id": 22,
+      "type": "Call",
+      "summary": "Good call discussing how to increase the value of a business. Discussed KPIs and operational. 30 min call went for almost an hour.",
+      "detail": "",
+      "timestamp": "2026-07-23T21:53:15.236862+00:00",
       "synced_to_sf": 1
     }
   ]
