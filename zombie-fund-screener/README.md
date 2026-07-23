@@ -12,9 +12,11 @@ the Export/Sync page.
 1. In Streamlit Cloud, create a new app pointed at this repo with main
    file path `zombie-fund-screener/Today.py`.
 2. In the app's Secrets, add the same `APP_PASSWORD`, `GITHUB_TOKEN`,
-   and `GITHUB_REPO` you use for the sourcing app. The GitHub ones give
-   the screener its permanent backup (Streamlit's disk is wiped on every
-   redeploy — the backup brings everything back automatically).
+   `GITHUB_REPO`, and `OPENAI_API_KEY` you use for the sourcing app.
+   The GitHub ones give the screener its permanent backup (Streamlit's
+   disk is wiped on every redeploy — the backup brings everything back
+   automatically); the OpenAI key powers the AI email drafting on the
+   GP Detail page.
 
 **On your own computer (Windows):** double-click `run_app.bat`.
 It installs the requirements and opens the app in your browser.

@@ -349,6 +349,57 @@ with tab_crm:
             st.rerun()
 
     st.markdown("---")
+    st.markdown("#### ✉️ AI email draft (playbook-tuned for GP outreach)")
+    st.caption(
+        "Drafts a peer-to-peer buyer inquiry about one portfolio company. "
+        "The prompt is hard-wired to NEVER hint at the zombie thesis — "
+        "no references to fund age, hold periods, or exit pace."
+    )
+    from zfs.outreach import get_openai_client, draft_gp_email
+    _contacts_ai = crm.list_contacts(gp_id=gp_id)
+    _cos_ai = bundle["companies"]
+    ai1, ai2 = st.columns(2)
+    _ai_contact = ai1.selectbox(
+        "To", ["(managing partner)"] + [c["name"] for c in _contacts_ai])
+    _ai_focus = ai2.selectbox(
+        "Company of interest",
+        [c["name"] for c in _cos_ai] or ["(none on file — sector-level)"])
+    if st.button("Draft email", use_container_width=True):
+        _oc = get_openai_client()
+        if _oc is None:
+            st.error("Add OPENAI_API_KEY to this app's secrets (or env) "
+                     "to enable AI drafting.")
+        else:
+            try:
+                with st.spinner("Drafting..."):
+                    _ct = next((c for c in _contacts_ai
+                                if c["name"] == _ai_contact), None)
+                    _fc = next((c for c in _cos_ai
+                                if c["name"] == _ai_focus), None)
+                    draft = draft_gp_email(
+                        _oc, gp, contact=_ct, funds=bundle["funds"],
+                        companies=_cos_ai, focus_company=_fc,
+                        sender_name=config["users"][0])
+                st.session_state[f"_zdraft_{gp_id}"] = draft
+                crm.log_activity(
+                    gp_id, "Email",
+                    f"Drafted outreach email: {draft['subject']}",
+                    direction="outbound", outcome="—",
+                    contact_id=_ct["id"] if _ct else None,
+                    user=config["users"][0])
+                save_backup()
+                st.rerun()
+            except Exception as e:
+                st.error(f"Drafting error: {e}")
+    if st.session_state.get(f"_zdraft_{gp_id}"):
+        _d = st.session_state[f"_zdraft_{gp_id}"]
+        st.text(f"Subject: {_d['subject']}")
+        st.code(_d["body"], language=None)
+        st.caption("Copy with the icon in the corner, then send from "
+                   "Outlook. Log the send in Timeline & Tasks to start "
+                   "the follow-up cadence.")
+
+    st.markdown("---")
     st.markdown("#### Template helper")
     tpls = templates_lib.list_templates()
     if tpls:
