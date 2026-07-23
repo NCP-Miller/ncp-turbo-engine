@@ -44,20 +44,23 @@ It installs the requirements and opens the app in your browser.
    CSVs with stable external IDs (ZFS-…), plus an import path to sync
    statuses back from a Salesforce report.
 
-## What's automated vs. manual (v1)
+## What's automated vs. manual
 
-| Signal | How it works today |
+| Signal | How it works |
 |---|---|
-| 1 Form D vintage | Manual fund entry now; EDGAR importer next phase |
-| 2 ADV decline | Importer next phase (schema + scoring ready) |
-| 3 Stale GP site | Wayback importer next phase |
+| 1 Form D vintage | **Automated** — Refresh EDGAR pulls each GP's Form D history; Discover surfaces unknown sponsors from old filings |
+| 2 ADV decline | **Semi-auto** — drop in the SEC's monthly ADV bulk file; trends computed across snapshots |
+| 3 Stale GP site | **Automated** — Wayback Machine content-change checks |
 | 4 Long holds | Manual acquisition dates + lookup-assist links |
 | 5 Team decay | Manual LinkedIn checklist (never scraped) |
-| 6 Pension data | Importer next phase (verified badge ready) |
+| 6 Pension data | **Semi-auto** — upload CalPERS/other pension files; fuzzy-matched with your confirmation; ✅ verified badge |
 | 7 No exits | Manual confirm with web-search helper |
-| 8 Company decay | Manual checklist + Wayback next phase |
-| 9 Provider changes | Manual extension notes; ADV diff next phase |
+| 8 Company decay | Wayback (auto) + manual checklist, AND/OR configurable |
+| 9 Provider changes | **Semi-auto** — Schedule D 7.B.1 diffs across ADV snapshots + manual extension notes |
 | 10 UCC liens | Guided manual workflow with state SoS links |
+
+Fuzzy matches below the confidence bar are never auto-merged — they
+wait in Data Manager → Confirm matches for your yes/no.
 
 Your manual work — statuses, kills, notes, checklists, contacts,
 activities, tasks — is stored separately from refresh-owned evidence

@@ -15,6 +15,34 @@ st.title("🧟 Zombie Fund Screener — Today")
 config = load_config()
 cadence = get_cadence()
 
+# ── Start Here: a plain-English map of the whole workflow ────────────
+from zfs import lifecycle as _lc
+_gp_total = len(_lc.list_gps(include_killed=True))
+with st.expander("🏁 Start Here — how this app works",
+                 expanded=_gp_total == 0):
+    st.markdown("""
+The whole app is one loop: **find → score → work → kill or close.**
+
+1. **Find GPs** *(Data Manager)* — add firms you know, or use
+   **Discover** to search old SEC Form D filings by keyword and surface
+   aging sponsors you've never heard of.
+2. **Pull evidence** *(Data Manager)* — hit **Refresh EDGAR** (fund
+   vintages, automatic), **Run Wayback checks** (stale websites,
+   automatic), and drop in ADV / pension files when you have them.
+   Everything else (hold periods, team decay, exits, UCC) you enter on
+   the GP Detail page as you research.
+3. **Work the list** *(Dashboard)* — GPs that fire signals appear
+   ranked 0–100 with 🆕 badges. Open one, add a contact, log a call —
+   the app schedules your follow-ups automatically and they show up
+   right here on Today.
+4. **Kill the misfits** — one click + a reason. Gone forever (but
+   recoverable in the Graveyard). The list stays clean and every
+   refresh only ever ADDS candidates, never resurrects your kills.
+
+**Your first 10 minutes:** Data Manager → add 5 firm names → Refresh
+EDGAR → watch the Dashboard rank them.
+""")
+
 # ── Task buckets ─────────────────────────────────────────────────────
 overdue, due_today, due_week = crm.today_buckets()
 
