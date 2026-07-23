@@ -8,8 +8,9 @@ from textwrap import dedent
 
 def draft_cold_email(openai_client, row, thesis, sender_name="Trey"):
     """Draft a personalized cold outreach email that earns a reply from
-    a founder or CEO.  Uses proven cold-email psychology (Blount, Braun,
-    McKenna) but varies the angle so emails never feel templated.
+    a founder or CEO.  Follows the email-prospecting playbook (three
+    gates: delivered / opened / converted; Hook-Relate-Bridge-Ask arc)
+    and varies the angle so emails never feel templated.
 
     Returns dict with keys: subject, body
     """
@@ -99,11 +100,37 @@ your attention. Ask if it's even worth a conversation. The honesty
 itself is the pattern interrupt.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STRUCTURE — every email follows this 4-beat arc (whatever the angle):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. HOOK — the subject line + first sentence earn the open and the read.
+   The first sentence is the "glimpse factor": it shows in the inbox
+   preview, so it must grab on its own. Never open with "Hi/Hello/Dear".
+2. RELATE — one line that shows you get THEIR world and its weight.
+   Founders are people, not targets: running the company is stressful,
+   personal, and all-consuming. Empathy and authenticity, not a pitch.
+3. BRIDGE — connect what you noticed to why it matters FOR THEM.
+   Answer "what's in it for me?" — the value of replying must beat the
+   cost of their time. Their reasons, not yours: 95% of the time they
+   are thinking about themselves. The whole email is about them.
+4. ASK — one crystal-clear, easy action. Two proven forms:
+   a) Ultra-low-friction: "worth a quick call?"
+   b) Assumptive: name a specific slot — "how about Thursday at 3?"
+      It takes the decision burden off them.
+   Pair either with disarming honesty ("no idea if we'd even be a fit")
+   — admitting you're not sure PULLS founders in; hard pitching pushes
+   them away. This works in ANY angle, not just Angle E.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 SUBJECT LINE:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-1-3 words. All lowercase. No punctuation. Must NOT look like a sales email.
-Best performers: just their first name, their company name, or a 2-word hook.
-Examples: "{first_name.lower() if first_name else 'quick question'}", "{company.lower().split()[0] if company else 'hi'}", "curious about something", "quick question"
+1-6 words, under 50 characters — most founders read email on a phone,
+where long subject lines die. All lowercase. Must NOT look like a sales email.
+NEVER use a question mark in the subject — question subjects kill opens.
+Use statements, their name/company, or a genuine specific compliment.
+Best forms:
+  - just their first name or company: "{first_name.lower() if first_name else 'quick question'}", "{company.lower().split()[0] if company else 'hi'}"
+  - a directive statement about their world: "the hardest job in [their niche]"
+  - a genuine compliment tied to something real: "what you built in {(city or 'your market').lower()}"
 NEVER: "Partnership Opportunity", "Introduction", "Connecting", "Business Inquiry"
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -123,8 +150,15 @@ WRITING RULES:
 - No jargon: synergies, value creation, strategic partnership, unlock,
   deal flow, portfolio company, platform, scalable, leverage.
 - No mention of deal terms, valuation, EBITDA, multiples, or price.
-- No exclamation marks. Maximum one question mark.
-- Plain text. No formatting, bullets, or links.
+- No exclamation marks. Maximum one question mark (in the body only).
+- DELIVERABILITY — this email must actually reach the inbox:
+  - Plain text only. No links, no images, no attachments, no formatting
+    — all three trip spam filters and read as spam behavior.
+  - No ALL CAPS words anywhere.
+  - No spam-trigger words: free, guarantee, act now, save, cash,
+    limited time, opportunity of a lifetime.
+  - This is one person, one email — it must read like it could only
+    have been written to them, never like a blast.
 - Sign off with just "{sender_name}" — no title, phone, or tagline.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -151,6 +185,19 @@ founders in this space and I'm curious how you're thinking about the next
 few years.
 
 Would it be worth 10 minutes to compare notes?
+
+{sender_name}"
+
+GREAT (full 4-beat arc — hook, relate, bridge, assumptive ask):
+"subject: the hardest seat at {company.lower().split()[0] if company else 'the company'}
+
+{first_name or 'You'}, founders in [their niche] tell me the last few years
+have made running a company like {company} heavier than ever — [specific
+pressure from their world]. What you've built through that is exactly
+what we look for.
+
+No idea if we'd even be a fit, but worth 15 minutes to find out?
+How about Thursday at 3?
 
 {sender_name}"
 
