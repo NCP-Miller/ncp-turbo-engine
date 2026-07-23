@@ -6,10 +6,18 @@ configured (e.g., running locally), the gate is skipped so a beginner
 can just double-click run_app.bat and go.
 """
 
+import os
+
 import streamlit as st
 
 from zfs.db import init_db
 from zfs import backup
+
+
+def _embedded():
+    """True when running as a page inside another app (the NCP suite),
+    where set_page_config and the password gate are handled by the host."""
+    return os.environ.get("ZFS_EMBEDDED") == "1"
 
 
 def _check_password():
@@ -35,9 +43,12 @@ def _check_password():
 
 
 def page_setup(title, icon="🧟"):
-    st.set_page_config(page_title=title, page_icon=icon, layout="wide")
-    if not _check_password():
-        st.stop()
+    # When embedded in the host app, the host already set the page config
+    # and gated the password (sharing the same session flag), so skip both.
+    if not _embedded():
+        st.set_page_config(page_title=title, page_icon=icon, layout="wide")
+        if not _check_password():
+            st.stop()
     init_db()
     # Merge the GitHub backup once per browser session (survives redeploys)
     if not st.session_state.get("_zfs_restored"):
