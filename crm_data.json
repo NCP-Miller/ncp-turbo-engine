@@ -157,7 +157,7 @@
       "state": "Alabama",
       "niche": "Specialty trust administration providers serving RIAs and family offices",
       "project": null,
-      "status": "New",
+      "status": "Not a Fit",
       "source": "pipeline",
       "notes": "",
       "next_followup": null,
@@ -165,7 +165,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"Keel Point\", \"Description\": \"Keel Point is a multi-family office and independent wealth advisory firm that provides personalized financial planning, investment management, and family office services. Founded in 2015, the firm serves high-net-worth clients, families, and institutions across the United States, managing over $4 billion in assets through eight offices in six states.\", \"Website\": \"http://www.keelpoint.com\", \"City\": \"Huntsville\", \"State\": \"Alabama\", \"LinkedIn\": \"http://www.linkedin.com/company/keelpoint\", \"Employees\": 90, \"Est. EBITDA\": \"$1.6M\\u2013$3.1M\", \"CEO/Owner Name\": \"N/A\", \"Title\": \"N/A\", \"Email\": \"N/A\", \"Email Estimate\": \"\", \"Phone\": \"N/A\", \"Source\": \"Not Found\", \"Notes\": \"\", \"Confidence\": \"Low\", \"Latest News\": \"Concerts in the Park \\u2013 Ty Blackwell - Hville Blast | https://news.google.com/rss/articles/CBMickFVX3lxTE9ZWjVwQjVQeHBWT0FSdHJzbjFIZGhWdmdoSE1MaEd5X3JfVkFUSmY1VVEzLWdhMHdDMzNDeG4yMHljaGMtMTJWSnliaUgzVFA5aUNTTzdFZnNRcHFkUUtLRUhXbkw3MXhzSWRuUFJvZVQxZw?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"Specialty trust administration providers serving RIAs and family offices\", \"Priority\": \"High\", \"Growth\": \"Medium\", \"Txn Readiness\": \"Low\", \"Priority Confidence\": \"High\", \"Growth Confidence\": \"Medium\", \"Txn Readiness Confidence\": \"Low\", \"Differentiated Confidence\": \"Medium\", \"Conviction\": 4, \"Conviction Pitch\": \"Keel Point, although managing over $4 billion in assets and having a multi-state presence, operates in the competitive space of wealth advisory services without significant differentiation. The firm's specialization in serving high-net-worth clients is common in the industry and lacks unique elements that could give it a distinct competitive advantage.\", \"Conviction Reasoning\": \"The company's lack of clear differentiation and low transaction readiness detracts significantly from its appeal, despite operating in a stable market with some growth opportunities.\"}",
       "created_at": "2026-07-21T15:22:12.631877+00:00",
-      "updated_at": "2026-07-21T15:22:12.683531+00:00",
+      "updated_at": "2026-07-24T21:36:04.362733+00:00",
       "memo": "**Investment Memo for Keel Point**\n\n**Why We're Excited**  \nKeel Point stands out due to its substantial $4 billion in assets under management and multi-state presence, providing a solid platform for scalability and geographic expansion. While the firm operates in a competitive sector, its established clientele and significant asset base offer a foundation for a structured buy-and-build growth strategy in a fragmented market. Additionally, the founder approaching retirement presents a natural succession opportunity, aligning with our investment thesis of founder transitions.\n\n**Company Overview**  \nKeel Point, headquartered in Huntsville, Alabama, is a multi-family office and independent wealth advisory firm. It offers personalized financial planning, investment management, and family office services, catering predominantly to high-net-worth individuals, families, and institutions. Since its inception in 2015, Keel Point has expanded to manage over $4 billion in assets with 90 employees across eight offices in six states.\n\n**Differentiated Value Proposition**  \nAlthough Keel Point's differentiation in services is assessed as low, its value proposition lies in its considerable asset management scale and geographic footprint. This multi-location operation provides ample whitespace for expansion and potential market consolidation in a fragmented industry, offering a platform for strategic acquisitions and organic growth.\n\n**Market Opportunity & Growth**  \nThe specialty trust administration sector is poised to benefit from secular growth trends such as an aging population increasing demand for wealth management and trust services. The market is fragmented, lacking dominant players, which presents an opportunity for consolidation. Keel Point's established base and multi-state presence offer direct access to tap into underserved regional markets.\n\n**NCP Fit Rationale**  \nKeel Point aligns with NCP's focus on services-oriented, lower middle market companies that are founder-owned and ripe for strategic transitions. The firm's existing scalability potential, combined with a founder nearing retirement, positions it well for NCP's buy-and-build strategy. The company's regional focus and service offerings fit well within NCP's investment framework, targeting fragmented markets with opportunities for operational enhancements.\n\n**Key Risks & Diligence Items**  \n1. **Verification of EBITDA**: The current EBITDA range is based on heuristic assumptions and needs confirmation. \n2. **Competitive Differentiation**: Assess the lack of significant differentiation and explore potential avenues for developing a competitive edge.\n3. **Succession Planning**: Evaluate the succession plan with the founder approaching retirement to ensure leadership continuity.\n4. **Regulatory and IP Assessment**: Conduct a thorough review of any existing regulatory licenses or proprietary processes that form a defensible moat.\n5. **Revenue Analysis**: Examine the sustainability and structure of revenues to ascertain the extent of recurring or contractual income streams. \n\nThis memo provides a foundational overview and outlines key areas for further inquiry. Keel Point offers initial appeal, necessitating deeper diligence to confirm its enticing potential as an acquisition target."
     },
     {
@@ -2763,6 +2763,15 @@
       "summary": "Marked \ud83d\udc4d Interested in memo review",
       "detail": "",
       "timestamp": "2026-07-24T21:32:03.776887+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 156,
+      "deal_id": 7,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-07-24T21:36:04.362679+00:00",
       "synced_to_sf": 0
     }
   ]
