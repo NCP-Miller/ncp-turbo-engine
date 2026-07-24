@@ -239,6 +239,26 @@ def init_db():
         source TEXT PRIMARY KEY,
         last_run TEXT, detail TEXT
     )""")
+    # Low-confidence fuzzy matches waiting for the user's confirmation.
+    # Nothing is ever auto-merged below the confidence bar (spec rule).
+    c.execute("""CREATE TABLE IF NOT EXISTS match_queue (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        kind TEXT NOT NULL,                    -- 'adv' or 'pension'
+        row_ref INTEGER,                       -- pension_rows.id when kind=pension
+        payload TEXT,                          -- JSON snapshot data when kind=adv
+        gp_id_candidate INTEGER REFERENCES gps(id),
+        matched_name TEXT,                     -- the external name we matched
+        score REAL,
+        status TEXT DEFAULT 'pending',
+        created_at TEXT
+    )""")
+    # Service providers per fund per ADV snapshot (Signal 9 diffs)
+    c.execute("""CREATE TABLE IF NOT EXISTS adv_fund_providers (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        gp_id INTEGER REFERENCES gps(id),
+        snapshot_date TEXT, fund_name TEXT,
+        role TEXT, provider TEXT
+    )""")
 
     conn.commit()
     conn.close()

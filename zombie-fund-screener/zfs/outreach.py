@@ -158,12 +158,64 @@ Return JSON only:
         model="gpt-4o",
         messages=[{"role": "user", "content": prompt}],
         response_format={"type": "json_object"},
-        temperature=0.8,
+        temperature=0.7,
         timeout=30,
     )
     result = json.loads(resp.choices[0].message.content)
-    return {
+    draft = {
         "subject": result.get("subject", f"interest in "
                    f"{(focus or {}).get('name', gp['name']).lower()}"),
         "body": result.get("body", ""),
     }
+
+    # ── Pass 2: editor enforcement. Catches what one pass lets slip:
+    # empty flattery, double questions, and — critical here — any
+    # accidental hint of the zombie thesis.
+    editor_prompt = f"""You are a ruthless editor reviewing an email from one PE
+professional to another (a buyer inquiry about a portfolio company).
+Grade the draft, then output a corrected version.
+
+THE DRAFT:
+subject: {draft['subject']}
+{draft['body']}
+
+THE CHECKLIST (fix every violation):
+1. THE CARDINAL RULE: remove ANY hint that the recipient's fund is old,
+   slow, stressed, or pressured to sell — no "zombie", "aging",
+   "legacy", "wind-down", "still holding", "been a while", no
+   references to fund age, hold length, exit pace, DPI, or LP pressure.
+   The email must read as pure buyer interest.
+2. EMPTY FLATTERY: compliments must cite something concrete (the
+   company's sector, product, geography). Vague praise ("impressive
+   franchise", "stellar reputation") gets cut or replaced.
+3. EXACTLY ONE question mark, at the ask. Merge or cut extras.
+4. 50-90 words. First word is the company name, "your", or the
+   recipient's first name — never "I". No valuation or deal terms.
+   No exclamation marks. Plain text, no links.
+5. The graceful out should survive editing if present ("if it's a core
+   hold, say so and I won't bother you again").
+6. Subject: 1-6 lowercase words, under 50 chars, no question mark,
+   no reference to their fund.
+
+Return JSON only:
+{{"violations_found": ["what you fixed"],
+  "subject": "corrected subject",
+  "body": "corrected complete email body including sign-off"}}"""
+
+    try:
+        resp2 = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[{"role": "user", "content": editor_prompt}],
+            response_format={"type": "json_object"},
+            temperature=0.3,
+            timeout=30,
+        )
+        edited = json.loads(resp2.choices[0].message.content)
+        if edited.get("body"):
+            return {
+                "subject": edited.get("subject") or draft["subject"],
+                "body": edited["body"],
+            }
+    except Exception:
+        pass          # editor pass is best-effort — fall back to the draft
+    return draft

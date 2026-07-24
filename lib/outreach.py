@@ -141,10 +141,23 @@ WRITING RULES:
 - Write like a text message from a smart friend, not a business letter.
 - First word of the email must be "you", their name, or their company name.
   NEVER open with "I".
-- The specific detail about THEIR company is the most important sentence.
-  If you can't point to something concrete from the company info above,
-  the email will fail. Generic = delete.
-- One question maximum. Make it easy to answer.
+- THE FLATTERY BAN (most important rule): a compliment is only allowed
+  if it cites a CONCRETE, CHECKABLE fact pulled from the company info
+  above — a named service line, geography, tenure, certification,
+  customer type, or model detail. "Your personalized touch",
+  "a cornerstone of the community", "your focus is rare", "impressive
+  growth" — all of these are empty praise any salesperson could write
+  without research, and they get you deleted. If the description above
+  is too thin to supply a real fact, DO NOT COMPLIMENT AT ALL — switch
+  to the niche/geography angle (D) or industry-insight angle (B), which
+  need no company detail to be credible.
+- EXACTLY ONE question mark in the entire email — the ask, at the end.
+  Zero question marks anywhere else. Two questions reads as needy.
+- BANNED PHRASES (instant rewrite if any appear): "cornerstone",
+  "personalized touch", "tailored solutions", "is rare", "impressed by",
+  "wondering if", "consider a partner", "expand your strengths",
+  "take things to the next level", "best-in-class", "one-stop",
+  "trusted advisor", "Worth a chat?" as a second question.
 - No "I hope this finds you well" or any filler opener.
 - No "My name is..." — your name is in the sign-off.
 - No jargon: synergies, value creation, strategic partnership, unlock,
@@ -224,20 +237,85 @@ for too much time, formal sign-off. Every founder has seen this exact
 email 100 times. Do the OPPOSITE.
 
 Return JSON only:
-{{"subject": "1-3 word lowercase subject", "body": "the complete email body including sign-off", "angle": "A/B/C/D/E"}}"""
+{{"subject": "1-3 word lowercase subject", "body": "the complete email body including sign-off", "angle": "A/B/C/D/E", "concrete_fact_used": "quote the specific checkable fact you used, or 'none - used niche/geo angle'"}}"""
 
     resp = openai_client.chat.completions.create(
         model="gpt-4o",
         messages=[{"role": "user", "content": prompt}],
         response_format={"type": "json_object"},
-        temperature=0.9,
+        temperature=0.7,
         timeout=30,
     )
     result = json.loads(resp.choices[0].message.content)
-    return {
+    draft = {
         "subject": result.get("subject", f"{first_name or company} — quick question"),
         "body": result.get("body", ""),
     }
+
+    # ── Pass 2: a ruthless editor grades the draft against the playbook
+    # checklist and rewrites it. One generation pass satisfies rules
+    # superficially (empty flattery, double questions); the editor pass
+    # catches what slipped through.
+    editor_prompt = f"""You are a ruthless cold-email editor enforcing a proven
+email-prospecting playbook. Grade this draft, then output a corrected
+version. Fix EVERY violation; if the draft is already clean, tighten it.
+
+THE DRAFT:
+subject: {draft['subject']}
+{draft['body']}
+
+COMPANY FACTS AVAILABLE (the only permitted sources of specificity):
+- Company: {company} | Contact: {contact} ({title})
+- Location: {city}, {state} | Employees: {employees}
+- Description: {description}
+- Differentiation: {differentiated}
+- Niche: {niche}
+
+THE CHECKLIST (a violation of any item = rewrite that part):
+1. EMPTY FLATTERY: any compliment that does not cite a checkable fact
+   from the list above ("personalized touch", "cornerstone", "your
+   focus is rare", "impressed by your growth") must be REPLACED with a
+   real fact — or cut entirely and the opening switched to a niche/
+   geography observation. Never invent facts.
+2. EXACTLY ONE question mark in the whole email, at the ask. If there
+   are two questions, merge or cut.
+3. Four beats in order: Hook (first line grabs, no greeting filler),
+   Relate (their world, not a feature dump), Bridge (why this matters
+   to THEM), Ask (one small, easy action; a disarm like "no idea if
+   the timing is right" is encouraged).
+4. 40-75 words in the body. First word is "you", their name, or the
+   company name — never "I". No jargon (synergies, unlock, value
+   creation, strategic partnership, platform). No exclamation marks.
+   Plain text, no links.
+5. Banned: "wondering if", "consider a partner", "expand your
+   strengths", "take things to the next level", "Worth a chat?" as a
+   second question, and any phrase that could be pasted into an email
+   to a different company unchanged.
+6. Subject: 1-6 lowercase words, under 50 characters, no question mark,
+   doesn't look like a sales email.
+
+Return JSON only:
+{{"violations_found": ["short list of what you fixed"],
+  "subject": "corrected subject",
+  "body": "corrected complete email body including sign-off"}}"""
+
+    try:
+        resp2 = openai_client.chat.completions.create(
+            model="gpt-4o",
+            messages=[{"role": "user", "content": editor_prompt}],
+            response_format={"type": "json_object"},
+            temperature=0.3,
+            timeout=30,
+        )
+        edited = json.loads(resp2.choices[0].message.content)
+        if edited.get("body"):
+            return {
+                "subject": edited.get("subject") or draft["subject"],
+                "body": edited["body"],
+            }
+    except Exception:
+        pass          # editor pass is best-effort — fall back to the draft
+    return draft
 
 
 def make_mailto_url(to_email, subject, body):
