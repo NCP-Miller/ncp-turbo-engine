@@ -10105,10 +10105,6 @@
     "broaden_signal": false,
     "_budget_gate_cleared": 30
   },
-  "memo_verdicts": {
-    "Cumberland Trust": "liked",
-    "Pendleton Square Trust Company": "liked"
-  },
   "manual_companies": [],
   "status": "stopped",
   "reviewed_near_misses": [
@@ -10183,5 +10179,10 @@
     "The Trust Company of Tennessee",
     "Loring, Wolcott & Coolidge Trust, LLC",
     "Commonwealth Trust Company"
-  ]
+  ],
+  "memo_verdicts": {
+    "Cumberland Trust": "liked",
+    "Pendleton Square Trust Company": "liked",
+    "Capital First Trust Company": "rejected"
+  }
 }
