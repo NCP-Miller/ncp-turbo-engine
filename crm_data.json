@@ -85,7 +85,7 @@
       "state": "Florida",
       "niche": "Specialty trust administration providers serving RIAs and family offices",
       "project": null,
-      "status": "New",
+      "status": "Not a Fit",
       "source": "pipeline",
       "notes": "",
       "next_followup": null,
@@ -93,7 +93,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"Florida Trust Wealth Management\", \"Description\": \"Florida Trust Wealth Management, founded in 2001 and based in Sanibel, Florida, provides comprehensive wealth management services, including investment management, estate planning, and fiduciary services. The firm serves high-net-worth individuals, families, and business owners along Florida's Gulf Coast, offering personalized financial solutions to preserve and grow their wealth through life's transitions.\", \"Website\": \"http://www.floridatrust.com\", \"City\": \"Sanibel\", \"State\": \"Florida\", \"LinkedIn\": \"http://www.linkedin.com/company/florida-trust-wealth-management\", \"Employees\": 70, \"Est. EBITDA\": \"$1.2M\\u2013$2.5M\", \"CEO/Owner Name\": \"Al Hanser\", \"Title\": \"Founder and Chairman\", \"Email\": \"N/A\", \"Email Estimate\": \"al.hanser@floridatrust.com\", \"Phone\": \"239-774-4000\", \"Source\": \"Web Path (/about)\", \"Notes\": \"\", \"Confidence\": \"Medium\", \"Latest News\": \"Florida Trust Wealth Management hosts 2026 Shareholders\\u2019 Meeting - Priority Marketing | https://news.google.com/rss/articles/CBMimgFBVV95cUxQTk03MVAtNUM4WG1CQjN5WlFXRTJLVU5XZVRoLTV3a2k2RnVpNkVPN2xpRXlGNjBXalpWMjVpdzFGcU9jbTFoYUdFWHpCT1gwTGdxMUFTMUVsSXRxdEozZXJrUEprZ1ZqOXVpcktxM0pkUkRmWDFMTTZBUEpzanBrSFNPUV8xUzNMRHBRRDNQSmh1TUc1VlVRTGhn?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"Specialty trust administration providers serving RIAs and family offices\", \"Priority\": \"Medium\", \"Growth\": \"High\", \"Txn Readiness\": \"Medium\", \"Priority Confidence\": \"High\", \"Growth Confidence\": \"High\", \"Txn Readiness Confidence\": \"Medium\", \"Differentiated Confidence\": \"Medium\", \"Conviction\": 4, \"Conviction Pitch\": \"Florida Trust Wealth Management operates in a competitive and saturated market with many players offering similar wealth management services. Its strengths lie in its established presence along Florida's Gulf Coast and a loyal client base of high-net-worth individuals, but it lacks unique differentiation or defensible moats, such as proprietary processes or specialized certifications, to genuinely excite us. Moreover, its revenues primarily depend on fluctuating market conditions, which could be cyclical.\", \"Conviction Reasoning\": \"The company's lack of differentiation, competitive market, and cyclicality of its revenue model prevent it from meeting our criteria of having a clear 'right to win' or defensible moat.\"}",
       "created_at": "2026-07-21T15:16:00.802695+00:00",
-      "updated_at": "2026-07-21T15:16:00.852535+00:00",
+      "updated_at": "2026-07-24T20:58:18.056091+00:00",
       "memo": "---\n\n**Investment Memo: Florida Trust Wealth Management**\n\n**Why We're Excited**\nFlorida Trust Wealth Management stands out due to its established, loyal client base of high-net-worth individuals along Florida's affluent Gulf Coast. This geographic stronghold provides a unique opportunity within the specialty trust administration sector despite a competitive landscape. While differentiation in services is limited, the firm's reputation and client relationships serve as critical assets that could be leveraged to gain further regional dominance.\n\n**Company Overview**\nFounded in 2001 and located in Sanibel, Florida, Florida Trust Wealth Management is a specialized provider of wealth management services. With approximately 70 employees, the firm offers a suite of services including investment management, estate planning, and fiduciary services, focusing primarily on high-net-worth individuals, families, and business owners in the region. The estimated EBITDA ranges from $1.2M to $2.5M, based on employee count, though this requires confirmation.\n\n**Differentiated Value Proposition**\nThe firm's primary advantage lies in its established presence and solid reputation within a wealthy and growing demographic region. While lacking unique proprietary processes or certifications, its deep-rooted client loyalty and established market presence present a potential platform for regional expansion and cross-selling additional financial services.\n\n**Market Opportunity & Growth**\nThe wealth management sector benefits from secular tailwinds, such as an aging population requiring complex estate planning services and increased wealth accumulation in coastal Florida markets. The total addressable market (TAM) in the area is significant, though precise figures are unavailable; further diligence is required. Opportunities exist for organic growth through service expansion and potential acquisition-driven scaling in a fragmented market.\n\n**NCP Fit Rationale**\nFlorida Trust aligns with NCP's lower middle market focus, offering a founder-led firm that could serve as a foundational piece in a broader buy-and-build strategy. The potential succession planning due to the founder's approaching retirement presents a timely entry point. Its clientele's sticky nature offers potential for recurring revenue streams through strategic service offerings that align with NCP\u2019s focus on stability and growth.\n\n**Key Risks & Diligence Items**\n1. **Revenue Stability**: Highly dependent on market conditions; assess client portfolio stability and revenue cyclicality.\n2. **Differentiation**: Lack of clear defensible moat such as proprietary processes or accreditations. Examine ways to build competitive advantages.\n3. **Financial Accuracy**: Confirm the estimated $1.2M\u2013$2.5M EBITDA through primary diligence to accurately reflect financial health.\n4. **Scalability**: Evaluate operational processes to determine scalability potential and integration into a larger platform strategy.\n5. **Succession Planning**: Investigate founder's retirement timeline and management's capabilities to ensure smooth transition.\n\n---"
     },
     {
@@ -2700,6 +2700,15 @@
       "summary": "Status: New \u2192 Not a Fit",
       "detail": "",
       "timestamp": "2026-07-24T20:56:38.296352+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 149,
+      "deal_id": 4,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-07-24T20:58:18.056016+00:00",
       "synced_to_sf": 0
     }
   ]
