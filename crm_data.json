@@ -209,11 +209,11 @@
       "source": "pipeline",
       "notes": "",
       "next_followup": null,
-      "sf_account_id": null,
-      "sf_contact_id": null,
+      "sf_account_id": "001Pp00002JNxCUIA1",
+      "sf_contact_id": "003Pp00002Al5juIAB",
       "row_json": "{\"Company\": \"Chinquapin Trust Company\", \"Description\": \"Chinquapin Trust Company specializes in trust administration, estate planning, investment management, and financial planning services. The company provides oversight and legal services related to financial and estate matters.\", \"Website\": null, \"City\": \"Kansas City\", \"State\": \"Missouri\", \"LinkedIn\": \"http://www.linkedin.com/company/chinquapin-trust-company\", \"Employees\": 29, \"Est. EBITDA\": \"$508K\\u2013$1.0M\", \"CEO/Owner Name\": \"N/A\", \"Title\": \"N/A\", \"Email\": \"N/A\", \"Email Estimate\": \"\", \"Phone\": \"N/A\", \"Source\": \"Not Found\", \"Notes\": \"\", \"Confidence\": \"Low\", \"Latest News\": \"RBC FUNDS TRUST - SEC.gov | https://news.google.com/rss/articles/CBMijwFBVV95cUxNVkp0S1NpMU9jUzlVajRtZ2FqNlZHcV9YdHlZWExLbjBvT2kzSWxPdzVQcWkyby0xZ2ZPdFhMOWpHbEhDblpzTEw1ZWYwT05Jem1Pb2J3N3dnOWJVMi1yQzRPaTc5Yk95eEg4cUZHNmF5S2FOSTM4U25pek0tUEs4UFFrbWp6UGEzSzdJYWkxRQ?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"Specialty trust administration providers serving RIAs and family offices\", \"Priority\": \"Low\", \"Growth\": \"High\", \"Txn Readiness\": \"Medium\", \"Priority Confidence\": \"High\", \"Growth Confidence\": \"High\", \"Txn Readiness Confidence\": \"Medium\", \"Differentiated Confidence\": \"Medium\", \"Conviction\": 4, \"Conviction Pitch\": \"Chinquapin Trust Company operates in a high-growth sector, offering essential trust administration and estate planning services, but suffers from low differentiation in a highly competitive market. While the market potential is high, the company's lack of a clear competitive edge or unique offering limits its attractiveness. The absence of notable traits aligning with our past successful investments further diminishes its appeal.\", \"Conviction Reasoning\": \"The company lacks distinct differentiation, essential for standing out in a fragmented market, and doesn't align well with our criteria based on past successful deals.\"}",
       "created_at": "2026-07-21T15:24:57.748726+00:00",
-      "updated_at": "2026-07-21T15:24:57.778124+00:00",
+      "updated_at": "2026-07-27T14:26:43.418910+00:00",
       "memo": "**Investment Memo: Chinquapin Trust Company**\n\n**Why We're Excited**  \nWhile Chinquapin Trust Company lacks a standout differentiator in a competitive market, its potential lies in operating within a high-growth, fragmented sector that presents significant buy-and-build opportunities. The company serves a crucial role in trust administration and estate planning, sectors driven by demographic trends such as the aging population. Trey should consider this call to explore how Chinquapin's strategic position in Kansas City, a market with limited direct competition, could act as a foundation for regional expansion.\n\n**Company Overview**  \nChinquapin Trust Company is a Kansas City-based service provider specializing in trust administration, estate planning, investment management, and financial planning. It operates with a lean team of 29 employees and an estimated EBITDA range of $508K\u2013$1.0M, pending confirmation.\n\n**Differentiated Value Proposition**  \nChinquapin currently exhibits low differentiation, with no evident competitive edge such as unique IP, exclusive certifications, or proprietary processes. However, its regional presence and potential for succession due to a founder nearing retirement offer a strategic entry point for expansion.\n\n**Market Opportunity & Growth**  \nThe specialty trust administration market benefits from positive secular trends, notably the increasing need for estate planning services driven by an aging demographic. Despite lacking unique differentiation, Chinquapin has room to capture value in a fragmented space lacking a dominant player, ideal for buy-and-build strategies to enhance market presence and operational scale.\n\n**NCP Fit Rationale**  \nChinquapin aligns with NCP's focus on lower middle-market opportunities and services-oriented businesses typically founder-owned, suggesting potential for efficient integration and scaling. The company's essential, non-cyclical services could provide recurring revenue opportunities under new strategic leadership.\n\n**Key Risks & Diligence Items**  \n1. **EBITDA Confirmation**: Validate the accuracy of the estimated EBITDA range.\n2. **Competitive Landscape**: Assess the level of direct competition and market saturation in the region.\n3. **Succession Planning**: Evaluate the retirement timeline of the founder and existing management depth.\n4. **Regulatory Environment**: Examine any regulatory hurdles that could impact operations and scalability.\n5. **Scalability**: Investigate the infrastructure and processes in place to support potential growth and expansion.\n\nThis memo provides an honest assessment of Chinquapin Trust Company, identifying both the potential and the critical gaps requiring further due diligence."
     },
     {
@@ -2817,6 +2817,15 @@
       "summary": "Marked \ud83d\udc4d Interested in memo review",
       "detail": "",
       "timestamp": "2026-07-27T14:26:19.764726+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 162,
+      "deal_id": 9,
+      "type": "Note",
+      "summary": "Added to Salesforce",
+      "detail": "",
+      "timestamp": "2026-07-27T14:26:43.418378+00:00",
       "synced_to_sf": 0
     }
   ]
