@@ -61,7 +61,7 @@
       "state": "South Carolina",
       "niche": "Specialty trust administration providers serving RIAs and family offices",
       "project": null,
-      "status": "New",
+      "status": "Not a Fit",
       "source": "pipeline",
       "notes": "",
       "next_followup": null,
@@ -69,7 +69,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"Amplify Advisory Solutions\", \"Description\": \"Amplify Advisory Solutions is a professional services consulting firm that provides data management and technology solutions for wealth management entities, including family offices, RIAs, and endowments. The company focuses on investment data aggregation, performance reporting, and strategic consulting to help clients optimize their operations and technology infrastructure.\", \"Website\": \"http://www.ampadv.com\", \"City\": \"Charleston\", \"State\": \"South Carolina\", \"LinkedIn\": \"http://www.linkedin.com/company/ampadv\", \"Employees\": 25, \"Est. EBITDA\": \"$438K\\u2013$875K\", \"CEO/Owner Name\": \"Ryan Loughran\", \"Title\": \"Founder & CEO\", \"Email\": \"ryan@ampadv.com\", \"Email Estimate\": \"\", \"Phone\": \"N/A\", \"Source\": \"Web Path (/team) \\u2192 Verified\", \"Notes\": \"\", \"Confidence\": \"High\", \"Latest News\": \"N/A\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"Specialty trust administration providers serving RIAs and family offices\", \"Priority\": \"Low\", \"Growth\": \"Low\", \"Txn Readiness\": \"Low\", \"Priority Confidence\": \"High\", \"Growth Confidence\": \"Medium\", \"Txn Readiness Confidence\": \"Low\", \"Differentiated Confidence\": \"Medium\", \"Conviction\": 4, \"Conviction Pitch\": \"Amplify Advisory Solutions provides data management and technology solutions for wealth management entities, including family offices and RIAs. While the company operates in a niche area, the differentiation and growth potential appear low, and the market is quite fragmented. There is no standout trait or clear competitive edge that suggests Amplify has an unfair advantage.\", \"Conviction Reasoning\": \"The firm's low differentiation and limited growth prospects make it a less compelling candidate despite operating in a specialized niche.\"}",
       "created_at": "2026-07-23T16:14:45.994169+00:00",
-      "updated_at": "2026-07-23T16:14:46.003165+00:00",
+      "updated_at": "2026-07-27T14:40:56.008685+00:00",
       "memo": "**New Capital Partners Investment Memo: Amplify Advisory Solutions**\n\n---\n\n**1. Why We're Excited**\n\nAmplify Advisory Solutions presents a unique opportunity for NCP due to its niche focus on data management and technology solutions tailored specifically for wealth management entities, including RIAs and family offices. While the market is fragmented, Amplify's specialized service offerings in investment data aggregation and performance reporting could complement our portfolio\u2019s strategic growth in connected services for financial entities. Despite a low differentiation and growth score, understanding the technological infrastructure in this niche could offer an entry point for a future buy-and-build strategy in this space.\n\n**2. Company Overview**\n\nAmplify Advisory Solutions, headquartered in Charleston, South Carolina, is a professional services consulting firm with approximately 25 employees. The company provides specialized data management and technology solutions for wealth management entities, focusing on investment data aggregation, performance reporting, and strategic consulting to aid clients in optimizing their operations. Estimated EBITDA ranges from $438K\u2013$875K, though this needs verification.\n\n**3. Differentiated Value Proposition**\n\nCurrently, Amplify does not exhibit a significant moat or competitive advantage. The firm\u2019s offerings are part of a highly fragmented market, lacking distinctive proprietary processes or regulatory licenses. Understanding specific client integrations and potential recurring revenue models can enhance differentiation.\n\n**4. Market Opportunity & Growth**\n\nThe specialty trust administration space is growing, driven by secular tailwinds such as the increasing demand for automated wealth management solutions and data-driven decision-making. Amplify's services address the operational challenges faced by family offices and RIAs, suggesting a steady market albeit with limited high-growth potential. Any identified expansion into consultancy layers or integration with other financial IT systems can be levers for growth.\n\n**5. NCP Fit Rationale**\n\nAmplify aligns with NCP's focus on lower middle-market, services-oriented companies due to its small-scale operations and potential as a founder-owned firm. While it may lack immediate standout features, capturing a foothold in the specialized data management domain can bolster future M&A strategy in specialty trust administration services, especially within fragmented markets.\n\n**6. Key Risks & Diligence Items**\n\n1. **EBITDA Confirmation**: The current EBITDA estimate is heuristic; precise financial diligence is essential.\n   \n2. **Competitive Analysis**: Assess the competitive landscape to determine specific market positioning and the potential to create a defensible competitive edge.\n   \n3. **Client Contracts & Revenue Models**: Review the nature of existing client relationships, revenue stability, and the possibility for subscription-based models.\n   \n4. **Growth Potential**: Verify market growth projections and Amplify\u2019s strategic plans to harness these.\n   \n5. **Founder Succession**: Explore the founder\u2019s intentions, particularly regarding retirement, and potential impacts on company stability and continuity.\n\n---\n\nIn summary, while Amplify Advisory Solutions does not demonstrate immediate standout traits, its market positioning among RIAs and family offices presents a potential strategic fit within NCP\u2019s broader growth strategy in the financial services sector."
     },
     {
@@ -2853,6 +2853,15 @@
       "summary": "Status: New \u2192 Not a Fit",
       "detail": "",
       "timestamp": "2026-07-27T14:34:43.348541+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 166,
+      "deal_id": 3,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-07-27T14:40:56.008431+00:00",
       "synced_to_sf": 0
     }
   ]
