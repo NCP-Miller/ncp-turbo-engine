@@ -530,6 +530,410 @@
       "organization_headcount_six_month_growth": null,
       "organization_headcount_twelve_month_growth": null,
       "organization_headcount_twenty_four_month_growth": null
+    },
+    {
+      "id": "54a129fa69702db6482ad801",
+      "name": "First Covenant Trust and Advisors, LLC",
+      "website_url": "http://www.covenanttrustllc.com",
+      "angellist_url": null,
+      "linkedin_url": "http://www.linkedin.com/company/firstcovenant",
+      "twitter_url": null,
+      "facebook_url": null,
+      "languages": [
+        "English"
+      ],
+      "alexa_ranking": null,
+      "phone": "+1 866-659-3404",
+      "linkedin_uid": "2488557",
+      "founded_year": 2011,
+      "publicly_traded_symbol": null,
+      "publicly_traded_exchange": null,
+      "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/6715e675f7bbfc0001401315/picture",
+      "crunchbase_url": null,
+      "primary_domain": "covenanttrustllc.com",
+      "sic_codes": [
+        "6732"
+      ],
+      "naics_codes": [
+        "5239",
+        "525920"
+      ],
+      "primary_phone": {
+        "number": "+1 866-659-3404",
+        "sanitized_number": "+18666593404"
+      },
+      "sanitized_phone": "+18666593404",
+      "industry": "legal services",
+      "estimated_num_employees": 14,
+      "keywords": [
+        "trust administration",
+        "estate administration",
+        "captive insurance",
+        "estate planning",
+        "charitable planning",
+        "tax planning",
+        "special needs planning",
+        "wills",
+        "trusts",
+        "powers of attorney",
+        "trust situs",
+        "legacy preservation",
+        "philanthropic planning",
+        "high net worth",
+        "special needs trust administration",
+        "estate settlement services",
+        "trustee services",
+        "consulting",
+        "services",
+        "special needs estate planning",
+        "trustee services for high net worth",
+        "trustee advisory",
+        "trustee consulting",
+        "trustee management",
+        "estate settlement",
+        "dynasty trusts",
+        "special needs trusts",
+        "philanthropic trust planning",
+        "fiduciary services",
+        "trustee services for families with special needs",
+        "other financial investment activities",
+        "family office services",
+        "trustee services for professional athletes",
+        "discretionary trusts",
+        "family wealth management",
+        "b2b",
+        "trustee services for estates",
+        "wealth management",
+        "trust planning",
+        "trustee services for family legacy",
+        "trustee support",
+        "family legacy preservation",
+        "trustee services for young beneficiaries",
+        "asset protection trusts for high net worth",
+        "trust services",
+        "high net worth families",
+        "trust management",
+        "discretionary trust management",
+        "financial services",
+        "dynasty trust administration",
+        "family office",
+        "trustee solutions",
+        "trustee administration",
+        "asset protection trusts",
+        "legal services",
+        "irrevocable life insurance trusts",
+        "asset protection",
+        "trustee services for families",
+        "finance",
+        "legal",
+        "b2c",
+        "law practice",
+        "investment management"
+      ],
+      "organization_revenue_printed": null,
+      "organization_revenue": 0.0,
+      "industries": [
+        "legal services",
+        "financial services",
+        "law practice"
+      ],
+      "secondary_industries": [
+        "financial services",
+        "law practice"
+      ],
+      "snippets_loaded": true,
+      "industry_tag_id": "5567ce2d7369644d25250000",
+      "industry_tag_hash": {
+        "legal services": "5567ce2d7369644d25250000",
+        "financial services": "5567cdd67369643e64020000",
+        "law practice": "5567ce1f7369644d391c0000"
+      },
+      "retail_location_count": 0,
+      "raw_address": "541 Sid Martin Rd, Suite B, Johnson City, Tennessee 37615, US",
+      "street_address": "541 Sid Martin Rd",
+      "city": "Johnson City",
+      "state": "Tennessee",
+      "postal_code": "37615-6210",
+      "country": "United States",
+      "owned_by_organization_id": null,
+      "num_languages": 1,
+      "num_retail_locations": 0,
+      "short_description": "First Covenant Trust & Advisors, LLC's goal is to help its clients succeed, by providing individualized fiduciary services to its clientele in the most efficient and effective manner possible. Covenant is supported and backed by individuals and organizations which, combined, provide decades of experience and expertise in the provision of fiduciary services and the related tax, accounting, and legal issues that surround trust administration. We understand that clients often have long-standing relationships with various professionals such as bankers and financial advisors.  We have chosen not to take an active role in investing assets.  This puts us in a unique position to work together with our clients' bankers, wealth managers and others as members of the client's professional team.  We believe this team-oriented perspective which respects clients' existing relationships best serves the needs of our clients.",
+      "suborganizations": [],
+      "num_suborganizations": 0,
+      "total_funding": null,
+      "total_funding_printed": null,
+      "latest_funding_round_date": null,
+      "latest_funding_stage": null,
+      "funding_events": [],
+      "technology_names": [
+        "AI",
+        "Apple Business Manager",
+        "Apple School Manager",
+        "Astra",
+        "Astra WordPress Theme",
+        "Constant Contact",
+        "DNS Made Easy",
+        "Elementor",
+        "Elementor Header & Footer Builder",
+        "Font Awesome",
+        "Google Cloud Hosting",
+        "Google Maps",
+        "Google Search Central",
+        "Google Search Console",
+        "MailChimp",
+        "MailChimp",
+        "MailChimp",
+        "Mailchimp Stores",
+        "Microsoft 365",
+        "Microsoft Office",
+        "Mimecast",
+        "Mobile Friendly",
+        "Nginx",
+        "Open Graph",
+        "PrimeNG",
+        "Priority Hints",
+        "RSS",
+        "Really Simple SSL & Security",
+        "Remote",
+        "SiteGround",
+        "Slack",
+        "Swiper",
+        "Viewport Meta",
+        "WordPress.org",
+        "Wordpress",
+        "Yoast",
+        "imagesLoaded",
+        "jQuery",
+        "jQuery Migrate"
+      ],
+      "current_technologies": [
+        {
+          "uid": "ai",
+          "name": "AI",
+          "category": "Other"
+        },
+        {
+          "uid": "apple_business_manager",
+          "name": "Apple Business Manager",
+          "category": "Cloud Services"
+        },
+        {
+          "uid": "apple_school_manager",
+          "name": "Apple School Manager",
+          "category": "Education Management Software"
+        },
+        {
+          "uid": "astra",
+          "name": "Astra",
+          "category": "Cloud Services"
+        },
+        {
+          "uid": "astra_wordpress_theme",
+          "name": "Astra WordPress Theme",
+          "category": "CMS"
+        },
+        {
+          "uid": "constant_contact",
+          "name": "Constant Contact",
+          "category": "Email Marketing"
+        },
+        {
+          "uid": "dns_made_easy",
+          "name": "DNS Made Easy",
+          "category": "Domain Name Services"
+        },
+        {
+          "uid": "elementor",
+          "name": "Elementor",
+          "category": "CMS"
+        },
+        {
+          "uid": "elementor_header_&_footer_builder",
+          "name": "Elementor Header & Footer Builder",
+          "category": "CMS"
+        },
+        {
+          "uid": "font_awesome",
+          "name": "Font Awesome",
+          "category": "Fonts"
+        },
+        {
+          "uid": "google_cloud_hosting",
+          "name": "Google Cloud Hosting",
+          "category": "Hosting"
+        },
+        {
+          "uid": "google_maps",
+          "name": "Google Maps",
+          "category": "Other"
+        },
+        {
+          "uid": "google_search_central",
+          "name": "Google Search Central",
+          "category": "Analytics and Tracking"
+        },
+        {
+          "uid": "google_search_console",
+          "name": "Google Search Console",
+          "category": "Analytics and Tracking"
+        },
+        {
+          "uid": "mailchimp",
+          "name": "MailChimp",
+          "category": "Email Marketing"
+        },
+        {
+          "uid": "mailchimp",
+          "name": "MailChimp",
+          "category": "Email Marketing"
+        },
+        {
+          "uid": "mailchimp",
+          "name": "MailChimp",
+          "category": "Email Marketing"
+        },
+        {
+          "uid": "mailchimp_stores",
+          "name": "Mailchimp Stores",
+          "category": "E-commerce Platforms"
+        },
+        {
+          "uid": "microsoft_365",
+          "name": "Microsoft 365",
+          "category": "Communication and Collaboration"
+        },
+        {
+          "uid": "microsoft_office",
+          "name": "Microsoft Office",
+          "category": "Communication and Collaboration"
+        },
+        {
+          "uid": "mimecast",
+          "name": "Mimecast",
+          "category": "Email Providers"
+        },
+        {
+          "uid": "mobile_friendly",
+          "name": "Mobile Friendly",
+          "category": "Other"
+        },
+        {
+          "uid": "nginx",
+          "name": "Nginx",
+          "category": "Load Balancers"
+        },
+        {
+          "uid": "open_graph",
+          "name": "Open Graph",
+          "category": "Other"
+        },
+        {
+          "uid": "primeng",
+          "name": "PrimeNG",
+          "category": "CSS and JavaScript Libraries"
+        },
+        {
+          "uid": "priority_hints",
+          "name": "Priority Hints",
+          "category": "Web Performance Monitoring"
+        },
+        {
+          "uid": "rss",
+          "name": "RSS",
+          "category": "Other"
+        },
+        {
+          "uid": "really_simple_ssl_&_security",
+          "name": "Really Simple SSL & Security",
+          "category": "Security"
+        },
+        {
+          "uid": "remote",
+          "name": "Remote",
+          "category": "Other"
+        },
+        {
+          "uid": "siteground",
+          "name": "SiteGround",
+          "category": "Cloud Services"
+        },
+        {
+          "uid": "slack",
+          "name": "Slack",
+          "category": "Chats"
+        },
+        {
+          "uid": "swiper",
+          "name": "Swiper",
+          "category": "CSS and JavaScript Libraries"
+        },
+        {
+          "uid": "viewport_meta",
+          "name": "Viewport Meta",
+          "category": "CSS and JavaScript Libraries"
+        },
+        {
+          "uid": "wordpress_org",
+          "name": "WordPress.org",
+          "category": "CMS"
+        },
+        {
+          "uid": "wordpress",
+          "name": "Wordpress",
+          "category": "CMS"
+        },
+        {
+          "uid": "yoast",
+          "name": "Yoast",
+          "category": "Content Management Platform"
+        },
+        {
+          "uid": "imagesloaded",
+          "name": "imagesLoaded",
+          "category": "CSS and JavaScript Libraries"
+        },
+        {
+          "uid": "jquery",
+          "name": "jQuery",
+          "category": "CSS and JavaScript Libraries"
+        },
+        {
+          "uid": "jquery_migrate",
+          "name": "jQuery Migrate",
+          "category": "CSS and JavaScript Libraries"
+        }
+      ],
+      "org_chart_root_people_ids": [
+        "66fa49b6ca922300011868ac"
+      ],
+      "org_chart_sector": "OrgChart::SectorHierarchy::Rules::Finance",
+      "org_chart_removed": null,
+      "org_chart_show_department_filter": null,
+      "departmental_head_count": {
+        "business_development": 1,
+        "accounting": 4,
+        "operations": 2,
+        "sales": 0,
+        "finance": 0,
+        "marketing": 0,
+        "human_resources": 0,
+        "information_technology": 0,
+        "legal": 0,
+        "engineering": 0,
+        "product_management": 0,
+        "consulting": 0,
+        "education": 0,
+        "administrative": 0,
+        "media_and_commmunication": 0,
+        "arts_and_design": 0,
+        "entrepreneurship": 0,
+        "support": 0,
+        "data_science": 0
+      },
+      "organization_headcount_six_month_growth": 0.0,
+      "organization_headcount_twelve_month_growth": 0.1818181818181818,
+      "organization_headcount_twenty_four_month_growth": 0.3
     }
   ],
   "qualified_queue": [],
@@ -1162,6 +1566,14 @@
     {
       "role": "assistant",
       "content": "The memo for Covenant Trust has been added to the pipeline. Let me know if you need anything else."
+    },
+    {
+      "role": "user",
+      "content": "Add a memo for covenant trust: https://covenanttrustllc.com/about-us/our-team/clay-hixson/"
+    },
+    {
+      "role": "assistant",
+      "content": "The memo for Covenant Trust has already been added to the pipeline. Let me know if there's anything else you need."
     }
   ],
   "user_feedback": [],
@@ -10632,8 +11044,8 @@
   },
   "last_event": {
     "type": "done",
-    "message": "Pipeline complete! All 12 memos generated. Click 'Investment Memos' tab to review.",
-    "timestamp": "2026-07-28T20:13:42.160447+00:00",
+    "message": "Pipeline complete! All 13 memos generated. Click 'Investment Memos' tab to review.",
+    "timestamp": "2026-07-28T21:18:59.036843+00:00",
     "severity": "success"
   },
   "created_at": "2026-06-29T15:32:12.540513+00:00",
@@ -10641,7 +11053,7 @@
     "niche": "Specialty trust administration providers serving RIAs and family offices",
     "geography": "South Carolina",
     "strategy": "A",
-    "target_count": 12,
+    "target_count": 13,
     "exclusions": "",
     "override_size_min": null,
     "override_size_max": null,
