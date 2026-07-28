@@ -665,10 +665,6 @@ class PipelineState:
                         )
                     pending.extend(names)
                     self._set("manual_companies", pending)
-                    cfg = self._get("config")
-                    current_target = cfg.get("target_count") or 0
-                    cfg["target_count"] = current_target + len(names)
-                    self._set("config", cfg)
                     self._set("status", "running")
                     self._conn.execute("COMMIT")
                 except Exception:
@@ -676,7 +672,12 @@ class PipelineState:
                     raise
             return {
                 "success": True,
-                "message": f"Added {len(names)} company/companies to the pipeline: {', '.join(names)}. Target increased to {current_target + len(names)}.",
+                "message": (
+                    f"Added {len(names)} company/companies to the pipeline: "
+                    f"{', '.join(names)}. Manually added companies are always "
+                    f"analyzed and get a memo regardless of the memo target — "
+                    f"watch the Investment Memos tab."
+                ),
                 "restart": True,
             }
 

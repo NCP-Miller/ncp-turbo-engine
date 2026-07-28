@@ -273,46 +273,51 @@ def _analyze_single(org, niche, strategy, config, search_params,
       - "score": conviction score (when applicable)
     """
     comp_name = org.get("name", "Unknown")
+    # Manually added companies (user found them independently) bypass all
+    # pre-filters and rejections: filters still run inside the worker but
+    # become notes on the memo instead of silent kills.
+    _is_manual = bool(org.get("_manual"))
 
-    # 1. Per-run size overrides
-    override_max = config.get("override_size_max")
-    override_min = config.get("override_size_min")
-    emp = org.get("estimated_num_employees", 0) or 0
-    if override_max is not None and emp > override_max:
-        return {"outcome": "pre_filtered_size", "company": comp_name,
-                "reason": f"size {emp} > max {override_max}"}
-    if override_min is not None and emp < override_min:
-        return {"outcome": "pre_filtered_size", "company": comp_name,
-                "reason": f"size {emp} < min {override_min}"}
+    if not _is_manual:
+        # 1. Per-run size overrides
+        override_max = config.get("override_size_max")
+        override_min = config.get("override_size_min")
+        emp = org.get("estimated_num_employees", 0) or 0
+        if override_max is not None and emp > override_max:
+            return {"outcome": "pre_filtered_size", "company": comp_name,
+                    "reason": f"size {emp} > max {override_max}"}
+        if override_min is not None and emp < override_min:
+            return {"outcome": "pre_filtered_size", "company": comp_name,
+                    "reason": f"size {emp} < min {override_min}"}
 
-    # 2. Structural filter
-    buyable, reason = is_buyable_structure(org, strategy)
-    if not buyable:
-        return {"outcome": "pre_filtered_structural", "company": comp_name,
-                "reason": reason}
+        # 2. Structural filter
+        buyable, reason = is_buyable_structure(org, strategy)
+        if not buyable:
+            return {"outcome": "pre_filtered_structural", "company": comp_name,
+                    "reason": reason}
 
-    # 3. Name/description blocklist
-    mismatch, reason = is_obvious_mismatch(org, niche, strategy)
-    if mismatch:
-        return {"outcome": "pre_filtered_blocklist", "company": comp_name,
-                "reason": reason}
+        # 3. Name/description blocklist
+        mismatch, reason = is_obvious_mismatch(org, niche, strategy)
+        if mismatch:
+            return {"outcome": "pre_filtered_blocklist", "company": comp_name,
+                    "reason": reason}
 
-    # 4. Niche relevance pre-filter
-    _niche_kw_list = []
-    _niche_ind_list = []
-    if search_params:
-        _niche_kw_list = [
-            k.strip()
-            for k in (search_params.get("keywords") or "").split(",")
-            if k.strip()
-        ]
-        _niche_ind_list = search_params.get("industries") or []
-    niche_pass, reason = quick_niche_prefilter(
-        org, niche, _niche_kw_list, _niche_ind_list,
-    )
-    if not niche_pass:
-        return {"outcome": "pre_filtered_niche", "company": comp_name,
-                "reason": reason}
+        # 4. Niche relevance pre-filter
+        _niche_kw_list = []
+        _niche_ind_list = []
+        if search_params:
+            _niche_kw_list = [
+                k.strip()
+                for k in (search_params.get("keywords") or "").split(",")
+                if k.strip()
+            ]
+            _niche_ind_list = search_params.get("industries") or []
+        niche_pass, reason = quick_niche_prefilter(
+            org, niche, _niche_kw_list, _niche_ind_list,
+        )
+        if not niche_pass:
+            return {"outcome": "pre_filtered_niche", "company": comp_name,
+                    "reason": reason}
 
     # 5. Deep analysis
     row = process_single_company(
@@ -322,10 +327,15 @@ def _analyze_single(org, niche, strategy, config, search_params,
         firecrawl_api_key=firecrawl_key,
         user_agent=user_agent,
         feedback_history=feedback_history,
+        force=_is_manual,
     )
     if not row:
         return {"outcome": "deep_analysis_failed", "company": comp_name,
                 "reason": "did not pass filters"}
+
+    def _note_instead_of_reject(note):
+        _n = (row.get("Notes") or "").strip()
+        row["Notes"] = f"{_n} | {note}" if _n else note
 
     # 5b. Apollo enrichment — get complete funding data that search results miss
     from lib.apollo_search import enrich_organization
@@ -338,9 +348,13 @@ def _analyze_single(org, niche, strategy, config, search_params,
             try:
                 _e_fval = float(_e_funding) if isinstance(_e_funding, str) else _e_funding
                 if isinstance(_e_fval, (int, float)) and _e_fval > 5_000_000:
-                    return {"outcome": "pe_backed", "company": comp_name,
-                            "reason": f"Institutional Funding (${_e_fval:,.0f} raised)",
-                            "row": row}
+                    if _is_manual:
+                        _note_instead_of_reject(
+                            f"Funding flag: ${_e_fval:,.0f} raised")
+                    else:
+                        return {"outcome": "pe_backed", "company": comp_name,
+                                "reason": f"Institutional Funding (${_e_fval:,.0f} raised)",
+                                "row": row}
             except (ValueError, TypeError):
                 pass
 
@@ -351,16 +365,23 @@ def _analyze_single(org, niche, strategy, config, search_params,
                 "seed", "pre seed",
             ]
             if any(s in _e_stage for s in _institutional_stages):
-                return {"outcome": "pe_backed", "company": comp_name,
-                        "reason": f"Institutional Funding ({_e_stage})", "row": row}
+                if _is_manual:
+                    _note_instead_of_reject(f"Funding flag: {_e_stage}")
+                else:
+                    return {"outcome": "pe_backed", "company": comp_name,
+                            "reason": f"Institutional Funding ({_e_stage})", "row": row}
 
             _e_rounds = _enriched.get("number_of_funding_rounds") or 0
             try:
                 _e_rval = int(_e_rounds) if isinstance(_e_rounds, str) else _e_rounds
                 if isinstance(_e_rval, int) and _e_rval >= 2:
-                    return {"outcome": "pe_backed", "company": comp_name,
-                            "reason": f"Institutional Funding ({_e_rval} rounds)",
-                            "row": row}
+                    if _is_manual:
+                        _note_instead_of_reject(
+                            f"Funding flag: {_e_rval} funding rounds")
+                    else:
+                        return {"outcome": "pe_backed", "company": comp_name,
+                                "reason": f"Institutional Funding ({_e_rval} rounds)",
+                                "row": row}
             except (ValueError, TypeError):
                 pass
 
@@ -373,8 +394,12 @@ def _analyze_single(org, niche, strategy, config, search_params,
         news_snippets = [headline]
     pe_check = check_pe_backed(client, row.get("Company", ""), news_snippets=news_snippets)
     if pe_check.get("is_pe_backed"):
-        return {"outcome": "pe_backed", "company": comp_name,
-                "reason": pe_check.get("evidence", "PE-backed"), "row": row}
+        if _is_manual:
+            _note_instead_of_reject(
+                f"Ownership flag: {pe_check.get('evidence', 'PE-backed')}")
+        else:
+            return {"outcome": "pe_backed", "company": comp_name,
+                    "reason": pe_check.get("evidence", "PE-backed"), "row": row}
 
     # 6b. Public ownership / subsidiary safety net
     _desc_lower = (row.get("Description") or "").lower()
@@ -387,6 +412,10 @@ def _analyze_single(org, niche, strategy, config, search_params,
     ]
     for sig in _ownership_kill_signals:
         if sig in _desc_lower:
+            if _is_manual:
+                _note_instead_of_reject(
+                    f"Ownership flag: description mentions '{sig}'")
+                break
             return {"outcome": "pe_backed", "company": comp_name,
                     "reason": f"Public/subsidiary signal in description ('{sig}')",
                     "row": row}
@@ -396,8 +425,11 @@ def _analyze_single(org, niche, strategy, config, search_params,
         client, row.get("Company", ""), row.get("Description", ""),
     )
     if conflict.get("conflicts"):
-        return {"outcome": "portfolio_conflict", "company": comp_name,
-                "reason": "portfolio conflict", "row": row}
+        if _is_manual:
+            _note_instead_of_reject("Portfolio conflict flag — review before outreach")
+        else:
+            return {"outcome": "portfolio_conflict", "company": comp_name,
+                    "reason": "portfolio conflict", "row": row}
 
     # 8. Conviction scoring — the final gate
     if feedback_history is None:
@@ -410,7 +442,9 @@ def _analyze_single(org, niche, strategy, config, search_params,
     row["Conviction Pitch"] = conv_pitch
     row["Conviction Reasoning"] = conv_reason
 
-    if conv_score >= CONVICTION_THRESHOLD:
+    # Manually added companies always get a memo — the user asked for it.
+    # Conviction still shows honestly on the memo, however low.
+    if _is_manual or conv_score >= CONVICTION_THRESHOLD:
         return {"outcome": "qualified", "company": comp_name,
                 "row": row, "score": conv_score, "pitch": conv_pitch}
     return {"outcome": "near_miss", "company": comp_name,
@@ -690,10 +724,12 @@ def _run_loop():
                             print(f"[Orchestrator] Manual add: '{_mname}' not on Apollo — queued with web-only data.")
 
                     if _morg:
+                        # Manual adds bypass pre-filters and the memo target:
+                        # the user found this company and wants a memo.
+                        _morg["_manual"] = True
                         state.add_candidate(_morg)
                         _manual_added += 1
                 if _manual_added:
-                    search_exhausted = False
                     state.set_event("manual_add", f"Queued {_manual_added}/{len(manual_names)} companies for analysis.", "info")
 
             # --- Emit starting event ---
@@ -729,7 +765,28 @@ def _run_loop():
             except (AttributeError, KeyError):
                 pass
 
-            if len(state.completed_memos) >= target_count:
+            # Manually added companies keep the loop alive past the target:
+            # never declare "done" while the user's own adds are unprocessed.
+            def _manual_pending():
+                try:
+                    if any((o or {}).get("_manual")
+                           for o in state.candidate_queue):
+                        return True
+                except (AttributeError, KeyError, TypeError):
+                    pass
+                try:
+                    if state.qualified_queue:
+                        return True
+                except (AttributeError, KeyError):
+                    pass
+                try:
+                    if state._get("manual_companies"):
+                        return True
+                except KeyError:
+                    pass
+                return False
+
+            if len(state.completed_memos) >= target_count and not _manual_pending():
                 state.set_event("done", f"Pipeline complete! All {target_count} memos generated. Click 'Investment Memos' tab to review.", "success")
                 state.update(status="idle")
                 print(f"[Orchestrator] Reached target of {target_count} memos. Done.")
@@ -750,6 +807,10 @@ def _run_loop():
             try:
                 if search_exhausted:
                     search_final = "exhausted"
+                elif len(state.completed_memos) >= target_count:
+                    # Target met — the loop is only alive to process manual
+                    # adds. Don't launch new (costly) Apollo search rounds.
+                    search_final = "idle"
                 elif len(state.candidate_queue) >= 20:
                     if len(state.candidate_queue) > 200:
                         print(f"[Search Bot] Queue capped at {len(state.candidate_queue)}. Waiting for analysis to drain.")
