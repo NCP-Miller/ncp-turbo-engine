@@ -71,6 +71,7 @@ def process_single_company(
     history_keys=None,
     user_agent=None,
     feedback_history=None,
+    force=False,
 ):
     """Filter, enrich, score, and contact-find for a single Apollo organization.
 
@@ -93,11 +94,22 @@ def process_single_company(
     def _scrape(url):
         return firecrawl_scrape(firecrawl_api_key, url)
 
+    # force=True (manually added company): nothing may abort the analysis —
+    # filters still run, but findings become notes on the row instead of
+    # silent rejections. The user asked for this company by name.
+    _force_notes = []
+
     # Stage 1: structural & obvious-mismatch filters
-    if not is_buyable_structure(org, strat_code)[0]:
-        return None
-    if is_obvious_mismatch(org, specific_niche, strat_code)[0]:
-        return None
+    _buyable, _breason = is_buyable_structure(org, strat_code)
+    if not _buyable:
+        if not force:
+            return None
+        _force_notes.append(f"Filter flag: {_breason}")
+    _mismatch, _mreason = is_obvious_mismatch(org, specific_niche, strat_code)
+    if _mismatch:
+        if not force:
+            return None
+        _force_notes.append(f"Filter flag: {_mreason}")
 
     # Stage 2: AI relevance check
     desc = org.get("short_description") or org.get("headline") or ""
@@ -105,16 +117,20 @@ def process_single_company(
     if not check_relevance_gpt4o(
         openai_client, comp_name, desc, tags, specific_niche, strat_code
     )[0]:
-        return None
+        if not force:
+            return None
+        _force_notes.append("Filter flag: did not match niche relevance check")
 
     domain = clean_domain(org.get("website_url"))
     org_id = org.get("id")
 
     # Stage 3: Strategy A web-based PE/VC ownership check
     if strat_code == "A":
-        is_pe_vc, _ = check_pe_vc_web(openai_client, _scrape, comp_name, domain)
+        is_pe_vc, _pe_reason = check_pe_vc_web(openai_client, _scrape, comp_name, domain)
         if is_pe_vc:
-            return None
+            if not force:
+                return None
+            _force_notes.append(f"Ownership flag: {_pe_reason or 'possible PE/VC or public ownership'}")
 
     # Cross-run dedup flag (informational only — doesn't filter)
     previously_sourced = bool(history_keys and company_in_history(org, history_keys))
@@ -236,8 +252,11 @@ def process_single_company(
             "product line of", "parent company",
             "wholly owned", "wholly-owned",
         ]
-        if any(sig in _desc_check for sig in _kill_signals):
-            return None
+        _hit = next((sig for sig in _kill_signals if sig in _desc_check), None)
+        if _hit:
+            if not force:
+                return None
+            _force_notes.append(f"Ownership flag: description mentions '{_hit}'")
 
     # Stage 5: email guess (only when we have a name + domain but no verified email)
     if row["Email"] == "N/A" and found_person and domain:
@@ -253,7 +272,9 @@ def process_single_company(
     if u:
         row["Latest News"] = f"{t} | {u}" if t else u
     if strat_code == "A" and check_news_for_pe_vc(t):
-        return None
+        if not force:
+            return None
+        _force_notes.append("Ownership flag: news headline suggests PE/VC or M&A activity")
 
     # Stage 7: scoring
     if strat_code == "A":
@@ -289,5 +310,13 @@ def process_single_company(
             openai_client, comp_name, row["Description"], specific_niche,
             feedback_history=feedback_history,
         )
+
+    # Surface any force-mode filter findings on the row so the memo and
+    # Deal Tracker show what the filters WOULD have flagged.
+    if _force_notes:
+        _existing_notes = (row.get("Notes") or "").strip()
+        _flag_text = " | ".join(_force_notes)
+        row["Notes"] = (f"{_existing_notes} | {_flag_text}"
+                        if _existing_notes else _flag_text)
 
     return row
