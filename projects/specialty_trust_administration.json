@@ -10253,6 +10253,7 @@
     "Loring, Wolcott & Coolidge Trust, LLC",
     "Commonwealth Trust Company"
   ],
+  "status": "idle",
   "memo_verdicts": {
     "Cumberland Trust": "liked",
     "Pendleton Square Trust Company": "liked",
@@ -10268,7 +10269,7 @@
     "Chinquapin Trust Company": "rejected",
     "SCJ Fiduciary Services": "rejected",
     "Amplify Advisory Solutions": "rejected",
-    "Western Reserve Trust Company": "liked"
-  },
-  "status": "idle"
+    "Western Reserve Trust Company": "liked",
+    "First Covenant Trust and Advisors, LLC": "liked"
+  }
 }
