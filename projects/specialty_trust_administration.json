@@ -1,8 +1,8 @@
 {
   "bot_status": {
-    "search": "searching_apollo",
-    "analysis": "filtering",
-    "writeup": "generating_memo"
+    "search": "idle",
+    "analysis": "idle",
+    "writeup": "idle"
   },
   "candidate_queue": [],
   "qualified_queue": [],
@@ -557,6 +557,42 @@
       },
       "memo": "**Investment Memo: Western Reserve Trust Company**\n\n**1. Why We're Excited:**  \nWestern Reserve Trust Company represents an intriguing opportunity due to its strategic positioning in a growing market with increasing demand for niche trust administration services. Although it lacks distinctive differentiation, its focus on personalized fiduciary services provides a platform that could benefit from secular growth tailwinds in trust administration. The potential for growth in Cleveland\u2014a market with limited direct competition\u2014is an appealing factor, combined with the relatively small size of the company, which aligns with our buy-and-build strategy in fragmented markets.\n\n**2. Company Overview:**  \nWestern Reserve Trust Company is a non-depository, limited-purpose trust bank based in Cleveland, Ohio. Employing 26 individuals, it specializes in the administration and fiduciary services related to trusts, providing carefully customized services to individuals, families, and professional partners. While its current EBITDA is uncertain, with estimates ranging from $455K to $910K, concrete figures will necessitate further validation.\n\n**3. Differentiated Value Proposition:**  \nCurrently, Western Reserve Trust Company exhibits low differentiation with no evident proprietary offerings or unique competitive advantages. However, its established local reputation and specialty in trust administration in a region with sparse competition may form the foundational elements of a defensible niche.\n\n**4. Market Opportunity & Growth:**  \nThe market for trust administration services is expected to grow due to demographic shifts such as an aging population, which will likely increase demand for estate and trust services. This, coupled with the lack of local market saturation, presents potential for expansion. Leveraging their current operations, Western Reserve could explore regional growth to tap into nearby underserved markets.\n\n**5. NCP Fit Rationale:**  \nGiven NCP's focus on founder-owned, lower middle market companies, Western Reserve Trust Company aligns well with our investment thesis. The company operates within a service-oriented field, and its small size in a fragmented market positions it as an ideal candidate for an acquisition strategy that could support inorganic growth opportunities. The potential for founder retirement also introduces a viable succession opportunity to facilitate leadership transitions.\n\n**6. Key Risks & Diligence Items:**  \n- **Differentiation and Competitive Advantages:** Thorough evaluation needed to uncover any potential hidden advantages.\n- **Financial Validation:** Confirm the accuracy of EBITDA which is presently heuristic.\n- **Market Saturation:** Determine the actual level of competition and potential for growth within Cleveland and surrounding areas.\n- **Succession Planning:** Assess readiness and plans for leadership transition, especially if the founder is approaching retirement.\n- **Regulatory and Compliance Risks:** Analyze any potential issues arising from the regulatory environment in which the company operates.",
       "promoted_from_near_miss": true
+    },
+    {
+      "company": "First Covenant Trust and Advisors, LLC",
+      "row": {
+        "Company": "First Covenant Trust and Advisors, LLC",
+        "Description": "First Covenant Trust and Advisors, LLC provides individualized fiduciary services, focusing on trust and estate administration, tax planning, and asset protection. They serve high net worth families, individuals with special needs, and professional athletes, among others, by working collaboratively with clients' existing financial advisors and legal professionals. The company operates with a relationship-oriented approach, emphasizing flexibility and cooperation to preserve family legacies and ensure efficient estate planning.",
+        "Website": "http://www.covenanttrustllc.com",
+        "City": "Johnson City",
+        "State": "Tennessee",
+        "LinkedIn": "http://www.linkedin.com/company/firstcovenant",
+        "Employees": 14,
+        "Est. EBITDA": "$245K\u2013$490K",
+        "CEO/Owner Name": "Clay Hixson",
+        "Title": "Chief Executive Officer",
+        "Email": "N/A",
+        "Email Estimate": "clay.hixson@covenanttrustllc.com",
+        "Phone": "N/A",
+        "Source": "Web Path (/our-team) \u2192 Verified",
+        "Notes": "Filter flag: Below minimum size threshold (15 employees)",
+        "Confidence": "High",
+        "Latest News": "Trust companies operating in SD in 2022 - KELOLAND.com | https://news.google.com/rss/articles/CBMilAFBVV95cUxNbW1mbEtMWDktNHpqa1ZoekhVRlJZS3ZaVWgtZjB3NWxJYkZpSFlmTHhRQURuNWFra2dnMXAxYjVBb0txY3pERDllUUtaQk1KUzlNdnhWbTRwN1VPS0MwWkYxRjZ2NF9XX0dqNEo4MEFBc3k4S2tab08tdXdJU1NDVE1uR09maEZYS09FOXdxbjRNRklG0gGaAUFVX3lxTE9RX1djNFdrNm5HX1Y2VE1VcmhMRGQ0OGs4czFKU1BDbkg3c1hnYmlqbGhZRmVSN0g1RWlmSnV4Vm1xTWttV2ZrSVdpVnZNcE53TWhKNEF6YXR0UkNpMW1kNE1JZ3Y1dDM3UDZfRy1MQlRpRTVGVHpKTkJPNU81cUt5OE9wa0N2M0g2Ulg3b0ljVkdaRWhFQXc4LWc?oc=5",
+        "Previously Sourced": "No",
+        "Differentiated": "Medium",
+        "_niche": "Specialty trust administration providers serving RIAs and family offices",
+        "Priority": "Low",
+        "Growth": "Medium",
+        "Txn Readiness": "High",
+        "Priority Confidence": "High",
+        "Growth Confidence": "Medium",
+        "Txn Readiness Confidence": "Medium",
+        "Differentiated Confidence": "Medium",
+        "Conviction": 6,
+        "Conviction Pitch": "First Covenant Trust and Advisors, LLC stands out with its specialization in providing individualized fiduciary services to niche segments, including high net worth families and professional athletes, which can lead to unique customer insights and tailored service offerings. Their collaborative approach with existing financial advisors and legal professionals ensures continuity and deep client relationships, fostering customer trust and loyalty. The high transaction readiness coupled with potential succession opportunity makes it a viable candidate for further exploration.",
+        "Conviction Reasoning": "The company's differentiated niche service and strong client relationships provide a basis for interest, though it lacks a more distinctive competitive advantage or significant growth catalysts."
+      },
+      "memo": "---\n\n**Investment Memo: First Covenant Trust and Advisors, LLC**\n\n**1. Why We're Excited**\n\nFirst Covenant Trust and Advisors, LLC presents a compelling acquisition opportunity due to its specialized focus on fiduciary services for niche segments like high-net-worth families and professional athletes. This specialization combined with their collaborative approach with clients' existing advisors provides a robust right to win based on differentiated customer insight and service personalization. Additionally, a potential founder succession presents an organic opportunity in a fragmented market ripe for consolidation.\n\n**2. Company Overview**\n\nFirst Covenant Trust and Advisors, LLC, located in Johnson City, Tennessee, delivers individualized fiduciary services, including trust and estate administration, tax planning, and asset protection. With an employee count of 14, the estimated EBITDA ranges between $245K\u2013$490K, although this requires confirmation. They serve high-net-worth families, individuals with special needs, and professional athletes by fostering seamless partnerships with clients' existing financial and legal advisors.\n\n**3. Differentiated Value Proposition**\n\nThe company's primary advantage lies in its relationship-oriented service model, emphasizing flexibility and cooperation. This approach ensures deep and enduring client relationships, which is further augmented by their niche expertise in serving non-traditional client segments. The moat, although moderate, is built on this tailored service delivery and strong client loyalty.\n\n**4. Market Opportunity & Growth**\n\nOperating within a growing specialty trust administration market driven by demographic trends such as an aging population, First Covenant is well-positioned to capitalize on wealth transfer and estate planning needs. The fragmented nature of the market presents buy-and-build opportunities, with First Covenant poised for regional expansion given limited local competition.\n\n**5. NCP Fit Rationale**\n\nFirst Covenant aligns with NCP\u2019s lower middle market, services-oriented investment strategy by offering essential, non-cyclical fiduciary services. Its founder ownership, with retirement on the horizon, provides a natural succession opportunity, aligning with our thesis of capitalizing on transition and growth in founder-owned businesses.\n\n**6. Key Risks & Diligence Items**\n\n- **EBITDA Validation**: Confirm the estimated EBITDA through financial due diligence.\n- **Client Concentration**: Assess if revenue is overly reliant on a few high-net-worth clients.\n- **Regulatory Compliance**: Evaluate the regulatory environment and any associated risks.\n- **Succession Planning**: Investigate the readiness of internal management to lead post-founder departure.\n- **Market Positioning**: Further analyze the competitive landscape and potential barriers to regional expansion.\n\n--- \n\nThis memo provides transparency in our evaluation, allowing informed decisions based on genuine strengths and identified diligence items."
     }
   ],
   "chat_history": [
@@ -10115,21 +10151,21 @@
     "qualified": 5
   },
   "cost_tracker": {
-    "openai": 38.0414,
+    "openai": 38.0614,
     "firecrawl": 17.135,
     "apollo": 0.0,
-    "total": 55.1764,
+    "total": 55.1964,
     "call_counts": {
-      "openai": 572,
+      "openai": 573,
       "firecrawl": 3427,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "writing_memo",
-    "message": "Generating investment memo for First Covenant Trust and Advisors, LLC.",
-    "timestamp": "2026-07-29T21:07:51.946007+00:00",
-    "severity": "info"
+    "type": "done",
+    "message": "Pipeline complete! All 16 memos generated. Click 'Investment Memos' tab to review.",
+    "timestamp": "2026-07-29T21:08:00.208978+00:00",
+    "severity": "success"
   },
   "created_at": "2026-06-29T15:32:12.540513+00:00",
   "config": {
@@ -10140,7 +10176,7 @@
     "exclusions": "",
     "override_size_min": null,
     "override_size_max": null,
-    "broaden_signal": true,
+    "broaden_signal": false,
     "_budget_gate_cleared": 30
   },
   "manual_companies": [],
@@ -10234,5 +10270,5 @@
     "Amplify Advisory Solutions": "rejected",
     "Western Reserve Trust Company": "liked"
   },
-  "status": "running"
+  "status": "idle"
 }
