@@ -11043,17 +11043,17 @@
     }
   },
   "last_event": {
-    "type": "done",
-    "message": "Pipeline complete! All 13 memos generated. Click 'Investment Memos' tab to review.",
-    "timestamp": "2026-07-28T21:18:59.036843+00:00",
-    "severity": "success"
+    "type": "starting",
+    "message": "Pipeline starting. Niche: Specialty trust administration providers serving RIAs and family offices, geography: South Carolina, target: 16 memos.",
+    "timestamp": "2026-07-29T21:02:48.685828+00:00",
+    "severity": "info"
   },
   "created_at": "2026-06-29T15:32:12.540513+00:00",
   "config": {
     "niche": "Specialty trust administration providers serving RIAs and family offices",
     "geography": "South Carolina",
     "strategy": "A",
-    "target_count": 13,
+    "target_count": 16,
     "exclusions": "",
     "override_size_min": null,
     "override_size_max": null,
@@ -11151,5 +11151,5 @@
     "Amplify Advisory Solutions": "rejected",
     "Western Reserve Trust Company": "liked"
   },
-  "status": "idle"
+  "status": "running"
 }
