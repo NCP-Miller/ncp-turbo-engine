@@ -1,7 +1,7 @@
 {
   "bot_status": {
     "search": "exhausted",
-    "analysis": "filtering",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [],
@@ -2360,11 +2360,45 @@
         "Conviction Reasoning": "The company's unique focus on the healthcare real estate for plasma centers is intriguing, but it lacks the distinctive traits or impressive growth patterns that align with our most successful past investments."
       },
       "reason": "Conviction 5/10: The company's unique focus on the healthcare real estate for plasma centers is intriguing, but it lacks the distinctive traits or impressive growth patterns that align with our most successful past investments."
+    },
+    {
+      "row": {
+        "Company": "HRF Inc",
+        "Description": "HRF Inc. is a US Licensed, FDA-regulated source plasma center based in Raleigh, NC, specializing in the collection and processing of rare specialty human blood plasma for the international market. The company provides non-injectable plasma for in vitro diagnostic products, research and development of clotting concentrates, and supports genetic discovery efforts aimed at finding cures for hemophilia and other coagulation disorders.",
+        "Website": "http://www.hrfinc.com",
+        "City": "Dickson",
+        "State": "Tennessee",
+        "LinkedIn": "http://www.linkedin.com/company/hrf-inc",
+        "Employees": 24,
+        "Est. EBITDA": "$420K\u2013$840K",
+        "CEO/Owner Name": "N/A",
+        "Title": "N/A",
+        "Email": "info@hrfinc.com",
+        "Email Estimate": "",
+        "Phone": "800-356-8123",
+        "Source": "Web (contact only)",
+        "Notes": "",
+        "Confidence": "Medium",
+        "Latest News": "N/A",
+        "Previously Sourced": "No",
+        "Differentiated": "Medium",
+        "_niche": "Rural plasma donation centers",
+        "Priority": "Low",
+        "Growth": "Low",
+        "Txn Readiness": "High",
+        "Priority Confidence": "High",
+        "Growth Confidence": "Low",
+        "Txn Readiness Confidence": "Medium",
+        "Differentiated Confidence": "Medium",
+        "Conviction": 5,
+        "Conviction Pitch": "HRF Inc operates a US Licensed, FDA-regulated plasma center focused on rare specialty human blood plasma, with a niche in rural plasma donation centers. However, the company shows medium differentiation and low growth in a critical healthcare niche, which places it at a lower priority and less exciting proposition for our mandate.",
+        "Conviction Reasoning": "The specialization in rare plasma for international markets presents an opportunity, but limited differentiation and growth reduce enthusiasm."
+      },
+      "reason": "Conviction 5/10: The specialization in rare plasma for international markets presents an opportunity, but limited differentiation and growth reduce enthusiasm."
     }
   ],
-  "reviewed_near_misses": [],
   "filter_stats": {
-    "total_sourced": 1143,
+    "total_sourced": 1144,
     "pre_filtered_size": 14,
     "pre_filtered_structural": 1029,
     "pre_filtered_blocklist": 12,
@@ -2372,25 +2406,25 @@
     "deep_analysis_failed": 24,
     "pe_backed": 1,
     "portfolio_conflict": 0,
-    "low_differentiation": 3,
+    "low_differentiation": 4,
     "qualified": 0
   },
   "cost_tracker": {
-    "openai": 1.8836,
-    "firecrawl": 0.885,
+    "openai": 2.321,
+    "firecrawl": 1.01,
     "apollo": 0.0,
-    "total": 2.7686,
+    "total": 3.331,
     "call_counts": {
-      "openai": 33,
-      "firecrawl": 177,
+      "openai": 34,
+      "firecrawl": 202,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "analyzing",
-    "message": "Analyzing 1 candidates in parallel. 0 more in queue.",
-    "timestamp": "2026-08-10T19:13:58.288787+00:00",
-    "severity": "info"
+    "type": "exhausted",
+    "message": "Search exhausted \u2014 found 0/2 memos. Try broadening niche or geography, or ask for more in a different region.",
+    "timestamp": "2026-08-10T19:16:18.188157+00:00",
+    "severity": "warning"
   },
   "created_at": "2026-08-10T18:51:45.625480+00:00",
   "config": {
@@ -2403,5 +2437,8 @@
     "override_size_max": null,
     "broaden_signal": false
   },
-  "status": "running"
+  "status": "stopped",
+  "reviewed_near_misses": [
+    "Stough Development Corporation"
+  ]
 }
