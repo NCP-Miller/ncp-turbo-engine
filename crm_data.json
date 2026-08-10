@@ -1189,7 +1189,7 @@
       "state": "Wisconsin",
       "niche": "Specialty trust administration providers serving RIAs and family offices",
       "project": "Specialty Trust Administration",
-      "status": "Outreach Active",
+      "status": "Closed \u2013 No Response",
       "source": "backfill-memo",
       "notes": "Emailed on 7/16",
       "next_followup": null,
@@ -1197,7 +1197,7 @@
       "sf_contact_id": "003Pp000028FbPqIAK",
       "row_json": "{\"Company\": \"Capital First Trust Company\", \"Description\": \"Capital First Trust Company is an independent trust company chartered in South Dakota, providing trust administration and wealth management services. They offer customized trust solutions for settlement planners, financial advisors, accident victims, and individuals seeking corporate trustee services, with operations in South Dakota, Wisconsin, and Minnesota.\", \"Website\": \"http://www.capitalfirsttrust.com\", \"City\": \"Milwaukee\", \"State\": \"Wisconsin\", \"LinkedIn\": \"http://www.linkedin.com/company/capital-first-trust-company\", \"Employees\": 90, \"Est. EBITDA\": \"$1.6M\\u2013$3.1M\", \"CEO/Owner Name\": \"N/A\", \"Title\": \"N/A\", \"Email\": \"info@capitalfirsttrust.com\", \"Email Estimate\": \"\", \"Phone\": \"800.521.2359\", \"Source\": \"Web (contact only)\", \"Notes\": \"\", \"Confidence\": \"Medium\", \"Latest News\": \"Capital First Trust Company Reports Milestones From Growth Initiatives In 2019 - PR Newswire | https://news.google.com/rss/articles/CBMizwFBVV95cUxPSDkxS3hGLXRPQVVWSWdmU1hnYVRRYldvc09RZnk5bTNlUm5ldW1UbEw1cHVmSDZCcDZEUUZKc2N1ZGRzQm9CQXg4OFVtYmFBNkFHTDhpcWM1LXNYdlNkUE50SS01ZzgzT0NXa2NoRVo2cUM1OFR5bzJBSlVpLXNEeEFMUURPdWlCbUlzSFZaNEZnSTgteGVGcWFpVjMtLTlFVDlsTGpIMFZxczdKeUhEWEtSSE9iVTVoYllDd0lhOXpkdWFXeVAyTUxPWDdTNTQ?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Medium\", \"_niche\": \"Specialty trust administration providers serving RIAs and family offices\", \"Priority\": \"High\", \"Growth\": \"High\", \"Txn Readiness\": \"Medium\", \"Priority Confidence\": \"High\", \"Growth Confidence\": \"High\", \"Txn Readiness Confidence\": \"Low\", \"Differentiated Confidence\": \"Medium\", \"Conviction\": 8, \"Conviction Pitch\": \"Capital First Trust Company stands out with its unique position as an independent trust provider in a high-growth niche, focusing on specialized trust administration for RIAs and family offices. Its footprint across South Dakota, Wisconsin, and Minnesota provides a strategic regional presence with limited direct competition. The company's chartered status enhances its regulatory moat, while its tailored solutions to settlement planners and financial advisors suggest potential for recurring and contractual revenue streams.\", \"Conviction Reasoning\": \"The company's differentiated offering in a fragmented market with secular tailwinds and its strategic regional presence without significant competition drives the high score.\"}",
       "created_at": "2026-07-10T00:01:45.928941+00:00",
-      "updated_at": "2026-07-16T15:38:28.685300+00:00",
+      "updated_at": "2026-08-10T15:30:46.790914+00:00",
       "memo": null
     },
     {
@@ -3156,6 +3156,15 @@
       "summary": "Status: Outreach Active \u2192 Closed \u2013 No Response",
       "detail": "",
       "timestamp": "2026-08-10T15:27:39.188827+00:00",
+      "synced_to_sf": 1
+    },
+    {
+      "id": 197,
+      "deal_id": 50,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Closed \u2013 No Response",
+      "detail": "",
+      "timestamp": "2026-08-10T15:30:44.647150+00:00",
       "synced_to_sf": 1
     }
   ]
