@@ -1453,7 +1453,7 @@
       "state": "New Jersey",
       "niche": "Rural plasma donation centers",
       "project": null,
-      "status": "New",
+      "status": "Not a Fit",
       "source": "memo",
       "notes": "",
       "next_followup": null,
@@ -1461,7 +1461,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"SafePoint Scientific\", \"Description\": \"SafePoint Scientific specializes in providing continuous monitoring solutions for critical parameters such as temperature, humidity, and pressure across various industries, including pharmaceuticals, biotech, hospitals, and military facilities. They offer services such as calibration, validation, and asset management for equipment like refrigerators, freezers, and incubators. The company operates with ISO 17025 certification and integrates its solutions with IoT technology for enhanced data management and security.\", \"Website\": \"http://www.safepointscientific.com\", \"City\": \"West Berlin\", \"State\": \"New Jersey\", \"LinkedIn\": \"http://www.linkedin.com/company/safepoint-scientific\", \"Employees\": 21, \"Est. EBITDA\": \"$368K\\u2013$735K\", \"CEO/Owner Name\": \"N/A\", \"Title\": \"N/A\", \"Email\": \"N/A\", \"Email Estimate\": \"\", \"Phone\": \"(856) 242-1582\", \"Source\": \"Web (contact only)\", \"Notes\": \"\", \"Confidence\": \"Medium\", \"Latest News\": \"N/A\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"Rural plasma donation centers\", \"Priority\": \"Low\", \"Growth\": \"Low\", \"Txn Readiness\": \"Medium\", \"Priority Confidence\": \"High\", \"Growth Confidence\": \"Low\", \"Txn Readiness Confidence\": \"Low\", \"Differentiated Confidence\": \"Medium\", \"Conviction\": 6, \"Conviction Pitch\": \"SafePoint Scientific stands out for its ISO 17025 certification, which provides a significant moat in the highly regulated field of continuous monitoring solutions for critical industries like pharmaceuticals and biotech. Their integration of IoT technology positions them favorably in the growing need for real-time data management in these sectors. However, the company's differentiation and growth prospects are limited, and its niche target in rural plasma donation centers lacks clarity on strategic fit with our portfolio.\", \"Conviction Reasoning\": \"The ISO 17025 certification and IoT integration are attractive features, but the lack of clear differentiation and limited growth potential prevent a higher score.\"}",
       "created_at": "2026-08-10T21:39:02.228298+00:00",
-      "updated_at": "2026-08-10T21:39:02.237242+00:00",
+      "updated_at": "2026-08-10T22:26:48.606018+00:00",
       "memo": "**Investment Memo: SafePoint Scientific**\n\n**Why We're Excited**  \nSafePoint Scientific's unique position as a provider of ISO 17025 certified continuous monitoring solutions offers a significant moat in heavily regulated sectors like pharmaceuticals and biotech. Its integration of IoT technology enables advanced real-time data management and security, aligning with the increasing demand for digital solutions in these industries. Despite operating primarily outside the core focus of rural plasma donation centers, the proprietary edge in compliance and technology presents a compelling point for further evaluation.\n\n**Company Overview**  \nSafePoint Scientific, based in West Berlin, New Jersey, specializes in the monitoring of critical environmental parameters such as temperature, humidity, and pressure across industries including pharmaceuticals, biotech, hospitals, and military facilities. With a team of 21 employees, the company offers services such as calibration, validation, and asset management, supporting the operation of sensitive equipment like refrigerators, freezers, and incubators. It maintains an estimated EBITDA of $368K\u2013$735K, pending further verification.\n\n**Differentiated Value Proposition**  \nThe company's accreditation with ISO 17025 provides a competitive advantage in a field where regulatory standards are paramount. This certification acts as a formidable defensive moat, ensuring reliability and trust from enterprise clients. Their integration of IoT solutions further enhances operational capabilities, enabling safe and efficient data management, crucial for adherence to regulatory and legal standards.\n\n**Market Opportunity & Growth**  \nSafePoint operates within growing markets characterized by substantial secular tailwinds such as the aging population, increased focus on cybersecurity, and demand for high-standard regulatory compliance. While their direct market for rural plasma donation centers is not well defined, the broader application in pharmaceuticals and biotechnology presents a potential for tapping into a substantial total addressable market (TAM) driven by these macro factors.\n\n**NCP Fit Rationale**  \nTypically targeting founder-led, services-oriented companies in fragmented and ripe-for-consolidation markets, SafePoint aligns with NCP's investment thesis. Its technical accreditation and niche service offering present opportunities for bolstering our portfolio with a company possessing limited local competition and potential for expanding into adjacent markets.\n\n**Key Risks & Diligence Items**  \n- Clarification of strategic fit in rural plasma donation centers: Not well articulated, requires strategic assessment.\n- Validation of EBITDA estimates and financials: Current estimates are heuristic; precise financial data necessary.\n- Evaluation of growth strategy: Lack of defined growth levers needs exploration.\n- Competitive landscape assessment: Understanding the competitive dynamics and market positioning.\n- Exit strategy and leadership transition: Consideration given to the founder's retirement and succession planning.\n\nThis investment memo aims to provide a succinct analysis tailored for potential discussions around the strategic acquisition of SafePoint Scientific, aligning with NCP's overall investment philosophy and objectives."
     },
     {
@@ -3315,6 +3315,15 @@
       "summary": "Status: New \u2192 Not a Fit",
       "detail": "",
       "timestamp": "2026-08-10T22:26:26.182156+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 204,
+      "deal_id": 61,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-08-10T22:26:48.605883+00:00",
       "synced_to_sf": 0
     }
   ]
