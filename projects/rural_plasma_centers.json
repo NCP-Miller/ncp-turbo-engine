@@ -1,11 +1,4 @@
 {
-  "config": {
-    "niche": null,
-    "geography": null,
-    "strategy": null,
-    "target_count": null
-  },
-  "status": "idle",
   "bot_status": {
     "search": "idle",
     "analysis": "idle",
@@ -14,7 +7,16 @@
   "candidate_queue": [],
   "qualified_queue": [],
   "completed_memos": [],
-  "chat_history": [],
+  "chat_history": [
+    {
+      "role": "user",
+      "content": "Find me 2 differentiated Rural plasma donation centers companies in NCP Priority Geography (Eastern US)."
+    },
+    {
+      "role": "assistant",
+      "content": "Got it. I know what NCP looks for \u2014 founder-owned, differentiated, right to win, growing market, no PE on the cap table. I'll search multiple channels and only bring you companies I'm genuinely excited about (conviction 6+/10). You'll get 2 with investment memos. Give me feedback on each one and I'll learn your preferences."
+    }
+  ],
   "user_feedback": [],
   "seen_domains": [],
   "seen_names": [],
@@ -44,10 +46,20 @@
     }
   },
   "last_event": {
-    "type": "idle",
-    "message": "Pipeline ready. Configure and click Start.",
-    "timestamp": null,
+    "type": "starting",
+    "message": "Pipeline starting. Niche: Rural plasma donation centers, geography: NCP Priority Geography (Eastern US), target: 2 memos.",
+    "timestamp": "2026-08-10T18:51:45.964320+00:00",
     "severity": "info"
   },
-  "created_at": "2026-08-10T18:50:42.554231+00:00"
+  "created_at": "2026-08-10T18:51:45.625480+00:00",
+  "config": {
+    "niche": "Rural plasma donation centers",
+    "geography": "NCP Priority Geography (Eastern US)",
+    "strategy": "A",
+    "target_count": 2,
+    "exclusions": "",
+    "override_size_min": 5,
+    "override_size_max": null
+  },
+  "status": "running"
 }
