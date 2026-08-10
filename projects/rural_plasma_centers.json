@@ -1,7 +1,7 @@
 {
   "bot_status": {
-    "search": "idle",
-    "analysis": "filtering",
+    "search": "searching_apollo",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -4657,32 +4657,32 @@
   ],
   "reviewed_near_misses": [],
   "filter_stats": {
-    "total_sourced": 1122,
+    "total_sourced": 1125,
     "pre_filtered_size": 10,
-    "pre_filtered_structural": 1022,
+    "pre_filtered_structural": 1023,
     "pre_filtered_blocklist": 12,
     "pre_filtered_niche": 60,
-    "deep_analysis_failed": 17,
-    "pe_backed": 0,
+    "deep_analysis_failed": 18,
+    "pe_backed": 1,
     "portfolio_conflict": 0,
     "low_differentiation": 1,
     "qualified": 0
   },
   "cost_tracker": {
-    "openai": 0.6344,
-    "firecrawl": 0.405,
+    "openai": 0.9028,
+    "firecrawl": 0.52,
     "apollo": 0.0,
-    "total": 1.0394,
+    "total": 1.4228,
     "call_counts": {
-      "openai": 22,
-      "firecrawl": 81,
+      "openai": 24,
+      "firecrawl": 104,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "analyzing",
-    "message": "Analyzing 3 candidates in parallel. 19 more in queue.",
-    "timestamp": "2026-08-10T19:09:08.926056+00:00",
+    "type": "searching_apollo",
+    "message": "Searching Apollo for Medical Practice companies in NCP Priority Geography (Eastern US) (round 4 of 4).",
+    "timestamp": "2026-08-10T19:10:35.373926+00:00",
     "severity": "info"
   },
   "created_at": "2026-08-10T18:51:45.625480+00:00",
