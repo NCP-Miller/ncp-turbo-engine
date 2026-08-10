@@ -1429,7 +1429,7 @@
       "state": "New Jersey",
       "niche": "Rural plasma donation centers",
       "project": null,
-      "status": "New",
+      "status": "Not a Fit",
       "source": "memo",
       "notes": "",
       "next_followup": null,
@@ -1437,7 +1437,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"Rees Scientific\", \"Description\": \"Rees Scientific is a leader in environmental monitoring and compliance, specializing in automated temperature monitoring systems for critical equipment across various industries, including healthcare, pharmaceuticals, and biotechnology. Operating since 1982, the company provides solutions that ensure regulatory compliance and operational efficiency, with headquarters in Trenton, NJ, and a presence in North America and Europe.\", \"Website\": \"http://www.reesscientific.com\", \"City\": \"Trenton\", \"State\": \"New Jersey\", \"LinkedIn\": \"http://www.linkedin.com/company/rees-scientific\", \"Employees\": 210, \"Est. EBITDA\": \"$3.7M\\u2013$7.3M\", \"CEO/Owner Name\": \"Sandip Mukerjee\", \"Title\": \"President and CEO\", \"Email\": \"smukerjee@reesscientific.com\", \"Email Estimate\": \"\", \"Phone\": \"N/A\", \"Source\": \"Web Path (/about-us) \\u2192 Verified\", \"Notes\": \"\", \"Confidence\": \"High\", \"Latest News\": \"Trenton D. Lloyd-Rees Obituary Aug 5, 2020 - Hobbs Funeral Home | https://news.google.com/rss/articles/CBMibEFVX3lxTFA5czNhQzNRV1ByOWtWNFB3MDdNUTVzUk9uaC0tbkdIVFcxRm9jMWtwMFRrbzVHc3FYRnAwcGYyOEJaZ1NFUFJmV1RMUWNjbXlmQVRHNzQ5NHhvZk5UcVdZYVQtZFI1MnhWMWZMOA?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"Rural plasma donation centers\", \"Priority\": \"High\", \"Growth\": \"Medium\", \"Txn Readiness\": \"Medium\", \"Priority Confidence\": \"High\", \"Growth Confidence\": \"Medium\", \"Txn Readiness Confidence\": \"Low\", \"Differentiated Confidence\": \"High\", \"Conviction\": 7, \"Conviction Pitch\": \"Rees Scientific is a leader in environmental monitoring and compliance, providing automated temperature monitoring systems crucial for regulatory compliance in healthcare and biotech sectors. Its long-standing presence since 1982 and its established foothold across North America and Europe offer a solid platform for growth. While differentiation is low in the niche market of rural plasma donation centers, the company's specialized focus and defensible moat through regulatory compliance set it apart from basic commodity services.\", \"Conviction Reasoning\": \"The company's focus on regulatory compliance and its established, long-standing market presence align well with NCP's interest in companies with a defensible moat and essential services.\"}",
       "created_at": "2026-08-10T21:33:18.068256+00:00",
-      "updated_at": "2026-08-10T21:33:18.078243+00:00",
+      "updated_at": "2026-08-10T22:26:26.182474+00:00",
       "memo": "**Investment Memo: Potential Acquisition of Rees Scientific**\n\n**1. Why We're Excited**\nRees Scientific stands out due to its entrenched expertise in automated temperature monitoring systems that are critical for regulatory compliance in healthcare and biotech sectors. The company's established presence in North America and Europe coupled with its robust compliance solutions and recurring revenue model form a defensible moat that makes it a strategic asset in a fragmented market. This aligns well with NCP's interest in essential, non-cyclical services that have recurring revenue streams and opportunities for buy-and-build expansion.\n\n**2. Company Overview**\nRees Scientific, headquartered in Trenton, NJ, specializes in providing automated temperature monitoring systems for critical equipment, catering to industries such as healthcare, pharmaceuticals, and biotechnology. With an estimated employee count of 210, the company operates across North America and Europe and has been a leader in environmental monitoring and compliance since its inception in 1982.\n\n**3. Differentiated Value Proposition**\nThe core advantage of Rees Scientific lies in its regulatory compliance solutions, which create a defensible moat by ensuring client adherence to stringent industry standards. This compliance focus not only mitigates risks but also fosters long-term client relationships and recurring revenues, setting it apart in a low-differentiation market.\n\n**4. Market Opportunity & Growth**\nThe market for environmental monitoring and compliance solutions presents significant growth potential, driven by secular tailwinds such as an aging population, increasing regulatory standards, and advancements in biotech. While the Total Addressable Market (TAM) and Serviceable Available Market (SAM) specifics require primary diligence, Rees Scientific is well-positioned to capitalize on these trends. Its multi-location operation offers whitespace for geographic expansion and increased market penetration.\n\n**5. NCP Fit Rationale**\nRees Scientific aligns with NCP's strategy focusing on lower middle market, founder-owned businesses with service-oriented models. The company's potential for growth through strategic acquisitions in a fragmented market, coupled with its recurring revenue streams and focus on essential services, fits squarely within our buy-and-build investment thesis.\n\n**6. Key Risks & Diligence Items**\n- **EBITDA Verification**: The estimated range ($3.7M\u2013$7.3M) is based on employee count. Confirming actual financials is critical.\n- **Growth Rates**: Detailed financial performance and customer data are not available and must be scrutinized.\n- **Market Competition**: Assess the threat of new entrants and existing competitors in targeted expansion areas.\n- **Regulatory Changes**: The impact of evolving regulations on operations and compliance solutions needs evaluation.\n- **Succession Planning**: Given the founder's approaching retirement, develop a clear plan for leadership transition.\n\nRees Scientific offers a strategic foothold in the environmental monitoring domain with potential for expansion and value creation under NCP's stewardship, subject to thorough due diligence on the highlighted risks."
     },
     {
@@ -3306,6 +3306,15 @@
       "summary": "Promoted from Worth a Second Look \u2014 memo generated",
       "detail": "",
       "timestamp": "2026-08-10T22:23:03.196843+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 203,
+      "deal_id": 60,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-08-10T22:26:26.182156+00:00",
       "synced_to_sf": 0
     }
   ]
