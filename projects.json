@@ -231,6 +231,6 @@
     "geography": "NCP Priority Geography (Eastern US)",
     "memo_count": 1,
     "active": true,
-    "status": "stopped"
+    "status": "running"
   }
 ]
