@@ -1405,7 +1405,7 @@
       "state": "Tennessee",
       "niche": "Rural plasma donation centers",
       "project": null,
-      "status": "New",
+      "status": "Not a Fit",
       "source": "pipeline",
       "notes": "",
       "next_followup": null,
@@ -1413,7 +1413,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"HRF Inc\", \"Description\": \"HRF Inc. is a US Licensed, FDA-regulated source plasma center based in Raleigh, NC, specializing in the collection and processing of rare specialty human blood plasma for the international market. The company provides non-injectable plasma for in vitro diagnostic products, research and development of clotting concentrates, and supports genetic discovery efforts aimed at finding cures for hemophilia and other coagulation disorders.\", \"Website\": \"http://www.hrfinc.com\", \"City\": \"Dickson\", \"State\": \"Tennessee\", \"LinkedIn\": \"http://www.linkedin.com/company/hrf-inc\", \"Employees\": 24, \"Est. EBITDA\": \"$420K\\u2013$840K\", \"CEO/Owner Name\": \"N/A\", \"Title\": \"N/A\", \"Email\": \"info@hrfinc.com\", \"Email Estimate\": \"\", \"Phone\": \"800-356-8123\", \"Source\": \"Web (contact only)\", \"Notes\": \"\", \"Confidence\": \"Medium\", \"Latest News\": \"N/A\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Medium\", \"_niche\": \"Rural plasma donation centers\", \"Priority\": \"Low\", \"Growth\": \"Low\", \"Txn Readiness\": \"High\", \"Priority Confidence\": \"High\", \"Growth Confidence\": \"Low\", \"Txn Readiness Confidence\": \"Medium\", \"Differentiated Confidence\": \"Medium\", \"Conviction\": 5, \"Conviction Pitch\": \"HRF Inc operates a US Licensed, FDA-regulated plasma center focused on rare specialty human blood plasma, with a niche in rural plasma donation centers. However, the company shows medium differentiation and low growth in a critical healthcare niche, which places it at a lower priority and less exciting proposition for our mandate.\", \"Conviction Reasoning\": \"The specialization in rare plasma for international markets presents an opportunity, but limited differentiation and growth reduce enthusiasm.\"}",
       "created_at": "2026-08-10T21:24:53.721939+00:00",
-      "updated_at": "2026-08-10T21:24:53.750992+00:00",
+      "updated_at": "2026-08-10T22:28:14.506629+00:00",
       "memo": "---\n\n**Investment Memo: HRF Inc.**\n\n**Why We're Excited**  \nHRF Inc. stands out due to its unique positioning in the rare specialty human blood plasma sector, specifically tailored for in vitro diagnostic products and genetic discovery. The company's established regulatory licenses as a US Licensed, FDA-regulated entity provide a defensible moat, offering a significant barrier to entry in the niche market of rural plasma donation centers. This rare specialization and compliance infrastructure make HRF Inc. a compelling acquisition target, despite its current medium differentiation and low growth trajectory.\n\n**Company Overview**  \nHRF Inc. operates a specialized plasma center in Dickson, Tennessee, focusing on the collection and processing of rare specialty human blood plasma. With 24 employees and an estimated EBITDA between $420K and $840K (heuristic-based), it addresses international market needs for research and development in coagulation disorders and diagnostic products. The company is a regulated and licensed player in a critical healthcare segment.\n\n**Differentiated Value Proposition**  \nHRF Inc.'s most significant advantage lies in its regulatory compliance as a US Licensed, FDA-regulated plasma center, giving it a clear competitive edge in a niche market. The company's focus on the rare specialty human blood plasma sector further differentiates it by addressing specific and high-value needs within the international market for rare plasma types for research and genetic discovery.\n\n**Market Opportunity & Growth**  \nThe global plasma market is supported by secular growth tailwinds, driven by increasing healthcare needs, a rising aging population, and continuous advancements in biomedical research. While HRF Inc. currently presents low growth, the niche market for specialized plasma offers a considerable TAM due to increased demand for advanced therapeutic and diagnostic products. There is also potential for regional expansion and scaling through strategic acquisitions in a fragmented market.\n\n**NCP Fit Rationale**  \nHRF Inc. aligns with NCP's lower middle market and services-oriented investment thesis, delivering essential non-cyclical services as a specialized healthcare provider. With founder-owned operations, there exists a potential succession opportunity. The defensible regulatory position and specialized focus offer a compelling base for a focused buy-and-build strategy in the fragmented plasma market, emphasizing value accretion through operational synergies and market expansion.\n\n**Key Risks & Diligence Items**  \n1. **Financial Verification**: Confirm the heuristic-based EBITDA range with actual financials.\n2. **Growth Trajectory**: Assess growth potential for expansion beyond current geographic limitations.\n3. **Market Position**: Evaluate the company's competitive positioning and direct competition within the regional market.\n4. **Regulatory Dependency**: Review the sustainability and risks associated with FDA and other regulatory compliances.\n5. **Leadership Transition**: Given the founder's potential retirement, gauge the leadership succession plan and identify any key man risks.\n\n---"
     },
     {
@@ -3324,6 +3324,15 @@
       "summary": "Status: New \u2192 Not a Fit",
       "detail": "",
       "timestamp": "2026-08-10T22:26:48.605883+00:00",
+      "synced_to_sf": 0
+    },
+    {
+      "id": 205,
+      "deal_id": 59,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-08-10T22:28:14.506025+00:00",
       "synced_to_sf": 0
     }
   ]
