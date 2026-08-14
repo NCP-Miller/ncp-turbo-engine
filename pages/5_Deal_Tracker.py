@@ -475,31 +475,50 @@ if attention:
 with st.expander("⚙️ Import & add deals"):
     imp_col, add_col = st.columns(2)
     with imp_col:
-        st.markdown("**Import from past searches**")
+        st.markdown("**Import past deals**")
         st.caption(
             "Pulls in every investment memo and every company you marked "
             "👍 Interested — from local project files, the GitHub backup, "
-            "and the feedback log. Skips companies you rejected."
+            "and the feedback log (rejected companies skipped) — PLUS any "
+            "Salesforce Account where you've logged activity recently, "
+            "imported as Outreach Active and pre-linked for auto-sync."
         )
         sources = crm.backfill_sources()
         st.caption(
             f"Sources found: {len(sources['local_dbs'])} local project file(s), "
             f"{len(sources['github_projects'])} GitHub-backed project(s), "
-            f"{sources['feedback_entries']} feedback entries."
+            f"{sources['feedback_entries']} feedback entries + your "
+            f"Salesforce org."
+        )
+        _sf_days = st.number_input(
+            "Salesforce activity lookback (days)", 1, 90, 14,
+            help="Accounts with Tasks logged or updated within this window "
+                 "are imported as deals.",
         )
         if st.button("Import past deals", use_container_width=True):
             with st.spinner("Scanning local projects, GitHub backups, and feedback..."):
                 result = crm.backfill_from_history()
-                crm.backup_to_github()
+            with st.spinner(f"Scanning Salesforce for activity in the last {int(_sf_days)} days..."):
+                sf_result = crm.backfill_from_salesforce(days=int(_sf_days))
+            crm.backup_to_github()
             st.success(
-                f"Imported {result['created']} deals "
+                f"Imported {result['created']} deals from search history "
                 f"(scanned {result['local_dbs_scanned']} local + "
                 f"{result['github_projects_scanned']} GitHub projects, "
-                f"{result['feedback_entries']} feedback entries). "
-                f"Skipped {result['skipped_rejected']} rejected, "
-                f"{result['already_tracked']} already tracked."
+                f"{result['feedback_entries']} feedback entries; "
+                f"skipped {result['skipped_rejected']} rejected, "
+                f"{result['already_tracked']} already tracked)."
             )
-            if result["created"]:
+            if sf_result.get("error"):
+                st.warning(f"Salesforce import skipped: {sf_result['error']}")
+            else:
+                st.success(
+                    f"Salesforce: {sf_result['accounts_found']} accounts with "
+                    f"recent activity — {sf_result['created']} new deals "
+                    f"created, {sf_result['updated']} existing deals "
+                    f"linked/refreshed."
+                )
+            if result["created"] or sf_result.get("created"):
                 st.rerun()
     with add_col:
         st.markdown("**Add a deal manually**")

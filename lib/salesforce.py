@@ -261,6 +261,73 @@ def sync_deal_to_salesforce(sf, deal, activities):
     return account_id, contact_id, synced_ids
 
 
+def recent_activity_accounts(sf, days=14):
+    """Find Accounts with Task activity logged in the last N days.
+
+    Returns a list of dicts with account details, the primary contact,
+    and the most recent activity's subject/date — used by the Deal
+    Tracker's import to pull in companies being actively worked in
+    Salesforce.
+    """
+    tasks = sf.query_all(
+        f"SELECT WhatId, Subject, LastModifiedDate FROM Task "
+        f"WHERE WhatId != null AND LastModifiedDate = LAST_N_DAYS:{int(days)} "
+        f"ORDER BY LastModifiedDate DESC"
+    )
+    latest_by_account = {}
+    for t in tasks.get("records", []):
+        wid = t.get("WhatId") or ""
+        if not wid.startswith("001"):        # Accounts only
+            continue
+        if wid not in latest_by_account:     # records arrive newest-first
+            latest_by_account[wid] = {
+                "subject": t.get("Subject") or "Activity",
+                "when": (t.get("LastModifiedDate") or "")[:10],
+            }
+    if not latest_by_account:
+        return []
+
+    results = []
+    ids = list(latest_by_account)
+    for i in range(0, len(ids), 100):        # chunk the IN clauses
+        chunk = ids[i:i + 100]
+        id_list = ",".join(f"'{a}'" for a in chunk)
+        accounts = sf.query_all(
+            f"SELECT Id, Name, Website, BillingCity, BillingState, "
+            f"NumberOfEmployees, Description FROM Account "
+            f"WHERE Id IN ({id_list})"
+        )
+        contacts_by_account = {}
+        contacts = sf.query_all(
+            f"SELECT Id, FirstName, LastName, Title, Email, Phone, "
+            f"AccountId FROM Contact WHERE AccountId IN ({id_list})"
+        )
+        for c in contacts.get("records", []):
+            contacts_by_account.setdefault(c.get("AccountId"), c)
+        for a in accounts.get("records", []):
+            act = latest_by_account.get(a["Id"], {})
+            c = contacts_by_account.get(a["Id"]) or {}
+            contact_name = " ".join(
+                x for x in [c.get("FirstName"), c.get("LastName")] if x)
+            results.append({
+                "account_id": a["Id"],
+                "name": a.get("Name") or "",
+                "website": a.get("Website"),
+                "city": a.get("BillingCity"),
+                "state": a.get("BillingState"),
+                "employees": a.get("NumberOfEmployees"),
+                "description": a.get("Description"),
+                "contact_id": c.get("Id"),
+                "contact_name": contact_name,
+                "contact_title": c.get("Title"),
+                "contact_email": c.get("Email"),
+                "contact_phone": c.get("Phone"),
+                "last_activity_subject": act.get("subject", ""),
+                "last_activity_date": act.get("when", ""),
+            })
+    return results
+
+
 def create_followup_tasks(sf, account_id, contact_id, company_name):
     """Create two open follow-up Tasks after initial outreach:
       1. Phone call — due 1 day from now
