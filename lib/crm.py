@@ -534,6 +534,79 @@ def backfill_from_history():
     return counters
 
 
+def backfill_from_salesforce(days=14):
+    """Import companies with recent Salesforce activity as tracked deals.
+
+    Any Account where a Task was logged/updated in the last `days` days
+    becomes a deal (created as 'Outreach Active' since it's being
+    actively worked), pre-linked to its Salesforce Account/Contact so
+    auto-sync flows immediately. Existing deals just get their SF link
+    and contact fields refreshed — statuses and notes are never touched.
+    Safe to run repeatedly: activity markers dedupe by summary.
+    """
+    init_db()
+    try:
+        from lib.api_clients import get_secret
+        from lib.salesforce import sf_login, recent_activity_accounts
+    except Exception as e:
+        return {"error": f"Salesforce modules unavailable: {e}"}
+    username = get_secret("SF_USERNAME", "")
+    if not username:
+        return {"error": "Salesforce is not configured (SF_USERNAME missing)."}
+    try:
+        sf = sf_login(
+            username,
+            get_secret("SF_PASSWORD", ""),
+            get_secret("SF_CONSUMER_KEY", ""),
+            get_secret("SF_CONSUMER_SECRET", ""),
+            get_secret("SF_SECURITY_TOKEN", ""),
+        )
+        accounts = recent_activity_accounts(sf, days=days)
+    except Exception as e:
+        return {"error": f"Salesforce query failed: {e}"}
+
+    created = updated = 0
+    for a in accounts:
+        if not a.get("name"):
+            continue
+        existed = get_deal(a["name"]) is not None
+        row = {
+            "Website": a.get("website"),
+            "City": a.get("city"),
+            "State": a.get("state"),
+            "Employees": a.get("employees"),
+            "Description": a.get("description"),
+            "CEO/Owner Name": a.get("contact_name"),
+            "Title": a.get("contact_title"),
+            "Email": a.get("contact_email"),
+            "Phone": a.get("contact_phone"),
+        }
+        deal_id = upsert_deal(a["name"], row=row,
+                              source="backfill-salesforce",
+                              status="Outreach Active")
+        update_deal(deal_id, sf_account_id=a["account_id"],
+                    sf_contact_id=a.get("contact_id"))
+        marker = (f"Imported from Salesforce — recent activity: "
+                  f"{a.get('last_activity_subject', 'Activity')} "
+                  f"({a.get('last_activity_date', '?')})")
+        conn = _connect()
+        try:
+            dup = conn.execute(
+                "SELECT 1 FROM activities WHERE deal_id = ? AND summary = ?",
+                (deal_id, marker)).fetchone()
+        finally:
+            conn.close()
+        if not dup:
+            # synced_to_sf=1: this came FROM Salesforce — never push it back
+            log_activity(deal_id, "Note", marker, synced_to_sf=1)
+        if existed:
+            updated += 1
+        else:
+            created += 1
+    return {"created": created, "updated": updated,
+            "accounts_found": len(accounts)}
+
+
 # ---------------------------------------------------------------------------
 # EXPORT / BACKUP
 # ---------------------------------------------------------------------------
