@@ -1653,7 +1653,7 @@
       "sf_contact_id": "0034V00003tYCYJQA4",
       "row_json": "{\"Website\": \"https://www.earthlingsecurity.com\", \"City\": \"Mc Lean\", \"State\": \"VA\", \"Employees\": 14, \"Description\": \"Earthling Security, LLC is an SBA 8(a) certified small business with extensive years of delivering security and technology solutions to both the public sector and to commercial enterprises.\\nThe Company provides a strategic, end-to-end Cloud Computing, IT Security, and Secure DevOps solutions. It focuses to provide tailored and strategic business solutions to support and optimize the business mission of its valued clients.\", \"CEO/Owner Name\": \"Yusuf Ahmed\", \"Title\": \"Chief Executive Officer\", \"Email\": \"yaa@earthlingsecurity.com\", \"Phone\": null}",
       "created_at": "2026-08-14T22:34:59.878408+00:00",
-      "updated_at": "2026-08-14T22:34:59.892454+00:00",
+      "updated_at": "2026-08-20T16:46:11.360194+00:00",
       "memo": null
     },
     {
@@ -3747,6 +3747,15 @@
       "summary": "email check in on value creation plan",
       "detail": "",
       "timestamp": "2026-08-19T15:45:05.747082+00:00",
+      "synced_to_sf": 1
+    },
+    {
+      "id": 228,
+      "deal_id": 69,
+      "type": "Email",
+      "summary": "followed up on my nda redline comments",
+      "detail": "",
+      "timestamp": "2026-08-20T16:46:07.179077+00:00",
       "synced_to_sf": 1
     }
   ]
