@@ -1029,7 +1029,7 @@
       "sf_contact_id": "0033A00002WDLlYQAX",
       "row_json": "{\"Website\": \"https://www.dataseers.ai\", \"City\": \"Alpharetta\", \"State\": \"GA\", \"Employees\": 93, \"Description\": \"DataSeers, Inc. is a computer software company. It provides AI-powered enterprise software for banks and fintechs to improve reconciliation, compliance, fraud detection, and analytics. The company offers its services throughout the country.\", \"CEO/Owner Name\": \"Micah Fowler\", \"Title\": \"Manager of Strategic Alliances\", \"Email\": \"mfowler@dataseers.ai\", \"Phone\": null}",
       "created_at": "2026-07-10T00:01:38.885545+00:00",
-      "updated_at": "2026-08-14T22:34:59.763108+00:00",
+      "updated_at": "2026-08-20T16:46:56.636979+00:00",
       "memo": null
     },
     {
@@ -3756,6 +3756,15 @@
       "summary": "followed up on my nda redline comments",
       "detail": "",
       "timestamp": "2026-08-20T16:46:07.179077+00:00",
+      "synced_to_sf": 1
+    },
+    {
+      "id": 229,
+      "deal_id": 43,
+      "type": "Email",
+      "summary": "Followed up on next steps. NDA is signed",
+      "detail": "",
+      "timestamp": "2026-08-20T16:46:53.020718+00:00",
       "synced_to_sf": 1
     }
   ]
