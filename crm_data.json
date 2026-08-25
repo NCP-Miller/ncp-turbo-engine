@@ -1621,7 +1621,7 @@
       "state": "SC",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Meeting Scheduled",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -1629,7 +1629,7 @@
       "sf_contact_id": "0034V00002chmb7QAA",
       "row_json": "{\"Website\": \"http://www.benefitsinacard.com\", \"City\": \"Greenville\", \"State\": \"SC\", \"Employees\": 23, \"Description\": \"Benefits In A Card, LLC (BIC) provides group insurance products and services that enable companies to retain employees. The company offers various benefit packages focusing on temporary or hourly employees. It is an insurance products include limited medical, prescription drugs, life or term life, dental, disability, vision, hospital indemnity, and other preferred plans.\", \"CEO/Owner Name\": \"Carl Stecker\", \"Title\": \"CEO\", \"Email\": \"carl@benefitsinacard.com\", \"Phone\": null}",
       "created_at": "2026-08-14T22:34:59.854592+00:00",
-      "updated_at": "2026-08-14T22:34:59.868418+00:00",
+      "updated_at": "2026-08-25T19:32:01.449598+00:00",
       "memo": null
     },
     {
@@ -3954,6 +3954,15 @@
       "summary": "Status: In Dialogue \u2192 Revisit Later",
       "detail": "",
       "timestamp": "2026-08-25T19:31:44.505281+00:00",
+      "synced_to_sf": 1
+    },
+    {
+      "id": 243,
+      "deal_id": 68,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Meeting Scheduled",
+      "detail": "",
+      "timestamp": "2026-08-25T19:31:58.648659+00:00",
       "synced_to_sf": 1
     }
   ]
