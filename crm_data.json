@@ -1597,7 +1597,7 @@
       "state": "NY",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "In Dialogue",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -1605,7 +1605,7 @@
       "sf_contact_id": "0034V00002Xw2jjQAB",
       "row_json": "{\"Website\": \"https://advanresearch.com\", \"City\": \"New York City\", \"State\": \"NY\", \"Employees\": 18, \"Description\": \"Advan Research Corp. is the leader in the Big Data geolocation space, enabling participants in the financial industry to analyze foot traffic data across multiple sectors, including consumer services, energy, technology, healthcare, REITs, financials, and others. The company derives its datasets using multi-parameter models that analyze cellphone location data crossed with curated geofenced areas.\", \"CEO/Owner Name\": \"Yiannis Tsiounis\", \"Title\": \"CEO\", \"Email\": \"yiannis@advan.us\", \"Phone\": null}",
       "created_at": "2026-08-14T22:34:59.829790+00:00",
-      "updated_at": "2026-08-14T22:34:59.844784+00:00",
+      "updated_at": "2026-08-25T19:31:27.591745+00:00",
       "memo": null
     },
     {
@@ -1669,7 +1669,7 @@
       "state": null,
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "In Dialogue",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -1677,7 +1677,7 @@
       "sf_contact_id": "003Pp0000217pInIAI",
       "row_json": "{\"Website\": \"https://flytehcm.com/\", \"City\": null, \"State\": null, \"Employees\": null, \"Description\": null, \"CEO/Owner Name\": \"Eric Allen\", \"Title\": \"CEO/Founder\", \"Email\": null, \"Phone\": null}",
       "created_at": "2026-08-14T22:34:59.903271+00:00",
-      "updated_at": "2026-08-14T22:34:59.916202+00:00",
+      "updated_at": "2026-08-25T19:30:57.755304+00:00",
       "memo": null
     },
     {
@@ -3927,6 +3927,24 @@
       "summary": "Status: Outreach Active \u2192 In Dialogue",
       "detail": "",
       "timestamp": "2026-08-25T19:30:34.406843+00:00",
+      "synced_to_sf": 1
+    },
+    {
+      "id": 240,
+      "deal_id": 70,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 In Dialogue",
+      "detail": "",
+      "timestamp": "2026-08-25T19:30:54.736670+00:00",
+      "synced_to_sf": 1
+    },
+    {
+      "id": 241,
+      "deal_id": 67,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 In Dialogue",
+      "detail": "",
+      "timestamp": "2026-08-25T19:31:24.738343+00:00",
       "synced_to_sf": 1
     }
   ]
