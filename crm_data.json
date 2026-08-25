@@ -1389,7 +1389,7 @@
       "sf_contact_id": "003Pp00002AwH1iIAF",
       "row_json": "{\"Website\": \"https://www.westernreservetrustcompany.com/firm/principals/william-e-karnatz-jr/\", \"City\": null, \"State\": null, \"Employees\": null, \"Description\": null, \"CEO/Owner Name\": \"Bill Karnatz\", \"Title\": \"President\", \"Email\": \"bekarnatz@westernreservetrustcompany.com\", \"Phone\": null}",
       "created_at": "2026-07-23T18:51:22.783878+00:00",
-      "updated_at": "2026-08-25T16:18:57.380440+00:00",
+      "updated_at": "2026-08-25T19:23:51.628516+00:00",
       "memo": "**Investment Memo: Western Reserve Trust Company**\n\n**1. Why We're Excited:**  \nWestern Reserve Trust Company represents an intriguing opportunity due to its strategic positioning in a growing market with increasing demand for niche trust administration services. Although it lacks distinctive differentiation, its focus on personalized fiduciary services provides a platform that could benefit from secular growth tailwinds in trust administration. The potential for growth in Cleveland\u2014a market with limited direct competition\u2014is an appealing factor, combined with the relatively small size of the company, which aligns with our buy-and-build strategy in fragmented markets.\n\n**2. Company Overview:**  \nWestern Reserve Trust Company is a non-depository, limited-purpose trust bank based in Cleveland, Ohio. Employing 26 individuals, it specializes in the administration and fiduciary services related to trusts, providing carefully customized services to individuals, families, and professional partners. While its current EBITDA is uncertain, with estimates ranging from $455K to $910K, concrete figures will necessitate further validation.\n\n**3. Differentiated Value Proposition:**  \nCurrently, Western Reserve Trust Company exhibits low differentiation with no evident proprietary offerings or unique competitive advantages. However, its established local reputation and specialty in trust administration in a region with sparse competition may form the foundational elements of a defensible niche.\n\n**4. Market Opportunity & Growth:**  \nThe market for trust administration services is expected to grow due to demographic shifts such as an aging population, which will likely increase demand for estate and trust services. This, coupled with the lack of local market saturation, presents potential for expansion. Leveraging their current operations, Western Reserve could explore regional growth to tap into nearby underserved markets.\n\n**5. NCP Fit Rationale:**  \nGiven NCP's focus on founder-owned, lower middle market companies, Western Reserve Trust Company aligns well with our investment thesis. The company operates within a service-oriented field, and its small size in a fragmented market positions it as an ideal candidate for an acquisition strategy that could support inorganic growth opportunities. The potential for founder retirement also introduces a viable succession opportunity to facilitate leadership transitions.\n\n**6. Key Risks & Diligence Items:**  \n- **Differentiation and Competitive Advantages:** Thorough evaluation needed to uncover any potential hidden advantages.\n- **Financial Validation:** Confirm the accuracy of EBITDA which is presently heuristic.\n- **Market Saturation:** Determine the actual level of competition and potential for growth within Cleveland and surrounding areas.\n- **Succession Planning:** Assess readiness and plans for leadership transition, especially if the founder is approaching retirement.\n- **Regulatory and Compliance Risks:** Analyze any potential issues arising from the regulatory environment in which the company operates."
     },
     {
@@ -1725,7 +1725,55 @@
       "sf_contact_id": "0033000001TxQYYAA3",
       "row_json": "{\"Website\": \"http://www.ering-cad.com\", \"City\": \"Alpharetta\", \"State\": \"GA\", \"Employees\": 45, \"Description\": \"E-Ring, Inc. specializes in developing CAD or GIS-centric real-time decision support systems. The company provides solutions for a variety of industries and offer broad-based industry solutions as well as custom solutions.\", \"CEO/Owner Name\": \"Rah Radhakarishsna\", \"Title\": \"President\", \"Email\": \"rah@e-ring.com\", \"Phone\": \"(256) 722-3464\"}",
       "created_at": "2026-08-25T16:18:57.301037+00:00",
-      "updated_at": "2026-08-25T16:18:57.357660+00:00",
+      "updated_at": "2026-08-25T19:23:51.569438+00:00",
+      "memo": null
+    },
+    {
+      "id": 73,
+      "company": "eShipGlobal",
+      "company_key": "eshipglobal",
+      "website": "http://www2.eshipglobal.com",
+      "contact_name": "Srini Srinivasan",
+      "title": "President and CEO",
+      "email": "srinivasan@eshipglobal.com",
+      "phone": null,
+      "city": "Dallas",
+      "state": "TX",
+      "niche": null,
+      "project": null,
+      "status": "Outreach Active",
+      "source": "backfill-salesforce",
+      "notes": "",
+      "next_followup": null,
+      "sf_account_id": "0014V00001zn9S5QAI",
+      "sf_contact_id": "0034V00002luUfgQAE",
+      "row_json": "{\"Website\": \"http://www2.eshipglobal.com\", \"City\": \"Dallas\", \"State\": \"TX\", \"Employees\": 23, \"Description\": \"eShipGlobal, Inc. is a shipping provisioning solutions provider intended to simplify and enhance the shipment of goods. The company offers businesses a transportation management software solution that streamlines the shipping process, and alternate carrier options reduce costs and keep up with hazardous shipping regulation codes.\", \"CEO/Owner Name\": \"Srini Srinivasan\", \"Title\": \"President and CEO\", \"Email\": \"srinivasan@eshipglobal.com\", \"Phone\": null}",
+      "created_at": "2026-08-25T19:23:51.580268+00:00",
+      "updated_at": "2026-08-25T19:23:51.592052+00:00",
+      "memo": null
+    },
+    {
+      "id": 74,
+      "company": "Exodus Intelligence",
+      "company_key": "exodus intelligence",
+      "website": "https://www.exodusintel.com",
+      "contact_name": "Logan Brown",
+      "title": "President and CEO",
+      "email": "logan@exodusintel.com",
+      "phone": null,
+      "city": "Austin",
+      "state": "TX",
+      "niche": null,
+      "project": null,
+      "status": "Outreach Active",
+      "source": "backfill-salesforce",
+      "notes": "",
+      "next_followup": null,
+      "sf_account_id": "0014V00003lwKdWQAU",
+      "sf_contact_id": "0034V00004dgar2QAA",
+      "row_json": "{\"Website\": \"https://www.exodusintel.com\", \"City\": \"Austin\", \"State\": \"TX\", \"Employees\": 45, \"Description\": \"Exodus Intelligence, LLC provides actionable security information through a vulnerability intelligence data feed. The company delivers up-to-date security information that enables its customers to make informed decisions to strengthen the security posture.\", \"CEO/Owner Name\": \"Logan Brown\", \"Title\": \"President and CEO\", \"Email\": \"logan@exodusintel.com\", \"Phone\": null}",
+      "created_at": "2026-08-25T19:23:51.601642+00:00",
+      "updated_at": "2026-08-25T19:23:51.614212+00:00",
       "memo": null
     }
   ],
@@ -3852,6 +3900,24 @@
       "summary": "Imported from Salesforce \u2014 recent activity: Call (2026-08-24)",
       "detail": "",
       "timestamp": "2026-08-25T16:18:57.380301+00:00",
+      "synced_to_sf": 1
+    },
+    {
+      "id": 237,
+      "deal_id": 73,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-25)",
+      "detail": "",
+      "timestamp": "2026-08-25T19:23:51.591895+00:00",
+      "synced_to_sf": 1
+    },
+    {
+      "id": 238,
+      "deal_id": 74,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email and linkedin (2026-08-25)",
+      "detail": "",
+      "timestamp": "2026-08-25T19:23:51.614045+00:00",
       "synced_to_sf": 1
     }
   ]
