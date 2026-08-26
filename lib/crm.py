@@ -50,6 +50,10 @@ ATTENTION_RULES = {
 
 ACTIVITY_TYPES = ["Call", "Email", "LinkedIn", "Text", "Meeting", "Note"]
 
+# The two people who work the tracker (no login system — a selector in
+# the UI stamps every activity and status change with who did it)
+USERS = ["Trey", "Intern"]
+
 
 # ---------------------------------------------------------------------------
 # DB SETUP
@@ -96,6 +100,10 @@ def init_db():
         cols = {r[1] for r in conn.execute("PRAGMA table_info(deals)").fetchall()}
         if "memo" not in cols:
             conn.execute("ALTER TABLE deals ADD COLUMN memo TEXT")
+        act_cols = {r[1] for r in
+                    conn.execute("PRAGMA table_info(activities)").fetchall()}
+        if "user" not in act_cols:
+            conn.execute("ALTER TABLE activities ADD COLUMN user TEXT")
         conn.commit()
     finally:
         conn.close()
@@ -229,13 +237,13 @@ def update_deal(deal_id, **fields):
         conn.close()
 
 
-def set_status(deal_id, new_status, old_status=None):
+def set_status(deal_id, new_status, old_status=None, user=None):
     """Change a deal's status and log it as an activity."""
     update_deal(deal_id, status=new_status)
     label = f"Status → {new_status}"
     if old_status and old_status != new_status:
         label = f"Status: {old_status} → {new_status}"
-    log_activity(deal_id, "Note", label, activity_kind="status")
+    log_activity(deal_id, "Note", label, activity_kind="status", user=user)
 
 
 # ---------------------------------------------------------------------------
@@ -243,15 +251,15 @@ def set_status(deal_id, new_status, old_status=None):
 # ---------------------------------------------------------------------------
 
 def log_activity(deal_id, type_, summary, detail="", synced_to_sf=0,
-                 activity_kind=None):
+                 activity_kind=None, user=None):
     init_db()
     conn = _connect()
     try:
         conn.execute(
             """INSERT INTO activities (deal_id, type, summary, detail,
-                                       timestamp, synced_to_sf)
-               VALUES (?, ?, ?, ?, ?, ?)""",
-            (deal_id, type_, summary, detail, _now(), synced_to_sf),
+                                       timestamp, synced_to_sf, user)
+               VALUES (?, ?, ?, ?, ?, ?, ?)""",
+            (deal_id, type_, summary, detail, _now(), synced_to_sf, user),
         )
         conn.execute(
             "UPDATE deals SET updated_at = ? WHERE id = ?", (_now(), deal_id)
@@ -732,12 +740,13 @@ def merge_crm_export(data, adopt_status=False):
                 if not exists:
                     conn.execute(
                         """INSERT INTO activities
-                           (deal_id, type, summary, detail, timestamp, synced_to_sf)
-                           VALUES (?, ?, ?, ?, ?, ?)""",
+                           (deal_id, type, summary, detail, timestamp,
+                            synced_to_sf, user)
+                           VALUES (?, ?, ?, ?, ?, ?, ?)""",
                         (new_id, a.get("type") or "Note",
                          a.get("summary") or "", a.get("detail") or "",
                          a.get("timestamp") or _now(),
-                         a.get("synced_to_sf") or 0),
+                         a.get("synced_to_sf") or 0, a.get("user")),
                     )
                     result["activities_added"] += 1
         conn.commit()

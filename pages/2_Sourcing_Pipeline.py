@@ -129,6 +129,29 @@ st.caption(
     "Browser-disconnect safe."
 )
 
+# ── Shared-workspace reminder (shown once per browser session) ────────
+if not st.session_state.get("_pipe_concurrency_ack"):
+    st.session_state["_pipe_concurrency_ack"] = True
+
+    _warn_body = (
+        "This app has **one active project and one search pipeline shared "
+        "by everyone**. Before you start a search, load/switch a project, "
+        "or change settings, check that your colleague isn't mid-search — "
+        "switching projects during their run will disrupt it.\n\n"
+        "Reviewing memos, Worth a Second Look, and chat are always safe "
+        "to use at the same time."
+    )
+    if hasattr(st, "dialog"):
+        @st.dialog("👥 Working with a colleague?")
+        def _concurrency_reminder():
+            st.warning(_warn_body)
+            if st.button("Continue", use_container_width=True,
+                         key="_pipe_conc_continue"):
+                st.rerun()
+        _concurrency_reminder()
+    else:
+        st.warning(_warn_body)
+
 # Status banner — shows what the pipeline is currently doing
 last_event = state.last_event if hasattr(state, "last_event") else None
 if last_event and last_event.get("message"):

@@ -137,7 +137,8 @@ def _render_deal_card(deal):
                 help="Changing the status moves this deal to that folder.",
             )
             if new_status != deal["status"]:
-                crm.set_status(_id, new_status, deal["status"])
+                crm.set_status(_id, new_status, deal["status"],
+                               user=st.session_state.get("crm_user"))
                 crm.auto_sync_deal(_id)
                 crm.backup_to_github()
                 st.rerun()
@@ -173,7 +174,8 @@ def _render_deal_card(deal):
             fu_set, fu_clear = st.columns(2)
             if fu_set.button("Set", key=f"fuset_{_id}"):
                 crm.update_deal(_id, next_followup=fu_date.isoformat())
-                crm.log_activity(_id, "Note", f"Follow-up set for {fu_date.isoformat()}")
+                crm.log_activity(_id, "Note", f"Follow-up set for {fu_date.isoformat()}",
+                                 user=st.session_state.get("crm_user"))
                 crm.auto_sync_deal(_id)
                 crm.backup_to_github()
                 st.rerun()
@@ -317,7 +319,8 @@ def _render_deal_card(deal):
                 key=f"asum_{_id}",
             )
             if st.form_submit_button("Log") and a_summary.strip():
-                crm.log_activity(_id, a_type, a_summary.strip())
+                crm.log_activity(_id, a_type, a_summary.strip(),
+                                 user=st.session_state.get("crm_user"))
                 crm.auto_sync_deal(_id)
                 crm.backup_to_github()
                 st.rerun()
@@ -326,9 +329,10 @@ def _render_deal_card(deal):
         if activities:
             for act in activities:
                 sync_badge = " ✓SF" if act.get("synced_to_sf") else ""
+                user_badge = f" · _{act['user']}_" if act.get("user") else ""
                 st.markdown(
                     f"- `{(act['timestamp'] or '')[:10]}` **{act['type']}** — "
-                    f"{act['summary']}{sync_badge}"
+                    f"{act['summary']}{user_badge}{sync_badge}"
                 )
 
         st.markdown("---")
@@ -379,6 +383,7 @@ def _render_deal_card(deal):
                     _id, "Note",
                     f"Created {r_action} reminder for "
                     f"{r_date.isoformat()} {r_time.strftime('%H:%M')}{recur_label}",
+                    user=st.session_state.get("crm_user"),
                 )
                 crm.auto_sync_deal(_id)
                 crm.backup_to_github()
@@ -441,16 +446,48 @@ def _render_deal_card(deal):
 
 
 st.title("📇 Deal Tracker")
-st.caption(
-    "Every target prospect in one place — statuses, notes, activity log, "
-    "tailored Outlook reminders, and Salesforce sync."
-)
+_t_col, _u_col = st.columns([3, 1])
+with _t_col:
+    st.caption(
+        "Every target prospect in one place — statuses, notes, activity log, "
+        "tailored Outlook reminders, and Salesforce sync."
+    )
+with _u_col:
+    _current_user = st.radio(
+        "Working as", crm.USERS, horizontal=True, key="crm_user",
+        help="Stamps every activity and status change with your name — "
+             "pick yours when you sit down.",
+    )
 
 crm.init_db()
 try:
     crm.sync_with_github_backup()
 except Exception:
     pass
+
+# ── Shared-workspace reminder (shown once per browser session) ────────
+if not st.session_state.get("_crm_concurrency_ack"):
+    st.session_state["_crm_concurrency_ack"] = True
+
+    _warn_body = (
+        "You can both work here at the same time — **just not on the same "
+        "deal**. If two people edit one deal's notes or status "
+        "simultaneously, the last save wins and the other person's edit is "
+        "lost. Split the list, check with your colleague if unsure, and "
+        "refresh if something looks stale.\n\n"
+        "Also set **Working as** (top right) to your own name so the "
+        "activity trail shows who did what."
+    )
+    if hasattr(st, "dialog"):
+        @st.dialog("👥 Working with a colleague?")
+        def _concurrency_reminder():
+            st.warning(_warn_body)
+            if st.button("Continue", use_container_width=True,
+                         key="_crm_conc_continue"):
+                st.rerun()
+        _concurrency_reminder()
+    else:
+        st.warning(_warn_body)
 
 # ---------------------------------------------------------------------------
 # Needs Attention
@@ -688,7 +725,8 @@ if _all_matching:
                         f"{_fmt_ts(d.get('last_activity') or d.get('created_at'))}"
                     )
                     if c4.button("Reopen", key=f"reopen_{d['id']}"):
-                        crm.set_status(d["id"], "New", d["status"])
+                        crm.set_status(d["id"], "New", d["status"],
+                                       user=st.session_state.get("crm_user"))
                         crm.auto_sync_deal(d["id"])
                         crm.backup_to_github()
                         st.rerun()
