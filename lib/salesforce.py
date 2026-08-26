@@ -177,11 +177,14 @@ def sync_deal_to_salesforce(sf, deal, activities):
     synced_ids = []
     for act in activities:
         ts = (act.get("timestamp") or "")[:10]
+        _desc = act.get("detail") or act.get("summary", "")
+        if act.get("user"):
+            _desc = f"{_desc}\n(Logged by {act['user']})"
         payload = {
             "WhatId": account_id,
             "WhoId": contact_id,
             "Subject": f"NCP Tracker — {act.get('type', 'Note')}: {act.get('summary', '')[:200]}",
-            "Description": act.get("detail") or act.get("summary", ""),
+            "Description": _desc,
             "Status": "Completed",
             "Priority": "Normal",
             "Type": _SF_TASK_TYPES.get(act.get("type"), "Other"),
