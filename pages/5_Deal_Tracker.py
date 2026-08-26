@@ -465,6 +465,30 @@ try:
 except Exception:
     pass
 
+# ── Shared-workspace reminder (shown once per browser session) ────────
+if not st.session_state.get("_crm_concurrency_ack"):
+    st.session_state["_crm_concurrency_ack"] = True
+
+    _warn_body = (
+        "You can both work here at the same time — **just not on the same "
+        "deal**. If two people edit one deal's notes or status "
+        "simultaneously, the last save wins and the other person's edit is "
+        "lost. Split the list, check with your colleague if unsure, and "
+        "refresh if something looks stale.\n\n"
+        "Also set **Working as** (top right) to your own name so the "
+        "activity trail shows who did what."
+    )
+    if hasattr(st, "dialog"):
+        @st.dialog("👥 Working with a colleague?")
+        def _concurrency_reminder():
+            st.warning(_warn_body)
+            if st.button("Continue", use_container_width=True,
+                         key="_crm_conc_continue"):
+                st.rerun()
+        _concurrency_reminder()
+    else:
+        st.warning(_warn_body)
+
 # ---------------------------------------------------------------------------
 # Needs Attention
 # ---------------------------------------------------------------------------
