@@ -1791,13 +1791,13 @@
       "project": null,
       "status": "Outreach Active",
       "source": "backfill-salesforce",
-      "notes": "",
+      "notes": "Shawn responded. No interest",
       "next_followup": null,
       "sf_account_id": "0013A00001W4LsIQAV",
       "sf_contact_id": "0033A00002BBOjOQAX",
       "row_json": "{\"Website\": \"https://www.midlandcareconnection.org\", \"City\": \"Topeka\", \"State\": \"KS\", \"Employees\": 217, \"Description\": \"Midland Care Connection, Inc. is a not-for-profit, community-based organization providing options to families with challenging health care needs. It offers end-of-life care, help to age at home, caregiver support and community grief counseling.\", \"CEO/Owner Name\": \"Karren Weichert\", \"Title\": \"CEO\", \"Email\": \"kweichert@midlandcc.org\", \"Phone\": \"(800) 491-3691\"}",
       "created_at": "2026-08-27T13:09:27.050027+00:00",
-      "updated_at": "2026-08-27T13:09:27.063447+00:00",
+      "updated_at": "2026-08-27T13:32:29.166860+00:00",
       "memo": null
     }
   ],
