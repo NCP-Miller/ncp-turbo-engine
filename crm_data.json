@@ -1789,7 +1789,7 @@
       "state": "KS",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Contacted \u2013 No Opportunity",
       "source": "backfill-salesforce",
       "notes": "Shawn responded. No interest",
       "next_followup": null,
@@ -1797,7 +1797,7 @@
       "sf_contact_id": "0033A00002BBOjOQAX",
       "row_json": "{\"Website\": \"https://www.midlandcareconnection.org\", \"City\": \"Topeka\", \"State\": \"KS\", \"Employees\": 217, \"Description\": \"Midland Care Connection, Inc. is a not-for-profit, community-based organization providing options to families with challenging health care needs. It offers end-of-life care, help to age at home, caregiver support and community grief counseling.\", \"CEO/Owner Name\": \"Karren Weichert\", \"Title\": \"CEO\", \"Email\": \"kweichert@midlandcc.org\", \"Phone\": \"(800) 491-3691\"}",
       "created_at": "2026-08-27T13:09:27.050027+00:00",
-      "updated_at": "2026-08-27T13:32:29.166860+00:00",
+      "updated_at": "2026-08-27T13:32:41.744241+00:00",
       "memo": null
     }
   ],
@@ -4291,6 +4291,16 @@
       "timestamp": "2026-08-27T13:09:27.186673+00:00",
       "synced_to_sf": 1,
       "user": null
+    },
+    {
+      "id": 250,
+      "deal_id": 75,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Contacted \u2013 No Opportunity",
+      "detail": "",
+      "timestamp": "2026-08-27T13:32:38.784566+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
     }
   ]
 }
