@@ -1677,7 +1677,7 @@
       "sf_contact_id": "003Pp0000217pInIAI",
       "row_json": "{\"Website\": \"https://flytehcm.com/\", \"City\": null, \"State\": null, \"Employees\": null, \"Description\": null, \"CEO/Owner Name\": \"Eric Allen\", \"Title\": \"CEO/Founder\", \"Email\": null, \"Phone\": null}",
       "created_at": "2026-08-14T22:34:59.903271+00:00",
-      "updated_at": "2026-08-28T20:27:59.738490+00:00",
+      "updated_at": "2026-08-28T20:28:16.082789+00:00",
       "memo": null
     },
     {
@@ -4399,6 +4399,16 @@
       "summary": "Status: Outreach Active \u2192 Not a Fit",
       "detail": "",
       "timestamp": "2026-08-28T20:26:08.982509+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 261,
+      "deal_id": 70,
+      "type": "Email",
+      "summary": "sent another follow up",
+      "detail": "",
+      "timestamp": "2026-08-28T20:28:13.567310+00:00",
       "synced_to_sf": 1,
       "user": "Trey"
     }
