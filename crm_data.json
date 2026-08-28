@@ -1029,7 +1029,7 @@
       "sf_contact_id": "0033A00002WDLlYQAX",
       "row_json": "{\"Website\": \"https://www.dataseers.ai\", \"City\": \"Alpharetta\", \"State\": \"GA\", \"Employees\": 93, \"Description\": \"DataSeers, Inc. is a computer software company. It provides AI-powered enterprise software for banks and fintechs to improve reconciliation, compliance, fraud detection, and analytics. The company offers its services throughout the country.\", \"CEO/Owner Name\": \"Micah Fowler\", \"Title\": \"Manager of Strategic Alliances\", \"Email\": \"mfowler@dataseers.ai\", \"Phone\": null}",
       "created_at": "2026-07-10T00:01:38.885545+00:00",
-      "updated_at": "2026-08-28T20:19:18.037586+00:00",
+      "updated_at": "2026-08-28T21:03:07.157585+00:00",
       "memo": null
     },
     {
@@ -1533,7 +1533,7 @@
       "sf_contact_id": "003Pp00002DC1flIAD",
       "row_json": "{\"Website\": null, \"City\": null, \"State\": null, \"Employees\": null, \"Description\": null, \"CEO/Owner Name\": \"Neil MacAllister\", \"Title\": \"CEO and Founder\", \"Email\": null, \"Phone\": null}",
       "created_at": "2026-08-14T22:34:59.721579+00:00",
-      "updated_at": "2026-08-28T20:26:11.105035+00:00",
+      "updated_at": "2026-08-28T21:03:07.107987+00:00",
       "memo": null
     },
     {
@@ -1557,7 +1557,7 @@
       "sf_contact_id": "0033A00002VnabbQAB",
       "row_json": "{\"Website\": \"https://www.basiconline.com\", \"City\": \"Portage\", \"State\": \"MI\", \"Employees\": 499, \"Description\": \"Benefit Administrative Services International Corp. (BASIC) provides an HR ecosystem to employers and health insurance agents nationwide, with a suite of HR Benefit, Compliance, Payroll, and Leave Management solutions offered independently or as part of a platform of services. The company's proprietary software and solutions allow employers to control costs, manage risks, and maintain flexibility.\", \"CEO/Owner Name\": \"Robert Hayes\", \"Title\": \"Executive VP and Principal and Board Member\", \"Email\": \"rhayes@basiconline.com\", \"Phone\": null}",
       "created_at": "2026-08-14T22:34:59.774119+00:00",
-      "updated_at": "2026-08-28T20:25:34.570621+00:00",
+      "updated_at": "2026-08-28T21:03:07.180896+00:00",
       "memo": null
     },
     {
@@ -1581,7 +1581,7 @@
       "sf_contact_id": "0033A00002XTdGjQAL",
       "row_json": "{\"Website\": \"https://animalytix.com\", \"City\": \"Kansas City\", \"State\": \"MO\", \"Employees\": 16, \"Description\": \"Animalytix, LLC is a veterinary services company. It offers animal health, business intelligence, market intelligence, analytics, sales force alignment, and commercial insight. The company provides its products and services to customers in Kansas City, Missouri, United States.\", \"CEO/Owner Name\": \"Chris Ragland\", \"Title\": \"Founder\", \"Email\": \"cragland@animalytix.net\", \"Phone\": null}",
       "created_at": "2026-08-14T22:34:59.799591+00:00",
-      "updated_at": "2026-08-28T20:44:54.397484+00:00",
+      "updated_at": "2026-08-28T21:03:07.208114+00:00",
       "memo": null
     },
     {
@@ -1677,7 +1677,7 @@
       "sf_contact_id": "003Pp0000217pInIAI",
       "row_json": "{\"Website\": \"https://flytehcm.com/\", \"City\": null, \"State\": null, \"Employees\": null, \"Description\": null, \"CEO/Owner Name\": \"Eric Allen\", \"Title\": \"CEO/Founder\", \"Email\": null, \"Phone\": null}",
       "created_at": "2026-08-14T22:34:59.903271+00:00",
-      "updated_at": "2026-08-28T20:28:16.082789+00:00",
+      "updated_at": "2026-08-28T21:03:07.287677+00:00",
       "memo": null
     },
     {
@@ -1701,7 +1701,7 @@
       "sf_contact_id": "003Pp00002DAOQPIA5",
       "row_json": "{\"Website\": \"https://aesirinsurance.com/\", \"City\": null, \"State\": null, \"Employees\": null, \"Description\": null, \"CEO/Owner Name\": \"Aaron Tilley\", \"Title\": \"Founder and Chairman\", \"Email\": \"atilley@aesirinsurance.com\", \"Phone\": null}",
       "created_at": "2026-08-14T22:35:00.082449+00:00",
-      "updated_at": "2026-08-28T20:13:26.163586+00:00",
+      "updated_at": "2026-08-28T21:03:07.314162+00:00",
       "memo": null
     },
     {
@@ -1725,7 +1725,7 @@
       "sf_contact_id": "0033000001TxQYYAA3",
       "row_json": "{\"Website\": \"http://www.ering-cad.com\", \"City\": \"Alpharetta\", \"State\": \"GA\", \"Employees\": 45, \"Description\": \"E-Ring, Inc. specializes in developing CAD or GIS-centric real-time decision support systems. The company provides solutions for a variety of industries and offer broad-based industry solutions as well as custom solutions.\", \"CEO/Owner Name\": \"Rah Radhakarishsna\", \"Title\": \"President\", \"Email\": \"rah@e-ring.com\", \"Phone\": \"(256) 722-3464\"}",
       "created_at": "2026-08-25T16:18:57.301037+00:00",
-      "updated_at": "2026-08-28T20:17:17.344367+00:00",
+      "updated_at": "2026-08-28T21:03:07.077763+00:00",
       "memo": null
     },
     {
@@ -1749,7 +1749,7 @@
       "sf_contact_id": "0034V00002luUfgQAE",
       "row_json": "{\"Website\": \"http://www2.eshipglobal.com\", \"City\": \"Dallas\", \"State\": \"TX\", \"Employees\": 23, \"Description\": \"eShipGlobal, Inc. is a shipping provisioning solutions provider intended to simplify and enhance the shipment of goods. The company offers businesses a transportation management software solution that streamlines the shipping process, and alternate carrier options reduce costs and keep up with hazardous shipping regulation codes.\", \"CEO/Owner Name\": \"Srini Srinivasan\", \"Title\": \"President and CEO\", \"Email\": \"srinivasan@eshipglobal.com\", \"Phone\": null}",
       "created_at": "2026-08-25T19:23:51.580268+00:00",
-      "updated_at": "2026-08-28T20:15:37.384227+00:00",
+      "updated_at": "2026-08-28T21:03:07.237983+00:00",
       "memo": null
     },
     {
@@ -1773,7 +1773,7 @@
       "sf_contact_id": "0034V00004dgar2QAA",
       "row_json": "{\"Website\": \"https://www.exodusintel.com\", \"City\": \"Austin\", \"State\": \"TX\", \"Employees\": 45, \"Description\": \"Exodus Intelligence, LLC provides actionable security information through a vulnerability intelligence data feed. The company delivers up-to-date security information that enables its customers to make informed decisions to strengthen the security posture.\", \"CEO/Owner Name\": \"Logan Brown\", \"Title\": \"President and CEO\", \"Email\": \"logan@exodusintel.com\", \"Phone\": null}",
       "created_at": "2026-08-25T19:23:51.601642+00:00",
-      "updated_at": "2026-08-28T20:14:58.363405+00:00",
+      "updated_at": "2026-08-28T21:03:07.262533+00:00",
       "memo": null
     },
     {
@@ -1797,7 +1797,7 @@
       "sf_contact_id": "0033A00002BBOjOQAX",
       "row_json": "{\"Website\": \"https://www.midlandcareconnection.org\", \"City\": \"Topeka\", \"State\": \"KS\", \"Employees\": 217, \"Description\": \"Midland Care Connection, Inc. is a not-for-profit, community-based organization providing options to families with challenging health care needs. It offers end-of-life care, help to age at home, caregiver support and community grief counseling.\", \"CEO/Owner Name\": \"Karren Weichert\", \"Title\": \"CEO\", \"Email\": \"kweichert@midlandcc.org\", \"Phone\": \"(800) 491-3691\"}",
       "created_at": "2026-08-27T13:09:27.050027+00:00",
-      "updated_at": "2026-08-27T13:32:41.744241+00:00",
+      "updated_at": "2026-08-28T21:03:07.133349+00:00",
       "memo": null
     }
   ],
@@ -4431,6 +4431,106 @@
       "timestamp": "2026-08-28T21:02:19.457012+00:00",
       "synced_to_sf": 0,
       "user": "Trey"
+    },
+    {
+      "id": 264,
+      "deal_id": 72,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: Outreach Active (2026-08-28)",
+      "detail": "",
+      "timestamp": "2026-08-28T21:03:07.077584+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 265,
+      "deal_id": 64,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker \u2014 Note: Status: Outreach Active \u2192 Not a Fit (2026-08-28)",
+      "detail": "",
+      "timestamp": "2026-08-28T21:03:07.107740+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 266,
+      "deal_id": 75,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker \u2014 Note: Status: Outreach Active \u2192 Contacted \u2013 No Opportunity (2026-08-27)",
+      "detail": "",
+      "timestamp": "2026-08-28T21:03:07.133235+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 267,
+      "deal_id": 43,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Follow up: DataSeers (2026-08-28)",
+      "detail": "",
+      "timestamp": "2026-08-28T21:03:07.157435+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 268,
+      "deal_id": 65,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker \u2014 Email: emailed michael stoddard (2026-08-28)",
+      "detail": "",
+      "timestamp": "2026-08-28T21:03:07.180735+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 269,
+      "deal_id": 66,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker \u2014 Email: sent follow up (2026-08-28)",
+      "detail": "",
+      "timestamp": "2026-08-28T21:03:07.207559+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 270,
+      "deal_id": 73,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: Not a Fit (2026-08-28)",
+      "detail": "",
+      "timestamp": "2026-08-28T21:03:07.237742+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 271,
+      "deal_id": 74,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: Outreach Active (2026-08-28)",
+      "detail": "",
+      "timestamp": "2026-08-28T21:03:07.262213+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 272,
+      "deal_id": 70,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: In Dialogue (2026-08-28)",
+      "detail": "",
+      "timestamp": "2026-08-28T21:03:07.287490+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 273,
+      "deal_id": 71,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: Contacted \u2013 No Opportunity (2026-08-28)",
+      "detail": "",
+      "timestamp": "2026-08-28T21:03:07.313922+00:00",
+      "synced_to_sf": 1,
+      "user": null
     }
   ]
 }
