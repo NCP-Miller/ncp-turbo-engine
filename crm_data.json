@@ -1741,7 +1741,7 @@
       "state": "TX",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Not a Fit",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -1749,7 +1749,7 @@
       "sf_contact_id": "0034V00002luUfgQAE",
       "row_json": "{\"Website\": \"http://www2.eshipglobal.com\", \"City\": \"Dallas\", \"State\": \"TX\", \"Employees\": 23, \"Description\": \"eShipGlobal, Inc. is a shipping provisioning solutions provider intended to simplify and enhance the shipment of goods. The company offers businesses a transportation management software solution that streamlines the shipping process, and alternate carrier options reduce costs and keep up with hazardous shipping regulation codes.\", \"CEO/Owner Name\": \"Srini Srinivasan\", \"Title\": \"President and CEO\", \"Email\": \"srinivasan@eshipglobal.com\", \"Phone\": null}",
       "created_at": "2026-08-25T19:23:51.580268+00:00",
-      "updated_at": "2026-08-27T13:09:27.113363+00:00",
+      "updated_at": "2026-08-28T20:15:37.384227+00:00",
       "memo": null
     },
     {
@@ -4319,6 +4319,16 @@
       "summary": "Status: Outreach Active \u2192 Contacted \u2013 No Opportunity",
       "detail": "",
       "timestamp": "2026-08-28T20:13:23.490028+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 253,
+      "deal_id": 73,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-08-28T20:15:34.429954+00:00",
       "synced_to_sf": 1,
       "user": "Trey"
     }
