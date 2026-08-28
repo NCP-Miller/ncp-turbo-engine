@@ -1693,7 +1693,7 @@
       "state": null,
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Contacted \u2013 No Opportunity",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -1701,7 +1701,7 @@
       "sf_contact_id": "003Pp00002DAOQPIA5",
       "row_json": "{\"Website\": \"https://aesirinsurance.com/\", \"City\": null, \"State\": null, \"Employees\": null, \"Description\": null, \"CEO/Owner Name\": \"Aaron Tilley\", \"Title\": \"Founder and Chairman\", \"Email\": \"atilley@aesirinsurance.com\", \"Phone\": null}",
       "created_at": "2026-08-14T22:35:00.082449+00:00",
-      "updated_at": "2026-08-14T22:35:00.097928+00:00",
+      "updated_at": "2026-08-28T20:13:26.163586+00:00",
       "memo": null
     },
     {
@@ -4309,6 +4309,16 @@
       "summary": "Status: In Dialogue \u2192 Closed \u2013 No Response",
       "detail": "",
       "timestamp": "2026-08-28T20:12:51.671485+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 252,
+      "deal_id": 71,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Contacted \u2013 No Opportunity",
+      "detail": "",
+      "timestamp": "2026-08-28T20:13:23.490028+00:00",
       "synced_to_sf": 1,
       "user": "Trey"
     }
