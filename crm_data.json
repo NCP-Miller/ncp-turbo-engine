@@ -1725,7 +1725,7 @@
       "sf_contact_id": "0033000001TxQYYAA3",
       "row_json": "{\"Website\": \"http://www.ering-cad.com\", \"City\": \"Alpharetta\", \"State\": \"GA\", \"Employees\": 45, \"Description\": \"E-Ring, Inc. specializes in developing CAD or GIS-centric real-time decision support systems. The company provides solutions for a variety of industries and offer broad-based industry solutions as well as custom solutions.\", \"CEO/Owner Name\": \"Rah Radhakarishsna\", \"Title\": \"President\", \"Email\": \"rah@e-ring.com\", \"Phone\": \"(256) 722-3464\"}",
       "created_at": "2026-08-25T16:18:57.301037+00:00",
-      "updated_at": "2026-08-27T13:09:27.038441+00:00",
+      "updated_at": "2026-08-28T20:17:17.344367+00:00",
       "memo": null
     },
     {
@@ -4329,6 +4329,16 @@
       "summary": "Status: Outreach Active \u2192 Not a Fit",
       "detail": "",
       "timestamp": "2026-08-28T20:15:34.429954+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 254,
+      "deal_id": 72,
+      "type": "Email",
+      "summary": "f/u email sent",
+      "detail": "",
+      "timestamp": "2026-08-28T20:17:14.678690+00:00",
       "synced_to_sf": 1,
       "user": "Trey"
     }
