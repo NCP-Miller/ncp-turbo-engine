@@ -1021,7 +1021,7 @@
       "state": "GA",
       "niche": "I am looking for tech enabled companies providing compliance and risk solutions to banks, community banks/lenders, and credit unions. The solutions may be related to vendor third party risk management, Bank Secrecy Act (BSA), Anti-Money Laundering (AML), loan review, fair lending, and complaint management.",
       "project": "Community Bank and Credit Union Compliance 26.06.16",
-      "status": "In Dialogue",
+      "status": "Closed \u2013 No Response",
       "source": "backfill-liked",
       "notes": "Waiting on processing of the NDA. Sent additional emails on next steps to Adwait. Sent about 10 emails. He went silent",
       "next_followup": null,
@@ -1029,7 +1029,7 @@
       "sf_contact_id": "0033A00002WDLlYQAX",
       "row_json": "{\"Website\": \"https://www.dataseers.ai\", \"City\": \"Alpharetta\", \"State\": \"GA\", \"Employees\": 93, \"Description\": \"DataSeers, Inc. is a computer software company. It provides AI-powered enterprise software for banks and fintechs to improve reconciliation, compliance, fraud detection, and analytics. The company offers its services throughout the country.\", \"CEO/Owner Name\": \"Micah Fowler\", \"Title\": \"Manager of Strategic Alliances\", \"Email\": \"mfowler@dataseers.ai\", \"Phone\": null}",
       "created_at": "2026-07-10T00:01:38.885545+00:00",
-      "updated_at": "2026-08-28T20:12:43.284954+00:00",
+      "updated_at": "2026-08-28T20:12:54.115869+00:00",
       "memo": null
     },
     {
@@ -4299,6 +4299,16 @@
       "summary": "Status: Outreach Active \u2192 Contacted \u2013 No Opportunity",
       "detail": "",
       "timestamp": "2026-08-27T13:32:38.784566+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 251,
+      "deal_id": 43,
+      "type": "Note",
+      "summary": "Status: In Dialogue \u2192 Closed \u2013 No Response",
+      "detail": "",
+      "timestamp": "2026-08-28T20:12:51.671485+00:00",
       "synced_to_sf": 1,
       "user": "Trey"
     }
