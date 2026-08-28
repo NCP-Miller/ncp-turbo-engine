@@ -1573,7 +1573,7 @@
       "state": "MO",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Contacted \u2013 No Opportunity",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -1581,7 +1581,7 @@
       "sf_contact_id": "0033A00002XTdGjQAL",
       "row_json": "{\"Website\": \"https://animalytix.com\", \"City\": \"Kansas City\", \"State\": \"MO\", \"Employees\": 16, \"Description\": \"Animalytix, LLC is a veterinary services company. It offers animal health, business intelligence, market intelligence, analytics, sales force alignment, and commercial insight. The company provides its products and services to customers in Kansas City, Missouri, United States.\", \"CEO/Owner Name\": \"Chris Ragland\", \"Title\": \"Founder\", \"Email\": \"cragland@animalytix.net\", \"Phone\": null}",
       "created_at": "2026-08-14T22:34:59.799591+00:00",
-      "updated_at": "2026-08-28T20:22:24.404939+00:00",
+      "updated_at": "2026-08-28T20:44:54.397484+00:00",
       "memo": null
     },
     {
@@ -4409,6 +4409,16 @@
       "summary": "sent another follow up",
       "detail": "",
       "timestamp": "2026-08-28T20:28:13.567310+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 262,
+      "deal_id": 66,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Contacted \u2013 No Opportunity",
+      "detail": "",
+      "timestamp": "2026-08-28T20:44:51.633485+00:00",
       "synced_to_sf": 1,
       "user": "Trey"
     }
