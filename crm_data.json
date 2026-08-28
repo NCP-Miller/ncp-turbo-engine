@@ -1525,7 +1525,7 @@
       "state": null,
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Not a Fit",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -1533,7 +1533,7 @@
       "sf_contact_id": "003Pp00002DC1flIAD",
       "row_json": "{\"Website\": null, \"City\": null, \"State\": null, \"Employees\": null, \"Description\": null, \"CEO/Owner Name\": \"Neil MacAllister\", \"Title\": \"CEO and Founder\", \"Email\": null, \"Phone\": null}",
       "created_at": "2026-08-14T22:34:59.721579+00:00",
-      "updated_at": "2026-08-14T22:34:59.737364+00:00",
+      "updated_at": "2026-08-28T20:26:11.105035+00:00",
       "memo": null
     },
     {
@@ -4389,6 +4389,16 @@
       "summary": "emailed michael stoddard",
       "detail": "",
       "timestamp": "2026-08-28T20:25:31.848754+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 260,
+      "deal_id": 64,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-08-28T20:26:08.982509+00:00",
       "synced_to_sf": 1,
       "user": "Trey"
     }
