@@ -1581,7 +1581,7 @@
       "sf_contact_id": "0033A00002XTdGjQAL",
       "row_json": "{\"Website\": \"https://animalytix.com\", \"City\": \"Kansas City\", \"State\": \"MO\", \"Employees\": 16, \"Description\": \"Animalytix, LLC is a veterinary services company. It offers animal health, business intelligence, market intelligence, analytics, sales force alignment, and commercial insight. The company provides its products and services to customers in Kansas City, Missouri, United States.\", \"CEO/Owner Name\": \"Chris Ragland\", \"Title\": \"Founder\", \"Email\": \"cragland@animalytix.net\", \"Phone\": null}",
       "created_at": "2026-08-14T22:34:59.799591+00:00",
-      "updated_at": "2026-08-14T22:34:59.814594+00:00",
+      "updated_at": "2026-08-28T20:22:24.404939+00:00",
       "memo": null
     },
     {
@@ -4369,6 +4369,16 @@
       "summary": "Follow-up set for 2026-09-16",
       "detail": "",
       "timestamp": "2026-08-28T20:19:14.722412+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 258,
+      "deal_id": 66,
+      "type": "Email",
+      "summary": "sent follow up",
+      "detail": "",
+      "timestamp": "2026-08-28T20:22:21.783395+00:00",
       "synced_to_sf": 1,
       "user": "Trey"
     }
