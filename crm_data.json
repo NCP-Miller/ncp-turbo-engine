@@ -1557,7 +1557,7 @@
       "sf_contact_id": "0033A00002VnabbQAB",
       "row_json": "{\"Website\": \"https://www.basiconline.com\", \"City\": \"Portage\", \"State\": \"MI\", \"Employees\": 499, \"Description\": \"Benefit Administrative Services International Corp. (BASIC) provides an HR ecosystem to employers and health insurance agents nationwide, with a suite of HR Benefit, Compliance, Payroll, and Leave Management solutions offered independently or as part of a platform of services. The company's proprietary software and solutions allow employers to control costs, manage risks, and maintain flexibility.\", \"CEO/Owner Name\": \"Robert Hayes\", \"Title\": \"Executive VP and Principal and Board Member\", \"Email\": \"rhayes@basiconline.com\", \"Phone\": null}",
       "created_at": "2026-08-14T22:34:59.774119+00:00",
-      "updated_at": "2026-08-28T20:25:17.924777+00:00",
+      "updated_at": "2026-08-28T20:25:34.570621+00:00",
       "memo": null
     },
     {
@@ -4379,6 +4379,16 @@
       "summary": "sent follow up",
       "detail": "",
       "timestamp": "2026-08-28T20:22:21.783395+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 259,
+      "deal_id": 65,
+      "type": "Email",
+      "summary": "emailed michael stoddard",
+      "detail": "",
+      "timestamp": "2026-08-28T20:25:31.848754+00:00",
       "synced_to_sf": 1,
       "user": "Trey"
     }
