@@ -1023,13 +1023,13 @@
       "project": "Community Bank and Credit Union Compliance 26.06.16",
       "status": "In Dialogue",
       "source": "backfill-liked",
-      "notes": "Waiting on processing of the NDA. Sent additional emails on next steps to Adwait",
+      "notes": "Waiting on processing of the NDA. Sent additional emails on next steps to Adwait. Sent about 10 emails. He went silent",
       "next_followup": null,
       "sf_account_id": "0013A00001eYUbdQAG",
       "sf_contact_id": "0033A00002WDLlYQAX",
       "row_json": "{\"Website\": \"https://www.dataseers.ai\", \"City\": \"Alpharetta\", \"State\": \"GA\", \"Employees\": 93, \"Description\": \"DataSeers, Inc. is a computer software company. It provides AI-powered enterprise software for banks and fintechs to improve reconciliation, compliance, fraud detection, and analytics. The company offers its services throughout the country.\", \"CEO/Owner Name\": \"Micah Fowler\", \"Title\": \"Manager of Strategic Alliances\", \"Email\": \"mfowler@dataseers.ai\", \"Phone\": null}",
       "created_at": "2026-07-10T00:01:38.885545+00:00",
-      "updated_at": "2026-08-20T16:46:56.636979+00:00",
+      "updated_at": "2026-08-28T20:12:43.284954+00:00",
       "memo": null
     },
     {
@@ -2154,6 +2154,16 @@
     },
     {
       "id": 36,
+      "deal_id": 3,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker \u2014 Note: Status: In Dialogue \u2192 Revisit Later (2026-08-25)",
+      "detail": "",
+      "timestamp": "2026-08-27T13:09:27.186673+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 37,
       "deal_id": 4,
       "type": "Note",
       "summary": "Promoted from Worth a Second Look \u2014 memo generated",
@@ -2163,7 +2173,7 @@
       "user": null
     },
     {
-      "id": 37,
+      "id": 38,
       "deal_id": 4,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -2173,7 +2183,7 @@
       "user": null
     },
     {
-      "id": 38,
+      "id": 39,
       "deal_id": 5,
       "type": "Note",
       "summary": "Promoted from Worth a Second Look \u2014 memo generated",
@@ -2183,7 +2193,7 @@
       "user": null
     },
     {
-      "id": 39,
+      "id": 40,
       "deal_id": 5,
       "type": "Note",
       "summary": "Marked \ud83d\udc4d Interested in memo review",
@@ -2193,7 +2203,7 @@
       "user": null
     },
     {
-      "id": 40,
+      "id": 41,
       "deal_id": 5,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -2203,7 +2213,7 @@
       "user": null
     },
     {
-      "id": 41,
+      "id": 42,
       "deal_id": 6,
       "type": "Note",
       "summary": "Promoted from Worth a Second Look \u2014 memo generated",
@@ -2213,7 +2223,7 @@
       "user": null
     },
     {
-      "id": 42,
+      "id": 43,
       "deal_id": 6,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -2223,7 +2233,7 @@
       "user": null
     },
     {
-      "id": 43,
+      "id": 44,
       "deal_id": 7,
       "type": "Note",
       "summary": "Promoted from Worth a Second Look \u2014 memo generated",
@@ -2233,7 +2243,7 @@
       "user": null
     },
     {
-      "id": 44,
+      "id": 45,
       "deal_id": 7,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -2243,7 +2253,7 @@
       "user": null
     },
     {
-      "id": 45,
+      "id": 46,
       "deal_id": 8,
       "type": "Note",
       "summary": "Promoted from Worth a Second Look \u2014 memo generated",
@@ -2253,7 +2263,7 @@
       "user": null
     },
     {
-      "id": 46,
+      "id": 47,
       "deal_id": 8,
       "type": "Note",
       "summary": "Added to Salesforce",
@@ -2263,7 +2273,7 @@
       "user": null
     },
     {
-      "id": 47,
+      "id": 48,
       "deal_id": 8,
       "type": "Email",
       "summary": "Drafted outreach email: commonwealth",
@@ -2273,7 +2283,7 @@
       "user": null
     },
     {
-      "id": 48,
+      "id": 49,
       "deal_id": 8,
       "type": "Email",
       "summary": "Outreach email logged to Salesforce: commonwealth",
@@ -2283,7 +2293,7 @@
       "user": null
     },
     {
-      "id": 49,
+      "id": 50,
       "deal_id": 8,
       "type": "Note",
       "summary": "Downloaded follow-up calendar reminders",
@@ -2293,7 +2303,7 @@
       "user": null
     },
     {
-      "id": 50,
+      "id": 51,
       "deal_id": 8,
       "type": "Note",
       "summary": "Marked \ud83d\udc4d Interested in memo review",
@@ -2303,7 +2313,7 @@
       "user": null
     },
     {
-      "id": 51,
+      "id": 52,
       "deal_id": 8,
       "type": "Note",
       "summary": "Status: New \u2192 Outreach Active",
@@ -2313,7 +2323,7 @@
       "user": null
     },
     {
-      "id": 52,
+      "id": 53,
       "deal_id": 8,
       "type": "Email",
       "summary": "No response",
@@ -2323,7 +2333,7 @@
       "user": null
     },
     {
-      "id": 53,
+      "id": 54,
       "deal_id": 8,
       "type": "Call",
       "summary": "left VM",
@@ -2333,7 +2343,7 @@
       "user": null
     },
     {
-      "id": 54,
+      "id": 55,
       "deal_id": 8,
       "type": "Email",
       "summary": "sent follow up email",
@@ -2343,7 +2353,7 @@
       "user": null
     },
     {
-      "id": 55,
+      "id": 56,
       "deal_id": 8,
       "type": "Note",
       "summary": "Status: Outreach Active \u2192 Closed \u2013 No Response",
@@ -2353,7 +2363,7 @@
       "user": null
     },
     {
-      "id": 56,
+      "id": 57,
       "deal_id": 8,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker \u2014 Call: left VM (2026-08-10)",
@@ -2363,7 +2373,7 @@
       "user": null
     },
     {
-      "id": 57,
+      "id": 58,
       "deal_id": 9,
       "type": "Note",
       "summary": "Promoted from Worth a Second Look \u2014 memo generated",
@@ -2373,7 +2383,7 @@
       "user": null
     },
     {
-      "id": 58,
+      "id": 59,
       "deal_id": 9,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -2383,7 +2393,7 @@
       "user": null
     },
     {
-      "id": 59,
+      "id": 60,
       "deal_id": 10,
       "type": "Note",
       "summary": "Promoted from Worth a Second Look \u2014 memo generated",
@@ -2393,7 +2403,7 @@
       "user": null
     },
     {
-      "id": 60,
+      "id": 61,
       "deal_id": 10,
       "type": "Note",
       "summary": "Added to Salesforce",
@@ -2403,7 +2413,7 @@
       "user": null
     },
     {
-      "id": 61,
+      "id": 62,
       "deal_id": 10,
       "type": "Email",
       "summary": "Drafted outreach email: trust administration in kc",
@@ -2413,7 +2423,7 @@
       "user": null
     },
     {
-      "id": 62,
+      "id": 63,
       "deal_id": 10,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -2423,7 +2433,7 @@
       "user": null
     },
     {
-      "id": 63,
+      "id": 64,
       "deal_id": 11,
       "type": "Note",
       "summary": "Promoted from Worth a Second Look \u2014 memo generated",
@@ -2433,7 +2443,7 @@
       "user": null
     },
     {
-      "id": 64,
+      "id": 65,
       "deal_id": 11,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -2443,7 +2453,7 @@
       "user": null
     },
     {
-      "id": 65,
+      "id": 66,
       "deal_id": 12,
       "type": "Note",
       "summary": "Imported from past search",
@@ -2453,7 +2463,7 @@
       "user": null
     },
     {
-      "id": 66,
+      "id": 67,
       "deal_id": 12,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -2463,7 +2473,7 @@
       "user": null
     },
     {
-      "id": 67,
+      "id": 68,
       "deal_id": 13,
       "type": "Note",
       "summary": "Imported from past search",
@@ -2473,7 +2483,7 @@
       "user": null
     },
     {
-      "id": 68,
+      "id": 69,
       "deal_id": 13,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -2483,7 +2493,7 @@
       "user": null
     },
     {
-      "id": 69,
+      "id": 70,
       "deal_id": 14,
       "type": "Note",
       "summary": "Imported from past search",
@@ -2493,7 +2503,7 @@
       "user": null
     },
     {
-      "id": 70,
+      "id": 71,
       "deal_id": 14,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -2503,7 +2513,7 @@
       "user": null
     },
     {
-      "id": 71,
+      "id": 72,
       "deal_id": 15,
       "type": "Note",
       "summary": "Imported from past search",
@@ -2513,7 +2523,7 @@
       "user": null
     },
     {
-      "id": 72,
+      "id": 73,
       "deal_id": 15,
       "type": "Note",
       "summary": "Status: New \u2192 Contacted \u2013 No Opportunity",
@@ -2523,7 +2533,7 @@
       "user": null
     },
     {
-      "id": 73,
+      "id": 74,
       "deal_id": 16,
       "type": "Note",
       "summary": "Imported from past search",
@@ -2533,7 +2543,7 @@
       "user": null
     },
     {
-      "id": 74,
+      "id": 75,
       "deal_id": 16,
       "type": "Note",
       "summary": "Status: New \u2192 Closed \u2013 No Response",
@@ -2543,7 +2553,7 @@
       "user": null
     },
     {
-      "id": 75,
+      "id": 76,
       "deal_id": 17,
       "type": "Note",
       "summary": "Imported from past search",
@@ -2553,7 +2563,7 @@
       "user": null
     },
     {
-      "id": 76,
+      "id": 77,
       "deal_id": 17,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -2563,7 +2573,7 @@
       "user": null
     },
     {
-      "id": 77,
+      "id": 78,
       "deal_id": 18,
       "type": "Note",
       "summary": "Imported from past search",
@@ -2573,7 +2583,7 @@
       "user": null
     },
     {
-      "id": 78,
+      "id": 79,
       "deal_id": 18,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -2583,7 +2593,7 @@
       "user": null
     },
     {
-      "id": 79,
+      "id": 80,
       "deal_id": 19,
       "type": "Note",
       "summary": "Imported from past search",
@@ -2593,7 +2603,7 @@
       "user": null
     },
     {
-      "id": 80,
+      "id": 81,
       "deal_id": 19,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -2603,7 +2613,7 @@
       "user": null
     },
     {
-      "id": 81,
+      "id": 82,
       "deal_id": 20,
       "type": "Note",
       "summary": "Imported from past search",
@@ -2613,7 +2623,7 @@
       "user": null
     },
     {
-      "id": 82,
+      "id": 83,
       "deal_id": 20,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -2623,7 +2633,7 @@
       "user": null
     },
     {
-      "id": 83,
+      "id": 84,
       "deal_id": 21,
       "type": "Note",
       "summary": "Imported from past search",
@@ -2633,7 +2643,7 @@
       "user": null
     },
     {
-      "id": 84,
+      "id": 85,
       "deal_id": 21,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -2643,7 +2653,7 @@
       "user": null
     },
     {
-      "id": 85,
+      "id": 86,
       "deal_id": 22,
       "type": "Note",
       "summary": "Imported from past search",
@@ -2653,7 +2663,7 @@
       "user": null
     },
     {
-      "id": 86,
+      "id": 87,
       "deal_id": 22,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -2663,7 +2673,7 @@
       "user": null
     },
     {
-      "id": 87,
+      "id": 88,
       "deal_id": 23,
       "type": "Note",
       "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
@@ -2673,7 +2683,7 @@
       "user": null
     },
     {
-      "id": 88,
+      "id": 89,
       "deal_id": 23,
       "type": "Note",
       "summary": "Created Email reminder for 2026-07-17 09:00, monthly \u00d724",
@@ -2683,7 +2693,7 @@
       "user": null
     },
     {
-      "id": 89,
+      "id": 90,
       "deal_id": 23,
       "type": "Note",
       "summary": "Status: New \u2192 Revisit Later",
@@ -2693,7 +2703,7 @@
       "user": null
     },
     {
-      "id": 90,
+      "id": 91,
       "deal_id": 23,
       "type": "Call",
       "summary": "Good call discussing how to increase the value of a business. Discussed KPIs and operational. 30 min call went for almost an hour.",
@@ -2703,7 +2713,7 @@
       "user": null
     },
     {
-      "id": 91,
+      "id": 92,
       "deal_id": 23,
       "type": "Email",
       "summary": "email check in on value creation plan",
@@ -2713,7 +2723,7 @@
       "user": null
     },
     {
-      "id": 92,
+      "id": 93,
       "deal_id": 24,
       "type": "Note",
       "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
@@ -2723,7 +2733,7 @@
       "user": null
     },
     {
-      "id": 93,
+      "id": 94,
       "deal_id": 24,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -2733,7 +2743,7 @@
       "user": null
     },
     {
-      "id": 94,
+      "id": 95,
       "deal_id": 25,
       "type": "Note",
       "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
@@ -2743,7 +2753,7 @@
       "user": null
     },
     {
-      "id": 95,
+      "id": 96,
       "deal_id": 25,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -2753,7 +2763,7 @@
       "user": null
     },
     {
-      "id": 96,
+      "id": 97,
       "deal_id": 26,
       "type": "Note",
       "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
@@ -2763,7 +2773,7 @@
       "user": null
     },
     {
-      "id": 97,
+      "id": 98,
       "deal_id": 26,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -2773,7 +2783,7 @@
       "user": null
     },
     {
-      "id": 98,
+      "id": 99,
       "deal_id": 27,
       "type": "Note",
       "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
@@ -2783,7 +2793,7 @@
       "user": null
     },
     {
-      "id": 99,
+      "id": 100,
       "deal_id": 27,
       "type": "Note",
       "summary": "Status: New \u2192 Revisit Later",
@@ -2793,7 +2803,7 @@
       "user": null
     },
     {
-      "id": 100,
+      "id": 101,
       "deal_id": 28,
       "type": "Note",
       "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
@@ -2803,7 +2813,7 @@
       "user": null
     },
     {
-      "id": 101,
+      "id": 102,
       "deal_id": 28,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -2813,7 +2823,7 @@
       "user": null
     },
     {
-      "id": 102,
+      "id": 103,
       "deal_id": 29,
       "type": "Note",
       "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
@@ -2823,7 +2833,7 @@
       "user": null
     },
     {
-      "id": 103,
+      "id": 104,
       "deal_id": 29,
       "type": "Note",
       "summary": "Status: New \u2192 Revisit Later",
@@ -2833,7 +2843,7 @@
       "user": null
     },
     {
-      "id": 104,
+      "id": 105,
       "deal_id": 30,
       "type": "Note",
       "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
@@ -2843,7 +2853,7 @@
       "user": null
     },
     {
-      "id": 105,
+      "id": 106,
       "deal_id": 30,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -2853,7 +2863,7 @@
       "user": null
     },
     {
-      "id": 106,
+      "id": 107,
       "deal_id": 31,
       "type": "Note",
       "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
@@ -2863,7 +2873,7 @@
       "user": null
     },
     {
-      "id": 107,
+      "id": 108,
       "deal_id": 31,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -2873,7 +2883,7 @@
       "user": null
     },
     {
-      "id": 108,
+      "id": 109,
       "deal_id": 32,
       "type": "Note",
       "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
@@ -2883,7 +2893,7 @@
       "user": null
     },
     {
-      "id": 109,
+      "id": 110,
       "deal_id": 32,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -2893,7 +2903,7 @@
       "user": null
     },
     {
-      "id": 110,
+      "id": 111,
       "deal_id": 33,
       "type": "Note",
       "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
@@ -2903,7 +2913,7 @@
       "user": null
     },
     {
-      "id": 111,
+      "id": 112,
       "deal_id": 33,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -2913,7 +2923,7 @@
       "user": null
     },
     {
-      "id": 112,
+      "id": 113,
       "deal_id": 34,
       "type": "Note",
       "summary": "Imported from past search",
@@ -2923,7 +2933,7 @@
       "user": null
     },
     {
-      "id": 113,
+      "id": 114,
       "deal_id": 34,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -2933,7 +2943,7 @@
       "user": null
     },
     {
-      "id": 114,
+      "id": 115,
       "deal_id": 35,
       "type": "Note",
       "summary": "Imported from past search",
@@ -2943,7 +2953,7 @@
       "user": null
     },
     {
-      "id": 115,
+      "id": 116,
       "deal_id": 35,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -2953,7 +2963,7 @@
       "user": null
     },
     {
-      "id": 116,
+      "id": 117,
       "deal_id": 36,
       "type": "Note",
       "summary": "Imported from past search",
@@ -2963,7 +2973,7 @@
       "user": null
     },
     {
-      "id": 117,
+      "id": 118,
       "deal_id": 36,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -2973,7 +2983,7 @@
       "user": null
     },
     {
-      "id": 118,
+      "id": 119,
       "deal_id": 37,
       "type": "Note",
       "summary": "Imported from past search",
@@ -2983,7 +2993,7 @@
       "user": null
     },
     {
-      "id": 119,
+      "id": 120,
       "deal_id": 37,
       "type": "Note",
       "summary": "Created Email reminder for 2026-07-16 13:30",
@@ -2993,7 +3003,7 @@
       "user": null
     },
     {
-      "id": 120,
+      "id": 121,
       "deal_id": 37,
       "type": "Note",
       "summary": "Status: New \u2192 Outreach Active",
@@ -3003,7 +3013,7 @@
       "user": null
     },
     {
-      "id": 121,
+      "id": 122,
       "deal_id": 37,
       "type": "Note",
       "summary": "Status: Outreach Active \u2192 Closed \u2013 No Response",
@@ -3013,7 +3023,7 @@
       "user": null
     },
     {
-      "id": 122,
+      "id": 123,
       "deal_id": 37,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: Closed \u2013 No Response (2026-08-10)",
@@ -3023,7 +3033,7 @@
       "user": null
     },
     {
-      "id": 123,
+      "id": 124,
       "deal_id": 38,
       "type": "Note",
       "summary": "Imported from past search",
@@ -3033,7 +3043,7 @@
       "user": null
     },
     {
-      "id": 124,
+      "id": 125,
       "deal_id": 38,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -3043,7 +3053,7 @@
       "user": null
     },
     {
-      "id": 125,
+      "id": 126,
       "deal_id": 39,
       "type": "Note",
       "summary": "Imported from past search",
@@ -3053,7 +3063,7 @@
       "user": null
     },
     {
-      "id": 126,
+      "id": 127,
       "deal_id": 39,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -3063,7 +3073,7 @@
       "user": null
     },
     {
-      "id": 127,
+      "id": 128,
       "deal_id": 40,
       "type": "Note",
       "summary": "Imported from past search",
@@ -3073,7 +3083,7 @@
       "user": null
     },
     {
-      "id": 128,
+      "id": 129,
       "deal_id": 40,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -3083,7 +3093,7 @@
       "user": null
     },
     {
-      "id": 129,
+      "id": 130,
       "deal_id": 41,
       "type": "Note",
       "summary": "Imported from past search",
@@ -3093,7 +3103,7 @@
       "user": null
     },
     {
-      "id": 130,
+      "id": 131,
       "deal_id": 41,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -3103,7 +3113,7 @@
       "user": null
     },
     {
-      "id": 131,
+      "id": 132,
       "deal_id": 42,
       "type": "Note",
       "summary": "Imported from past search",
@@ -3113,7 +3123,7 @@
       "user": null
     },
     {
-      "id": 132,
+      "id": 133,
       "deal_id": 42,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -3123,7 +3133,7 @@
       "user": null
     },
     {
-      "id": 133,
+      "id": 134,
       "deal_id": 43,
       "type": "Note",
       "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
@@ -3133,7 +3143,7 @@
       "user": null
     },
     {
-      "id": 134,
+      "id": 135,
       "deal_id": 43,
       "type": "Note",
       "summary": "Status: New \u2192 In Dialogue",
@@ -3143,7 +3153,7 @@
       "user": null
     },
     {
-      "id": 135,
+      "id": 136,
       "deal_id": 43,
       "type": "Note",
       "summary": "Created Email reminder for 2026-07-16 09:00",
@@ -3153,7 +3163,7 @@
       "user": null
     },
     {
-      "id": 136,
+      "id": 137,
       "deal_id": 43,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-04)",
@@ -3163,7 +3173,7 @@
       "user": null
     },
     {
-      "id": 137,
+      "id": 138,
       "deal_id": 43,
       "type": "Email",
       "summary": "Followed up on next steps. NDA is signed",
@@ -3173,7 +3183,7 @@
       "user": null
     },
     {
-      "id": 138,
+      "id": 139,
       "deal_id": 44,
       "type": "Note",
       "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
@@ -3183,7 +3193,7 @@
       "user": null
     },
     {
-      "id": 139,
+      "id": 140,
       "deal_id": 44,
       "type": "Note",
       "summary": "Status: New \u2192 Closed \u2013 No Response",
@@ -3193,7 +3203,7 @@
       "user": null
     },
     {
-      "id": 140,
+      "id": 141,
       "deal_id": 45,
       "type": "Note",
       "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
@@ -3203,7 +3213,7 @@
       "user": null
     },
     {
-      "id": 141,
+      "id": 142,
       "deal_id": 45,
       "type": "Note",
       "summary": "Status: New \u2192 In Dialogue",
@@ -3213,7 +3223,7 @@
       "user": null
     },
     {
-      "id": 142,
+      "id": 143,
       "deal_id": 46,
       "type": "Note",
       "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
@@ -3223,7 +3233,7 @@
       "user": null
     },
     {
-      "id": 143,
+      "id": 144,
       "deal_id": 46,
       "type": "Note",
       "summary": "Status: New \u2192 Revisit Later",
@@ -3233,7 +3243,7 @@
       "user": null
     },
     {
-      "id": 144,
+      "id": 145,
       "deal_id": 47,
       "type": "Note",
       "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
@@ -3243,7 +3253,7 @@
       "user": null
     },
     {
-      "id": 145,
+      "id": 146,
       "deal_id": 47,
       "type": "Note",
       "summary": "Status: New \u2192 Closed \u2013 No Response",
@@ -3253,7 +3263,7 @@
       "user": null
     },
     {
-      "id": 146,
+      "id": 147,
       "deal_id": 48,
       "type": "Note",
       "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
@@ -3263,7 +3273,7 @@
       "user": null
     },
     {
-      "id": 147,
+      "id": 148,
       "deal_id": 48,
       "type": "Email",
       "summary": "Email responded. Two sons who went to Alpine. Daughter studying at LSE this summer",
@@ -3273,7 +3283,7 @@
       "user": null
     },
     {
-      "id": 148,
+      "id": 149,
       "deal_id": 48,
       "type": "Note",
       "summary": "Status: New \u2192 Outreach Active",
@@ -3283,7 +3293,7 @@
       "user": null
     },
     {
-      "id": 149,
+      "id": 150,
       "deal_id": 48,
       "type": "Note",
       "summary": "Created Email reminder for 2026-07-10 14:30",
@@ -3293,7 +3303,7 @@
       "user": null
     },
     {
-      "id": 150,
+      "id": 151,
       "deal_id": 48,
       "type": "Note",
       "summary": "Created Call reminder for 2026-07-10 14:45",
@@ -3303,7 +3313,7 @@
       "user": null
     },
     {
-      "id": 151,
+      "id": 152,
       "deal_id": 48,
       "type": "Note",
       "summary": "Status: Outreach Active \u2192 Closed \u2013 No Response",
@@ -3313,7 +3323,7 @@
       "user": null
     },
     {
-      "id": 152,
+      "id": 153,
       "deal_id": 49,
       "type": "Note",
       "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
@@ -3323,7 +3333,7 @@
       "user": null
     },
     {
-      "id": 153,
+      "id": 154,
       "deal_id": 49,
       "type": "Note",
       "summary": "Status: New \u2192 In Dialogue",
@@ -3333,7 +3343,7 @@
       "user": null
     },
     {
-      "id": 154,
+      "id": 155,
       "deal_id": 49,
       "type": "Email",
       "summary": "Two sons who went to Alpine. Daughter studying at LSE this summer",
@@ -3343,7 +3353,7 @@
       "user": null
     },
     {
-      "id": 155,
+      "id": 156,
       "deal_id": 49,
       "type": "Call",
       "summary": "Great call with Betsy. Really interesting business.",
@@ -3353,7 +3363,7 @@
       "user": null
     },
     {
-      "id": 156,
+      "id": 157,
       "deal_id": 49,
       "type": "Note",
       "summary": "Status: In Dialogue \u2192 Revisit Later",
@@ -3363,7 +3373,7 @@
       "user": null
     },
     {
-      "id": 157,
+      "id": 158,
       "deal_id": 49,
       "type": "Note",
       "summary": "Created Email reminder for 2026-09-04 09:00, monthly \u00d718",
@@ -3373,7 +3383,7 @@
       "user": null
     },
     {
-      "id": 158,
+      "id": 159,
       "deal_id": 50,
       "type": "Note",
       "summary": "Imported from past search",
@@ -3383,7 +3393,7 @@
       "user": null
     },
     {
-      "id": 159,
+      "id": 160,
       "deal_id": 50,
       "type": "Note",
       "summary": "Status: New \u2192 Outreach Active",
@@ -3393,7 +3403,7 @@
       "user": null
     },
     {
-      "id": 160,
+      "id": 161,
       "deal_id": 50,
       "type": "Note",
       "summary": "Created Call reminder for 2026-07-11 14:45",
@@ -3403,7 +3413,7 @@
       "user": null
     },
     {
-      "id": 161,
+      "id": 162,
       "deal_id": 50,
       "type": "Note",
       "summary": "Created Email reminder for 2026-07-11 14:45",
@@ -3413,7 +3423,7 @@
       "user": null
     },
     {
-      "id": 162,
+      "id": 163,
       "deal_id": 50,
       "type": "Note",
       "summary": "Status: Outreach Active \u2192 Closed \u2013 No Response",
@@ -3423,7 +3433,7 @@
       "user": null
     },
     {
-      "id": 163,
+      "id": 164,
       "deal_id": 50,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: Closed \u2013 No Response (2026-08-10)",
@@ -3433,7 +3443,7 @@
       "user": null
     },
     {
-      "id": 164,
+      "id": 165,
       "deal_id": 51,
       "type": "Note",
       "summary": "Imported from feedback log (\ud83d\udc4d Interested)",
@@ -3443,7 +3453,7 @@
       "user": null
     },
     {
-      "id": 165,
+      "id": 166,
       "deal_id": 51,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -3453,7 +3463,7 @@
       "user": null
     },
     {
-      "id": 166,
+      "id": 167,
       "deal_id": 52,
       "type": "Note",
       "summary": "Imported from feedback log (\ud83d\udc4d Interested)",
@@ -3463,7 +3473,7 @@
       "user": null
     },
     {
-      "id": 167,
+      "id": 168,
       "deal_id": 52,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -3473,7 +3483,7 @@
       "user": null
     },
     {
-      "id": 168,
+      "id": 169,
       "deal_id": 53,
       "type": "Note",
       "summary": "Imported from feedback log (\ud83d\udc4d Interested)",
@@ -3483,7 +3493,7 @@
       "user": null
     },
     {
-      "id": 169,
+      "id": 170,
       "deal_id": 53,
       "type": "Note",
       "summary": "Follow-up set for 2026-07-17",
@@ -3493,7 +3503,7 @@
       "user": null
     },
     {
-      "id": 170,
+      "id": 171,
       "deal_id": 53,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -3503,7 +3513,7 @@
       "user": null
     },
     {
-      "id": 171,
+      "id": 172,
       "deal_id": 53,
       "type": "Note",
       "summary": "Status: Not a Fit \u2192 Contacted \u2013 No Opportunity",
@@ -3513,7 +3523,7 @@
       "user": null
     },
     {
-      "id": 172,
+      "id": 173,
       "deal_id": 54,
       "type": "Note",
       "summary": "Investment memo generated",
@@ -3523,7 +3533,7 @@
       "user": null
     },
     {
-      "id": 173,
+      "id": 174,
       "deal_id": 54,
       "type": "Note",
       "summary": "Added to Salesforce",
@@ -3533,7 +3543,7 @@
       "user": null
     },
     {
-      "id": 174,
+      "id": 175,
       "deal_id": 54,
       "type": "Email",
       "summary": "Drafted outreach email: cic services",
@@ -3543,7 +3553,7 @@
       "user": null
     },
     {
-      "id": 175,
+      "id": 176,
       "deal_id": 54,
       "type": "Email",
       "summary": "Outreach email logged to Salesforce: cic services",
@@ -3553,7 +3563,7 @@
       "user": null
     },
     {
-      "id": 176,
+      "id": 177,
       "deal_id": 54,
       "type": "Note",
       "summary": "Downloaded follow-up calendar reminders",
@@ -3563,7 +3573,7 @@
       "user": null
     },
     {
-      "id": 177,
+      "id": 178,
       "deal_id": 54,
       "type": "Note",
       "summary": "Marked \ud83d\udc4d Interested in memo review",
@@ -3573,7 +3583,7 @@
       "user": null
     },
     {
-      "id": 178,
+      "id": 179,
       "deal_id": 54,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -3583,7 +3593,7 @@
       "user": null
     },
     {
-      "id": 179,
+      "id": 180,
       "deal_id": 54,
       "type": "Email",
       "summary": "Drafted outreach email: cic",
@@ -3593,7 +3603,7 @@
       "user": null
     },
     {
-      "id": 180,
+      "id": 181,
       "deal_id": 54,
       "type": "Note",
       "summary": "Downloaded follow-up calendar reminders",
@@ -3603,7 +3613,7 @@
       "user": null
     },
     {
-      "id": 181,
+      "id": 182,
       "deal_id": 54,
       "type": "Note",
       "summary": "Status: Not a Fit \u2192 New",
@@ -3613,7 +3623,7 @@
       "user": null
     },
     {
-      "id": 182,
+      "id": 183,
       "deal_id": 54,
       "type": "Note",
       "summary": "Status: New \u2192 Contacted \u2013 No Opportunity",
@@ -3623,7 +3633,7 @@
       "user": null
     },
     {
-      "id": 183,
+      "id": 184,
       "deal_id": 55,
       "type": "Note",
       "summary": "Investment memo generated",
@@ -3633,7 +3643,7 @@
       "user": null
     },
     {
-      "id": 184,
+      "id": 185,
       "deal_id": 55,
       "type": "Email",
       "summary": "Drafted outreach email: risk",
@@ -3643,7 +3653,7 @@
       "user": null
     },
     {
-      "id": 185,
+      "id": 186,
       "deal_id": 55,
       "type": "Email",
       "summary": "Drafted outreach email: risk",
@@ -3653,7 +3663,7 @@
       "user": null
     },
     {
-      "id": 186,
+      "id": 187,
       "deal_id": 55,
       "type": "Note",
       "summary": "Downloaded follow-up calendar reminders",
@@ -3663,7 +3673,7 @@
       "user": null
     },
     {
-      "id": 187,
+      "id": 188,
       "deal_id": 55,
       "type": "Note",
       "summary": "Marked \ud83d\udc4d Interested in memo review",
@@ -3673,7 +3683,7 @@
       "user": null
     },
     {
-      "id": 188,
+      "id": 189,
       "deal_id": 55,
       "type": "Note",
       "summary": "Downloaded follow-up calendar reminders",
@@ -3683,7 +3693,7 @@
       "user": null
     },
     {
-      "id": 189,
+      "id": 190,
       "deal_id": 55,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -3693,7 +3703,7 @@
       "user": null
     },
     {
-      "id": 190,
+      "id": 191,
       "deal_id": 55,
       "type": "Note",
       "summary": "Status: Not a Fit \u2192 New",
@@ -3703,7 +3713,7 @@
       "user": null
     },
     {
-      "id": 191,
+      "id": 192,
       "deal_id": 55,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -3713,7 +3723,7 @@
       "user": null
     },
     {
-      "id": 192,
+      "id": 193,
       "deal_id": 56,
       "type": "Note",
       "summary": "Promoted from Worth a Second Look \u2014 memo generated",
@@ -3723,7 +3733,7 @@
       "user": null
     },
     {
-      "id": 193,
+      "id": 194,
       "deal_id": 56,
       "type": "Note",
       "summary": "Added to Salesforce",
@@ -3733,7 +3743,7 @@
       "user": null
     },
     {
-      "id": 194,
+      "id": 195,
       "deal_id": 56,
       "type": "Email",
       "summary": "Drafted outreach email: robert",
@@ -3743,7 +3753,7 @@
       "user": null
     },
     {
-      "id": 195,
+      "id": 196,
       "deal_id": 56,
       "type": "Email",
       "summary": "Outreach email logged to Salesforce: robert",
@@ -3753,7 +3763,7 @@
       "user": null
     },
     {
-      "id": 196,
+      "id": 197,
       "deal_id": 56,
       "type": "Note",
       "summary": "Downloaded follow-up calendar reminders",
@@ -3763,7 +3773,7 @@
       "user": null
     },
     {
-      "id": 197,
+      "id": 198,
       "deal_id": 56,
       "type": "Note",
       "summary": "Marked \ud83d\udc4d Interested in memo review",
@@ -3773,7 +3783,7 @@
       "user": null
     },
     {
-      "id": 198,
+      "id": 199,
       "deal_id": 56,
       "type": "Note",
       "summary": "Status: New \u2192 Meeting Scheduled",
@@ -3783,7 +3793,7 @@
       "user": null
     },
     {
-      "id": 199,
+      "id": 200,
       "deal_id": 56,
       "type": "Note",
       "summary": "Created Email reminder for 2026-09-18 09:00, monthly \u00d718",
@@ -3793,7 +3803,7 @@
       "user": null
     },
     {
-      "id": 200,
+      "id": 201,
       "deal_id": 56,
       "type": "Note",
       "summary": "Status: Meeting Scheduled \u2192 Opportunity",
@@ -3803,7 +3813,7 @@
       "user": null
     },
     {
-      "id": 201,
+      "id": 202,
       "deal_id": 57,
       "type": "Note",
       "summary": "Investment memo generated",
@@ -3813,7 +3823,7 @@
       "user": null
     },
     {
-      "id": 202,
+      "id": 203,
       "deal_id": 57,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -3823,7 +3833,7 @@
       "user": null
     },
     {
-      "id": 203,
+      "id": 204,
       "deal_id": 58,
       "type": "Note",
       "summary": "Promoted from Worth a Second Look \u2014 memo generated",
@@ -3833,7 +3843,7 @@
       "user": null
     },
     {
-      "id": 204,
+      "id": 205,
       "deal_id": 58,
       "type": "Email",
       "summary": "Drafted outreach email: impact of aging in cleveland",
@@ -3843,7 +3853,7 @@
       "user": null
     },
     {
-      "id": 205,
+      "id": 206,
       "deal_id": 58,
       "type": "Note",
       "summary": "Downloaded follow-up calendar reminders",
@@ -3853,7 +3863,7 @@
       "user": null
     },
     {
-      "id": 206,
+      "id": 207,
       "deal_id": 58,
       "type": "Note",
       "summary": "Marked \ud83d\udc4d Interested in memo review",
@@ -3863,7 +3873,7 @@
       "user": null
     },
     {
-      "id": 207,
+      "id": 208,
       "deal_id": 58,
       "type": "Note",
       "summary": "Marked \ud83d\udc4d Interested in memo review",
@@ -3873,7 +3883,7 @@
       "user": null
     },
     {
-      "id": 208,
+      "id": 209,
       "deal_id": 58,
       "type": "Note",
       "summary": "Marked \ud83d\udc4d Interested in memo review",
@@ -3883,7 +3893,7 @@
       "user": null
     },
     {
-      "id": 209,
+      "id": 210,
       "deal_id": 58,
       "type": "Note",
       "summary": "Status: New \u2192 Outreach Active",
@@ -3893,7 +3903,7 @@
       "user": null
     },
     {
-      "id": 210,
+      "id": 211,
       "deal_id": 58,
       "type": "Call",
       "summary": "left VM.",
@@ -3903,7 +3913,7 @@
       "user": null
     },
     {
-      "id": 211,
+      "id": 212,
       "deal_id": 58,
       "type": "Email",
       "summary": "sent follow up email",
@@ -3913,7 +3923,7 @@
       "user": null
     },
     {
-      "id": 212,
+      "id": 213,
       "deal_id": 58,
       "type": "Note",
       "summary": "Status: Outreach Active \u2192 Closed \u2013 No Response",
@@ -3923,7 +3933,7 @@
       "user": null
     },
     {
-      "id": 213,
+      "id": 214,
       "deal_id": 58,
       "type": "Note",
       "summary": "Status: Closed \u2013 No Response \u2192 New",
@@ -3933,7 +3943,7 @@
       "user": null
     },
     {
-      "id": 214,
+      "id": 215,
       "deal_id": 58,
       "type": "Note",
       "summary": "Status: New \u2192 In Dialogue",
@@ -3943,7 +3953,7 @@
       "user": null
     },
     {
-      "id": 215,
+      "id": 216,
       "deal_id": 58,
       "type": "Note",
       "summary": "Status: In Dialogue \u2192 Meeting Scheduled",
@@ -3953,7 +3963,7 @@
       "user": null
     },
     {
-      "id": 216,
+      "id": 217,
       "deal_id": 58,
       "type": "Note",
       "summary": "Status: Meeting Scheduled \u2192 Revisit Later",
@@ -3963,7 +3973,7 @@
       "user": null
     },
     {
-      "id": 217,
+      "id": 218,
       "deal_id": 58,
       "type": "Call",
       "summary": "Great call. Good conversation. Not now",
@@ -3973,7 +3983,7 @@
       "user": null
     },
     {
-      "id": 218,
+      "id": 219,
       "deal_id": 58,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: Call (2026-08-24)",
@@ -3983,7 +3993,7 @@
       "user": null
     },
     {
-      "id": 219,
+      "id": 220,
       "deal_id": 59,
       "type": "Note",
       "summary": "Promoted from Worth a Second Look \u2014 memo generated",
@@ -3993,7 +4003,7 @@
       "user": null
     },
     {
-      "id": 220,
+      "id": 221,
       "deal_id": 59,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -4003,7 +4013,7 @@
       "user": null
     },
     {
-      "id": 221,
+      "id": 222,
       "deal_id": 60,
       "type": "Note",
       "summary": "Investment memo generated",
@@ -4013,7 +4023,7 @@
       "user": null
     },
     {
-      "id": 222,
+      "id": 223,
       "deal_id": 60,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -4023,7 +4033,7 @@
       "user": null
     },
     {
-      "id": 223,
+      "id": 224,
       "deal_id": 61,
       "type": "Note",
       "summary": "Investment memo generated",
@@ -4033,7 +4043,7 @@
       "user": null
     },
     {
-      "id": 224,
+      "id": 225,
       "deal_id": 61,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -4043,7 +4053,7 @@
       "user": null
     },
     {
-      "id": 225,
+      "id": 226,
       "deal_id": 62,
       "type": "Note",
       "summary": "Promoted from Worth a Second Look \u2014 memo generated",
@@ -4053,7 +4063,7 @@
       "user": null
     },
     {
-      "id": 226,
+      "id": 227,
       "deal_id": 62,
       "type": "Note",
       "summary": "Status: New \u2192 Not a Fit",
@@ -4063,7 +4073,7 @@
       "user": null
     },
     {
-      "id": 227,
+      "id": 228,
       "deal_id": 63,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-11)",
@@ -4073,7 +4083,7 @@
       "user": null
     },
     {
-      "id": 228,
+      "id": 229,
       "deal_id": 64,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: LinkedIn - No email (2026-08-11)",
@@ -4083,7 +4093,7 @@
       "user": null
     },
     {
-      "id": 229,
+      "id": 230,
       "deal_id": 65,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-11)",
@@ -4093,7 +4103,7 @@
       "user": null
     },
     {
-      "id": 230,
+      "id": 231,
       "deal_id": 66,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-11)",
@@ -4103,7 +4113,7 @@
       "user": null
     },
     {
-      "id": 231,
+      "id": 232,
       "deal_id": 67,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-11)",
@@ -4113,7 +4123,7 @@
       "user": null
     },
     {
-      "id": 232,
+      "id": 233,
       "deal_id": 67,
       "type": "Note",
       "summary": "Status: Outreach Active \u2192 In Dialogue",
@@ -4123,127 +4133,7 @@
       "user": null
     },
     {
-      "id": 233,
-      "deal_id": 68,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: Call (2026-08-14)",
-      "detail": "",
-      "timestamp": "2026-08-14T22:34:59.867800+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
       "id": 234,
-      "deal_id": 68,
-      "type": "Note",
-      "summary": "Status: Outreach Active \u2192 Meeting Scheduled",
-      "detail": "",
-      "timestamp": "2026-08-25T19:31:58.648659+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 235,
-      "deal_id": 69,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: Email (2026-08-14)",
-      "detail": "",
-      "timestamp": "2026-08-14T22:34:59.892368+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 236,
-      "deal_id": 69,
-      "type": "Email",
-      "summary": "followed up on my nda redline comments",
-      "detail": "",
-      "timestamp": "2026-08-20T16:46:07.179077+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 237,
-      "deal_id": 69,
-      "type": "Note",
-      "summary": "Status: Outreach Active \u2192 In Dialogue",
-      "detail": "",
-      "timestamp": "2026-08-25T19:30:34.406843+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 238,
-      "deal_id": 70,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-04)",
-      "detail": "",
-      "timestamp": "2026-08-14T22:34:59.916008+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 239,
-      "deal_id": 70,
-      "type": "Note",
-      "summary": "Status: Outreach Active \u2192 In Dialogue",
-      "detail": "",
-      "timestamp": "2026-08-25T19:30:54.736670+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 240,
-      "deal_id": 71,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-11)",
-      "detail": "",
-      "timestamp": "2026-08-14T22:35:00.097786+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 241,
-      "deal_id": 72,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-25)",
-      "detail": "",
-      "timestamp": "2026-08-25T16:18:57.357529+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 242,
-      "deal_id": 73,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-25)",
-      "detail": "",
-      "timestamp": "2026-08-25T19:23:51.591895+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 243,
-      "deal_id": 74,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: email and linkedin (2026-08-25)",
-      "detail": "",
-      "timestamp": "2026-08-25T19:23:51.614045+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 244,
-      "deal_id": 75,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-26)",
-      "detail": "",
-      "timestamp": "2026-08-27T13:09:27.063243+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 245,
       "deal_id": 67,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: In Dialogue (2026-08-25)",
@@ -4253,7 +4143,27 @@
       "user": null
     },
     {
-      "id": 246,
+      "id": 235,
+      "deal_id": 68,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: Call (2026-08-14)",
+      "detail": "",
+      "timestamp": "2026-08-14T22:34:59.867800+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 236,
+      "deal_id": 68,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Meeting Scheduled",
+      "detail": "",
+      "timestamp": "2026-08-25T19:31:58.648659+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 237,
       "deal_id": 68,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: Meeting Scheduled (2026-08-25)",
@@ -4263,7 +4173,37 @@
       "user": null
     },
     {
-      "id": 247,
+      "id": 238,
+      "deal_id": 69,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: Email (2026-08-14)",
+      "detail": "",
+      "timestamp": "2026-08-14T22:34:59.892368+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 239,
+      "deal_id": 69,
+      "type": "Email",
+      "summary": "followed up on my nda redline comments",
+      "detail": "",
+      "timestamp": "2026-08-20T16:46:07.179077+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 240,
+      "deal_id": 69,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 In Dialogue",
+      "detail": "",
+      "timestamp": "2026-08-25T19:30:34.406843+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 241,
       "deal_id": 69,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker \u2014 Note: Status: Outreach Active \u2192 In Dialogue (2026-08-25)",
@@ -4273,7 +4213,27 @@
       "user": null
     },
     {
-      "id": 248,
+      "id": 242,
+      "deal_id": 70,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-04)",
+      "detail": "",
+      "timestamp": "2026-08-14T22:34:59.916008+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 243,
+      "deal_id": 70,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 In Dialogue",
+      "detail": "",
+      "timestamp": "2026-08-25T19:30:54.736670+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 244,
       "deal_id": 70,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: In Dialogue (2026-08-25)",
@@ -4283,12 +4243,52 @@
       "user": null
     },
     {
-      "id": 249,
-      "deal_id": 3,
+      "id": 245,
+      "deal_id": 71,
       "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker \u2014 Note: Status: In Dialogue \u2192 Revisit Later (2026-08-25)",
+      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-11)",
       "detail": "",
-      "timestamp": "2026-08-27T13:09:27.186673+00:00",
+      "timestamp": "2026-08-14T22:35:00.097786+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 246,
+      "deal_id": 72,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-25)",
+      "detail": "",
+      "timestamp": "2026-08-25T16:18:57.357529+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 247,
+      "deal_id": 73,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-25)",
+      "detail": "",
+      "timestamp": "2026-08-25T19:23:51.591895+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 248,
+      "deal_id": 74,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email and linkedin (2026-08-25)",
+      "detail": "",
+      "timestamp": "2026-08-25T19:23:51.614045+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 249,
+      "deal_id": 75,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-26)",
+      "detail": "",
+      "timestamp": "2026-08-27T13:09:27.063243+00:00",
       "synced_to_sf": 1,
       "user": null
     },
