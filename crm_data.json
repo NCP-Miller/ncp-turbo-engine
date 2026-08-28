@@ -1767,13 +1767,13 @@
       "project": null,
       "status": "Outreach Active",
       "source": "backfill-salesforce",
-      "notes": "",
+      "notes": "Call him",
       "next_followup": null,
       "sf_account_id": "0014V00003lwKdWQAU",
       "sf_contact_id": "0034V00004dgar2QAA",
       "row_json": "{\"Website\": \"https://www.exodusintel.com\", \"City\": \"Austin\", \"State\": \"TX\", \"Employees\": 45, \"Description\": \"Exodus Intelligence, LLC provides actionable security information through a vulnerability intelligence data feed. The company delivers up-to-date security information that enables its customers to make informed decisions to strengthen the security posture.\", \"CEO/Owner Name\": \"Logan Brown\", \"Title\": \"President and CEO\", \"Email\": \"logan@exodusintel.com\", \"Phone\": null}",
       "created_at": "2026-08-25T19:23:51.601642+00:00",
-      "updated_at": "2026-08-27T13:09:27.146164+00:00",
+      "updated_at": "2026-08-28T20:14:58.363405+00:00",
       "memo": null
     },
     {
