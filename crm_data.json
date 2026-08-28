@@ -1024,12 +1024,12 @@
       "status": "In Dialogue",
       "source": "backfill-liked",
       "notes": "He has several really large deals closing. Follow up mid sept",
-      "next_followup": null,
+      "next_followup": "2026-09-16",
       "sf_account_id": "0013A00001eYUbdQAG",
       "sf_contact_id": "0033A00002WDLlYQAX",
       "row_json": "{\"Website\": \"https://www.dataseers.ai\", \"City\": \"Alpharetta\", \"State\": \"GA\", \"Employees\": 93, \"Description\": \"DataSeers, Inc. is a computer software company. It provides AI-powered enterprise software for banks and fintechs to improve reconciliation, compliance, fraud detection, and analytics. The company offers its services throughout the country.\", \"CEO/Owner Name\": \"Micah Fowler\", \"Title\": \"Manager of Strategic Alliances\", \"Email\": \"mfowler@dataseers.ai\", \"Phone\": null}",
       "created_at": "2026-07-10T00:01:38.885545+00:00",
-      "updated_at": "2026-08-28T20:19:07.062630+00:00",
+      "updated_at": "2026-08-28T20:19:18.037586+00:00",
       "memo": null
     },
     {
@@ -4359,6 +4359,16 @@
       "summary": "Status: New \u2192 In Dialogue",
       "detail": "",
       "timestamp": "2026-08-28T20:18:39.387990+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 257,
+      "deal_id": 43,
+      "type": "Note",
+      "summary": "Follow-up set for 2026-09-16",
+      "detail": "",
+      "timestamp": "2026-08-28T20:19:14.722412+00:00",
       "synced_to_sf": 1,
       "user": "Trey"
     }
