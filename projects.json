@@ -226,11 +226,11 @@
     "name": "Rural Plasma Centers",
     "slug": "rural_plasma_centers",
     "db_file": "project_rural_plasma_centers.db",
-    "created_at": "2026-08-10T18:50:42.554560+00:00",
+    "created_at": "2026-08-31T13:45:27.315538+00:00",
     "niche": "Rural plasma donation centers",
     "geography": "NCP Priority Geography (Eastern US)",
     "memo_count": 4,
     "active": true,
-    "status": "stopped"
+    "backup_status": "not_configured"
   }
 ]
