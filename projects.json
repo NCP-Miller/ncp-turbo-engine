@@ -212,17 +212,6 @@
     "backup_status": "not_configured"
   },
   {
-    "name": "Specialty Trust Administration",
-    "slug": "specialty_trust_administration",
-    "db_file": "project_specialty_trust_administration.db",
-    "created_at": "2026-08-10T18:50:38.182583+00:00",
-    "niche": "Specialty trust administration providers serving RIAs and family offices",
-    "geography": "South Carolina",
-    "memo_count": 16,
-    "active": false,
-    "backup_status": "not_configured"
-  },
-  {
     "name": "Rural Plasma Centers",
     "slug": "rural_plasma_centers",
     "db_file": "project_rural_plasma_centers.db",
@@ -230,6 +219,17 @@
     "niche": "Rural plasma donation centers",
     "geography": "NCP Priority Geography (Eastern US)",
     "memo_count": 4,
+    "active": false,
+    "backup_status": "not_configured"
+  },
+  {
+    "name": "Specialty Trust Administration",
+    "slug": "specialty_trust_administration",
+    "db_file": "project_specialty_trust_administration.db",
+    "created_at": "2026-08-31T13:45:51.743414+00:00",
+    "niche": "Specialty trust administration providers serving RIAs and family offices",
+    "geography": "South Carolina",
+    "memo_count": 16,
     "active": true,
     "backup_status": "not_configured"
   }
