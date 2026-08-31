@@ -1,7 +1,7 @@
 {
   "bot_status": {
     "search": "idle",
-    "analysis": "filtering",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -15248,29 +15248,64 @@
         "Conviction Reasoning": "The company's specialization in wealth management and minimal differentiation from competitors do not meet our criteria for unique value or market expansion potential."
       },
       "reason": "Conviction 2/10: The company's specialization in wealth management and minimal differentiation from competitors do not meet our criteria for unique value or market expansion potential."
+    },
+    {
+      "row": {
+        "Company": "IPX Retirement",
+        "Description": "IPX Retirement provides retirement plan solutions, including safe harbor IRAs and services for plan terminations across 401k, 403b, and 401a plans. They offer technology and consulting services focused on retirement plan administration, compliance, and data security, serving enterprises in the financial services industry.",
+        "Website": "http://www.ipxretirement.com",
+        "City": "Centennial",
+        "State": "Colorado",
+        "LinkedIn": "http://www.linkedin.com/company/ipxretirement",
+        "Employees": 15,
+        "Est. EBITDA": "$450K\u2013$750K",
+        "CEO/Owner Name": "N/A",
+        "Title": "N/A",
+        "Email": "N/A",
+        "Email Estimate": "",
+        "Phone": "N/A",
+        "Source": "Not Found",
+        "Notes": "",
+        "Confidence": "Low",
+        "Latest News": "FPS Group is now IPX Retirement! - PR Newswire | https://news.google.com/rss/articles/CBMikAFBVV95cUxQc3FSRGo4d2NzanBYSnprM0M4by1oNUNzRVRDSWhsSnZudXdmTUFLQTJENDZsMmhvVG1PRmM5bERJRzFxc0NuMTdqMzR1TlcxU3pzYmpDVWlaa2pqN016VFRHeGEtQWM3cDZXNVdPNDZNd2pXME1Kb292elRfVThJSnd3S0pmdXhYbUtmZW5PaEQ?oc=5",
+        "Previously Sourced": "No",
+        "Differentiated": "Low",
+        "_niche": "Trustee administrators\n\nEXCLUDE these types of companies: Wealth advisors",
+        "Priority": "Low",
+        "Growth": "Low",
+        "Txn Readiness": "Low",
+        "Priority Confidence": "High",
+        "Growth Confidence": "Low",
+        "Txn Readiness Confidence": "Low",
+        "Differentiated Confidence": "Medium",
+        "Conviction": 3,
+        "Conviction Pitch": "IPX Retirement lacks a distinctive edge in a highly competitive market of retirement plan solutions and administrative services. Their offerings, although essential, do not show any unique differentiation or defensible moat that would provide a clear right to win, especially in a fragmented market dominated by established players.",
+        "Conviction Reasoning": "The company's lack of differentiation and growth, coupled with low transaction readiness, does not align with our investment mandate focusing on distinctive, high-growth potential opportunities."
+      },
+      "reason": "Conviction 3/10: The company's lack of differentiation and growth, coupled with low transaction readiness, does not align with our investment mandate focusing on distinctive, high-growth potential opportunities."
     }
   ],
   "reviewed_near_misses": [],
   "filter_stats": {
-    "total_sourced": 435,
+    "total_sourced": 438,
     "pre_filtered_size": 330,
-    "pre_filtered_structural": 32,
+    "pre_filtered_structural": 33,
     "pre_filtered_blocklist": 4,
     "pre_filtered_niche": 32,
-    "deep_analysis_failed": 33,
+    "deep_analysis_failed": 34,
     "pe_backed": 0,
     "portfolio_conflict": 0,
-    "low_differentiation": 4,
+    "low_differentiation": 5,
     "qualified": 0
   },
   "cost_tracker": {
-    "openai": 1.9556,
-    "firecrawl": 0.995,
+    "openai": 2.399,
+    "firecrawl": 1.135,
     "apollo": 0.0,
-    "total": 2.9506,
+    "total": 3.534,
     "call_counts": {
-      "openai": 38,
-      "firecrawl": 199,
+      "openai": 40,
+      "firecrawl": 227,
       "apollo": 0
     }
   },
