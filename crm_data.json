@@ -1799,6 +1799,30 @@
       "created_at": "2026-08-27T13:09:27.050027+00:00",
       "updated_at": "2026-08-28T21:03:07.133349+00:00",
       "memo": null
+    },
+    {
+      "id": 76,
+      "company": "Trustee Services Group",
+      "company_key": "trustee services group",
+      "website": "http://www.trusteeservicesgroup.com",
+      "contact_name": "Gregory Schupra",
+      "title": null,
+      "email": "gregorys@trusteeservicesgroup.com",
+      "phone": null,
+      "city": "Colorado Springs",
+      "state": "Colorado",
+      "niche": "Trustee administrators",
+      "project": null,
+      "status": "New",
+      "source": "pipeline",
+      "notes": "",
+      "next_followup": null,
+      "sf_account_id": null,
+      "sf_contact_id": null,
+      "row_json": "{\"Company\": \"Trustee Services Group\", \"Description\": \"Trustee Services Group specializes in providing trustee and estate fiduciary services, focusing on family wealth management and legacy development. They work collaboratively with families and their advisory teams to navigate the complexities of wealth transfer and estate planning using a customized, open architecture model.\", \"Website\": \"http://www.trusteeservicesgroup.com\", \"City\": \"Colorado Springs\", \"State\": \"Colorado\", \"LinkedIn\": \"http://www.linkedin.com/company/trustee-services-group-llc\", \"Employees\": 30, \"Est. EBITDA\": \"$900K\\u2013$1.5M\", \"CEO/Owner Name\": \"Gregory Schupra\", \"Title\": \"N/A\", \"Email\": \"N/A\", \"Email Estimate\": \"gregorys@trusteeservicesgroup.com\", \"Phone\": \"N/A\", \"Source\": \"Web Path (/team)\", \"Notes\": \"\", \"Confidence\": \"Medium\", \"Latest News\": \"Governor Polis, Colorado Springs Mayor Mobolade and CPW Announce Cheyenne Mountain State Park Expansion, Sign New Recreation Agreement to Increase Camping and Boating | Colorado Governor Jared Polis - Colorado Governor's Office (.gov) | https://news.google.com/rss/articles/CBMi2gFBVV95cUxOYUpPZUVFMUF6UXV4UXFaSkxReEFmVHFOZGY4SHpPWlpTSFIxWm1PWmZiZ1hoeW5ENFlndHphVWY0SEM4VGN3Ynlndm85cHRqUzBOSFlPSlZ2QWFuVGROSHF0ei1oNElTZDBBdGhsZ3lPc0lEN2FvLWdqRUlXay0yVGJMQ3hwbHdQQV9xR0wwNk9YS285ekdMR2VpYm52UkNsbHlWOGtJWFV6ZjFycC1UMmFXT3F5dkhVOW50eE13UllZOEtydW0yNGlITTRNZmhsS2VmbWRMVC1fUQ?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Medium\", \"_niche\": \"Trustee administrators\\n\\nEXCLUDE these types of companies: Wealth advisors\", \"Priority\": \"Low\", \"Growth\": \"Medium\", \"Txn Readiness\": \"Medium\", \"Priority Confidence\": \"High\", \"Growth Confidence\": \"Medium\", \"Txn Readiness Confidence\": \"Medium\", \"Differentiated Confidence\": \"Medium\", \"Conviction\": 4, \"Conviction Pitch\": \"Trustee Services Group offers customized fiduciary services with a focus on family wealth management and estate planning. While the company operates in a growing market due to increasing demand for wealth transfer solutions, its differentiation is only medium and lacks a clear 'right to win' against competitors. Moreover, their business model does not strongly align with NCP's preference for companies with specific recurring revenues or unique services, making it less compelling to pursue.\", \"Conviction Reasoning\": \"The company's focus on trustee and estate services overlaps with the types that NCP typically avoids, and it does not stand out significantly from peers in differentiation or growth potential.\"}",
+      "created_at": "2026-08-31T13:57:44.337567+00:00",
+      "updated_at": "2026-08-31T13:57:44.369309+00:00",
+      "memo": "**Investment Memorandum: Trustee Services Group (TSG)**\n\n**Why We're Excited**\n\nTrustee Services Group operates within a robust and growing estate planning market propelled by secular trends such as increasing demand for family wealth management due to an aging population. While TSG's current differentiation is medium, the company is positioned in a fragmented regional market with limited direct competition, presenting potential for strategic expansion. The founder's anticipated retirement offers a natural succession opportunity, aligning with NCP's buy-and-build strategy.\n\n**Company Overview**\n\nTrustee Services Group, headquartered in Colorado Springs, CO, is a specialized provider of trustee and estate fiduciary services. With an estimated EBITDA range of $900K\u2013$1.5M (subject to confirmation), and employing 30 staff members, TSG helps families manage wealth transfer and legacy planning through a personalized, open architecture model.\n\n**Differentiated Value Proposition**\n\nTSG's medium differentiation stems from its emphasis on customized service offerings, which cater to the unique needs of families in estate planning and wealth management. The business currently lacks a distinct proprietary moat, such as intellectual property or certifications, which diminishes its 'right to win' compared to some competitors with more defensible positions.\n\n**Market Opportunity & Growth**\n\nThe estate planning and fiduciary services market exhibits strong growth potential backed by favorable demographics, including an aging population seeking solutions for wealth transfer. As part of a broader $100 billion estate planning service industry, TSG serves a niche segment ripe for development. Additional growth levers include broadening service offerings and extending geographical reach within the Western U.S. market.\n\n**NCP Fit Rationale**\n\nTSG fits within NCP's lower middle market and founder-owned thesis due to its manageable scale and succession opportunity presented by the founder's pending retirement. Although current recurring revenue streams and differentiation are limited, the market's growth potential and TSG's regional presence offer attractive angles for expansion and consolidation in a fragmented market.\n\n**Key Risks & Diligence Items**\n\n1. **EBITDA Confirmation**: Validate TSG's EBITDA range with detailed financial audits.\n2. **Differentiation Strategy**: Assess opportunities to bolster TSG's competitive advantage through potential certifications or unique service lines.\n3. **Recurring Revenue Streams**: Evaluate the feasibility of instituting additional recurring revenues such as subscription models or managed services.\n4. **Market Dynamics**: Investigate local competitive landscape and potential for regulatory changes affecting fiduciary services.\n5. **Succession Planning**: Confirm the founder's transition plans and the readiness of the management team to take over operations.\n\nThe evaluation of Trustee Services Group reveals potential within a growing market; however, critical diligence is necessary to uncover a compelling 'right to win' and solidify the fit with NCP's investment strategy."
     }
   ],
   "activities": [
@@ -3184,1126 +3208,6 @@
     },
     {
       "id": 139,
-      "deal_id": 44,
-      "type": "Note",
-      "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
-      "detail": "",
-      "timestamp": "2026-07-10T00:01:38.907237+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 140,
-      "deal_id": 44,
-      "type": "Note",
-      "summary": "Status: New \u2192 Closed \u2013 No Response",
-      "detail": "",
-      "timestamp": "2026-07-14T19:55:48.165926+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 141,
-      "deal_id": 45,
-      "type": "Note",
-      "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
-      "detail": "",
-      "timestamp": "2026-07-10T00:01:38.920722+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 142,
-      "deal_id": 45,
-      "type": "Note",
-      "summary": "Status: New \u2192 In Dialogue",
-      "detail": "",
-      "timestamp": "2026-07-14T19:38:24.386493+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 143,
-      "deal_id": 46,
-      "type": "Note",
-      "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
-      "detail": "",
-      "timestamp": "2026-07-10T00:01:38.935704+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 144,
-      "deal_id": 46,
-      "type": "Note",
-      "summary": "Status: New \u2192 Revisit Later",
-      "detail": "",
-      "timestamp": "2026-07-14T19:18:02.827449+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 145,
-      "deal_id": 47,
-      "type": "Note",
-      "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
-      "detail": "",
-      "timestamp": "2026-07-10T00:01:39.538111+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 146,
-      "deal_id": 47,
-      "type": "Note",
-      "summary": "Status: New \u2192 Closed \u2013 No Response",
-      "detail": "",
-      "timestamp": "2026-07-14T20:32:03.793432+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 147,
-      "deal_id": 48,
-      "type": "Note",
-      "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
-      "detail": "",
-      "timestamp": "2026-07-10T00:01:45.900970+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 148,
-      "deal_id": 48,
-      "type": "Email",
-      "summary": "Email responded. Two sons who went to Alpine. Daughter studying at LSE this summer",
-      "detail": "",
-      "timestamp": "2026-07-10T13:17:40.618472+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 149,
-      "deal_id": 48,
-      "type": "Note",
-      "summary": "Status: New \u2192 Outreach Active",
-      "detail": "",
-      "timestamp": "2026-07-10T13:57:26.019331+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 150,
-      "deal_id": 48,
-      "type": "Note",
-      "summary": "Created Email reminder for 2026-07-10 14:30",
-      "detail": "",
-      "timestamp": "2026-07-10T13:58:03.099750+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 151,
-      "deal_id": 48,
-      "type": "Note",
-      "summary": "Created Call reminder for 2026-07-10 14:45",
-      "detail": "",
-      "timestamp": "2026-07-10T13:58:24.459867+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 152,
-      "deal_id": 48,
-      "type": "Note",
-      "summary": "Status: Outreach Active \u2192 Closed \u2013 No Response",
-      "detail": "",
-      "timestamp": "2026-07-14T19:38:14.272436+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 153,
-      "deal_id": 49,
-      "type": "Note",
-      "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
-      "detail": "",
-      "timestamp": "2026-07-10T00:01:45.918690+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 154,
-      "deal_id": 49,
-      "type": "Note",
-      "summary": "Status: New \u2192 In Dialogue",
-      "detail": "",
-      "timestamp": "2026-07-10T13:16:56.055320+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 155,
-      "deal_id": 49,
-      "type": "Email",
-      "summary": "Two sons who went to Alpine. Daughter studying at LSE this summer",
-      "detail": "",
-      "timestamp": "2026-07-10T13:51:31.671829+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 156,
-      "deal_id": 49,
-      "type": "Call",
-      "summary": "Great call with Betsy. Really interesting business.",
-      "detail": "",
-      "timestamp": "2026-07-20T20:23:54.187453+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 157,
-      "deal_id": 49,
-      "type": "Note",
-      "summary": "Status: In Dialogue \u2192 Revisit Later",
-      "detail": "",
-      "timestamp": "2026-07-20T20:24:08.522454+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 158,
-      "deal_id": 49,
-      "type": "Note",
-      "summary": "Created Email reminder for 2026-09-04 09:00, monthly \u00d718",
-      "detail": "",
-      "timestamp": "2026-07-20T20:24:52.121763+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 159,
-      "deal_id": 50,
-      "type": "Note",
-      "summary": "Imported from past search",
-      "detail": "",
-      "timestamp": "2026-07-10T00:01:45.936627+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 160,
-      "deal_id": 50,
-      "type": "Note",
-      "summary": "Status: New \u2192 Outreach Active",
-      "detail": "",
-      "timestamp": "2026-07-10T13:59:04.732825+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 161,
-      "deal_id": 50,
-      "type": "Note",
-      "summary": "Created Call reminder for 2026-07-11 14:45",
-      "detail": "",
-      "timestamp": "2026-07-10T13:59:41.672287+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 162,
-      "deal_id": 50,
-      "type": "Note",
-      "summary": "Created Email reminder for 2026-07-11 14:45",
-      "detail": "",
-      "timestamp": "2026-07-10T14:13:35.130992+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 163,
-      "deal_id": 50,
-      "type": "Note",
-      "summary": "Status: Outreach Active \u2192 Closed \u2013 No Response",
-      "detail": "",
-      "timestamp": "2026-08-10T15:30:44.647150+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 164,
-      "deal_id": 50,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: Closed \u2013 No Response (2026-08-10)",
-      "detail": "",
-      "timestamp": "2026-08-14T22:34:59.942662+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 165,
-      "deal_id": 51,
-      "type": "Note",
-      "summary": "Imported from feedback log (\ud83d\udc4d Interested)",
-      "detail": "Interested \u2014 wants to pursue",
-      "timestamp": "2026-07-10T00:01:46.437623+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 166,
-      "deal_id": 51,
-      "type": "Note",
-      "summary": "Status: New \u2192 Not a Fit",
-      "detail": "",
-      "timestamp": "2026-07-10T13:16:26.726693+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 167,
-      "deal_id": 52,
-      "type": "Note",
-      "summary": "Imported from feedback log (\ud83d\udc4d Interested)",
-      "detail": "Interested \u2014 wants to pursue",
-      "timestamp": "2026-07-10T00:01:46.453803+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 168,
-      "deal_id": 52,
-      "type": "Note",
-      "summary": "Status: New \u2192 Not a Fit",
-      "detail": "",
-      "timestamp": "2026-07-10T13:16:11.470704+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 169,
-      "deal_id": 53,
-      "type": "Note",
-      "summary": "Imported from feedback log (\ud83d\udc4d Interested)",
-      "detail": "Interested \u2014 wants to pursue",
-      "timestamp": "2026-07-10T00:01:46.469154+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 170,
-      "deal_id": 53,
-      "type": "Note",
-      "summary": "Follow-up set for 2026-07-17",
-      "detail": "",
-      "timestamp": "2026-07-10T00:03:50.133937+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 171,
-      "deal_id": 53,
-      "type": "Note",
-      "summary": "Status: New \u2192 Not a Fit",
-      "detail": "",
-      "timestamp": "2026-07-10T00:20:37.137463+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 172,
-      "deal_id": 53,
-      "type": "Note",
-      "summary": "Status: Not a Fit \u2192 Contacted \u2013 No Opportunity",
-      "detail": "",
-      "timestamp": "2026-07-10T13:14:58.570563+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 173,
-      "deal_id": 54,
-      "type": "Note",
-      "summary": "Investment memo generated",
-      "detail": "",
-      "timestamp": "2026-07-10T14:28:42.184478+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 174,
-      "deal_id": 54,
-      "type": "Note",
-      "summary": "Added to Salesforce",
-      "detail": "",
-      "timestamp": "2026-07-12T17:49:05.603592+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 175,
-      "deal_id": 54,
-      "type": "Email",
-      "summary": "Drafted outreach email: cic services",
-      "detail": "",
-      "timestamp": "2026-07-12T17:49:13.451547+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 176,
-      "deal_id": 54,
-      "type": "Email",
-      "summary": "Outreach email logged to Salesforce: cic services",
-      "detail": "",
-      "timestamp": "2026-07-12T17:50:00.276332+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 177,
-      "deal_id": 54,
-      "type": "Note",
-      "summary": "Downloaded follow-up calendar reminders",
-      "detail": "",
-      "timestamp": "2026-07-12T17:50:02.987213+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 178,
-      "deal_id": 54,
-      "type": "Note",
-      "summary": "Marked \ud83d\udc4d Interested in memo review",
-      "detail": "",
-      "timestamp": "2026-07-12T18:00:38.812899+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 179,
-      "deal_id": 54,
-      "type": "Note",
-      "summary": "Status: New \u2192 Not a Fit",
-      "detail": "",
-      "timestamp": "2026-07-14T19:16:56.118146+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 180,
-      "deal_id": 54,
-      "type": "Email",
-      "summary": "Drafted outreach email: cic",
-      "detail": "",
-      "timestamp": "2026-07-15T22:34:16.346270+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 181,
-      "deal_id": 54,
-      "type": "Note",
-      "summary": "Downloaded follow-up calendar reminders",
-      "detail": "",
-      "timestamp": "2026-07-15T22:34:19.942263+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 182,
-      "deal_id": 54,
-      "type": "Note",
-      "summary": "Status: Not a Fit \u2192 New",
-      "detail": "",
-      "timestamp": "2026-07-21T23:13:00.596944+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 183,
-      "deal_id": 54,
-      "type": "Note",
-      "summary": "Status: New \u2192 Contacted \u2013 No Opportunity",
-      "detail": "",
-      "timestamp": "2026-07-21T23:13:47.666062+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 184,
-      "deal_id": 55,
-      "type": "Note",
-      "summary": "Investment memo generated",
-      "detail": "",
-      "timestamp": "2026-07-10T15:20:22.529054+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 185,
-      "deal_id": 55,
-      "type": "Email",
-      "summary": "Drafted outreach email: risk",
-      "detail": "",
-      "timestamp": "2026-07-12T18:04:14.178173+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 186,
-      "deal_id": 55,
-      "type": "Email",
-      "summary": "Drafted outreach email: risk",
-      "detail": "",
-      "timestamp": "2026-07-12T18:05:25.799543+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 187,
-      "deal_id": 55,
-      "type": "Note",
-      "summary": "Downloaded follow-up calendar reminders",
-      "detail": "",
-      "timestamp": "2026-07-12T18:05:31.295331+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 188,
-      "deal_id": 55,
-      "type": "Note",
-      "summary": "Marked \ud83d\udc4d Interested in memo review",
-      "detail": "",
-      "timestamp": "2026-07-12T18:08:19.404447+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 189,
-      "deal_id": 55,
-      "type": "Note",
-      "summary": "Downloaded follow-up calendar reminders",
-      "detail": "",
-      "timestamp": "2026-07-12T18:12:04.583553+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 190,
-      "deal_id": 55,
-      "type": "Note",
-      "summary": "Status: New \u2192 Not a Fit",
-      "detail": "",
-      "timestamp": "2026-07-14T19:14:18.001759+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 191,
-      "deal_id": 55,
-      "type": "Note",
-      "summary": "Status: Not a Fit \u2192 New",
-      "detail": "",
-      "timestamp": "2026-07-14T19:14:39.569974+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 192,
-      "deal_id": 55,
-      "type": "Note",
-      "summary": "Status: New \u2192 Not a Fit",
-      "detail": "",
-      "timestamp": "2026-07-14T19:14:59.074240+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 193,
-      "deal_id": 56,
-      "type": "Note",
-      "summary": "Promoted from Worth a Second Look \u2014 memo generated",
-      "detail": "",
-      "timestamp": "2026-07-11T15:27:34.506418+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 194,
-      "deal_id": 56,
-      "type": "Note",
-      "summary": "Added to Salesforce",
-      "detail": "",
-      "timestamp": "2026-07-12T18:11:14.432597+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 195,
-      "deal_id": 56,
-      "type": "Email",
-      "summary": "Drafted outreach email: robert",
-      "detail": "",
-      "timestamp": "2026-07-12T18:11:19.012928+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 196,
-      "deal_id": 56,
-      "type": "Email",
-      "summary": "Outreach email logged to Salesforce: robert",
-      "detail": "",
-      "timestamp": "2026-07-12T18:11:23.590002+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 197,
-      "deal_id": 56,
-      "type": "Note",
-      "summary": "Downloaded follow-up calendar reminders",
-      "detail": "",
-      "timestamp": "2026-07-12T18:11:28.768579+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 198,
-      "deal_id": 56,
-      "type": "Note",
-      "summary": "Marked \ud83d\udc4d Interested in memo review",
-      "detail": "",
-      "timestamp": "2026-07-12T18:11:33.860219+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 199,
-      "deal_id": 56,
-      "type": "Note",
-      "summary": "Status: New \u2192 Meeting Scheduled",
-      "detail": "",
-      "timestamp": "2026-07-12T21:11:26.753802+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 200,
-      "deal_id": 56,
-      "type": "Note",
-      "summary": "Created Email reminder for 2026-09-18 09:00, monthly \u00d718",
-      "detail": "",
-      "timestamp": "2026-07-21T23:07:14.998441+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 201,
-      "deal_id": 56,
-      "type": "Note",
-      "summary": "Status: Meeting Scheduled \u2192 Opportunity",
-      "detail": "",
-      "timestamp": "2026-07-23T21:52:22.277302+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 202,
-      "deal_id": 57,
-      "type": "Note",
-      "summary": "Investment memo generated",
-      "detail": "",
-      "timestamp": "2026-07-20T21:51:48.248221+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 203,
-      "deal_id": 57,
-      "type": "Note",
-      "summary": "Status: New \u2192 Not a Fit",
-      "detail": "",
-      "timestamp": "2026-07-27T22:48:11.783945+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 204,
-      "deal_id": 58,
-      "type": "Note",
-      "summary": "Promoted from Worth a Second Look \u2014 memo generated",
-      "detail": "",
-      "timestamp": "2026-07-23T18:51:22.812113+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 205,
-      "deal_id": 58,
-      "type": "Email",
-      "summary": "Drafted outreach email: impact of aging in cleveland",
-      "detail": "",
-      "timestamp": "2026-07-27T16:07:07.454848+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 206,
-      "deal_id": 58,
-      "type": "Note",
-      "summary": "Downloaded follow-up calendar reminders",
-      "detail": "",
-      "timestamp": "2026-07-27T16:07:14.704069+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 207,
-      "deal_id": 58,
-      "type": "Note",
-      "summary": "Marked \ud83d\udc4d Interested in memo review",
-      "detail": "",
-      "timestamp": "2026-07-27T16:07:42.207226+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 208,
-      "deal_id": 58,
-      "type": "Note",
-      "summary": "Marked \ud83d\udc4d Interested in memo review",
-      "detail": "",
-      "timestamp": "2026-07-27T16:41:14.772091+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 209,
-      "deal_id": 58,
-      "type": "Note",
-      "summary": "Marked \ud83d\udc4d Interested in memo review",
-      "detail": "",
-      "timestamp": "2026-07-27T22:46:20.709422+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 210,
-      "deal_id": 58,
-      "type": "Note",
-      "summary": "Status: New \u2192 Outreach Active",
-      "detail": "",
-      "timestamp": "2026-07-27T22:46:54.482579+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 211,
-      "deal_id": 58,
-      "type": "Call",
-      "summary": "left VM.",
-      "detail": "",
-      "timestamp": "2026-08-10T15:08:47.624080+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 212,
-      "deal_id": 58,
-      "type": "Email",
-      "summary": "sent follow up email",
-      "detail": "",
-      "timestamp": "2026-08-10T15:09:02.906580+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 213,
-      "deal_id": 58,
-      "type": "Note",
-      "summary": "Status: Outreach Active \u2192 Closed \u2013 No Response",
-      "detail": "",
-      "timestamp": "2026-08-10T15:27:20.412306+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 214,
-      "deal_id": 58,
-      "type": "Note",
-      "summary": "Status: Closed \u2013 No Response \u2192 New",
-      "detail": "",
-      "timestamp": "2026-08-13T19:35:20.241519+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 215,
-      "deal_id": 58,
-      "type": "Note",
-      "summary": "Status: New \u2192 In Dialogue",
-      "detail": "",
-      "timestamp": "2026-08-13T19:35:40.753874+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 216,
-      "deal_id": 58,
-      "type": "Note",
-      "summary": "Status: In Dialogue \u2192 Meeting Scheduled",
-      "detail": "",
-      "timestamp": "2026-08-13T19:35:50.326600+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 217,
-      "deal_id": 58,
-      "type": "Note",
-      "summary": "Status: Meeting Scheduled \u2192 Revisit Later",
-      "detail": "",
-      "timestamp": "2026-08-24T14:49:46.705629+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 218,
-      "deal_id": 58,
-      "type": "Call",
-      "summary": "Great call. Good conversation. Not now",
-      "detail": "",
-      "timestamp": "2026-08-24T14:50:11.839363+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 219,
-      "deal_id": 58,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: Call (2026-08-24)",
-      "detail": "",
-      "timestamp": "2026-08-25T16:18:57.380301+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 220,
-      "deal_id": 59,
-      "type": "Note",
-      "summary": "Promoted from Worth a Second Look \u2014 memo generated",
-      "detail": "",
-      "timestamp": "2026-08-10T21:24:53.750767+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 221,
-      "deal_id": 59,
-      "type": "Note",
-      "summary": "Status: New \u2192 Not a Fit",
-      "detail": "",
-      "timestamp": "2026-08-10T22:28:14.506025+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 222,
-      "deal_id": 60,
-      "type": "Note",
-      "summary": "Investment memo generated",
-      "detail": "",
-      "timestamp": "2026-08-10T21:33:18.078135+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 223,
-      "deal_id": 60,
-      "type": "Note",
-      "summary": "Status: New \u2192 Not a Fit",
-      "detail": "",
-      "timestamp": "2026-08-10T22:26:26.182156+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 224,
-      "deal_id": 61,
-      "type": "Note",
-      "summary": "Investment memo generated",
-      "detail": "",
-      "timestamp": "2026-08-10T21:39:02.237044+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 225,
-      "deal_id": 61,
-      "type": "Note",
-      "summary": "Status: New \u2192 Not a Fit",
-      "detail": "",
-      "timestamp": "2026-08-10T22:26:48.605883+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 226,
-      "deal_id": 62,
-      "type": "Note",
-      "summary": "Promoted from Worth a Second Look \u2014 memo generated",
-      "detail": "",
-      "timestamp": "2026-08-10T22:23:03.196843+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 227,
-      "deal_id": 62,
-      "type": "Note",
-      "summary": "Status: New \u2192 Not a Fit",
-      "detail": "",
-      "timestamp": "2026-08-14T21:49:01.121255+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 228,
-      "deal_id": 63,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-11)",
-      "detail": "",
-      "timestamp": "2026-08-14T22:34:59.709525+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 229,
-      "deal_id": 64,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: LinkedIn - No email (2026-08-11)",
-      "detail": "",
-      "timestamp": "2026-08-14T22:34:59.737107+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 230,
-      "deal_id": 65,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-11)",
-      "detail": "",
-      "timestamp": "2026-08-14T22:34:59.788314+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 231,
-      "deal_id": 66,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-11)",
-      "detail": "",
-      "timestamp": "2026-08-14T22:34:59.814323+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 232,
-      "deal_id": 67,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-11)",
-      "detail": "",
-      "timestamp": "2026-08-14T22:34:59.844648+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 233,
-      "deal_id": 67,
-      "type": "Note",
-      "summary": "Status: Outreach Active \u2192 In Dialogue",
-      "detail": "",
-      "timestamp": "2026-08-25T19:31:24.738343+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 234,
-      "deal_id": 67,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: In Dialogue (2026-08-25)",
-      "detail": "",
-      "timestamp": "2026-08-27T13:09:27.083049+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 235,
-      "deal_id": 68,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: Call (2026-08-14)",
-      "detail": "",
-      "timestamp": "2026-08-14T22:34:59.867800+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 236,
-      "deal_id": 68,
-      "type": "Note",
-      "summary": "Status: Outreach Active \u2192 Meeting Scheduled",
-      "detail": "",
-      "timestamp": "2026-08-25T19:31:58.648659+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 237,
-      "deal_id": 68,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: Meeting Scheduled (2026-08-25)",
-      "detail": "",
-      "timestamp": "2026-08-27T13:09:27.101741+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 238,
-      "deal_id": 69,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: Email (2026-08-14)",
-      "detail": "",
-      "timestamp": "2026-08-14T22:34:59.892368+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 239,
-      "deal_id": 69,
-      "type": "Email",
-      "summary": "followed up on my nda redline comments",
-      "detail": "",
-      "timestamp": "2026-08-20T16:46:07.179077+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 240,
-      "deal_id": 69,
-      "type": "Note",
-      "summary": "Status: Outreach Active \u2192 In Dialogue",
-      "detail": "",
-      "timestamp": "2026-08-25T19:30:34.406843+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 241,
-      "deal_id": 69,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker \u2014 Note: Status: Outreach Active \u2192 In Dialogue (2026-08-25)",
-      "detail": "",
-      "timestamp": "2026-08-27T13:09:27.133134+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 242,
-      "deal_id": 70,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-04)",
-      "detail": "",
-      "timestamp": "2026-08-14T22:34:59.916008+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 243,
-      "deal_id": 70,
-      "type": "Note",
-      "summary": "Status: Outreach Active \u2192 In Dialogue",
-      "detail": "",
-      "timestamp": "2026-08-25T19:30:54.736670+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 244,
-      "deal_id": 70,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: In Dialogue (2026-08-25)",
-      "detail": "",
-      "timestamp": "2026-08-27T13:09:27.167248+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 245,
-      "deal_id": 71,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-11)",
-      "detail": "",
-      "timestamp": "2026-08-14T22:35:00.097786+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 246,
-      "deal_id": 72,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-25)",
-      "detail": "",
-      "timestamp": "2026-08-25T16:18:57.357529+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 247,
-      "deal_id": 73,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-25)",
-      "detail": "",
-      "timestamp": "2026-08-25T19:23:51.591895+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 248,
-      "deal_id": 74,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: email and linkedin (2026-08-25)",
-      "detail": "",
-      "timestamp": "2026-08-25T19:23:51.614045+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 249,
-      "deal_id": 75,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-26)",
-      "detail": "",
-      "timestamp": "2026-08-27T13:09:27.063243+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 250,
-      "deal_id": 75,
-      "type": "Note",
-      "summary": "Status: Outreach Active \u2192 Contacted \u2013 No Opportunity",
-      "detail": "",
-      "timestamp": "2026-08-27T13:32:38.784566+00:00",
-      "synced_to_sf": 1,
-      "user": "Trey"
-    },
-    {
-      "id": 251,
       "deal_id": 43,
       "type": "Note",
       "summary": "Status: In Dialogue \u2192 Closed \u2013 No Response",
@@ -4313,37 +3217,7 @@
       "user": "Trey"
     },
     {
-      "id": 252,
-      "deal_id": 71,
-      "type": "Note",
-      "summary": "Status: Outreach Active \u2192 Contacted \u2013 No Opportunity",
-      "detail": "",
-      "timestamp": "2026-08-28T20:13:23.490028+00:00",
-      "synced_to_sf": 1,
-      "user": "Trey"
-    },
-    {
-      "id": 253,
-      "deal_id": 73,
-      "type": "Note",
-      "summary": "Status: Outreach Active \u2192 Not a Fit",
-      "detail": "",
-      "timestamp": "2026-08-28T20:15:34.429954+00:00",
-      "synced_to_sf": 1,
-      "user": "Trey"
-    },
-    {
-      "id": 254,
-      "deal_id": 72,
-      "type": "Email",
-      "summary": "f/u email sent",
-      "detail": "",
-      "timestamp": "2026-08-28T20:17:14.678690+00:00",
-      "synced_to_sf": 1,
-      "user": "Trey"
-    },
-    {
-      "id": 255,
+      "id": 140,
       "deal_id": 43,
       "type": "Note",
       "summary": "Status: Closed \u2013 No Response \u2192 New",
@@ -4353,7 +3227,7 @@
       "user": "Trey"
     },
     {
-      "id": 256,
+      "id": 141,
       "deal_id": 43,
       "type": "Note",
       "summary": "Status: New \u2192 In Dialogue",
@@ -4363,7 +3237,7 @@
       "user": "Trey"
     },
     {
-      "id": 257,
+      "id": 142,
       "deal_id": 43,
       "type": "Note",
       "summary": "Follow-up set for 2026-09-16",
@@ -4373,97 +3247,7 @@
       "user": "Trey"
     },
     {
-      "id": 258,
-      "deal_id": 66,
-      "type": "Email",
-      "summary": "sent follow up",
-      "detail": "",
-      "timestamp": "2026-08-28T20:22:21.783395+00:00",
-      "synced_to_sf": 1,
-      "user": "Trey"
-    },
-    {
-      "id": 259,
-      "deal_id": 65,
-      "type": "Email",
-      "summary": "emailed michael stoddard",
-      "detail": "",
-      "timestamp": "2026-08-28T20:25:31.848754+00:00",
-      "synced_to_sf": 1,
-      "user": "Trey"
-    },
-    {
-      "id": 260,
-      "deal_id": 64,
-      "type": "Note",
-      "summary": "Status: Outreach Active \u2192 Not a Fit",
-      "detail": "",
-      "timestamp": "2026-08-28T20:26:08.982509+00:00",
-      "synced_to_sf": 1,
-      "user": "Trey"
-    },
-    {
-      "id": 261,
-      "deal_id": 70,
-      "type": "Email",
-      "summary": "sent another follow up",
-      "detail": "",
-      "timestamp": "2026-08-28T20:28:13.567310+00:00",
-      "synced_to_sf": 1,
-      "user": "Trey"
-    },
-    {
-      "id": 262,
-      "deal_id": 66,
-      "type": "Note",
-      "summary": "Status: Outreach Active \u2192 Contacted \u2013 No Opportunity",
-      "detail": "",
-      "timestamp": "2026-08-28T20:44:51.633485+00:00",
-      "synced_to_sf": 1,
-      "user": "Trey"
-    },
-    {
-      "id": 263,
-      "deal_id": 45,
-      "type": "Note",
-      "summary": "Status: In Dialogue \u2192 Not a Fit",
-      "detail": "",
-      "timestamp": "2026-08-28T21:02:19.457012+00:00",
-      "synced_to_sf": 0,
-      "user": "Trey"
-    },
-    {
-      "id": 264,
-      "deal_id": 72,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: Outreach Active (2026-08-28)",
-      "detail": "",
-      "timestamp": "2026-08-28T21:03:07.077584+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 265,
-      "deal_id": 64,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker \u2014 Note: Status: Outreach Active \u2192 Not a Fit (2026-08-28)",
-      "detail": "",
-      "timestamp": "2026-08-28T21:03:07.107740+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 266,
-      "deal_id": 75,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker \u2014 Note: Status: Outreach Active \u2192 Contacted \u2013 No Opportunity (2026-08-27)",
-      "detail": "",
-      "timestamp": "2026-08-28T21:03:07.133235+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 267,
+      "id": 143,
       "deal_id": 43,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Follow up: DataSeers (2026-08-28)",
@@ -4473,7 +3257,967 @@
       "user": null
     },
     {
-      "id": 268,
+      "id": 144,
+      "deal_id": 44,
+      "type": "Note",
+      "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
+      "detail": "",
+      "timestamp": "2026-07-10T00:01:38.907237+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 145,
+      "deal_id": 44,
+      "type": "Note",
+      "summary": "Status: New \u2192 Closed \u2013 No Response",
+      "detail": "",
+      "timestamp": "2026-07-14T19:55:48.165926+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 146,
+      "deal_id": 45,
+      "type": "Note",
+      "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
+      "detail": "",
+      "timestamp": "2026-07-10T00:01:38.920722+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 147,
+      "deal_id": 45,
+      "type": "Note",
+      "summary": "Status: New \u2192 In Dialogue",
+      "detail": "",
+      "timestamp": "2026-07-14T19:38:24.386493+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 148,
+      "deal_id": 45,
+      "type": "Note",
+      "summary": "Status: In Dialogue \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-08-28T21:02:19.457012+00:00",
+      "synced_to_sf": 0,
+      "user": "Trey"
+    },
+    {
+      "id": 149,
+      "deal_id": 46,
+      "type": "Note",
+      "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
+      "detail": "",
+      "timestamp": "2026-07-10T00:01:38.935704+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 150,
+      "deal_id": 46,
+      "type": "Note",
+      "summary": "Status: New \u2192 Revisit Later",
+      "detail": "",
+      "timestamp": "2026-07-14T19:18:02.827449+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 151,
+      "deal_id": 47,
+      "type": "Note",
+      "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
+      "detail": "",
+      "timestamp": "2026-07-10T00:01:39.538111+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 152,
+      "deal_id": 47,
+      "type": "Note",
+      "summary": "Status: New \u2192 Closed \u2013 No Response",
+      "detail": "",
+      "timestamp": "2026-07-14T20:32:03.793432+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 153,
+      "deal_id": 48,
+      "type": "Note",
+      "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
+      "detail": "",
+      "timestamp": "2026-07-10T00:01:45.900970+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 154,
+      "deal_id": 48,
+      "type": "Email",
+      "summary": "Email responded. Two sons who went to Alpine. Daughter studying at LSE this summer",
+      "detail": "",
+      "timestamp": "2026-07-10T13:17:40.618472+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 155,
+      "deal_id": 48,
+      "type": "Note",
+      "summary": "Status: New \u2192 Outreach Active",
+      "detail": "",
+      "timestamp": "2026-07-10T13:57:26.019331+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 156,
+      "deal_id": 48,
+      "type": "Note",
+      "summary": "Created Email reminder for 2026-07-10 14:30",
+      "detail": "",
+      "timestamp": "2026-07-10T13:58:03.099750+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 157,
+      "deal_id": 48,
+      "type": "Note",
+      "summary": "Created Call reminder for 2026-07-10 14:45",
+      "detail": "",
+      "timestamp": "2026-07-10T13:58:24.459867+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 158,
+      "deal_id": 48,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Closed \u2013 No Response",
+      "detail": "",
+      "timestamp": "2026-07-14T19:38:14.272436+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 159,
+      "deal_id": 49,
+      "type": "Note",
+      "summary": "Imported from past search \u2014 you marked this one \ud83d\udc4d Interested",
+      "detail": "",
+      "timestamp": "2026-07-10T00:01:45.918690+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 160,
+      "deal_id": 49,
+      "type": "Note",
+      "summary": "Status: New \u2192 In Dialogue",
+      "detail": "",
+      "timestamp": "2026-07-10T13:16:56.055320+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 161,
+      "deal_id": 49,
+      "type": "Email",
+      "summary": "Two sons who went to Alpine. Daughter studying at LSE this summer",
+      "detail": "",
+      "timestamp": "2026-07-10T13:51:31.671829+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 162,
+      "deal_id": 49,
+      "type": "Call",
+      "summary": "Great call with Betsy. Really interesting business.",
+      "detail": "",
+      "timestamp": "2026-07-20T20:23:54.187453+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 163,
+      "deal_id": 49,
+      "type": "Note",
+      "summary": "Status: In Dialogue \u2192 Revisit Later",
+      "detail": "",
+      "timestamp": "2026-07-20T20:24:08.522454+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 164,
+      "deal_id": 49,
+      "type": "Note",
+      "summary": "Created Email reminder for 2026-09-04 09:00, monthly \u00d718",
+      "detail": "",
+      "timestamp": "2026-07-20T20:24:52.121763+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 165,
+      "deal_id": 50,
+      "type": "Note",
+      "summary": "Imported from past search",
+      "detail": "",
+      "timestamp": "2026-07-10T00:01:45.936627+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 166,
+      "deal_id": 50,
+      "type": "Note",
+      "summary": "Status: New \u2192 Outreach Active",
+      "detail": "",
+      "timestamp": "2026-07-10T13:59:04.732825+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 167,
+      "deal_id": 50,
+      "type": "Note",
+      "summary": "Created Call reminder for 2026-07-11 14:45",
+      "detail": "",
+      "timestamp": "2026-07-10T13:59:41.672287+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 168,
+      "deal_id": 50,
+      "type": "Note",
+      "summary": "Created Email reminder for 2026-07-11 14:45",
+      "detail": "",
+      "timestamp": "2026-07-10T14:13:35.130992+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 169,
+      "deal_id": 50,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Closed \u2013 No Response",
+      "detail": "",
+      "timestamp": "2026-08-10T15:30:44.647150+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 170,
+      "deal_id": 50,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: Closed \u2013 No Response (2026-08-10)",
+      "detail": "",
+      "timestamp": "2026-08-14T22:34:59.942662+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 171,
+      "deal_id": 51,
+      "type": "Note",
+      "summary": "Imported from feedback log (\ud83d\udc4d Interested)",
+      "detail": "Interested \u2014 wants to pursue",
+      "timestamp": "2026-07-10T00:01:46.437623+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 172,
+      "deal_id": 51,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-07-10T13:16:26.726693+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 173,
+      "deal_id": 52,
+      "type": "Note",
+      "summary": "Imported from feedback log (\ud83d\udc4d Interested)",
+      "detail": "Interested \u2014 wants to pursue",
+      "timestamp": "2026-07-10T00:01:46.453803+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 174,
+      "deal_id": 52,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-07-10T13:16:11.470704+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 175,
+      "deal_id": 53,
+      "type": "Note",
+      "summary": "Imported from feedback log (\ud83d\udc4d Interested)",
+      "detail": "Interested \u2014 wants to pursue",
+      "timestamp": "2026-07-10T00:01:46.469154+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 176,
+      "deal_id": 53,
+      "type": "Note",
+      "summary": "Follow-up set for 2026-07-17",
+      "detail": "",
+      "timestamp": "2026-07-10T00:03:50.133937+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 177,
+      "deal_id": 53,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-07-10T00:20:37.137463+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 178,
+      "deal_id": 53,
+      "type": "Note",
+      "summary": "Status: Not a Fit \u2192 Contacted \u2013 No Opportunity",
+      "detail": "",
+      "timestamp": "2026-07-10T13:14:58.570563+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 179,
+      "deal_id": 54,
+      "type": "Note",
+      "summary": "Investment memo generated",
+      "detail": "",
+      "timestamp": "2026-07-10T14:28:42.184478+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 180,
+      "deal_id": 54,
+      "type": "Note",
+      "summary": "Added to Salesforce",
+      "detail": "",
+      "timestamp": "2026-07-12T17:49:05.603592+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 181,
+      "deal_id": 54,
+      "type": "Email",
+      "summary": "Drafted outreach email: cic services",
+      "detail": "",
+      "timestamp": "2026-07-12T17:49:13.451547+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 182,
+      "deal_id": 54,
+      "type": "Email",
+      "summary": "Outreach email logged to Salesforce: cic services",
+      "detail": "",
+      "timestamp": "2026-07-12T17:50:00.276332+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 183,
+      "deal_id": 54,
+      "type": "Note",
+      "summary": "Downloaded follow-up calendar reminders",
+      "detail": "",
+      "timestamp": "2026-07-12T17:50:02.987213+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 184,
+      "deal_id": 54,
+      "type": "Note",
+      "summary": "Marked \ud83d\udc4d Interested in memo review",
+      "detail": "",
+      "timestamp": "2026-07-12T18:00:38.812899+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 185,
+      "deal_id": 54,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-07-14T19:16:56.118146+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 186,
+      "deal_id": 54,
+      "type": "Email",
+      "summary": "Drafted outreach email: cic",
+      "detail": "",
+      "timestamp": "2026-07-15T22:34:16.346270+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 187,
+      "deal_id": 54,
+      "type": "Note",
+      "summary": "Downloaded follow-up calendar reminders",
+      "detail": "",
+      "timestamp": "2026-07-15T22:34:19.942263+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 188,
+      "deal_id": 54,
+      "type": "Note",
+      "summary": "Status: Not a Fit \u2192 New",
+      "detail": "",
+      "timestamp": "2026-07-21T23:13:00.596944+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 189,
+      "deal_id": 54,
+      "type": "Note",
+      "summary": "Status: New \u2192 Contacted \u2013 No Opportunity",
+      "detail": "",
+      "timestamp": "2026-07-21T23:13:47.666062+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 190,
+      "deal_id": 55,
+      "type": "Note",
+      "summary": "Investment memo generated",
+      "detail": "",
+      "timestamp": "2026-07-10T15:20:22.529054+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 191,
+      "deal_id": 55,
+      "type": "Email",
+      "summary": "Drafted outreach email: risk",
+      "detail": "",
+      "timestamp": "2026-07-12T18:04:14.178173+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 192,
+      "deal_id": 55,
+      "type": "Email",
+      "summary": "Drafted outreach email: risk",
+      "detail": "",
+      "timestamp": "2026-07-12T18:05:25.799543+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 193,
+      "deal_id": 55,
+      "type": "Note",
+      "summary": "Downloaded follow-up calendar reminders",
+      "detail": "",
+      "timestamp": "2026-07-12T18:05:31.295331+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 194,
+      "deal_id": 55,
+      "type": "Note",
+      "summary": "Marked \ud83d\udc4d Interested in memo review",
+      "detail": "",
+      "timestamp": "2026-07-12T18:08:19.404447+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 195,
+      "deal_id": 55,
+      "type": "Note",
+      "summary": "Downloaded follow-up calendar reminders",
+      "detail": "",
+      "timestamp": "2026-07-12T18:12:04.583553+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 196,
+      "deal_id": 55,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-07-14T19:14:18.001759+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 197,
+      "deal_id": 55,
+      "type": "Note",
+      "summary": "Status: Not a Fit \u2192 New",
+      "detail": "",
+      "timestamp": "2026-07-14T19:14:39.569974+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 198,
+      "deal_id": 55,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-07-14T19:14:59.074240+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 199,
+      "deal_id": 56,
+      "type": "Note",
+      "summary": "Promoted from Worth a Second Look \u2014 memo generated",
+      "detail": "",
+      "timestamp": "2026-07-11T15:27:34.506418+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 200,
+      "deal_id": 56,
+      "type": "Note",
+      "summary": "Added to Salesforce",
+      "detail": "",
+      "timestamp": "2026-07-12T18:11:14.432597+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 201,
+      "deal_id": 56,
+      "type": "Email",
+      "summary": "Drafted outreach email: robert",
+      "detail": "",
+      "timestamp": "2026-07-12T18:11:19.012928+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 202,
+      "deal_id": 56,
+      "type": "Email",
+      "summary": "Outreach email logged to Salesforce: robert",
+      "detail": "",
+      "timestamp": "2026-07-12T18:11:23.590002+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 203,
+      "deal_id": 56,
+      "type": "Note",
+      "summary": "Downloaded follow-up calendar reminders",
+      "detail": "",
+      "timestamp": "2026-07-12T18:11:28.768579+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 204,
+      "deal_id": 56,
+      "type": "Note",
+      "summary": "Marked \ud83d\udc4d Interested in memo review",
+      "detail": "",
+      "timestamp": "2026-07-12T18:11:33.860219+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 205,
+      "deal_id": 56,
+      "type": "Note",
+      "summary": "Status: New \u2192 Meeting Scheduled",
+      "detail": "",
+      "timestamp": "2026-07-12T21:11:26.753802+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 206,
+      "deal_id": 56,
+      "type": "Note",
+      "summary": "Created Email reminder for 2026-09-18 09:00, monthly \u00d718",
+      "detail": "",
+      "timestamp": "2026-07-21T23:07:14.998441+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 207,
+      "deal_id": 56,
+      "type": "Note",
+      "summary": "Status: Meeting Scheduled \u2192 Opportunity",
+      "detail": "",
+      "timestamp": "2026-07-23T21:52:22.277302+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 208,
+      "deal_id": 57,
+      "type": "Note",
+      "summary": "Investment memo generated",
+      "detail": "",
+      "timestamp": "2026-07-20T21:51:48.248221+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 209,
+      "deal_id": 57,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-07-27T22:48:11.783945+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 210,
+      "deal_id": 58,
+      "type": "Note",
+      "summary": "Promoted from Worth a Second Look \u2014 memo generated",
+      "detail": "",
+      "timestamp": "2026-07-23T18:51:22.812113+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 211,
+      "deal_id": 58,
+      "type": "Email",
+      "summary": "Drafted outreach email: impact of aging in cleveland",
+      "detail": "",
+      "timestamp": "2026-07-27T16:07:07.454848+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 212,
+      "deal_id": 58,
+      "type": "Note",
+      "summary": "Downloaded follow-up calendar reminders",
+      "detail": "",
+      "timestamp": "2026-07-27T16:07:14.704069+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 213,
+      "deal_id": 58,
+      "type": "Note",
+      "summary": "Marked \ud83d\udc4d Interested in memo review",
+      "detail": "",
+      "timestamp": "2026-07-27T16:07:42.207226+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 214,
+      "deal_id": 58,
+      "type": "Note",
+      "summary": "Marked \ud83d\udc4d Interested in memo review",
+      "detail": "",
+      "timestamp": "2026-07-27T16:41:14.772091+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 215,
+      "deal_id": 58,
+      "type": "Note",
+      "summary": "Marked \ud83d\udc4d Interested in memo review",
+      "detail": "",
+      "timestamp": "2026-07-27T22:46:20.709422+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 216,
+      "deal_id": 58,
+      "type": "Note",
+      "summary": "Status: New \u2192 Outreach Active",
+      "detail": "",
+      "timestamp": "2026-07-27T22:46:54.482579+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 217,
+      "deal_id": 58,
+      "type": "Call",
+      "summary": "left VM.",
+      "detail": "",
+      "timestamp": "2026-08-10T15:08:47.624080+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 218,
+      "deal_id": 58,
+      "type": "Email",
+      "summary": "sent follow up email",
+      "detail": "",
+      "timestamp": "2026-08-10T15:09:02.906580+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 219,
+      "deal_id": 58,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Closed \u2013 No Response",
+      "detail": "",
+      "timestamp": "2026-08-10T15:27:20.412306+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 220,
+      "deal_id": 58,
+      "type": "Note",
+      "summary": "Status: Closed \u2013 No Response \u2192 New",
+      "detail": "",
+      "timestamp": "2026-08-13T19:35:20.241519+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 221,
+      "deal_id": 58,
+      "type": "Note",
+      "summary": "Status: New \u2192 In Dialogue",
+      "detail": "",
+      "timestamp": "2026-08-13T19:35:40.753874+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 222,
+      "deal_id": 58,
+      "type": "Note",
+      "summary": "Status: In Dialogue \u2192 Meeting Scheduled",
+      "detail": "",
+      "timestamp": "2026-08-13T19:35:50.326600+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 223,
+      "deal_id": 58,
+      "type": "Note",
+      "summary": "Status: Meeting Scheduled \u2192 Revisit Later",
+      "detail": "",
+      "timestamp": "2026-08-24T14:49:46.705629+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 224,
+      "deal_id": 58,
+      "type": "Call",
+      "summary": "Great call. Good conversation. Not now",
+      "detail": "",
+      "timestamp": "2026-08-24T14:50:11.839363+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 225,
+      "deal_id": 58,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: Call (2026-08-24)",
+      "detail": "",
+      "timestamp": "2026-08-25T16:18:57.380301+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 226,
+      "deal_id": 59,
+      "type": "Note",
+      "summary": "Promoted from Worth a Second Look \u2014 memo generated",
+      "detail": "",
+      "timestamp": "2026-08-10T21:24:53.750767+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 227,
+      "deal_id": 59,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-08-10T22:28:14.506025+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 228,
+      "deal_id": 60,
+      "type": "Note",
+      "summary": "Investment memo generated",
+      "detail": "",
+      "timestamp": "2026-08-10T21:33:18.078135+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 229,
+      "deal_id": 60,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-08-10T22:26:26.182156+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 230,
+      "deal_id": 61,
+      "type": "Note",
+      "summary": "Investment memo generated",
+      "detail": "",
+      "timestamp": "2026-08-10T21:39:02.237044+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 231,
+      "deal_id": 61,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-08-10T22:26:48.605883+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 232,
+      "deal_id": 62,
+      "type": "Note",
+      "summary": "Promoted from Worth a Second Look \u2014 memo generated",
+      "detail": "",
+      "timestamp": "2026-08-10T22:23:03.196843+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 233,
+      "deal_id": 62,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-08-14T21:49:01.121255+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 234,
+      "deal_id": 63,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-11)",
+      "detail": "",
+      "timestamp": "2026-08-14T22:34:59.709525+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 235,
+      "deal_id": 64,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: LinkedIn - No email (2026-08-11)",
+      "detail": "",
+      "timestamp": "2026-08-14T22:34:59.737107+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 236,
+      "deal_id": 64,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-08-28T20:26:08.982509+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 237,
+      "deal_id": 64,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker \u2014 Note: Status: Outreach Active \u2192 Not a Fit (2026-08-28)",
+      "detail": "",
+      "timestamp": "2026-08-28T21:03:07.107740+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 238,
+      "deal_id": 65,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-11)",
+      "detail": "",
+      "timestamp": "2026-08-14T22:34:59.788314+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 239,
+      "deal_id": 65,
+      "type": "Email",
+      "summary": "emailed michael stoddard",
+      "detail": "",
+      "timestamp": "2026-08-28T20:25:31.848754+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 240,
       "deal_id": 65,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker \u2014 Email: emailed michael stoddard (2026-08-28)",
@@ -4483,7 +4227,37 @@
       "user": null
     },
     {
-      "id": 269,
+      "id": 241,
+      "deal_id": 66,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-11)",
+      "detail": "",
+      "timestamp": "2026-08-14T22:34:59.814323+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 242,
+      "deal_id": 66,
+      "type": "Email",
+      "summary": "sent follow up",
+      "detail": "",
+      "timestamp": "2026-08-28T20:22:21.783395+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 243,
+      "deal_id": 66,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Contacted \u2013 No Opportunity",
+      "detail": "",
+      "timestamp": "2026-08-28T20:44:51.633485+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 244,
       "deal_id": 66,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker \u2014 Email: sent follow up (2026-08-28)",
@@ -4493,27 +4267,147 @@
       "user": null
     },
     {
-      "id": 270,
-      "deal_id": 73,
+      "id": 245,
+      "deal_id": 67,
       "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: Not a Fit (2026-08-28)",
+      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-11)",
       "detail": "",
-      "timestamp": "2026-08-28T21:03:07.237742+00:00",
+      "timestamp": "2026-08-14T22:34:59.844648+00:00",
       "synced_to_sf": 1,
       "user": null
     },
     {
-      "id": 271,
-      "deal_id": 74,
+      "id": 246,
+      "deal_id": 67,
       "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: Outreach Active (2026-08-28)",
+      "summary": "Status: Outreach Active \u2192 In Dialogue",
       "detail": "",
-      "timestamp": "2026-08-28T21:03:07.262213+00:00",
+      "timestamp": "2026-08-25T19:31:24.738343+00:00",
       "synced_to_sf": 1,
       "user": null
     },
     {
-      "id": 272,
+      "id": 247,
+      "deal_id": 67,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: In Dialogue (2026-08-25)",
+      "detail": "",
+      "timestamp": "2026-08-27T13:09:27.083049+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 248,
+      "deal_id": 68,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: Call (2026-08-14)",
+      "detail": "",
+      "timestamp": "2026-08-14T22:34:59.867800+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 249,
+      "deal_id": 68,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Meeting Scheduled",
+      "detail": "",
+      "timestamp": "2026-08-25T19:31:58.648659+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 250,
+      "deal_id": 68,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: Meeting Scheduled (2026-08-25)",
+      "detail": "",
+      "timestamp": "2026-08-27T13:09:27.101741+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 251,
+      "deal_id": 69,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: Email (2026-08-14)",
+      "detail": "",
+      "timestamp": "2026-08-14T22:34:59.892368+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 252,
+      "deal_id": 69,
+      "type": "Email",
+      "summary": "followed up on my nda redline comments",
+      "detail": "",
+      "timestamp": "2026-08-20T16:46:07.179077+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 253,
+      "deal_id": 69,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 In Dialogue",
+      "detail": "",
+      "timestamp": "2026-08-25T19:30:34.406843+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 254,
+      "deal_id": 69,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker \u2014 Note: Status: Outreach Active \u2192 In Dialogue (2026-08-25)",
+      "detail": "",
+      "timestamp": "2026-08-27T13:09:27.133134+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 255,
+      "deal_id": 70,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-04)",
+      "detail": "",
+      "timestamp": "2026-08-14T22:34:59.916008+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 256,
+      "deal_id": 70,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 In Dialogue",
+      "detail": "",
+      "timestamp": "2026-08-25T19:30:54.736670+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 257,
+      "deal_id": 70,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: In Dialogue (2026-08-25)",
+      "detail": "",
+      "timestamp": "2026-08-27T13:09:27.167248+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 258,
+      "deal_id": 70,
+      "type": "Email",
+      "summary": "sent another follow up",
+      "detail": "",
+      "timestamp": "2026-08-28T20:28:13.567310+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 259,
       "deal_id": 70,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: In Dialogue (2026-08-28)",
@@ -4523,13 +4417,153 @@
       "user": null
     },
     {
-      "id": 273,
+      "id": 260,
+      "deal_id": 71,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-11)",
+      "detail": "",
+      "timestamp": "2026-08-14T22:35:00.097786+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 261,
+      "deal_id": 71,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Contacted \u2013 No Opportunity",
+      "detail": "",
+      "timestamp": "2026-08-28T20:13:23.490028+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 262,
       "deal_id": 71,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: Contacted \u2013 No Opportunity (2026-08-28)",
       "detail": "",
       "timestamp": "2026-08-28T21:03:07.313922+00:00",
       "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 263,
+      "deal_id": 72,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-25)",
+      "detail": "",
+      "timestamp": "2026-08-25T16:18:57.357529+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 264,
+      "deal_id": 72,
+      "type": "Email",
+      "summary": "f/u email sent",
+      "detail": "",
+      "timestamp": "2026-08-28T20:17:14.678690+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 265,
+      "deal_id": 72,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: Outreach Active (2026-08-28)",
+      "detail": "",
+      "timestamp": "2026-08-28T21:03:07.077584+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 266,
+      "deal_id": 73,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-25)",
+      "detail": "",
+      "timestamp": "2026-08-25T19:23:51.591895+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 267,
+      "deal_id": 73,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-08-28T20:15:34.429954+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 268,
+      "deal_id": 73,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: Not a Fit (2026-08-28)",
+      "detail": "",
+      "timestamp": "2026-08-28T21:03:07.237742+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 269,
+      "deal_id": 74,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email and linkedin (2026-08-25)",
+      "detail": "",
+      "timestamp": "2026-08-25T19:23:51.614045+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 270,
+      "deal_id": 74,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: Outreach Active (2026-08-28)",
+      "detail": "",
+      "timestamp": "2026-08-28T21:03:07.262213+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 271,
+      "deal_id": 75,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-26)",
+      "detail": "",
+      "timestamp": "2026-08-27T13:09:27.063243+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 272,
+      "deal_id": 75,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Contacted \u2013 No Opportunity",
+      "detail": "",
+      "timestamp": "2026-08-27T13:32:38.784566+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 273,
+      "deal_id": 75,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker \u2014 Note: Status: Outreach Active \u2192 Contacted \u2013 No Opportunity (2026-08-27)",
+      "detail": "",
+      "timestamp": "2026-08-28T21:03:07.133235+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 274,
+      "deal_id": 76,
+      "type": "Note",
+      "summary": "Promoted from Worth a Second Look \u2014 memo generated",
+      "detail": "",
+      "timestamp": "2026-08-31T13:57:44.368963+00:00",
+      "synced_to_sf": 0,
       "user": null
     }
   ]
