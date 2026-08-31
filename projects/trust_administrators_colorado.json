@@ -12254,7 +12254,45 @@
     }
   ],
   "qualified_queue": [],
-  "completed_memos": [],
+  "completed_memos": [
+    {
+      "company": "Trustee Services Group",
+      "row": {
+        "Company": "Trustee Services Group",
+        "Description": "Trustee Services Group specializes in providing trustee and estate fiduciary services, focusing on family wealth management and legacy development. They work collaboratively with families and their advisory teams to navigate the complexities of wealth transfer and estate planning using a customized, open architecture model.",
+        "Website": "http://www.trusteeservicesgroup.com",
+        "City": "Colorado Springs",
+        "State": "Colorado",
+        "LinkedIn": "http://www.linkedin.com/company/trustee-services-group-llc",
+        "Employees": 30,
+        "Est. EBITDA": "$900K\u2013$1.5M",
+        "CEO/Owner Name": "Gregory Schupra",
+        "Title": "N/A",
+        "Email": "N/A",
+        "Email Estimate": "gregorys@trusteeservicesgroup.com",
+        "Phone": "N/A",
+        "Source": "Web Path (/team)",
+        "Notes": "",
+        "Confidence": "Medium",
+        "Latest News": "Governor Polis, Colorado Springs Mayor Mobolade and CPW Announce Cheyenne Mountain State Park Expansion, Sign New Recreation Agreement to Increase Camping and Boating | Colorado Governor Jared Polis - Colorado Governor's Office (.gov) | https://news.google.com/rss/articles/CBMi2gFBVV95cUxOYUpPZUVFMUF6UXV4UXFaSkxReEFmVHFOZGY4SHpPWlpTSFIxWm1PWmZiZ1hoeW5ENFlndHphVWY0SEM4VGN3Ynlndm85cHRqUzBOSFlPSlZ2QWFuVGROSHF0ei1oNElTZDBBdGhsZ3lPc0lEN2FvLWdqRUlXay0yVGJMQ3hwbHdQQV9xR0wwNk9YS285ekdMR2VpYm52UkNsbHlWOGtJWFV6ZjFycC1UMmFXT3F5dkhVOW50eE13UllZOEtydW0yNGlITTRNZmhsS2VmbWRMVC1fUQ?oc=5",
+        "Previously Sourced": "No",
+        "Differentiated": "Medium",
+        "_niche": "Trustee administrators\n\nEXCLUDE these types of companies: Wealth advisors",
+        "Priority": "Low",
+        "Growth": "Medium",
+        "Txn Readiness": "Medium",
+        "Priority Confidence": "High",
+        "Growth Confidence": "Medium",
+        "Txn Readiness Confidence": "Medium",
+        "Differentiated Confidence": "Medium",
+        "Conviction": 4,
+        "Conviction Pitch": "Trustee Services Group offers customized fiduciary services with a focus on family wealth management and estate planning. While the company operates in a growing market due to increasing demand for wealth transfer solutions, its differentiation is only medium and lacks a clear 'right to win' against competitors. Moreover, their business model does not strongly align with NCP's preference for companies with specific recurring revenues or unique services, making it less compelling to pursue.",
+        "Conviction Reasoning": "The company's focus on trustee and estate services overlaps with the types that NCP typically avoids, and it does not stand out significantly from peers in differentiation or growth potential."
+      },
+      "memo": "**Investment Memorandum: Trustee Services Group (TSG)**\n\n**Why We're Excited**\n\nTrustee Services Group operates within a robust and growing estate planning market propelled by secular trends such as increasing demand for family wealth management due to an aging population. While TSG's current differentiation is medium, the company is positioned in a fragmented regional market with limited direct competition, presenting potential for strategic expansion. The founder's anticipated retirement offers a natural succession opportunity, aligning with NCP's buy-and-build strategy.\n\n**Company Overview**\n\nTrustee Services Group, headquartered in Colorado Springs, CO, is a specialized provider of trustee and estate fiduciary services. With an estimated EBITDA range of $900K\u2013$1.5M (subject to confirmation), and employing 30 staff members, TSG helps families manage wealth transfer and legacy planning through a personalized, open architecture model.\n\n**Differentiated Value Proposition**\n\nTSG's medium differentiation stems from its emphasis on customized service offerings, which cater to the unique needs of families in estate planning and wealth management. The business currently lacks a distinct proprietary moat, such as intellectual property or certifications, which diminishes its 'right to win' compared to some competitors with more defensible positions.\n\n**Market Opportunity & Growth**\n\nThe estate planning and fiduciary services market exhibits strong growth potential backed by favorable demographics, including an aging population seeking solutions for wealth transfer. As part of a broader $100 billion estate planning service industry, TSG serves a niche segment ripe for development. Additional growth levers include broadening service offerings and extending geographical reach within the Western U.S. market.\n\n**NCP Fit Rationale**\n\nTSG fits within NCP's lower middle market and founder-owned thesis due to its manageable scale and succession opportunity presented by the founder's pending retirement. Although current recurring revenue streams and differentiation are limited, the market's growth potential and TSG's regional presence offer attractive angles for expansion and consolidation in a fragmented market.\n\n**Key Risks & Diligence Items**\n\n1. **EBITDA Confirmation**: Validate TSG's EBITDA range with detailed financial audits.\n2. **Differentiation Strategy**: Assess opportunities to bolster TSG's competitive advantage through potential certifications or unique service lines.\n3. **Recurring Revenue Streams**: Evaluate the feasibility of instituting additional recurring revenues such as subscription models or managed services.\n4. **Market Dynamics**: Investigate local competitive landscape and potential for regulatory changes affecting fiduciary services.\n5. **Succession Planning**: Confirm the founder's transition plans and the readiness of the management team to take over operations.\n\nThe evaluation of Trustee Services Group reveals potential within a growing market; however, critical diligence is necessary to uncover a compelling 'right to win' and solidify the fit with NCP's investment strategy.",
+      "promoted_from_near_miss": true
+    }
+  ],
   "chat_history": [
     {
       "role": "user",
