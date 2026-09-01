@@ -242,6 +242,6 @@
     "geography": "Colorado",
     "memo_count": 1,
     "active": true,
-    "status": "running"
+    "status": "stopped"
   }
 ]
