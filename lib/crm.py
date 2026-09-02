@@ -27,6 +27,7 @@ STATUSES = [
     "Meeting Scheduled",
     "Opportunity",
     "Revisit Later",
+    "Leads to Trade with Bankers",
     "Closed – No Response",
     "Contacted – No Opportunity",
     "Not a Fit",
@@ -38,7 +39,9 @@ TERMINAL_STATUSES = {
     "Not a Fit",
 }
 
-# Days of inactivity before a deal shows up in "Needs Attention"
+# Days of inactivity before a deal shows up in "Needs Attention".
+# "Leads to Trade with Bankers" is intentionally absent — it's a parking
+# lot for banker swaps and never nudges (a set follow-up date still does).
 ATTENTION_RULES = {
     "New": 3,
     "Outreach Active": 5,
@@ -104,6 +107,11 @@ def init_db():
                     conn.execute("PRAGMA table_info(activities)").fetchall()}
         if "user" not in act_cols:
             conn.execute("ALTER TABLE activities ADD COLUMN user TEXT")
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS crm_meta (
+                key TEXT PRIMARY KEY,
+                value TEXT
+            )""")
         conn.commit()
     finally:
         conn.close()
@@ -323,6 +331,30 @@ def mark_activities_synced(activity_ids):
             f"WHERE id IN ({','.join('?' * len(activity_ids))})",
             activity_ids,
         )
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def get_meta(key, default=None):
+    init_db()
+    conn = _connect()
+    try:
+        r = conn.execute("SELECT value FROM crm_meta WHERE key = ?",
+                         (key,)).fetchone()
+        return r["value"] if r else default
+    finally:
+        conn.close()
+
+
+def set_meta(key, value):
+    init_db()
+    conn = _connect()
+    try:
+        conn.execute(
+            "INSERT INTO crm_meta (key, value) VALUES (?, ?) "
+            "ON CONFLICT(key) DO UPDATE SET value = excluded.value",
+            (key, value))
         conn.commit()
     finally:
         conn.close()
@@ -626,7 +658,8 @@ def export_crm_to_json():
     try:
         deals = [dict(r) for r in conn.execute("SELECT * FROM deals").fetchall()]
         acts = [dict(r) for r in conn.execute("SELECT * FROM activities").fetchall()]
-        return {"deals": deals, "activities": acts}
+        meta = [dict(r) for r in conn.execute("SELECT * FROM crm_meta").fetchall()]
+        return {"deals": deals, "activities": acts, "meta": meta}
     finally:
         conn.close()
 
@@ -653,6 +686,11 @@ def import_crm_from_json(data):
                 f"VALUES ({','.join('?' * len(cols))})",
                 [a[c] for c in cols],
             )
+        for m in data.get("meta") or []:
+            if m.get("key"):
+                conn.execute(
+                    "INSERT OR IGNORE INTO crm_meta (key, value) VALUES (?, ?)",
+                    (m["key"], m.get("value")))
         conn.commit()
         return True
     finally:
@@ -749,6 +787,13 @@ def merge_crm_export(data, adopt_status=False):
                          a.get("synced_to_sf") or 0, a.get("user")),
                     )
                     result["activities_added"] += 1
+
+        # meta: fill only keys we don't already have locally
+        for m in data.get("meta") or []:
+            if m.get("key"):
+                conn.execute(
+                    "INSERT OR IGNORE INTO crm_meta (key, value) VALUES (?, ?)",
+                    (m["key"], m.get("value")))
         conn.commit()
     finally:
         conn.close()

@@ -53,6 +53,7 @@ STATUS_ICONS = {
     "Meeting Scheduled": "📅",
     "Opportunity": "⭐",
     "Revisit Later": "⏰",
+    "Leads to Trade with Bankers": "🤝",
     "Closed – No Response": "🔇",
     "Contacted – No Opportunity": "🚫",
     "Not a Fit": "❌",
@@ -493,6 +494,73 @@ if not st.session_state.get("_crm_concurrency_ack"):
 # Needs Attention
 # ---------------------------------------------------------------------------
 attention = crm.deals_needing_attention()
+
+# ── Weekly attention digest: one calendar invite, at most once a week ─
+# When deals need attention and a week has passed since the last digest,
+# generate ONE invite listing them all, announce it in a popup, and
+# auto-download it (with a manual button as backup).
+if attention:
+    _last_digest = crm.get_meta("last_weekly_digest")
+    _digest_due = True
+    if _last_digest:
+        try:
+            _digest_due = (date.today()
+                           - date.fromisoformat(_last_digest[:10])).days >= 7
+        except (ValueError, TypeError):
+            _digest_due = True
+    if _digest_due and not st.session_state.get("_digest_shown"):
+        st.session_state["_digest_shown"] = True
+        crm.set_meta("last_weekly_digest", date.today().isoformat())
+        crm.backup_to_github()
+        from lib.outreach import generate_attention_digest_ics
+        _digest_ics = generate_attention_digest_ics(attention)
+        _digest_name = f"pipeline_review_{date.today().isoformat()}.ics"
+
+        def _render_digest_notice():
+            st.info(
+                f"📅 **Your weekly pipeline review invite is downloading.** "
+                f"{len(attention)} deal(s) need attention this week — "
+                f"they're all listed in the invite body. Open the "
+                f"downloaded file to add the review block to Outlook. "
+                f"(This happens at most once a week.)"
+            )
+            # Attempt the automatic download via a hidden anchor click
+            try:
+                import base64
+                import streamlit.components.v1 as _components
+                _b64 = base64.b64encode(_digest_ics.encode()).decode()
+                _components.html(
+                    f"""<script>
+                    const a = document.createElement('a');
+                    a.href = 'data:text/calendar;base64,{_b64}';
+                    a.download = '{_digest_name}';
+                    document.body.appendChild(a);
+                    a.click();
+                    </script>""",
+                    height=0,
+                )
+            except Exception:
+                pass
+            st.download_button(
+                "⬇️ Download it manually (if it didn't start)",
+                data=_digest_ics,
+                file_name=_digest_name,
+                mime="text/calendar",
+                key="_digest_manual_dl",
+                use_container_width=True,
+            )
+
+        if hasattr(st, "dialog"):
+            @st.dialog("📅 Weekly Pipeline Review")
+            def _digest_dialog():
+                _render_digest_notice()
+                if st.button("Continue", use_container_width=True,
+                             key="_digest_continue"):
+                    st.rerun()
+            _digest_dialog()
+        else:
+            with st.container(border=True):
+                _render_digest_notice()
 if attention:
     with st.container(border=True):
         st.markdown(f"### 🔔 Needs Attention ({len(attention)})")
