@@ -1,7 +1,7 @@
 """AI-powered outreach email drafting, mailto link, and follow-up calendar generation."""
 
 import json
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from urllib.parse import quote
 from textwrap import dedent
 
@@ -404,6 +404,73 @@ def generate_custom_reminder_ics(company, action_type, start_dt,
         "END:VCALENDAR",
     ]
     return "\r\n".join(lines)
+
+
+def _ics_escape(text):
+    """Escape a string for use in an ICS text field (RFC 5545)."""
+    return (str(text or "")
+            .replace("\\", "\\\\")
+            .replace(";", "\\;")
+            .replace(",", "\\,")
+            .replace("\n", "\\n"))
+
+
+def generate_attention_digest_ics(attention_deals, start_dt=None,
+                                  duration_minutes=30):
+    """One weekly 'Pipeline Review' invite listing every deal that needs
+    attention, with the reason and last touch for each in the body.
+
+    Args:
+        attention_deals: deals from crm.deals_needing_attention()
+                         (each carries company, status, attention_reason,
+                         last_activity/created_at).
+        start_dt: event start (naive local). Defaults to the next
+                  business day at 8:30 AM.
+    Returns the .ics content as a string.
+    """
+    if start_dt is None:
+        d = date.today() + timedelta(days=1)
+        while d.weekday() >= 5:          # skip weekend
+            d += timedelta(days=1)
+        start_dt = datetime(d.year, d.month, d.day, 8, 30)
+    end_dt = start_dt + timedelta(minutes=duration_minutes)
+
+    def _fmt(dt):
+        return dt.strftime("%Y%m%dT%H%M%S")
+
+    lines_body = [
+        f"NCP Deal Tracker weekly review — {len(attention_deals)} "
+        f"deal(s) need attention:", ""]
+    for d in attention_deals:
+        last = (d.get("last_activity") or d.get("created_at") or "")[:10]
+        lines_body.append(
+            f"• {d.get('company', '?')} [{d.get('status', '?')}] — "
+            f"{d.get('attention_reason', 'needs a touch')}"
+            f" (last touch: {last or 'never'})")
+    lines_body += ["", "Open the Deal Tracker to work the list."]
+    desc = _ics_escape("\n".join(lines_body))
+
+    uid = f"ncp-weekly-digest-{start_dt.strftime('%Y%m%d')}@ncpengine"
+    ics = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//NCP//Deal Tracker//EN",
+        "METHOD:PUBLISH",
+        "BEGIN:VEVENT",
+        f"UID:{uid}",
+        f"DTSTART:{_fmt(start_dt)}",
+        f"DTEND:{_fmt(end_dt)}",
+        f"SUMMARY:NCP Pipeline Review — {len(attention_deals)} deals need attention",
+        f"DESCRIPTION:{desc}",
+        "BEGIN:VALARM",
+        "TRIGGER:-PT15M",
+        "ACTION:DISPLAY",
+        "DESCRIPTION:Weekly pipeline review in 15 minutes",
+        "END:VALARM",
+        "END:VEVENT",
+        "END:VCALENDAR",
+    ]
+    return "\r\n".join(ics)
 
 
 def generate_followup_ics(company, contact_name, phone="", email="",
