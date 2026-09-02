@@ -2,13 +2,22 @@ import json
 import streamlit as st
 from datetime import datetime, date, time as dtime, timedelta, timezone
 
-from lib import crm
-
-# Self-heal after a partial redeploy: if the server cached an older
-# lib.crm module that predates functions this page calls, reload it.
-if not hasattr(crm, "sync_with_github_backup"):
-    import importlib
+# Self-heal after a partial redeploy: Streamlit can serve new page code
+# alongside stale cached lib modules that lack newly added functions.
+# Verify every newer symbol this page relies on and reload when any is
+# missing — BEFORE the from-imports below, so they bind fresh objects.
+import importlib
+import lib.crm as crm
+import lib.outreach as _outreach_mod
+if not all(hasattr(crm, a) for a in (
+        "sync_with_github_backup", "recover_from_history",
+        "backfill_from_salesforce", "auto_sync_deal",
+        "sync_all_to_salesforce", "USERS", "get_meta", "set_meta")):
     crm = importlib.reload(crm)
+if not all(hasattr(_outreach_mod, a) for a in (
+        "generate_custom_reminder_ics", "generate_followup_ics",
+        "generate_attention_digest_ics", "RECURRENCE_OPTIONS")):
+    _outreach_mod = importlib.reload(_outreach_mod)
 
 from lib.crm import STATUSES, TERMINAL_STATUSES, ACTIVITY_TYPES
 from lib.outreach import (
@@ -454,6 +463,10 @@ with _t_col:
         "tailored Outlook reminders, and Salesforce sync."
     )
 with _u_col:
+    # The weekly-digest popup can answer "who's working?" — its choice
+    # lands here before the widget is created so the toggle stays in sync.
+    if "_pending_user" in st.session_state:
+        st.session_state["crm_user"] = st.session_state.pop("_pending_user")
     _current_user = st.radio(
         "Working as", crm.USERS, horizontal=True, key="crm_user",
         help="Stamps every activity and status change with your name — "
@@ -515,16 +528,19 @@ if attention and _digest_stage != "done":
     if _digest_due:
         _user_now = st.session_state.get("crm_user", crm.USERS[0])
 
-        # Deferred earlier this session, and Trey just took the wheel:
-        # skip the question and go straight to the download.
+        # The intern explicitly deferred earlier (toggle now reads
+        # Intern) and someone just flipped Working-as to Trey: that's an
+        # ACTIVE identification — deliver the download without re-asking.
         if _digest_stage == "deferred" and _user_now == "Trey":
             st.session_state["_digest_stage"] = "download"
             _digest_stage = "download"
 
-        if _digest_stage is None and hasattr(st, "dialog"):
-            # First appearance: ask who's working. Closing with X counts
-            # as "Intern" (deferred) so the digest is never burned.
-            st.session_state["_digest_stage"] = "deferred"
+        if _digest_stage in (None, "ask_open") and hasattr(st, "dialog"):
+            # The question is mandatory: the toggle's DEFAULT value never
+            # counts as an answer, and closing with X just re-asks on the
+            # next interaction — the weekly slot stays preserved until
+            # Trey explicitly claims it.
+            st.session_state["_digest_stage"] = "ask_open"
 
             @st.dialog("📅 Weekly Pipeline Review")
             def _digest_ask():
@@ -536,14 +552,17 @@ if attention and _digest_stage != "done":
                 a1, a2 = st.columns(2)
                 if a1.button("I'm Trey — download it",
                              use_container_width=True, key="_dg_trey"):
+                    st.session_state["_pending_user"] = "Trey"
                     st.session_state["_digest_stage"] = "download"
                     st.rerun()
                 if a2.button("I'm the Intern",
                              use_container_width=True, key="_dg_intern"):
-                    st.rerun()   # stays deferred; returns when Trey selected
+                    st.session_state["_pending_user"] = "Intern"
+                    st.session_state["_digest_stage"] = "deferred"
+                    st.rerun()   # comes back when Working as: Trey
             _digest_ask()
 
-        elif _digest_stage is None:
+        elif _digest_stage in (None, "ask_open"):
             # No dialog support: inline notice, Trey only
             if _user_now == "Trey":
                 st.session_state["_digest_stage"] = "download"
