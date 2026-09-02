@@ -2,13 +2,22 @@ import json
 import streamlit as st
 from datetime import datetime, date, time as dtime, timedelta, timezone
 
-from lib import crm
-
-# Self-heal after a partial redeploy: if the server cached an older
-# lib.crm module that predates functions this page calls, reload it.
-if not hasattr(crm, "sync_with_github_backup"):
-    import importlib
+# Self-heal after a partial redeploy: Streamlit can serve new page code
+# alongside stale cached lib modules that lack newly added functions.
+# Verify every newer symbol this page relies on and reload when any is
+# missing — BEFORE the from-imports below, so they bind fresh objects.
+import importlib
+import lib.crm as crm
+import lib.outreach as _outreach_mod
+if not all(hasattr(crm, a) for a in (
+        "sync_with_github_backup", "recover_from_history",
+        "backfill_from_salesforce", "auto_sync_deal",
+        "sync_all_to_salesforce", "USERS", "get_meta", "set_meta")):
     crm = importlib.reload(crm)
+if not all(hasattr(_outreach_mod, a) for a in (
+        "generate_custom_reminder_ics", "generate_followup_ics",
+        "generate_attention_digest_ics", "RECURRENCE_OPTIONS")):
+    _outreach_mod = importlib.reload(_outreach_mod)
 
 from lib.crm import STATUSES, TERMINAL_STATUSES, ACTIVITY_TYPES
 from lib.outreach import (
