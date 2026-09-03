@@ -13,7 +13,7 @@
       "state": "Tennessee",
       "niche": "Specialty trust administration providers serving RIAs and family offices",
       "project": null,
-      "status": "New",
+      "status": "Outreach Active",
       "source": "memo",
       "notes": "",
       "next_followup": null,
@@ -21,7 +21,7 @@
       "sf_contact_id": "003Pp00002BA66XIAT",
       "row_json": "{\"Website\": \"http://www.covenanttrustllc.com\", \"City\": \"Johnson City\", \"State\": \"Tennessee\", \"Employees\": 14, \"Description\": \"First Covenant Trust and Advisors, LLC provides individualized fiduciary services, focusing on trust and estate administration, tax planning, and asset protection. They serve high net worth families, individuals with special needs, and professional athletes, among others, by working collaboratively with clients' existing financial advisors and legal professionals. The company operates with a relationship-oriented approach, emphasizing flexibility and cooperation to preserve family legacies and ensure efficient estate planning.\", \"CEO/Owner Name\": \"Clay Hixson\", \"Title\": \"Chief Executive Officer\", \"Email\": \"clay.hixson@covenanttrustllc.com\", \"Phone\": null}",
       "created_at": "2026-07-29T21:07:56.861012+00:00",
-      "updated_at": "2026-09-03T23:28:10.770946+00:00",
+      "updated_at": "2026-09-03T23:28:27.979448+00:00",
       "memo": "---\n\n**Investment Memo: First Covenant Trust and Advisors, LLC**\n\n**1. Why We're Excited**\n\nFirst Covenant Trust and Advisors, LLC presents a compelling acquisition opportunity due to its specialized focus on fiduciary services for niche segments like high-net-worth families and professional athletes. This specialization combined with their collaborative approach with clients' existing advisors provides a robust right to win based on differentiated customer insight and service personalization. Additionally, a potential founder succession presents an organic opportunity in a fragmented market ripe for consolidation.\n\n**2. Company Overview**\n\nFirst Covenant Trust and Advisors, LLC, located in Johnson City, Tennessee, delivers individualized fiduciary services, including trust and estate administration, tax planning, and asset protection. With an employee count of 14, the estimated EBITDA ranges between $245K\u2013$490K, although this requires confirmation. They serve high-net-worth families, individuals with special needs, and professional athletes by fostering seamless partnerships with clients' existing financial and legal advisors.\n\n**3. Differentiated Value Proposition**\n\nThe company's primary advantage lies in its relationship-oriented service model, emphasizing flexibility and cooperation. This approach ensures deep and enduring client relationships, which is further augmented by their niche expertise in serving non-traditional client segments. The moat, although moderate, is built on this tailored service delivery and strong client loyalty.\n\n**4. Market Opportunity & Growth**\n\nOperating within a growing specialty trust administration market driven by demographic trends such as an aging population, First Covenant is well-positioned to capitalize on wealth transfer and estate planning needs. The fragmented nature of the market presents buy-and-build opportunities, with First Covenant poised for regional expansion given limited local competition.\n\n**5. NCP Fit Rationale**\n\nFirst Covenant aligns with NCP\u2019s lower middle market, services-oriented investment strategy by offering essential, non-cyclical fiduciary services. Its founder ownership, with retirement on the horizon, provides a natural succession opportunity, aligning with our thesis of capitalizing on transition and growth in founder-owned businesses.\n\n**6. Key Risks & Diligence Items**\n\n- **EBITDA Validation**: Confirm the estimated EBITDA through financial due diligence.\n- **Client Concentration**: Assess if revenue is overly reliant on a few high-net-worth clients.\n- **Regulatory Compliance**: Evaluate the regulatory environment and any associated risks.\n- **Succession Planning**: Investigate the readiness of internal management to lead post-founder departure.\n- **Market Positioning**: Further analyze the competitive landscape and potential barriers to regional expansion.\n\n--- \n\nThis memo provides transparency in our evaluation, allowing informed decisions based on genuine strengths and identified diligence items."
     },
     {
@@ -4633,6 +4633,16 @@
       "summary": "Sent a handwritten note",
       "detail": "",
       "timestamp": "2026-09-03T23:28:09.046106+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 282,
+      "deal_id": 1,
+      "type": "Note",
+      "summary": "Status: New \u2192 Outreach Active",
+      "detail": "",
+      "timestamp": "2026-09-03T23:28:26.044696+00:00",
       "synced_to_sf": 1,
       "user": "Trey"
     }
