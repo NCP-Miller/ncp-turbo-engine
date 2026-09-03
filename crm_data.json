@@ -1599,13 +1599,13 @@
       "project": null,
       "status": "In Dialogue",
       "source": "backfill-salesforce",
-      "notes": "",
+      "notes": "Signed NDA",
       "next_followup": null,
       "sf_account_id": "0014V00001gaWQNQA2",
       "sf_contact_id": "0034V00002Xw2jjQAB",
       "row_json": "{\"Website\": \"https://advanresearch.com\", \"City\": \"New York City\", \"State\": \"NY\", \"Employees\": 18, \"Description\": \"Advan Research Corp. is the leader in the Big Data geolocation space, enabling participants in the financial industry to analyze foot traffic data across multiple sectors, including consumer services, energy, technology, healthcare, REITs, financials, and others. The company derives its datasets using multi-parameter models that analyze cellphone location data crossed with curated geofenced areas.\", \"CEO/Owner Name\": \"Yiannis Tsiounis\", \"Title\": \"CEO\", \"Email\": \"yiannis@advan.us\", \"Phone\": null}",
       "created_at": "2026-08-14T22:34:59.829790+00:00",
-      "updated_at": "2026-08-27T13:09:27.083180+00:00",
+      "updated_at": "2026-09-03T23:25:44.153549+00:00",
       "memo": null
     },
     {
