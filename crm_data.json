@@ -1501,7 +1501,7 @@
       "state": "NY",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Not a Fit",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -1509,7 +1509,7 @@
       "sf_contact_id": "0033A00002WDI2eQAH",
       "row_json": "{\"Website\": \"https://arayarx.com\", \"City\": \"Latham\", \"State\": \"NY\", \"Employees\": 41, \"Description\": \"Araya, Inc. offers a flexible model with a full range of tailored services to control prescription drug benefit programs. It partners with clients to enable it to leverage the data collected through the adjudication process and maximize quality improvement and cost reduction efforts.\", \"CEO/Owner Name\": \"Mark Roach\", \"Title\": \"Executive Vice President\", \"Email\": \"mroach@arayarx.com\", \"Phone\": null}",
       "created_at": "2026-08-14T22:34:59.652126+00:00",
-      "updated_at": "2026-08-14T22:34:59.709809+00:00",
+      "updated_at": "2026-09-03T23:25:24.317448+00:00",
       "memo": null
     },
     {
@@ -4585,6 +4585,16 @@
       "timestamp": "2026-08-31T13:57:44.368963+00:00",
       "synced_to_sf": 0,
       "user": null
+    },
+    {
+      "id": 277,
+      "deal_id": 63,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-09-03T23:25:20.941147+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
     }
   ],
   "meta": [
