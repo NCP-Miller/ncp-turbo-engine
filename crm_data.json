@@ -1189,7 +1189,7 @@
       "state": "Wisconsin",
       "niche": "Specialty trust administration providers serving RIAs and family offices",
       "project": "Specialty Trust Administration",
-      "status": "Closed \u2013 No Response",
+      "status": "New",
       "source": "backfill-memo",
       "notes": "Emailed on 7/16",
       "next_followup": null,
@@ -1197,7 +1197,7 @@
       "sf_contact_id": "003Pp000028FbPqIAK",
       "row_json": "{\"Website\": \"http://www.capitalfirsttrust.com\", \"City\": \"Milwaukee\", \"State\": \"Wisconsin\", \"Employees\": 90, \"Description\": \"Capital First Trust Company is an independent trust company chartered in South Dakota, providing trust administration and wealth management services. They offer customized trust solutions for settlement planners, financial advisors, accident victims, and individuals seeking corporate trustee services, with operations in South Dakota, Wisconsin, and Minnesota.\", \"CEO/Owner Name\": \"Chris Foregger\", \"Title\": null, \"Email\": \"cforegger@capitalfirsttrust.com\", \"Phone\": \"800.521.2359\"}",
       "created_at": "2026-07-10T00:01:45.928941+00:00",
-      "updated_at": "2026-08-14T22:34:59.942848+00:00",
+      "updated_at": "2026-09-03T23:25:54.606356+00:00",
       "memo": null
     },
     {
@@ -4593,6 +4593,16 @@
       "summary": "Status: Outreach Active \u2192 Not a Fit",
       "detail": "",
       "timestamp": "2026-09-03T23:25:20.941147+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 278,
+      "deal_id": 50,
+      "type": "Note",
+      "summary": "Status: Closed \u2013 No Response \u2192 New",
+      "detail": "",
+      "timestamp": "2026-09-03T23:25:52.716908+00:00",
       "synced_to_sf": 1,
       "user": "Trey"
     }
