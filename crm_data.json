@@ -1653,7 +1653,7 @@
       "sf_contact_id": "0034V00003tYCYJQA4",
       "row_json": "{\"Website\": \"https://www.earthlingsecurity.com\", \"City\": \"Mc Lean\", \"State\": \"VA\", \"Employees\": 14, \"Description\": \"Earthling Security, LLC is an SBA 8(a) certified small business with extensive years of delivering security and technology solutions to both the public sector and to commercial enterprises.\\nThe Company provides a strategic, end-to-end Cloud Computing, IT Security, and Secure DevOps solutions. It focuses to provide tailored and strategic business solutions to support and optimize the business mission of its valued clients.\", \"CEO/Owner Name\": \"Yusuf Ahmed\", \"Title\": \"Chief Executive Officer\", \"Email\": \"yaa@earthlingsecurity.com\", \"Phone\": null}",
       "created_at": "2026-08-14T22:34:59.878408+00:00",
-      "updated_at": "2026-09-09T16:08:44.921820+00:00",
+      "updated_at": "2026-09-09T19:22:16.361798+00:00",
       "memo": null
     },
     {
@@ -1845,7 +1845,31 @@
       "sf_contact_id": "0033A00002T8m4DQAR",
       "row_json": "{\"Website\": \"https://optimizedpayments.com\", \"City\": \"Atlanta\", \"State\": \"GA\", \"Employees\": 37, \"Description\": \"Optimized Payments Consulting, Inc. offers proprietary software to help businesses reduce its payment processing costs. It provides optimized payments services, web-based analytics, interchange management, chargeback reduction services, alternative payment systems, and more.\", \"CEO/Owner Name\": \"Anand Goel\", \"Title\": \"CEO and Founder\", \"Email\": \"anand@optimizedpmts.com\", \"Phone\": \"800-846-1305\"}",
       "created_at": "2026-09-09T16:08:44.877224+00:00",
-      "updated_at": "2026-09-09T16:08:44.895163+00:00",
+      "updated_at": "2026-09-09T19:22:16.345503+00:00",
+      "memo": null
+    },
+    {
+      "id": 78,
+      "company": "Phillip Townsend Associates",
+      "company_key": "phillip townsend associates",
+      "website": null,
+      "contact_name": null,
+      "title": null,
+      "email": null,
+      "phone": null,
+      "city": null,
+      "state": null,
+      "niche": null,
+      "project": null,
+      "status": "Outreach Active",
+      "source": "backfill-salesforce",
+      "notes": "",
+      "next_followup": null,
+      "sf_account_id": "0013000001MzBV2AAN",
+      "sf_contact_id": null,
+      "row_json": "{\"Website\": null, \"City\": null, \"State\": null, \"Employees\": null, \"Description\": null, \"CEO/Owner Name\": \"\", \"Title\": null, \"Email\": null, \"Phone\": null}",
+      "created_at": "2026-09-09T19:22:16.273555+00:00",
+      "updated_at": "2026-09-09T19:22:16.328391+00:00",
       "memo": null
     }
   ],
@@ -4727,6 +4751,16 @@
       "summary": "Imported from Salesforce \u2014 recent activity: Call (2026-09-08)",
       "detail": "",
       "timestamp": "2026-09-09T16:08:44.921475+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 289,
+      "deal_id": 78,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: Email (2026-09-09)",
+      "detail": "",
+      "timestamp": "2026-09-09T19:22:16.328263+00:00",
       "synced_to_sf": 1,
       "user": null
     }
