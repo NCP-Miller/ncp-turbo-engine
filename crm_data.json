@@ -1837,7 +1837,7 @@
       "state": "GA",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Revisit Later",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -1845,7 +1845,7 @@
       "sf_contact_id": "0033A00002T8m4DQAR",
       "row_json": "{\"Website\": \"https://optimizedpayments.com\", \"City\": \"Atlanta\", \"State\": \"GA\", \"Employees\": 37, \"Description\": \"Optimized Payments Consulting, Inc. offers proprietary software to help businesses reduce its payment processing costs. It provides optimized payments services, web-based analytics, interchange management, chargeback reduction services, alternative payment systems, and more.\", \"CEO/Owner Name\": \"Anand Goel\", \"Title\": \"CEO and Founder\", \"Email\": \"anand@optimizedpmts.com\", \"Phone\": \"800-846-1305\"}",
       "created_at": "2026-09-09T16:08:44.877224+00:00",
-      "updated_at": "2026-09-09T19:22:16.345503+00:00",
+      "updated_at": "2026-09-09T21:51:32.068985+00:00",
       "memo": null
     },
     {
@@ -4771,6 +4771,16 @@
       "summary": "sent f/u email",
       "detail": "",
       "timestamp": "2026-09-09T19:53:46.098324+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 291,
+      "deal_id": 77,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Revisit Later",
+      "detail": "",
+      "timestamp": "2026-09-09T21:51:29.043459+00:00",
       "synced_to_sf": 1,
       "user": "Trey"
     }
