@@ -1725,7 +1725,7 @@
       "sf_contact_id": "0033000001TxQYYAA3",
       "row_json": "{\"Website\": \"http://www.ering-cad.com\", \"City\": \"Alpharetta\", \"State\": \"GA\", \"Employees\": 45, \"Description\": \"E-Ring, Inc. specializes in developing CAD or GIS-centric real-time decision support systems. The company provides solutions for a variety of industries and offer broad-based industry solutions as well as custom solutions.\", \"CEO/Owner Name\": \"Rah Radhakarishsna\", \"Title\": \"President\", \"Email\": \"rah@e-ring.com\", \"Phone\": \"(256) 722-3464\"}",
       "created_at": "2026-08-25T16:18:57.301037+00:00",
-      "updated_at": "2026-09-10T18:08:20.878223+00:00",
+      "updated_at": "2026-09-10T18:42:53.805281+00:00",
       "memo": null
     },
     {
@@ -1845,7 +1845,7 @@
       "sf_contact_id": "0033A00002T8m4DQAR",
       "row_json": "{\"Website\": \"https://optimizedpayments.com\", \"City\": \"Atlanta\", \"State\": \"GA\", \"Employees\": 37, \"Description\": \"Optimized Payments Consulting, Inc. offers proprietary software to help businesses reduce its payment processing costs. It provides optimized payments services, web-based analytics, interchange management, chargeback reduction services, alternative payment systems, and more.\", \"CEO/Owner Name\": \"Anand Goel\", \"Title\": \"CEO and Founder\", \"Email\": \"anand@optimizedpmts.com\", \"Phone\": \"800-846-1305\"}",
       "created_at": "2026-09-09T16:08:44.877224+00:00",
-      "updated_at": "2026-09-10T18:08:21.010186+00:00",
+      "updated_at": "2026-09-10T18:42:53.932176+00:00",
       "memo": null
     },
     {
@@ -1869,7 +1869,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Website\": null, \"City\": null, \"State\": null, \"Employees\": null, \"Description\": null, \"CEO/Owner Name\": \"\", \"Title\": null, \"Email\": null, \"Phone\": null}",
       "created_at": "2026-09-09T19:22:16.273555+00:00",
-      "updated_at": "2026-09-10T18:08:20.978486+00:00",
+      "updated_at": "2026-09-10T18:42:53.882517+00:00",
       "memo": null
     },
     {
@@ -1878,7 +1878,7 @@
       "company_key": "serve you rx",
       "website": "https://serveyourx.com",
       "contact_name": "Justin Jasniewski",
-      "title": "Chief Financial and Analytics Officer",
+      "title": "CEO",
       "email": "jjasniewski@serve-you-rx.com",
       "phone": null,
       "city": "Milwaukee",
@@ -1891,9 +1891,9 @@
       "next_followup": null,
       "sf_account_id": "0013000001D7rA5AAJ",
       "sf_contact_id": "0033A00002WDHBJQA5",
-      "row_json": "{\"Website\": \"https://serveyourx.com\", \"City\": \"Milwaukee\", \"State\": \"WI\", \"Employees\": 95, \"Description\": \"Serve You Custom Prescription Management, Inc. provides pharmacy benefit management services. It offers hand-crafted plans, including an online transaction processing system that provides drug utilization review, benefit administration, management reporting, and patient eligibility/membership maintenance services, as well as plan design and implementation services; and clinical programs, such as prior authorization, step therapy, quantity limits, dose optimization, OTC drug coverage, and formulary management.\", \"CEO/Owner Name\": \"Justin Jasniewski\", \"Title\": \"Chief Financial and Analytics Officer\", \"Email\": \"jjasniewski@serve-you-rx.com\", \"Phone\": null}",
+      "row_json": "{\"Website\": \"https://serveyourx.com\", \"City\": \"Milwaukee\", \"State\": \"WI\", \"Employees\": 95, \"Description\": \"Serve You Custom Prescription Management, Inc. provides pharmacy benefit management services. It offers hand-crafted plans, including an online transaction processing system that provides drug utilization review, benefit administration, management reporting, and patient eligibility/membership maintenance services, as well as plan design and implementation services; and clinical programs, such as prior authorization, step therapy, quantity limits, dose optimization, OTC drug coverage, and formulary management.\", \"CEO/Owner Name\": \"Justin Jasniewski\", \"Title\": \"CEO\", \"Email\": \"jjasniewski@serve-you-rx.com\", \"Phone\": null}",
       "created_at": "2026-09-10T18:08:20.890488+00:00",
-      "updated_at": "2026-09-10T18:08:20.905589+00:00",
+      "updated_at": "2026-09-10T18:42:53.821920+00:00",
       "memo": null
     },
     {
@@ -1917,7 +1917,7 @@
       "sf_contact_id": "0033000001hoOvOAAU",
       "row_json": "{\"Website\": \"https://www.scriptpro.com\", \"City\": \"Mission\", \"State\": \"KS\", \"Employees\": 641, \"Description\": \"Scriptpro, LLC is a technology company that develops pharmacy automation and management system products. It offers solutions for third-party management, clinical documentation, and case management, inventory management, medication adherence, interactive voice response, telepharmacy, and more. The company also provides health messaging services, a pharmacy services portal, a drug database, and pharmacy administration services. It serves customers within the area.\", \"CEO/Owner Name\": \"Michael Coughlin\", \"Title\": \"President and CEO and CFO\", \"Email\": \"mike@scriptpro.com\", \"Phone\": \"(913) 384-1008\"}",
       "created_at": "2026-09-10T18:08:20.917138+00:00",
-      "updated_at": "2026-09-10T18:08:20.932088+00:00",
+      "updated_at": "2026-09-10T18:42:53.838950+00:00",
       "memo": null
     },
     {
@@ -1941,7 +1941,31 @@
       "sf_contact_id": "0033000001iICCIAA4",
       "row_json": "{\"Website\": \"https://radiuspoint-expenselogic.com\", \"City\": \"Casselberry\", \"State\": \"FL\", \"Employees\": 21, \"Description\": \"TSG Enterprises, LLC doing business as RadiusPoint, LLC is a multi-solution provider for TEM (Telecom Expense Management), UEM (Utility Expense Management), LPEM (Loss Prevention Expense Management), along with MDM (Mobile Device Management). The company provides a single-source management solution for the financial, operations, and technology departments of its clients.\", \"CEO/Owner Name\": \"John Watkins\", \"Title\": \"CFO\", \"Email\": \"jwatkins@radiuspoint.com\", \"Phone\": \"(407) 661-6818\"}",
       "created_at": "2026-09-10T18:08:20.942765+00:00",
-      "updated_at": "2026-09-10T18:08:20.959199+00:00",
+      "updated_at": "2026-09-10T18:42:53.864933+00:00",
+      "memo": null
+    },
+    {
+      "id": 82,
+      "company": "Seven Corners - Travel Insurance MGA",
+      "company_key": "seven corners - travel insurance mga",
+      "website": "https://www.sevencorners.com",
+      "contact_name": "Justin Tysdal",
+      "title": "Chief Executive Officer and Co-Founder",
+      "email": "justin.tysdal@sevencorners.com",
+      "phone": "800-335-0611",
+      "city": "Carmel",
+      "state": "IN",
+      "niche": null,
+      "project": null,
+      "status": "Outreach Active",
+      "source": "backfill-salesforce",
+      "notes": "",
+      "next_followup": null,
+      "sf_account_id": "0013A00001Q5ixDQAR",
+      "sf_contact_id": "0033A00002Ts8oiQAB",
+      "row_json": "{\"Website\": \"https://www.sevencorners.com\", \"City\": \"Carmel\", \"State\": \"IN\", \"Employees\": 195, \"Description\": \"Seven Corners, Inc. provides trip cancellation and travel health insurance. It offers medical and travel insurance policies to leisure, student, business, government, and missionary or volunteer travelers. The company's insurance plans include interruption insurance, travel medical insurance, student medical insurance, visitor's medical insurance, immigrant medical insurance, worldwide medical insurance, evacuation and multi-trip insurance, and medical tourism insurance.\", \"CEO/Owner Name\": \"Justin Tysdal\", \"Title\": \"Chief Executive Officer and Co-Founder\", \"Email\": \"justin.tysdal@sevencorners.com\", \"Phone\": \"800-335-0611\"}",
+      "created_at": "2026-09-10T18:42:53.894174+00:00",
+      "updated_at": "2026-09-10T18:42:53.907768+00:00",
       "memo": null
     }
   ],
@@ -4913,6 +4937,36 @@
       "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker \u2014 Email: Asked to hold off until Q2 2027. Really impressive product progress. (2026-09-09)",
       "detail": "",
       "timestamp": "2026-09-10T18:08:21.009461+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 298,
+      "deal_id": 81,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: Call (2026-09-09)",
+      "detail": "",
+      "timestamp": "2026-09-10T18:42:53.864668+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 299,
+      "deal_id": 82,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-09-10)",
+      "detail": "",
+      "timestamp": "2026-09-10T18:42:53.907602+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 300,
+      "deal_id": 77,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: Revisit Later (2026-09-09)",
+      "detail": "",
+      "timestamp": "2026-09-10T18:42:53.932060+00:00",
       "synced_to_sf": 1,
       "user": null
     }
