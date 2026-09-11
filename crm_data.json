@@ -1677,7 +1677,7 @@
       "sf_contact_id": "003Pp0000217pInIAI",
       "row_json": "{\"Website\": \"https://flytehcm.com/\", \"City\": null, \"State\": null, \"Employees\": null, \"Description\": null, \"CEO/Owner Name\": \"Eric Allen\", \"Title\": \"CEO/Founder\", \"Email\": null, \"Phone\": null}",
       "created_at": "2026-08-14T22:34:59.903271+00:00",
-      "updated_at": "2026-09-11T21:42:30.149048+00:00",
+      "updated_at": "2026-09-11T21:42:46.160069+00:00",
       "memo": null
     },
     {
@@ -5247,6 +5247,16 @@
       "summary": "sent a hand written letter before labor day...",
       "detail": "",
       "timestamp": "2026-09-11T21:40:45.048161+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 317,
+      "deal_id": 70,
+      "type": "Email",
+      "summary": "sent another follow up",
+      "detail": "",
+      "timestamp": "2026-09-11T21:42:43.240588+00:00",
       "synced_to_sf": 1,
       "user": "Trey"
     }
