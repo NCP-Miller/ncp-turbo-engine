@@ -1725,7 +1725,7 @@
       "sf_contact_id": "0033000001TxQYYAA3",
       "row_json": "{\"Website\": \"http://www.ering-cad.com\", \"City\": \"Alpharetta\", \"State\": \"GA\", \"Employees\": 45, \"Description\": \"E-Ring, Inc. specializes in developing CAD or GIS-centric real-time decision support systems. The company provides solutions for a variety of industries and offer broad-based industry solutions as well as custom solutions.\", \"CEO/Owner Name\": \"Rah Radhakarishsna\", \"Title\": \"President\", \"Email\": \"rah@e-ring.com\", \"Phone\": \"(256) 722-3464\"}",
       "created_at": "2026-08-25T16:18:57.301037+00:00",
-      "updated_at": "2026-09-10T21:09:08.997034+00:00",
+      "updated_at": "2026-09-11T17:17:08.155713+00:00",
       "memo": null
     },
     {
@@ -1845,7 +1845,7 @@
       "sf_contact_id": "0033A00002T8m4DQAR",
       "row_json": "{\"Website\": \"https://optimizedpayments.com\", \"City\": \"Atlanta\", \"State\": \"GA\", \"Employees\": 37, \"Description\": \"Optimized Payments Consulting, Inc. offers proprietary software to help businesses reduce its payment processing costs. It provides optimized payments services, web-based analytics, interchange management, chargeback reduction services, alternative payment systems, and more.\", \"CEO/Owner Name\": \"Anand Goel\", \"Title\": \"CEO and Founder\", \"Email\": \"anand@optimizedpmts.com\", \"Phone\": \"800-846-1305\"}",
       "created_at": "2026-09-09T16:08:44.877224+00:00",
-      "updated_at": "2026-09-10T18:42:53.932176+00:00",
+      "updated_at": "2026-09-11T17:17:08.323455+00:00",
       "memo": null
     },
     {
@@ -1869,7 +1869,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Website\": null, \"City\": null, \"State\": null, \"Employees\": null, \"Description\": null, \"CEO/Owner Name\": \"\", \"Title\": null, \"Email\": null, \"Phone\": null}",
       "created_at": "2026-09-09T19:22:16.273555+00:00",
-      "updated_at": "2026-09-10T18:42:53.882517+00:00",
+      "updated_at": "2026-09-11T17:17:08.222884+00:00",
       "memo": null
     },
     {
@@ -1893,7 +1893,7 @@
       "sf_contact_id": "0033A00002WDHBJQA5",
       "row_json": "{\"Website\": \"https://serveyourx.com\", \"City\": \"Milwaukee\", \"State\": \"WI\", \"Employees\": 95, \"Description\": \"Serve You Custom Prescription Management, Inc. provides pharmacy benefit management services. It offers hand-crafted plans, including an online transaction processing system that provides drug utilization review, benefit administration, management reporting, and patient eligibility/membership maintenance services, as well as plan design and implementation services; and clinical programs, such as prior authorization, step therapy, quantity limits, dose optimization, OTC drug coverage, and formulary management.\", \"CEO/Owner Name\": \"Justin Jasniewski\", \"Title\": \"CEO\", \"Email\": \"jjasniewski@serve-you-rx.com\", \"Phone\": null}",
       "created_at": "2026-09-10T18:08:20.890488+00:00",
-      "updated_at": "2026-09-10T18:42:53.821920+00:00",
+      "updated_at": "2026-09-11T17:17:08.170626+00:00",
       "memo": null
     },
     {
@@ -1917,7 +1917,7 @@
       "sf_contact_id": "0033000001hoOvOAAU",
       "row_json": "{\"Website\": \"https://www.scriptpro.com\", \"City\": \"Mission\", \"State\": \"KS\", \"Employees\": 641, \"Description\": \"Scriptpro, LLC is a technology company that develops pharmacy automation and management system products. It offers solutions for third-party management, clinical documentation, and case management, inventory management, medication adherence, interactive voice response, telepharmacy, and more. The company also provides health messaging services, a pharmacy services portal, a drug database, and pharmacy administration services. It serves customers within the area.\", \"CEO/Owner Name\": \"Michael Coughlin\", \"Title\": \"President and CEO and CFO\", \"Email\": \"mike@scriptpro.com\", \"Phone\": \"(913) 384-1008\"}",
       "created_at": "2026-09-10T18:08:20.917138+00:00",
-      "updated_at": "2026-09-10T18:42:53.838950+00:00",
+      "updated_at": "2026-09-11T17:17:08.187128+00:00",
       "memo": null
     },
     {
@@ -1941,7 +1941,7 @@
       "sf_contact_id": "0033000001iICCIAA4",
       "row_json": "{\"Website\": \"https://radiuspoint-expenselogic.com\", \"City\": \"Casselberry\", \"State\": \"FL\", \"Employees\": 21, \"Description\": \"TSG Enterprises, LLC doing business as RadiusPoint, LLC is a multi-solution provider for TEM (Telecom Expense Management), UEM (Utility Expense Management), LPEM (Loss Prevention Expense Management), along with MDM (Mobile Device Management). The company provides a single-source management solution for the financial, operations, and technology departments of its clients.\", \"CEO/Owner Name\": \"John Watkins\", \"Title\": \"CFO\", \"Email\": \"jwatkins@radiuspoint.com\", \"Phone\": \"(407) 661-6818\"}",
       "created_at": "2026-09-10T18:08:20.942765+00:00",
-      "updated_at": "2026-09-10T18:42:53.864933+00:00",
+      "updated_at": "2026-09-11T17:17:08.203990+00:00",
       "memo": null
     },
     {
@@ -1965,7 +1965,127 @@
       "sf_contact_id": "0033A00002Ts8oiQAB",
       "row_json": "{\"Website\": \"https://www.sevencorners.com\", \"City\": \"Carmel\", \"State\": \"IN\", \"Employees\": 195, \"Description\": \"Seven Corners, Inc. provides trip cancellation and travel health insurance. It offers medical and travel insurance policies to leisure, student, business, government, and missionary or volunteer travelers. The company's insurance plans include interruption insurance, travel medical insurance, student medical insurance, visitor's medical insurance, immigrant medical insurance, worldwide medical insurance, evacuation and multi-trip insurance, and medical tourism insurance.\", \"CEO/Owner Name\": \"Justin Tysdal\", \"Title\": \"Chief Executive Officer and Co-Founder\", \"Email\": \"justin.tysdal@sevencorners.com\", \"Phone\": \"800-335-0611\"}",
       "created_at": "2026-09-10T18:42:53.894174+00:00",
-      "updated_at": "2026-09-10T18:42:53.907768+00:00",
+      "updated_at": "2026-09-11T17:17:08.239833+00:00",
+      "memo": null
+    },
+    {
+      "id": 83,
+      "company": "Summit Alliance Financial",
+      "company_key": "summit alliance financial",
+      "website": "https://www.summitalliance.net",
+      "contact_name": "0 0",
+      "title": null,
+      "email": "0",
+      "phone": "0",
+      "city": "Dallas",
+      "state": "TX",
+      "niche": null,
+      "project": null,
+      "status": "Outreach Active",
+      "source": "backfill-salesforce",
+      "notes": "",
+      "next_followup": null,
+      "sf_account_id": "0013000000koOWgAAM",
+      "sf_contact_id": "0033000001S7s6yAAB",
+      "row_json": "{\"Website\": \"https://www.summitalliance.net\", \"City\": \"Dallas\", \"State\": \"TX\", \"Employees\": 30, \"Description\": \"Summit Alliance Financial, LLP operates as a life brokerage general agency. The company provides a range of financial products, sales strategies, and services, including underwriting, planning, and case management, to advisors. It also specializes in reinsurance and retention services.\", \"CEO/Owner Name\": \"0 0\", \"Title\": null, \"Email\": \"0\", \"Phone\": \"0\"}",
+      "created_at": "2026-09-11T17:17:08.073242+00:00",
+      "updated_at": "2026-09-11T17:17:08.128896+00:00",
+      "memo": null
+    },
+    {
+      "id": 84,
+      "company": "XstremeMD",
+      "company_key": "xstrememd",
+      "website": "https://xstrememd.worldsecuresystems.com",
+      "contact_name": "Joseph Pearson",
+      "title": "President",
+      "email": "jpearson@xstrememd.com",
+      "phone": "337-704-0891",
+      "city": "Broussard",
+      "state": "LA",
+      "niche": null,
+      "project": null,
+      "status": "Outreach Active",
+      "source": "backfill-salesforce",
+      "notes": "",
+      "next_followup": null,
+      "sf_account_id": "0013A00001QkonXQAR",
+      "sf_contact_id": "0033000001muRGfAAM",
+      "row_json": "{\"Website\": \"https://xstrememd.worldsecuresystems.com\", \"City\": \"Broussard\", \"State\": \"LA\", \"Employees\": 53, \"Description\": \"Life Line Technologies, LLC doing business as XstremeMD is the only telemedicine provider with a staff composed of Board Certified Emergency Medicine Physicians with extensive training in occupational medicine. Its physicians work from within the XMD Command Center and always available 24/7.\", \"CEO/Owner Name\": \"Joseph Pearson\", \"Title\": \"President\", \"Email\": \"jpearson@xstrememd.com\", \"Phone\": \"337-704-0891\"}",
+      "created_at": "2026-09-11T17:17:08.250115+00:00",
+      "updated_at": "2026-09-11T17:17:08.262802+00:00",
+      "memo": null
+    },
+    {
+      "id": 85,
+      "company": "Synergy Testing",
+      "company_key": "synergy testing",
+      "website": "https://www.synergylaboratories.com",
+      "contact_name": "Brandon Biles",
+      "title": "Founder, COO",
+      "email": "brandon.biles@synergytesting.com",
+      "phone": null,
+      "city": "Mobile",
+      "state": "AL",
+      "niche": null,
+      "project": null,
+      "status": "Outreach Active",
+      "source": "backfill-salesforce",
+      "notes": "",
+      "next_followup": null,
+      "sf_account_id": "0013A00001YV7acQAD",
+      "sf_contact_id": "0033A00002KOunaQAD",
+      "row_json": "{\"Website\": \"https://www.synergylaboratories.com\", \"City\": \"Mobile\", \"State\": \"AL\", \"Employees\": 87, \"Description\": \"Synergy Laboratories, Inc. is a COLA-certified drug screening facility specializing in toxicology, genetics, and hematology. It is quality testing with a guaranteed turnaround time of 24 hours. The company prides itself on individualized customer service based on the unique needs of each organization in partnership.\", \"CEO/Owner Name\": \"Brandon Biles\", \"Title\": \"Founder, COO\", \"Email\": \"brandon.biles@synergytesting.com\", \"Phone\": null}",
+      "created_at": "2026-09-11T17:17:08.272622+00:00",
+      "updated_at": "2026-09-11T17:17:08.287498+00:00",
+      "memo": null
+    },
+    {
+      "id": 86,
+      "company": "Vergent",
+      "company_key": "vergent",
+      "website": "https://www.vergentlms.com",
+      "contact_name": "Scott Putnam",
+      "title": "CEO",
+      "email": "sputnam@vergentlms.com",
+      "phone": "844-376-3848",
+      "city": "Ridgeland",
+      "state": "MS",
+      "niche": null,
+      "project": null,
+      "status": "Outreach Active",
+      "source": "backfill-salesforce",
+      "notes": "",
+      "next_followup": null,
+      "sf_account_id": "0013A00001a1zlxQAA",
+      "sf_contact_id": "0033A00002QlWkBQAV",
+      "row_json": "{\"Website\": \"https://www.vergentlms.com\", \"City\": \"Ridgeland\", \"State\": \"MS\", \"Employees\": 71, \"Description\": \"Vergent LMS, Inc. operates a complete loan management software that encompasses loan origination, loan servicing, marketing, reporting, accounting exports, along with ancillary services to enhance and streamline the business. It is a clients receive quality loan management software and customer service. The company's scalability allows the software to service all clients from a single store, to a multi-level corporation with thousands of locations.\", \"CEO/Owner Name\": \"Scott Putnam\", \"Title\": \"CEO\", \"Email\": \"sputnam@vergentlms.com\", \"Phone\": \"844-376-3848\"}",
+      "created_at": "2026-09-11T17:17:08.296302+00:00",
+      "updated_at": "2026-09-11T17:17:08.309203+00:00",
+      "memo": null
+    },
+    {
+      "id": 87,
+      "company": "SSIU",
+      "company_key": "ssiu",
+      "website": "https://www.ssiuw.com",
+      "contact_name": "Taylor Norton",
+      "title": "Founder and President and CEO",
+      "email": "taylor@ssiuw.com",
+      "phone": null,
+      "city": "Foley",
+      "state": "AL",
+      "niche": null,
+      "project": null,
+      "status": "Outreach Active",
+      "source": "backfill-salesforce",
+      "notes": "",
+      "next_followup": null,
+      "sf_account_id": "0013A00001egzWOQAY",
+      "sf_contact_id": "0033A00002Vq3l9QAB",
+      "row_json": "{\"Website\": \"https://www.ssiuw.com\", \"City\": \"Foley\", \"State\": \"AL\", \"Employees\": 18, \"Description\": \"South Shore Insurance Underwriters, LLC (SSIU) exists to pursue opportunities within the property and casualty insurance industry through excess and surplus lines markets with a strong bias towards personal lines and a secondary focus on commercial lines. Its product offerings include HO3, DP3, HO6, Commercial Property, Wind Only, and Primary and Excess Flood. It serves and offers its services within the area.\", \"CEO/Owner Name\": \"Taylor Norton\", \"Title\": \"Founder and President and CEO\", \"Email\": \"taylor@ssiuw.com\", \"Phone\": null}",
+      "created_at": "2026-09-11T17:17:08.333813+00:00",
+      "updated_at": "2026-09-11T17:17:08.346353+00:00",
       "memo": null
     }
   ],
@@ -4762,136 +4882,6 @@
     },
     {
       "id": 280,
-      "deal_id": 73,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-25)",
-      "detail": "",
-      "timestamp": "2026-08-25T19:23:51.591895+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 281,
-      "deal_id": 73,
-      "type": "Note",
-      "summary": "Status: Outreach Active \u2192 Not a Fit",
-      "detail": "",
-      "timestamp": "2026-08-28T20:15:34.429954+00:00",
-      "synced_to_sf": 1,
-      "user": "Trey"
-    },
-    {
-      "id": 282,
-      "deal_id": 73,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: Not a Fit (2026-08-28)",
-      "detail": "",
-      "timestamp": "2026-08-28T21:03:07.237742+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 283,
-      "deal_id": 74,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: email and linkedin (2026-08-25)",
-      "detail": "",
-      "timestamp": "2026-08-25T19:23:51.614045+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 284,
-      "deal_id": 74,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: Outreach Active (2026-08-28)",
-      "detail": "",
-      "timestamp": "2026-08-28T21:03:07.262213+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 285,
-      "deal_id": 75,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-26)",
-      "detail": "",
-      "timestamp": "2026-08-27T13:09:27.063243+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 286,
-      "deal_id": 75,
-      "type": "Note",
-      "summary": "Status: Outreach Active \u2192 Contacted \u2013 No Opportunity",
-      "detail": "",
-      "timestamp": "2026-08-27T13:32:38.784566+00:00",
-      "synced_to_sf": 1,
-      "user": "Trey"
-    },
-    {
-      "id": 287,
-      "deal_id": 75,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker \u2014 Note: Status: Outreach Active \u2192 Contacted \u2013 No Opportunity (2026-08-27)",
-      "detail": "",
-      "timestamp": "2026-08-28T21:03:07.133235+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 288,
-      "deal_id": 76,
-      "type": "Note",
-      "summary": "Promoted from Worth a Second Look \u2014 memo generated",
-      "detail": "",
-      "timestamp": "2026-08-31T13:57:44.368963+00:00",
-      "synced_to_sf": 0,
-      "user": null
-    },
-    {
-      "id": 289,
-      "deal_id": 77,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-09-09)",
-      "detail": "",
-      "timestamp": "2026-09-09T16:08:44.895084+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 290,
-      "deal_id": 77,
-      "type": "Note",
-      "summary": "Status: Outreach Active \u2192 Revisit Later",
-      "detail": "",
-      "timestamp": "2026-09-09T21:51:29.043459+00:00",
-      "synced_to_sf": 1,
-      "user": "Trey"
-    },
-    {
-      "id": 291,
-      "deal_id": 77,
-      "type": "Email",
-      "summary": "Asked to hold off until Q2 2027. Really impressive product progress.",
-      "detail": "",
-      "timestamp": "2026-09-09T21:52:01.640937+00:00",
-      "synced_to_sf": 1,
-      "user": "Trey"
-    },
-    {
-      "id": 292,
-      "deal_id": 78,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: Email (2026-09-09)",
-      "detail": "",
-      "timestamp": "2026-09-09T19:22:16.328263+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 293,
       "deal_id": 72,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker \u2014 Email: sent f/u email (2026-09-09)",
@@ -4901,37 +4891,137 @@
       "user": null
     },
     {
+      "id": 281,
+      "deal_id": 72,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Closed \u2013 No Response",
+      "detail": "",
+      "timestamp": "2026-09-10T21:09:05.705386+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 282,
+      "deal_id": 73,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-25)",
+      "detail": "",
+      "timestamp": "2026-08-25T19:23:51.591895+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 283,
+      "deal_id": 73,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-08-28T20:15:34.429954+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 284,
+      "deal_id": 73,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: Not a Fit (2026-08-28)",
+      "detail": "",
+      "timestamp": "2026-08-28T21:03:07.237742+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 285,
+      "deal_id": 74,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email and linkedin (2026-08-25)",
+      "detail": "",
+      "timestamp": "2026-08-25T19:23:51.614045+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 286,
+      "deal_id": 74,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: Outreach Active (2026-08-28)",
+      "detail": "",
+      "timestamp": "2026-08-28T21:03:07.262213+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 287,
+      "deal_id": 75,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-26)",
+      "detail": "",
+      "timestamp": "2026-08-27T13:09:27.063243+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 288,
+      "deal_id": 75,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Contacted \u2013 No Opportunity",
+      "detail": "",
+      "timestamp": "2026-08-27T13:32:38.784566+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 289,
+      "deal_id": 75,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker \u2014 Note: Status: Outreach Active \u2192 Contacted \u2013 No Opportunity (2026-08-27)",
+      "detail": "",
+      "timestamp": "2026-08-28T21:03:07.133235+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 290,
+      "deal_id": 76,
+      "type": "Note",
+      "summary": "Promoted from Worth a Second Look \u2014 memo generated",
+      "detail": "",
+      "timestamp": "2026-08-31T13:57:44.368963+00:00",
+      "synced_to_sf": 0,
+      "user": null
+    },
+    {
+      "id": 291,
+      "deal_id": 77,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-09-09)",
+      "detail": "",
+      "timestamp": "2026-09-09T16:08:44.895084+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 292,
+      "deal_id": 77,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Revisit Later",
+      "detail": "",
+      "timestamp": "2026-09-09T21:51:29.043459+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 293,
+      "deal_id": 77,
+      "type": "Email",
+      "summary": "Asked to hold off until Q2 2027. Really impressive product progress.",
+      "detail": "",
+      "timestamp": "2026-09-09T21:52:01.640937+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
       "id": 294,
-      "deal_id": 79,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-09-10)",
-      "detail": "",
-      "timestamp": "2026-09-10T18:08:20.905423+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 295,
-      "deal_id": 80,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-09-10)",
-      "detail": "",
-      "timestamp": "2026-09-10T18:08:20.931669+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 296,
-      "deal_id": 81,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: emailed (2026-09-09)",
-      "detail": "",
-      "timestamp": "2026-09-10T18:08:20.959036+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 297,
       "deal_id": 77,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker \u2014 Email: Asked to hold off until Q2 2027. Really impressive product progress. (2026-09-09)",
@@ -4941,27 +5031,7 @@
       "user": null
     },
     {
-      "id": 298,
-      "deal_id": 81,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: Call (2026-09-09)",
-      "detail": "",
-      "timestamp": "2026-09-10T18:42:53.864668+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 299,
-      "deal_id": 82,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-09-10)",
-      "detail": "",
-      "timestamp": "2026-09-10T18:42:53.907602+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 300,
+      "id": 295,
       "deal_id": 77,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: Revisit Later (2026-09-09)",
@@ -4971,14 +5041,124 @@
       "user": null
     },
     {
+      "id": 296,
+      "deal_id": 78,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: Email (2026-09-09)",
+      "detail": "",
+      "timestamp": "2026-09-09T19:22:16.328263+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 297,
+      "deal_id": 79,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-09-10)",
+      "detail": "",
+      "timestamp": "2026-09-10T18:08:20.905423+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 298,
+      "deal_id": 80,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-09-10)",
+      "detail": "",
+      "timestamp": "2026-09-10T18:08:20.931669+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 299,
+      "deal_id": 81,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: emailed (2026-09-09)",
+      "detail": "",
+      "timestamp": "2026-09-10T18:08:20.959036+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 300,
+      "deal_id": 81,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: Call (2026-09-09)",
+      "detail": "",
+      "timestamp": "2026-09-10T18:42:53.864668+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
       "id": 301,
+      "deal_id": 82,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-09-10)",
+      "detail": "",
+      "timestamp": "2026-09-10T18:42:53.907602+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 302,
+      "deal_id": 83,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-09-10)",
+      "detail": "",
+      "timestamp": "2026-09-11T17:17:08.128733+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 303,
       "deal_id": 72,
       "type": "Note",
-      "summary": "Status: Outreach Active \u2192 Closed \u2013 No Response",
+      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker \u2014 Note: Status: Outreach Active \u2192 Closed \u2013 No Response (2026-09-10)",
       "detail": "",
-      "timestamp": "2026-09-10T21:09:05.705386+00:00",
+      "timestamp": "2026-09-11T17:17:08.155442+00:00",
       "synced_to_sf": 1,
-      "user": "Trey"
+      "user": null
+    },
+    {
+      "id": 304,
+      "deal_id": 84,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-09-11)",
+      "detail": "",
+      "timestamp": "2026-09-11T17:17:08.262699+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 305,
+      "deal_id": 85,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-09-10)",
+      "detail": "",
+      "timestamp": "2026-09-11T17:17:08.287257+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 306,
+      "deal_id": 86,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-09-11)",
+      "detail": "",
+      "timestamp": "2026-09-11T17:17:08.309097+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 307,
+      "deal_id": 87,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: email (2026-09-10)",
+      "detail": "",
+      "timestamp": "2026-09-11T17:17:08.346268+00:00",
+      "synced_to_sf": 1,
+      "user": null
     }
   ],
   "meta": [
