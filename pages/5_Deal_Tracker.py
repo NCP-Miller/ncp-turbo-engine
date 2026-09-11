@@ -101,11 +101,25 @@ def _sf_login():
     )
 
 
-def _render_deal_card(deal):
-    """Full editable deal card inside an expander."""
+# Deals currently flagged by Needs Attention (filled in after the
+# attention list is computed below; read by _render_deal_card).
+_attention_ids = set()
+
+
+def _render_deal_card(deal, show_status=False):
+    """Full editable deal card inside an expander.
+
+    A 🔴 dot right after the chevron marks deals on the Needs Attention
+    list; show_status=True prefixes the folder (used by search results).
+    """
     _id = deal["id"]
+    _dot = "🔴 " if _id in _attention_ids else ""
+    _status_prefix = (
+        f"{STATUS_ICONS.get(deal['status'], '')} {deal['status']} · "
+        if show_status else ""
+    )
     header = (
-        f"{deal['company']} · "
+        f"{_dot}{_status_prefix}{deal['company']} · "
         f"last activity: {_fmt_ts(deal.get('last_activity') or deal.get('created_at'))}"
     )
     with st.expander(header):
@@ -507,6 +521,7 @@ if not st.session_state.get("_crm_concurrency_ack"):
 # Needs Attention
 # ---------------------------------------------------------------------------
 attention = crm.deals_needing_attention()
+_attention_ids = {d["id"] for d in attention}   # 🔴 dots on deal cards
 
 # ── Weekly attention digest: one calendar invite, at most once a week ─
 # The digest belongs to Trey. The popup first asks who's working:
@@ -786,9 +801,23 @@ elif not _all_matching:
     st.info("No deals match the current search.")
 
 # ---------------------------------------------------------------------------
+# Search results — global across every folder (archive included).
+# Without this, matches hiding in a folder you don't have selected
+# looked like "no results".
+# ---------------------------------------------------------------------------
+if _all_matching and search.strip():
+    st.caption(
+        f"🔎 {len(_all_matching)} deal(s) match “{search.strip()}” — "
+        f"showing results from every folder, archive included. Clear the "
+        f"search to return to the folder view."
+    )
+    for deal in _all_matching:
+        _render_deal_card(deal, show_status=True)
+
+# ---------------------------------------------------------------------------
 # Status folders — persistent selector so you never lose your spot
 # ---------------------------------------------------------------------------
-if _all_matching:
+elif _all_matching:
     buckets = {
         s: [d for d in _all_matching if d["status"] == s]
         for s in ACTIVE_STATUSES
