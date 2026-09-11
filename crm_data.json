@@ -2053,7 +2053,7 @@
       "state": "MS",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Meeting Scheduled",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -2061,7 +2061,7 @@
       "sf_contact_id": "0033A00002QlWkBQAV",
       "row_json": "{\"Website\": \"https://www.vergentlms.com\", \"City\": \"Ridgeland\", \"State\": \"MS\", \"Employees\": 71, \"Description\": \"Vergent LMS, Inc. operates a complete loan management software that encompasses loan origination, loan servicing, marketing, reporting, accounting exports, along with ancillary services to enhance and streamline the business. It is a clients receive quality loan management software and customer service. The company's scalability allows the software to service all clients from a single store, to a multi-level corporation with thousands of locations.\", \"CEO/Owner Name\": \"Scott Putnam\", \"Title\": \"CEO\", \"Email\": \"sputnam@vergentlms.com\", \"Phone\": \"844-376-3848\"}",
       "created_at": "2026-09-11T17:17:08.296302+00:00",
-      "updated_at": "2026-09-11T17:17:08.309203+00:00",
+      "updated_at": "2026-09-11T21:00:04.841108+00:00",
       "memo": null
     },
     {
@@ -5167,6 +5167,16 @@
       "summary": "Status: In Dialogue \u2192 Not a Fit",
       "detail": "",
       "timestamp": "2026-09-11T20:56:31.049849+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 309,
+      "deal_id": 86,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Meeting Scheduled",
+      "detail": "",
+      "timestamp": "2026-09-11T21:00:01.748833+00:00",
       "synced_to_sf": 1,
       "user": "Trey"
     }
