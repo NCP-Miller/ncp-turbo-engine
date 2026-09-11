@@ -1645,7 +1645,7 @@
       "state": "VA",
       "niche": null,
       "project": null,
-      "status": "In Dialogue",
+      "status": "Not a Fit",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -1653,7 +1653,7 @@
       "sf_contact_id": "0034V00003tYCYJQA4",
       "row_json": "{\"Website\": \"https://www.earthlingsecurity.com\", \"City\": \"Mc Lean\", \"State\": \"VA\", \"Employees\": 14, \"Description\": \"Earthling Security, LLC is an SBA 8(a) certified small business with extensive years of delivering security and technology solutions to both the public sector and to commercial enterprises.\\nThe Company provides a strategic, end-to-end Cloud Computing, IT Security, and Secure DevOps solutions. It focuses to provide tailored and strategic business solutions to support and optimize the business mission of its valued clients.\", \"CEO/Owner Name\": \"Yusuf Ahmed\", \"Title\": \"Chief Executive Officer\", \"Email\": \"yaa@earthlingsecurity.com\", \"Phone\": null}",
       "created_at": "2026-08-14T22:34:59.878408+00:00",
-      "updated_at": "2026-09-10T18:08:21.031860+00:00",
+      "updated_at": "2026-09-11T20:56:35.029904+00:00",
       "memo": null
     },
     {
@@ -4902,6 +4902,16 @@
     },
     {
       "id": 282,
+      "deal_id": 72,
+      "type": "Note",
+      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker \u2014 Note: Status: Outreach Active \u2192 Closed \u2013 No Response (2026-09-10)",
+      "detail": "",
+      "timestamp": "2026-09-11T17:17:08.155442+00:00",
+      "synced_to_sf": 1,
+      "user": null
+    },
+    {
+      "id": 283,
       "deal_id": 73,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-25)",
@@ -4911,7 +4921,7 @@
       "user": null
     },
     {
-      "id": 283,
+      "id": 284,
       "deal_id": 73,
       "type": "Note",
       "summary": "Status: Outreach Active \u2192 Not a Fit",
@@ -4921,7 +4931,7 @@
       "user": "Trey"
     },
     {
-      "id": 284,
+      "id": 285,
       "deal_id": 73,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: Not a Fit (2026-08-28)",
@@ -4931,7 +4941,7 @@
       "user": null
     },
     {
-      "id": 285,
+      "id": 286,
       "deal_id": 74,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: email and linkedin (2026-08-25)",
@@ -4941,7 +4951,7 @@
       "user": null
     },
     {
-      "id": 286,
+      "id": 287,
       "deal_id": 74,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: Outreach Active (2026-08-28)",
@@ -4951,7 +4961,7 @@
       "user": null
     },
     {
-      "id": 287,
+      "id": 288,
       "deal_id": 75,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: email (2026-08-26)",
@@ -4961,7 +4971,7 @@
       "user": null
     },
     {
-      "id": 288,
+      "id": 289,
       "deal_id": 75,
       "type": "Note",
       "summary": "Status: Outreach Active \u2192 Contacted \u2013 No Opportunity",
@@ -4971,7 +4981,7 @@
       "user": "Trey"
     },
     {
-      "id": 289,
+      "id": 290,
       "deal_id": 75,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker \u2014 Note: Status: Outreach Active \u2192 Contacted \u2013 No Opportunity (2026-08-27)",
@@ -4981,7 +4991,7 @@
       "user": null
     },
     {
-      "id": 290,
+      "id": 291,
       "deal_id": 76,
       "type": "Note",
       "summary": "Promoted from Worth a Second Look \u2014 memo generated",
@@ -4991,7 +5001,7 @@
       "user": null
     },
     {
-      "id": 291,
+      "id": 292,
       "deal_id": 77,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: email (2026-09-09)",
@@ -5001,7 +5011,7 @@
       "user": null
     },
     {
-      "id": 292,
+      "id": 293,
       "deal_id": 77,
       "type": "Note",
       "summary": "Status: Outreach Active \u2192 Revisit Later",
@@ -5011,7 +5021,7 @@
       "user": "Trey"
     },
     {
-      "id": 293,
+      "id": 294,
       "deal_id": 77,
       "type": "Email",
       "summary": "Asked to hold off until Q2 2027. Really impressive product progress.",
@@ -5021,7 +5031,7 @@
       "user": "Trey"
     },
     {
-      "id": 294,
+      "id": 295,
       "deal_id": 77,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker \u2014 Email: Asked to hold off until Q2 2027. Really impressive product progress. (2026-09-09)",
@@ -5031,7 +5041,7 @@
       "user": null
     },
     {
-      "id": 295,
+      "id": 296,
       "deal_id": 77,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker - Status: Revisit Later (2026-09-09)",
@@ -5041,7 +5051,7 @@
       "user": null
     },
     {
-      "id": 296,
+      "id": 297,
       "deal_id": 78,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: Email (2026-09-09)",
@@ -5051,7 +5061,7 @@
       "user": null
     },
     {
-      "id": 297,
+      "id": 298,
       "deal_id": 79,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: email (2026-09-10)",
@@ -5061,7 +5071,7 @@
       "user": null
     },
     {
-      "id": 298,
+      "id": 299,
       "deal_id": 80,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: email (2026-09-10)",
@@ -5071,7 +5081,7 @@
       "user": null
     },
     {
-      "id": 299,
+      "id": 300,
       "deal_id": 81,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: emailed (2026-09-09)",
@@ -5081,7 +5091,7 @@
       "user": null
     },
     {
-      "id": 300,
+      "id": 301,
       "deal_id": 81,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: Call (2026-09-09)",
@@ -5091,7 +5101,7 @@
       "user": null
     },
     {
-      "id": 301,
+      "id": 302,
       "deal_id": 82,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: email (2026-09-10)",
@@ -5101,22 +5111,12 @@
       "user": null
     },
     {
-      "id": 302,
+      "id": 303,
       "deal_id": 83,
       "type": "Note",
       "summary": "Imported from Salesforce \u2014 recent activity: email (2026-09-10)",
       "detail": "",
       "timestamp": "2026-09-11T17:17:08.128733+00:00",
-      "synced_to_sf": 1,
-      "user": null
-    },
-    {
-      "id": 303,
-      "deal_id": 72,
-      "type": "Note",
-      "summary": "Imported from Salesforce \u2014 recent activity: NCP Tracker \u2014 Note: Status: Outreach Active \u2192 Closed \u2013 No Response (2026-09-10)",
-      "detail": "",
-      "timestamp": "2026-09-11T17:17:08.155442+00:00",
       "synced_to_sf": 1,
       "user": null
     },
@@ -5159,6 +5159,16 @@
       "timestamp": "2026-09-11T17:17:08.346268+00:00",
       "synced_to_sf": 1,
       "user": null
+    },
+    {
+      "id": 308,
+      "deal_id": 69,
+      "type": "Note",
+      "summary": "Status: In Dialogue \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-09-11T20:56:31.049849+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
     }
   ],
   "meta": [
