@@ -3139,8 +3139,9 @@
     "override_size_max": 100,
     "pivot_signal": false
   },
+  "status": "stopped",
   "reviewed_near_misses": [
+    "Stanley & Associates, LLC",
     "Wear Howell"
-  ],
-  "status": "stopped"
+  ]
 }
