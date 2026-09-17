@@ -1,7 +1,7 @@
 {
   "bot_status": {
     "search": "idle",
-    "analysis": "filtering",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -7625,28 +7625,63 @@
         "Conviction Reasoning": "The firm's lack of unique service offerings, limited growth prospects, and low differentiation resulted in a low conviction score. It does not align with our investment mandate of finding clearly differentiated acquisition targets with an evident 'right to win.'"
       },
       "reason": "Conviction 3/10: The firm's lack of unique service offerings, limited growth prospects, and low differentiation resulted in a low conviction score. It does not align with our investment mandate of finding clearly differentiated acquisition targets with an evident 'right to win.'"
+    },
+    {
+      "row": {
+        "Company": "Stanley & Associates, LLC",
+        "Description": "Stanley & Associates, LLC is a law firm based in Irondale, Alabama, specializing in real estate and land law. They provide services in areas such as closings, title insurance, civil litigation, and small business support, serving clients throughout Alabama. The firm also handles foreclosure defense, bankruptcy, evictions, and property transfers.",
+        "Website": "http://www.stanley-law.com",
+        "City": "Irondale",
+        "State": "Alabama",
+        "LinkedIn": "http://www.linkedin.com/company/stanley-associates-llc",
+        "Employees": 19,
+        "Est. EBITDA": "$570K\u2013$950K",
+        "CEO/Owner Name": "Gregory Stanley",
+        "Title": "Named Partner",
+        "Email": "gregory@stanley-law.com",
+        "Email Estimate": "",
+        "Phone": "205-451-4196",
+        "Source": "Web Path (/about) \u2192 Verified",
+        "Notes": "",
+        "Confidence": "High",
+        "Latest News": "N/A",
+        "Previously Sourced": "No",
+        "Differentiated": "Low",
+        "_niche": "Trust administrator trust administration estate trustee\n\nEXCLUDE these types of companies: Wealth management",
+        "Priority": "Low",
+        "Growth": "Medium",
+        "Txn Readiness": "Medium",
+        "Priority Confidence": "High",
+        "Growth Confidence": "Medium",
+        "Txn Readiness Confidence": "Medium",
+        "Differentiated Confidence": "High",
+        "Conviction": 3,
+        "Conviction Pitch": "Stanley & Associates, LLC, a law firm specializing in real estate and land law in Alabama, lacks significant differentiation with commodity services and operates in a more competitive market environment. The firm's focus on foreclosure defense, bankruptcy, and evictions, along with no notable advantages or recurring revenue model, makes it difficult to identify a compelling reason for investment within our criteria.",
+        "Conviction Reasoning": "The lack of differentiation, clear competitive edge, and the nature of the services offered, which do not align with our non-commodity service focus, drove the low score."
+      },
+      "reason": "Conviction 3/10: The lack of differentiation, clear competitive edge, and the nature of the services offered, which do not align with our non-commodity service focus, drove the low score."
     }
   ],
   "filter_stats": {
-    "total_sourced": 1504,
+    "total_sourced": 1507,
     "pre_filtered_size": 999,
     "pre_filtered_structural": 146,
     "pre_filtered_blocklist": 35,
     "pre_filtered_niche": 164,
-    "deep_analysis_failed": 159,
+    "deep_analysis_failed": 161,
     "pe_backed": 0,
     "portfolio_conflict": 0,
-    "low_differentiation": 1,
+    "low_differentiation": 2,
     "qualified": 0
   },
   "cost_tracker": {
-    "openai": 1.8884,
-    "firecrawl": 2.66,
+    "openai": 2.3378,
+    "firecrawl": 2.815,
     "apollo": 0.0,
-    "total": 4.5484,
+    "total": 5.1528,
     "call_counts": {
-      "openai": 175,
-      "firecrawl": 532,
+      "openai": 178,
+      "firecrawl": 563,
       "apollo": 0
     }
   },
