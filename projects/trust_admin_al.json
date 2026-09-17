@@ -1,6 +1,6 @@
 {
   "bot_status": {
-    "search": "exhausted",
+    "search": "waiting_for_round",
     "analysis": "idle",
     "writeup": "idle"
   },
@@ -2808,20 +2808,20 @@
     "qualified": 0
   },
   "cost_tracker": {
-    "openai": 1.6004,
-    "firecrawl": 2.325,
+    "openai": 1.6874,
+    "firecrawl": 2.35,
     "apollo": 0.0,
-    "total": 3.9254,
+    "total": 4.0374,
     "call_counts": {
-      "openai": 150,
-      "firecrawl": 465,
+      "openai": 153,
+      "firecrawl": 470,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "starting",
-    "message": "Pipeline starting. Niche: Trust administrator trust administration estate trustee, geography: Alabama, target: 5 memos.",
-    "timestamp": "2026-09-17T15:09:12.031571+00:00",
+    "type": "discovering_web",
+    "message": "Web discovery pass \u2014 round 1 of 4.",
+    "timestamp": "2026-09-17T15:09:37.602903+00:00",
     "severity": "info"
   },
   "created_at": "2026-09-17T13:44:01.651987+00:00",
