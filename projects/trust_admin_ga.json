@@ -1,7 +1,7 @@
 {
   "bot_status": {
     "search": "idle",
-    "analysis": "filtering",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -6732,29 +6732,64 @@
         "Conviction Reasoning": "The lack of differentiation and growth, paired with a broad service offering in a competitive market, fails to demonstrate an exceptional, unique edge or defensible moat."
       },
       "reason": "Conviction 3/10: The lack of differentiation and growth, paired with a broad service offering in a competitive market, fails to demonstrate an exceptional, unique edge or defensible moat."
+    },
+    {
+      "row": {
+        "Company": "Fricke & Associates, LLC",
+        "Description": "Fricke & Associates, LLC is an accounting firm based in Atlanta, Georgia, that provides a range of services including tax preparation, audit support, IRS representation, and business consulting. The firm serves a diverse clientele, offering specialized services such as forensic accounting, estate planning, and industry-specific tax planning.",
+        "Website": "http://www.frickecpa.com",
+        "City": "Peachtree Corners",
+        "State": "Georgia",
+        "LinkedIn": "http://www.linkedin.com/company/fricke-&-associates-p-c-",
+        "Employees": 18,
+        "Est. EBITDA": "$315K\u2013$630K",
+        "CEO/Owner Name": "N/A",
+        "Title": "N/A",
+        "Email": "N/A",
+        "Email Estimate": "",
+        "Phone": "N/A",
+        "Source": "Not Found",
+        "Notes": "",
+        "Confidence": "Low",
+        "Latest News": "N/A",
+        "Previously Sourced": "No",
+        "Differentiated": "Low",
+        "_niche": "trust administrator trustee services",
+        "Priority": "Low",
+        "Growth": "Medium",
+        "Txn Readiness": "Medium",
+        "Priority Confidence": "High",
+        "Growth Confidence": "Medium",
+        "Txn Readiness Confidence": "Low",
+        "Differentiated Confidence": "Medium",
+        "Conviction": 5,
+        "Conviction Pitch": "Fricke & Associates, LLC, while serving a diverse client base in Atlanta with specialized services like forensic accounting and industry-specific tax planning, lacks significant differentiation in the competitive accounting market. The firm offers standard services typical of an accounting practice, without a strong recurring revenue model or a clearly defensible moat.",
+        "Conviction Reasoning": "Fricke & Associates does not present any exceptional or unique attributes that align with our investment mandate, especially given the low differentiation and priority in the trust administrator space."
+      },
+      "reason": "Conviction 5/10: Fricke & Associates does not present any exceptional or unique attributes that align with our investment mandate, especially given the low differentiation and priority in the trust administrator space."
     }
   ],
   "reviewed_near_misses": [],
   "filter_stats": {
-    "total_sourced": 1260,
-    "pre_filtered_size": 930,
+    "total_sourced": 1263,
+    "pre_filtered_size": 932,
     "pre_filtered_structural": 56,
     "pre_filtered_blocklist": 18,
     "pre_filtered_niche": 191,
     "deep_analysis_failed": 54,
     "pe_backed": 0,
     "portfolio_conflict": 0,
-    "low_differentiation": 10,
+    "low_differentiation": 11,
     "qualified": 1
   },
   "cost_tracker": {
-    "openai": 5.1714,
-    "firecrawl": 2.185,
+    "openai": 5.6088,
+    "firecrawl": 2.31,
     "apollo": 0.0,
-    "total": 7.3564,
+    "total": 7.9188,
     "call_counts": {
-      "openai": 68,
-      "firecrawl": 437,
+      "openai": 69,
+      "firecrawl": 462,
       "apollo": 0
     }
   },
