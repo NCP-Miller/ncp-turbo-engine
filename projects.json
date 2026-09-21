@@ -234,18 +234,6 @@
     "backup_status": "not_configured"
   },
   {
-    "name": "Trust Administrators - Colorado",
-    "slug": "trust_administrators_colorado",
-    "db_file": "project_trust_administrators_colorado.db",
-    "created_at": "2026-09-17T13:43:20.826786+00:00",
-    "niche": "Trustee administrators",
-    "geography": "Colorado",
-    "memo_count": 2,
-    "active": true,
-    "backup_status": "not_configured",
-    "status": "stopped"
-  },
-  {
     "name": "Trust Admin - AL",
     "slug": "trust_admin_al",
     "db_file": "project_trust_admin_al.db",
@@ -265,6 +253,17 @@
     "geography": "Mississippi",
     "memo_count": 0,
     "active": false,
+    "backup_status": "not_configured"
+  },
+  {
+    "name": "Trust Administrators - Colorado",
+    "slug": "trust_administrators_colorado",
+    "db_file": "project_trust_administrators_colorado.db",
+    "created_at": "2026-09-21T18:49:05.057428+00:00",
+    "niche": "Trustee administrators",
+    "geography": "Colorado",
+    "memo_count": 2,
+    "active": true,
     "backup_status": "not_configured"
   }
 ]
