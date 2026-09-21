@@ -13,7 +13,7 @@
       "state": "Colorado",
       "niche": "trust administration and trustee services",
       "project": null,
-      "status": "New",
+      "status": "Leads to Trade with Bankers",
       "source": "memo",
       "notes": "",
       "next_followup": null,
@@ -21,7 +21,7 @@
       "sf_contact_id": "003Pp00002Is8usIAB",
       "row_json": "{\"Company\": \"Trustee Services Group\", \"Description\": \"Trustee Services Group is a boutique, privately owned corporate trustee specializing in trustee and estate fiduciary services. They focus on helping families navigate the complexities of wealth management and estate planning through a collaborative \\\"Open Architecture\\\" model, working closely with professional advisors across the United States. Their services include acting as trustees for various types of trusts, executors, and personal representatives, with a particular emphasis on family trusts, charitable trusts, and special needs trusts.\", \"Website\": \"http://www.trusteeservicesgroup.com\", \"City\": \"Colorado Springs\", \"State\": \"Colorado\", \"LinkedIn\": \"http://www.linkedin.com/company/trustee-services-group-llc\", \"Employees\": 30, \"Est. EBITDA\": \"$900K\\u2013$1.5M\", \"CEO/Owner Name\": \"Gregory Schupra\", \"Title\": \"Foundations & Charitable Tax Planning\", \"Email\": \"N/A\", \"Email Estimate\": \"gregorys@trusteeservicesgroup.com\", \"Phone\": \"N/A\", \"Source\": \"Web Path (/team)\", \"Notes\": \"\", \"Confidence\": \"Medium\", \"Latest News\": \"Governor Polis, Colorado Springs Mayor Mobolade and CPW Announce Cheyenne Mountain State Park Expansion, Sign New Recreation Agreement to Increase Camping and Boating | Colorado Governor Jared Polis - Colorado Governor's Office (.gov) | https://news.google.com/rss/articles/CBMi2gFBVV95cUxOYUpPZUVFMUF6UXV4UXFaSkxReEFmVHFOZGY4SHpPWlpTSFIxWm1PWmZiZ1hoeW5ENFlndHphVWY0SEM4VGN3Ynlndm85cHRqUzBOSFlPSlZ2QWFuVGROSHF0ei1oNElTZDBBdGhsZ3lPc0lEN2FvLWdqRUlXay0yVGJMQ3hwbHdQQV9xR0wwNk9YS285ekdMR2VpYm52UkNsbHlWOGtJWFV6ZjFycC1UMmFXT3F5dkhVOW50eE13UllZOEtydW0yNGlITTRNZmhsS2VmbWRMVC1fUQ?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Medium\", \"_niche\": \"trust administration and trustee services\\n\\nEXCLUDE these types of companies: wealth management\", \"Priority\": \"Low\", \"Growth\": \"Medium\", \"Txn Readiness\": \"Medium\", \"Priority Confidence\": \"Medium\", \"Growth Confidence\": \"Medium\", \"Txn Readiness Confidence\": \"Medium\", \"Differentiated Confidence\": \"Medium\", \"Conviction\": 8, \"Conviction Pitch\": \"Trustee Services Group offers a unique 'Open Architecture' model that differentiates them in the trust administration space, allowing them to collaboratively work with a wide network of professional advisors across the U.S. Their focus on specialized trust services like family trusts, charitable trusts, and special needs trusts supports a strong market position with recurring revenue potential, which aligns well with secular tailwinds in estate planning and wealth management. Their boutique nature and positioning in a fragmented market present a compelling buy-and-build opportunity, matched with the founder\\u2019s approaching retirement as a natural succession catalyst.\", \"Conviction Reasoning\": \"The combination of a differentiated service model, defensible market position, and favorable market dynamics justifies the high score.\"}",
       "created_at": "2026-09-21T19:11:42.704583+00:00",
-      "updated_at": "2026-09-21T19:11:43.306810+00:00",
+      "updated_at": "2026-09-21T20:03:21.672285+00:00",
       "memo": "---\n\n**Investment Memo**\n\n**To:** Trey Jones, New Capital Partners  \n**From:** [Your Name], Analyst  \n**Date:** [Today's Date]  \n**Subject:** Investment Opportunity: Trustee Services Group\n\n---\n\n**1. Why We're Excited**  \nTrustee Services Group (TSG) presents a compelling acquisition opportunity due to its unique 'Open Architecture' model, allowing seamless collaboration with professional advisors nationwide, thereby enhancing client service efficacy and expanding market reach. This approach, combined with a focus on niche trust services like family, charitable, and special needs trusts, positions TSG advantageously in a fragmented market with limited local competition, providing a strong foundation for a buy-and-build growth strategy. The imminent retirement of the founder offers a natural succession opportunity to integrate TSG into a larger platform.\n\n**2. Company Overview**  \nTSG is a privately owned trustee firm based in Colorado Springs, Colorado. With approximately 30 employees, the company specializes in corporate trustee services, focusing on family trusts, charitable trusts, and special needs trusts. TSG employs a collaborative \"Open Architecture\" model to partner with a vast network of professional advisors across the U.S., assisting families in estate planning and wealth management.\n\n**3. Differentiated Value Proposition**  \nTSG's 'Open Architecture' model distinctively differentiates it from its competition. This approach not only enhances client service delivery but also acts as a defensible moat by solidifying relationships with a broad professional network, providing a structural advantage in client acquisition and retention. Furthermore, their specialization in complex trusts supports their reputation for expertise and reliability in niche markets.\n\n**4. Market Opportunity & Growth**  \nThe trust administration sector is buoyed by favorable secular tailwinds, including an aging population, increased demand for estate planning, and evolving wealth transfer dynamics. The market remains fragmented, with no dominant players, presenting significant buy-and-build opportunities. TSG is well-positioned to capture market share in this expanding space, leveraging its established model and expertise in specialized trusts to drive growth.\n\n**5. NCP Fit Rationale**  \nTSG aligns well with NCP's focus on lower middle-market, services-oriented, founder-led businesses. The company's strong recurring revenue potential, given its essential service offerings and contractual relationships, provides revenue stability and predictability. Additionally, the founder's upcoming retirement presents a timely entry point for strategic acquisition, allowing NCP to inject leadership and operational expertise to scale operations effectively.\n\n**6. Key Risks & Diligence Items**  \n- **Est. EBITDA Verification:** Current EBITDA is based on heuristics and requires accurate confirmation through detailed financial analysis.\n- **Succession Planning:** Assess the readiness and plans for leadership transition and continuity post-founder retirement.\n- **Competitive Analysis:** Conduct in-depth analysis to confirm the extent of local/regional competition and validate market positioning.\n- **Regulatory Compliance:** Evaluate adherence to trust administration regulations and certifications to ensure compliance integrity.\n- **Scalability Potential:** Determine the feasibility of scaling operations beyond the current geographic and scope constraints.\n\n--- \n\nPlease note further due diligence is paramount to addressing critical open questions and assumptions highlighted above.\n\n---"
     },
     {
@@ -2169,7 +2169,7 @@
       "summary": "Investment memo generated",
       "detail": "",
       "timestamp": "2026-09-21T19:11:42.714308+00:00",
-      "synced_to_sf": 0,
+      "synced_to_sf": 1,
       "user": null
     },
     {
@@ -5661,6 +5661,16 @@
       "timestamp": "2026-09-21T19:50:17.734991+00:00",
       "synced_to_sf": 0,
       "user": null
+    },
+    {
+      "id": 351,
+      "deal_id": 1,
+      "type": "Note",
+      "summary": "Status: New \u2192 Leads to Trade with Bankers",
+      "detail": "",
+      "timestamp": "2026-09-21T20:03:17.822271+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
     }
   ],
   "meta": [
