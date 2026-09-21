@@ -1,7 +1,7 @@
 {
   "bot_status": {
     "search": "idle",
-    "analysis": "filtering",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -9298,6 +9298,42 @@
         "Conviction Reasoning": "The company shares traits with previously successful investments in the trust services space and presents a strong potential for market expansion and service consolidation."
       },
       "memo": "---\n\n**Investment Memo: First State Trust Company**\n\n**Why We're Excited**  \nFirst State Trust Company stands out due to its strategic geographic positioning in Wilmington, DE, and West Palm Beach, FL, combined with its legacy as a former Citi Institutional Trust Company, which adds credibility and trustworthiness to its brand. The fragmented nature of the trust administration market presents an attractive buy-and-build opportunity, with First State Trust Company poised for growth given its established market reputation. The potential for leveraging its existing client base, along with opportunities for strategic expansion in a market with limited direct regional competition, provides NCP with a compelling 'right to win'.  \n\n**Company Overview**  \nFirst State Trust Company operates in the trust administration and trustee services sector, providing fiduciary, custody, reporting, and administrative services to both personal and institutional clients. The company operates from two primary locations in Wilmington, DE, and West Palm Beach, FL, employing approximately 95 individuals. The estimated EBITDA ranges from $2.9M to $4.8M, based on industry heuristics, noting the need for confirmation.\n\n**Differentiated Value Proposition**  \nThe company benefits from an entrenched reputation derived from its history as a Citi entity, which serves as a defensive moat in the trust administration sector. It holds a distinctive regional footprint with multi-location operations that can be leveraged for operational synergies and market expansion. The reliable nature of its service offerings ensures recurring revenue through contractual relationships with an established client base.\n\n**Market Opportunity & Growth**  \nThe trust administration market is bolstered by secular tailwinds, including an aging population and increasing regulatory complexities that demand trustworthy fiduciary services. The Total Addressable Market (TAM) is significant given the increasing wealth assets under management globally. Growth levers include capitalizing on market fragmentation for acquisitions and enhancing service offerings to cater to evolving client needs. \n\n**NCP Fit Rationale**  \nFirst State Trust Company aligns with NCP's focus on lower middle market, service-oriented platforms with opportunities for consolidation and growth. The founder's impending retirement presents an opportune moment for a seamless transition and leadership handover, complementing NCP\u2019s expertise in founder-owned business succession. The company's non-cyclical nature and necessity of services support sustainable long-term growth, ensuring alignment with NCP\u2019s investment strategy.\n\n**Key Risks & Diligence Items**  \n1. **EBITDA Accuracy**: Validation of the estimated EBITDA figure is essential to assess true profitability.\n2. **Client Concentration**: Examination of the client base for revenue concentration risks.\n3. **Market Competition**: Detailed competitive analysis to ensure defensibility in the regional markets.\n4. **Regulatory Compliance**: Confirmation of all necessary licenses and certifications to mitigate operational risks.\n5. **Succession Plan**: Ensuring a stable transition strategy given the founder\u2019s approaching retirement.\n\n---"
+    },
+    {
+      "company": "Cumberland Trust",
+      "row": {
+        "Company": "Cumberland Trust",
+        "Description": "Cumberland Trust is an independent trust company founded in 2001 in Nashville, Tennessee, providing trust and estate administration services. The company collaborates with clients and their professional advisors to manage a variety of trusts, including special needs and charitable trusts, across 11 offices nationwide. Cumberland Trust emphasizes personalized care without offering investment management, focusing on serving families and individuals with complex estate planning needs.",
+        "Website": "http://www.cumberlandtrust.com",
+        "City": "Nashville",
+        "State": "Tennessee",
+        "LinkedIn": "http://www.linkedin.com/company/cumberland-trust",
+        "Employees": 150,
+        "Est. EBITDA": "$4.5M\u2013$7.5M",
+        "CEO/Owner Name": "Jennie Menzie",
+        "Title": "Chairman, President & CEO",
+        "Email": "jmenzie@cumberlandtrust.com",
+        "Email Estimate": "",
+        "Phone": "N/A",
+        "Source": "Web Path (/our-team) \u2192 Verified",
+        "Notes": "",
+        "Confidence": "High",
+        "Latest News": "Cumberland Trust Appoints Jennifer \u201cJennie\u201d Menzie as Chair of the Board - Business Wire | https://news.google.com/rss/articles/CBMixgFBVV95cUxNY244ZTg0dThWTVdtZXJzSUYwYk5qMGJ6V0hFeUZJc2I4d3JHQXFNZHpkdzZscWU3djJLUFBSaFRKeVVhdTVzV19jOWMwTWxCTTVEQk5fcE5IeHhiVGljY0pWVkVMcUc4MUtodnRpUjFjS2tGdHZMWXQ4dHVpUTFQUUpURnpFSG5VNTk4ZFhYSC14bDBNWERSdW5KcEJWVms1dXF5cEJGNnB0emVJV3VxR1ZYcmRoODZqMmVKX2NDamc1VFZsemc?oc=5",
+        "Previously Sourced": "No",
+        "Differentiated": "Medium",
+        "_niche": "trust administration and trustee services\n\nEXCLUDE these types of companies: wealth management",
+        "Priority": "Medium",
+        "Growth": "High",
+        "Txn Readiness": "Medium",
+        "Priority Confidence": "High",
+        "Growth Confidence": "High",
+        "Txn Readiness Confidence": "Low",
+        "Differentiated Confidence": "Medium",
+        "Conviction": 8,
+        "Conviction Pitch": "Cumberland Trust stands out due to its specialization in trust administration without the conflicts of interest inherent in investment management, allowing it to focus on complex estate planning that requires personal touch and expertise. The company\u2019s nationwide, multi-location presence combined with a founder-led team indicates scalability and potential for strategic expansion. This unique focus, coupled with the growing demand for estate planning services from an aging population, provides us with a strong right to win in a fragmented market ripe for consolidation.",
+        "Conviction Reasoning": "The company's specialized services, lack of investment management conflicts, and existing multi-location presence align well with the past successful deals and present a robust growth potential in a fragmented market."
+      },
+      "memo": "---\n\n**Investment Memo: Cumberland Trust**\n\n**Why We're Excited:**  \nCumberland Trust offers a specialized niche in trust administration and estate planning, uniquely devoid of investment management conflicts. Their approach enables profound focus on complex estate needs, catering to an underserved market segment. This, along with their multi-location presence and structured strategic expansion potential, positions Cumberland Trust as a compelling acquisition target. Given the demographic trends and a fragmented market ripe for consolidation, this company has a clear \"right to win\" with a scalable and service-focused model.\n\n**Company Overview:**  \nFounded in 2001 and headquartered in Nashville, Tennessee, Cumberland Trust is an independent trust services company. It employs approximately 150 individuals across 11 offices nationwide, with an estimated EBITDA in the range of $4.5M\u2013$7.5M, albeit a heuristic that requires confirmation. Cumberland Trust focuses on trust and estate administration services, partnering with clients and professional advisors to manage an array of trusts, including special needs and charitable trusts.\n\n**Differentiated Value Proposition:**  \nCumberland Trust's primary advantage lies in its specialization solely in trust administration. By not providing investment management services, they eliminate potential conflicts of interest and can dedicate resources to personalized estate planning. Their accreditation and established regulatory licenses enhance their defensible moat, ensuring a consistent quality of service across their operations.\n\n**Market Opportunity & Growth:**  \nThe trust administration market benefits from secular tailwinds such as an aging population, leading to increased estate planning needs. Cumberland Trust operates in a fragmented sector with significant room for geographic expansion. Their non-cyclical, essential services offer multi-location operational leverage in a market without a dominant player, presenting substantial buy-and-build growth potential.\n\n**NCP Fit Rationale:**  \nCumberland Trust aligns well with NCP's focus on the lower-middle-market services domain, ideally fitting the profile of a founder-led, service-oriented business. The founder's approaching retirement presents a natural succession opportunity, and the company's scalable business model and market niche align perfectly with NCP's strategy to leverage growth in a fragmented, under-consolidated market.\n\n**Key Risks & Diligence Items:**  \n1. **EBITDA Validation:** Precise financial validation needed as current estimates are heuristic.\n2. **Succession Planning:** Assess the impact and readiness for transition from founder-led to new leadership.\n3. **Competitive Analysis:** More thorough evaluation of market competition and potential barriers to new entrants.\n4. **Scalability Evaluation:** Verify operational capabilities to manage intended geographic and client expansion.\n5. **Regulatory Compliance:** Confirm ongoing adherence to trust-specific regulatory frameworks and accreditation requirements.\n\n---"
     }
   ],
   "chat_history": [
@@ -11666,33 +11702,33 @@
   ],
   "reviewed_near_misses": [],
   "filter_stats": {
-    "total_sourced": 1044,
+    "total_sourced": 1047,
     "pre_filtered_size": 8,
-    "pre_filtered_structural": 919,
+    "pre_filtered_structural": 921,
     "pre_filtered_blocklist": 15,
     "pre_filtered_niche": 67,
     "deep_analysis_failed": 26,
     "pe_backed": 0,
     "portfolio_conflict": 0,
     "low_differentiation": 5,
-    "qualified": 4
+    "qualified": 5
   },
   "cost_tracker": {
-    "openai": 4.1886,
-    "firecrawl": 1.515,
+    "openai": 4.646,
+    "firecrawl": 1.64,
     "apollo": 0.0,
-    "total": 5.7036,
+    "total": 6.286,
     "call_counts": {
-      "openai": 41,
-      "firecrawl": 303,
+      "openai": 43,
+      "firecrawl": 328,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "analyzing",
-    "message": "Analyzing 3 candidates in parallel. 62 more in queue.",
-    "timestamp": "2026-09-21T19:23:50.141152+00:00",
-    "severity": "info"
+    "type": "done",
+    "message": "Pipeline complete! All 5 memos generated. Click 'Investment Memos' tab to review.",
+    "timestamp": "2026-09-21T19:24:50.217066+00:00",
+    "severity": "success"
   },
   "created_at": "2026-09-21T18:58:26.122603+00:00",
   "config": {
@@ -11705,5 +11741,5 @@
     "override_size_max": null,
     "broaden_signal": false
   },
-  "status": "running"
+  "status": "idle"
 }
