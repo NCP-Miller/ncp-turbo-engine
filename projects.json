@@ -264,6 +264,6 @@
     "geography": "Mississippi",
     "memo_count": 0,
     "active": true,
-    "status": "running"
+    "status": "stopped"
   }
 ]
