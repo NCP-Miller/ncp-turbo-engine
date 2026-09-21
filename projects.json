@@ -252,8 +252,9 @@
     "niche": "trust and estate administration",
     "geography": "Mississippi",
     "memo_count": 0,
-    "active": false,
-    "backup_status": "not_configured"
+    "active": true,
+    "backup_status": "not_configured",
+    "status": "stopped"
   },
   {
     "name": "Trust Administrators - Colorado",
@@ -263,7 +264,7 @@
     "niche": "Trustee administrators",
     "geography": "Colorado",
     "memo_count": 2,
-    "active": true,
+    "active": false,
     "backup_status": "not_configured"
   }
 ]
