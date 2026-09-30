@@ -903,10 +903,73 @@ with tab_memos:
                 st.markdown("---")
                 st.markdown(memo["memo"])
 
-                if row.get("Email") and row.get("Email") != "N/A":
-                    st.markdown(
-                        f"**Contact:** {row.get('CEO/Owner Name', '')} — {row.get('Email')}"
+                # ── Contact info + inline correction ─────────────────
+                _contact_bits = [
+                    b for b in [
+                        row.get("CEO/Owner Name") if row.get("CEO/Owner Name") != "N/A" else None,
+                        row.get("Title") if row.get("Title") != "N/A" else None,
+                        row.get("Email") if row.get("Email") != "N/A" else None,
+                        row.get("Phone") if row.get("Phone") != "N/A" else None,
+                    ] if b
+                ]
+                _cc1, _cc2 = st.columns([4, 1])
+                _cc1.markdown("**Contact:** " + (" — ".join(_contact_bits)
+                              if _contact_bits else "*none found*"))
+                _ek = f"{_memo_idx}_{memo['company'].replace(' ', '_')}"
+                with _cc2.popover("✏️ Edit"):
+                    st.caption(
+                        "Correct the contact before it reaches Salesforce, "
+                        "email drafts, or calendar invites. Leave a field "
+                        "blank to clear it."
                     )
+                    with st.form(key=f"editc_{_ek}"):
+                        _en = st.text_input(
+                            "Name", value="" if row.get("CEO/Owner Name") in (None, "N/A")
+                            else row.get("CEO/Owner Name"))
+                        _et = st.text_input(
+                            "Title", value="" if row.get("Title") in (None, "N/A")
+                            else row.get("Title"))
+                        _ee = st.text_input(
+                            "Email", value="" if row.get("Email") in (None, "N/A")
+                            else row.get("Email"))
+                        _ep = st.text_input(
+                            "Phone", value="" if row.get("Phone") in (None, "N/A")
+                            else row.get("Phone"))
+                        if st.form_submit_button("Save contact"):
+                            _fields = {
+                                "CEO/Owner Name": _en.strip() or "N/A",
+                                "Title": _et.strip() or "N/A",
+                                "Email": _ee.strip() or "N/A",
+                                "Phone": _ep.strip() or "N/A",
+                                "Source": "Corrected by user",
+                                "Confidence": "High",
+                            }
+                            if _ee.strip():
+                                _fields["Email Estimate"] = ""
+                            state.update_memo_row(memo["company"], _fields)
+                            # Propagate to the Deal Tracker so Salesforce
+                            # auto-sync uses the corrected person
+                            try:
+                                from lib import crm as _crm
+                                _deal = _crm.get_deal(memo["company"])
+                                if _deal:
+                                    _crm.update_deal(
+                                        _deal["id"],
+                                        contact_name=_en.strip() or None,
+                                        title=_et.strip() or None,
+                                        email=_ee.strip() or None,
+                                        phone=_ep.strip() or None,
+                                    )
+                                    _crm.log_activity(
+                                        _deal["id"], "Note",
+                                        f"Contact corrected to "
+                                        f"{_en.strip() or '(cleared)'} in "
+                                        f"Sourcing Pipeline")
+                                    _crm.backup_to_github()
+                            except Exception:
+                                pass
+                            st.success("Contact updated everywhere.")
+                            st.rerun()
 
                 # ── Salesforce + Outreach Actions ─────────────────────
                 _co_key = memo['company'].replace(' ', '_')

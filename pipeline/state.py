@@ -390,6 +390,19 @@ class PipelineState:
         with self._lock:
             self._mutate_list("completed_memos", lambda lst: lst.append(memo))
 
+    def update_memo_row(self, company, fields):
+        """Update fields on a completed memo's row (e.g. correcting a
+        wrong contact before it reaches Salesforce). Matches by company
+        name; only the given keys change."""
+        def _upd(lst):
+            for m in lst:
+                if m.get("company") == company:
+                    row = m.get("row") or {}
+                    row.update(fields)
+                    m["row"] = row
+        with self._lock:
+            self._mutate_list("completed_memos", _upd)
+
     def add_chat(self, role, content):
         with self._lock:
             self._mutate_list("chat_history", lambda lst: lst.append({"role": role, "content": content}))

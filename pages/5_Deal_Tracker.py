@@ -489,9 +489,23 @@ with _u_col:
 
 crm.init_db()
 try:
-    crm.sync_with_github_backup()
+    _sync_result = crm.sync_with_github_backup()
 except Exception:
-    pass
+    _sync_result = {"status": "error"}
+
+if (_sync_result or {}).get("status") == "error":
+    st.error(
+        "⚠️ **The GitHub backup is unreachable** — deals could not be "
+        "restored and new work is NOT being backed up. This usually "
+        "means the GITHUB_TOKEN in Streamlit secrets has expired: "
+        "regenerate it at github.com/settings/tokens, update the secret "
+        "(Manage app → Settings → Secrets), and reboot the app."
+    )
+else:
+    _last_backup = crm.get_meta("last_backup_at")
+    if _last_backup:
+        st.caption(f"🛟 Backup healthy — last pushed "
+                   f"{_last_backup[:16].replace('T', ' ')} UTC")
 
 # ── Shared-workspace reminder (shown once per browser session) ────────
 if not st.session_state.get("_crm_concurrency_ack"):

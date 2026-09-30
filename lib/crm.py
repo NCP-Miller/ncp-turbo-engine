@@ -752,10 +752,20 @@ def merge_crm_export(data, adopt_status=False):
             else:
                 new_id = local["id"]
                 updates = {}
-                if (adopt_status
-                        and (local["status"] or "New") == "New"
-                        and (d.get("status") or "New") != "New"):
-                    updates["status"] = d["status"]
+                if adopt_status:
+                    local_status = local["status"] or "New"
+                    backup_status = d.get("status") or "New"
+                    # Adopt the backup's status when the local deal is
+                    # still 'New' — or when it's a RECREATION: created
+                    # after the backup row was last updated (a wiped
+                    # container re-imported it, e.g. from Salesforce,
+                    # losing the real status).
+                    _b_upd = d.get("updated_at") or d.get("created_at") or ""
+                    _recreated = bool(_b_upd) and \
+                        (local["created_at"] or "") > _b_upd
+                    if backup_status != local_status and \
+                            (local_status == "New" or _recreated):
+                        updates["status"] = backup_status
                 if not (local["notes"] or "").strip() and (d.get("notes") or "").strip():
                     updates["notes"] = d["notes"]
                 for f in ("next_followup", "sf_account_id", "sf_contact_id", "memo"):
@@ -804,15 +814,22 @@ def sync_with_github_backup():
     """Page-load safety net: merge the current GitHub backup into the
     local DB (additive only). Handles fresh containers even when the
     pipeline already recreated a few deals before the tracker opened.
+
+    Returns {"status": "ok"|"error"|"unconfigured", ...merge counts}
+    so the page can WARN when the backup is unreachable (e.g. an
+    expired GITHUB_TOKEN) instead of failing silently.
     """
     try:
-        from lib.github_backup import restore_crm
+        from lib.github_backup import is_configured, restore_crm
+        if not is_configured():
+            return {"status": "unconfigured"}
         data = restore_crm()
-        if data:
-            return merge_crm_export(data, adopt_status=False)
+        if not data:
+            return {"status": "error"}
+        result = merge_crm_export(data, adopt_status=False)
+        return {"status": "ok", **result}
     except Exception:
-        pass
-    return None
+        return {"status": "error"}
 
 
 def recover_from_history(max_versions=30):
@@ -964,7 +981,13 @@ def backup_to_github():
                     merge_crm_export(remote, adopt_status=False)
         except Exception:
             pass
-        return backup_crm(export_crm_to_json())
+        ok = backup_crm(export_crm_to_json())
+        if ok:
+            try:
+                set_meta("last_backup_at", _now())
+            except Exception:
+                pass
+        return ok
     except Exception:
         return False
 
