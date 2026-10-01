@@ -21044,6 +21044,7 @@
   "reviewed_near_misses": [
     "The Avenue Wealth Management Group",
     "First American Bank and Trust Company",
+    "The Piedmont Bank",
     "Georgia Probate Law Group",
     "Carmichael, Brasher, Tuvell & Company",
     "Dearth Law, LLC",
@@ -21062,5 +21063,8 @@
     "Hoffman & Associates, LLC",
     "The Fiduciary Group",
     "ClariVise Private Wealth"
-  ]
+  ],
+  "memo_verdicts": {
+    "Cornerstone Management, Inc": "rejected"
+  }
 }
