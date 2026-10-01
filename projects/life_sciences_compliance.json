@@ -8701,12 +8701,12 @@
     "qualified": 1
   },
   "cost_tracker": {
-    "openai": 4.801,
+    "openai": 4.821,
     "firecrawl": 2.62,
     "apollo": 0.0,
-    "total": 7.421,
+    "total": 7.441,
     "call_counts": {
-      "openai": 107,
+      "openai": 109,
       "firecrawl": 524,
       "apollo": 0
     }
@@ -8734,9 +8734,11 @@
     "AVIZVA": "rejected"
   },
   "reviewed_near_misses": [
+    "Attain Partners",
+    "Sky Solutions",
     "Allwyn Corporation",
     "Blu Omega",
-    "Sky Solutions",
+    "Main Digital",
     "Reso"
   ]
 }
