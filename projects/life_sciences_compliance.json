@@ -28339,7 +28339,6 @@
       "reason": "Conviction 4/10: The low differentiation and growth potential, along with a lack of standout features, prevent Reso from being a strong candidate against our past successful investments."
     }
   ],
-  "reviewed_near_misses": [],
   "filter_stats": {
     "total_sourced": 231,
     "pre_filtered_size": 0,
@@ -28381,5 +28380,8 @@
     "broaden_signal": false,
     "pivot_signal": false
   },
-  "status": "running"
+  "status": "running",
+  "reviewed_near_misses": [
+    "Reso"
+  ]
 }
