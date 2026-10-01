@@ -21013,12 +21013,12 @@
     "qualified": 1
   },
   "cost_tracker": {
-    "openai": 10.4318,
+    "openai": 10.4418,
     "firecrawl": 4.47,
     "apollo": 0.0,
-    "total": 14.9018,
+    "total": 14.9118,
     "call_counts": {
-      "openai": 142,
+      "openai": 143,
       "firecrawl": 894,
       "apollo": 0
     }
@@ -21042,8 +21042,15 @@
   },
   "status": "paused",
   "reviewed_near_misses": [
+    "Persium Group",
+    "Fricke & Associates, LLC",
+    "The Avenue Wealth Management Group",
+    "Gleneagles Group",
     "IQE Limited - International Fiduciary Services",
+    "Fuller and Company",
+    "Wise Financial LLC",
     "Lanier Legacy Group - Plan. Protect. Leave A Legacy.",
-    "The Fiduciary Group"
+    "The Fiduciary Group",
+    "ClariVise Private Wealth"
   ]
 }
