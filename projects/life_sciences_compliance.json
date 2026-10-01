@@ -8730,9 +8730,13 @@
     "pivot_signal": false
   },
   "status": "running",
+  "memo_verdicts": {
+    "AVIZVA": "rejected"
+  },
   "reviewed_near_misses": [
     "Allwyn Corporation",
     "Blu Omega",
+    "Sky Solutions",
     "Reso"
   ]
 }
