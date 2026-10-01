@@ -13,7 +13,7 @@
       "state": "Virginia",
       "niche": "life sciences consulting for pharmaceutical manufacturers and medical providers",
       "project": null,
-      "status": "New",
+      "status": "Not a Fit",
       "source": "memo",
       "notes": "",
       "next_followup": null,
@@ -21,7 +21,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"AVIZVA\", \"Description\": \"AVIZVA is a technology company specializing in healthcare software solutions, offering AI-enabled web portals and mobile applications designed to enhance consumer engagement and streamline healthcare operations. They provide services such as data integration, interoperability, and digital transformation for healthcare enterprises, focusing on improving care outcomes and operational efficiency.\", \"Website\": \"http://www.avizva.com\", \"City\": \"Reston\", \"State\": \"Virginia\", \"LinkedIn\": \"http://www.linkedin.com/company/avizva\", \"Employees\": 270, \"Est. EBITDA\": \"$4.0M\\u2013$8.1M\", \"CEO/Owner Name\": \"N/A\", \"Title\": \"N/A\", \"Email\": \"N/A\", \"Email Estimate\": \"\", \"Phone\": \"N/A\", \"Source\": \"Not Found\", \"Notes\": \"\", \"Confidence\": \"Low\", \"Latest News\": \"N/A\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Medium\", \"_niche\": \"life sciences consulting for pharmaceutical manufacturers and medical providers\", \"Priority\": \"High\", \"Growth\": \"Medium\", \"Txn Readiness\": \"Medium\", \"Priority Confidence\": \"High\", \"Growth Confidence\": \"Low\", \"Txn Readiness Confidence\": \"Low\", \"Differentiated Confidence\": \"Medium\", \"Conviction\": 7, \"Conviction Pitch\": \"AVIZVA stands out with its specialized focus on AI-enabled solutions for the healthcare sector, an industry poised for transformation and growth. Their offerings improve operational efficiency and consumer engagement, addressing critical needs in healthcare operations. The company's niche in life sciences consulting for pharmaceutical manufacturers and medical providers positions it well within a fragmented market ripe for expansion opportunities.\", \"Conviction Reasoning\": \"AVIZVA's specialization in healthcare software solutions presents a promising opportunity in a sector with strong secular tailwinds, though its differentiation is only medium, suggesting room for improvement in competitive edge.\"}",
       "created_at": "2026-10-01T23:01:55.848538+00:00",
-      "updated_at": "2026-10-01T23:01:55.858388+00:00",
+      "updated_at": "2026-10-01T23:11:13.920649+00:00",
       "memo": "**Investment Memorandum: AVIZVA**\n\n**Why We're Excited:**  \nAVIZVA is uniquely positioned within the life sciences consulting space through its specialized focus on AI-enabled solutions for healthcare. Their products are specifically designed to enhance consumer engagement and operational efficiency for pharmaceutical manufacturers and medical providers. This specialization, combined with their presence in a fragmented market with limited direct competition in the Reston, Virginia area, gives them a strong 'right to win.' Their focus on improving healthcare outcomes through technology aligns with growing industry demands for digital transformation.\n\n**Company Overview:**  \nAVIZVA is a technology company headquartered in Reston, Virginia, employing approximately 270 people. The company specializes in healthcare software solutions, offering AI-enabled web portals and mobile applications. Their services include data integration, interoperability, and digital transformation initiatives, aimed at enhancing care delivery and operational effectiveness.\n\n**Differentiated Value Proposition:**  \nAVIZVA\u2019s competitive advantage lies in its AI-driven healthcare solutions, which streamline operations and enhance consumer engagement. Their focus on interoperability and data integration provides a defensible moat, allowing them to offer proprietary solutions that are difficult for competitors to replicate. Additionally, the potential for recurring revenue through service retainers and managed services strengthens their business model.\n\n**Market Opportunity & Growth:**  \nThe healthcare technology market is driven by secular tailwinds such as an aging population, increased healthcare spending, and the demand for digital transformation. AVIZVA operates in a fragmented market with significant whitespace for expansion, presenting opportunities for growth through strategic acquisitions or organic efforts. Medium growth potential is expected as the industry continues to prioritize efficiency and patient outcomes.\n\n**NCP Fit Rationale:**  \nAVIZVA's focus on services for pharmaceutical manufacturers and medical providers fits well within NCP\u2019s lower middle market and services-oriented investment strategy. With a founder approaching retirement, there is a natural succession opportunity that aligns with our interest in founder-owned businesses. The fragmented market is also conducive to a buy-and-build strategy, leveraging AVIZVA\u2019s niche expertise.\n\n**Key Risks & Diligence Items:**  \n1. **EBITDA Validation:** The estimated EBITDA of $4.0M\u2013$8.1M is based on heuristic methods and requires confirmation through detailed financial diligence.\n2. **Competition Analysis:** Understanding the level of competition and potential threats from larger, well-capitalized players entering the market.\n3. **Revenue Model Assessment:** Evaluate the stability of recurring revenue streams and the potential impact of economic cycles on service demand.\n4. **Scalability and Growth Limitations:** Assess the potential barriers to scaling operations and the ability to expand into new markets.\n5. **Regulatory and Compliance Risks:** Examine the company's ability to navigate the complex regulatory environment in healthcare technology."
     },
     {
@@ -6311,6 +6311,16 @@
       "timestamp": "2026-09-21T19:50:17.734991+00:00",
       "synced_to_sf": 0,
       "user": null
+    },
+    {
+      "id": 392,
+      "deal_id": 1,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-10-01T23:11:13.920367+00:00",
+      "synced_to_sf": 0,
+      "user": null
     }
   ],
   "meta": [
@@ -6320,7 +6330,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-09-30T23:15:04.897661+00:00"
+      "value": "2026-10-01T23:01:58.444914+00:00"
     }
   ]
 }
