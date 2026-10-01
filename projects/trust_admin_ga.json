@@ -21013,12 +21013,12 @@
     "qualified": 1
   },
   "cost_tracker": {
-    "openai": 10.4418,
+    "openai": 10.4618,
     "firecrawl": 4.47,
     "apollo": 0.0,
-    "total": 14.9118,
+    "total": 14.9318,
     "call_counts": {
-      "openai": 143,
+      "openai": 145,
       "firecrawl": 894,
       "apollo": 0
     }
@@ -21042,14 +21042,24 @@
   },
   "status": "paused",
   "reviewed_near_misses": [
-    "Persium Group",
-    "Fricke & Associates, LLC",
     "The Avenue Wealth Management Group",
-    "Gleneagles Group",
-    "IQE Limited - International Fiduciary Services",
-    "Fuller and Company",
-    "Wise Financial LLC",
+    "First American Bank and Trust Company",
+    "Georgia Probate Law Group",
+    "Carmichael, Brasher, Tuvell & Company",
+    "Dearth Law, LLC",
     "Lanier Legacy Group - Plan. Protect. Leave A Legacy.",
+    "Goodwin Investment Advisory",
+    "Rhodes, Young, Black & Duncan, CPAs",
+    "Gleneagles Group",
+    "Fuller and Company",
+    "Advisory Services Network",
+    "Wise Financial LLC",
+    "LGM | Lindsey, Greenway & McIntire, LLC",
+    "Persium Group",
+    "BJM Group",
+    "Fricke & Associates, LLC",
+    "IQE Limited - International Fiduciary Services",
+    "Hoffman & Associates, LLC",
     "The Fiduciary Group",
     "ClariVise Private Wealth"
   ]
