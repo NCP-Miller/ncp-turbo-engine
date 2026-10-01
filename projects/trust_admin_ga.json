@@ -1,7 +1,7 @@
 {
   "bot_status": {
     "search": "idle",
-    "analysis": "filtering",
+    "analysis": "idle",
     "writeup": "idle"
   },
   "candidate_queue": [
@@ -20963,28 +20963,63 @@
         "Conviction Reasoning": "The absence of notable differentiation and the low growth trajectory limit the excitement this company presents, aligning with traits seen in previously passed opportunities."
       },
       "reason": "Conviction 4/10: The absence of notable differentiation and the low growth trajectory limit the excitement this company presents, aligning with traits seen in previously passed opportunities."
+    },
+    {
+      "row": {
+        "Company": "Fuller and Company",
+        "Description": "Fuller and Company is a wealth management firm based in Atlanta, Georgia, offering services such as retirement planning, asset management, tax strategies, and estate planning. They serve individuals and families, providing personalized financial advice and solutions while adhering to a fiduciary standard.",
+        "Website": "http://www.fullercom.com",
+        "City": "Atlanta",
+        "State": "Georgia",
+        "LinkedIn": "http://www.linkedin.com/company/fuller-and-company",
+        "Employees": 33,
+        "Est. EBITDA": "$578K\u2013$1.2M",
+        "CEO/Owner Name": "John Fuller",
+        "Title": "Owner",
+        "Email": "N/A",
+        "Email Estimate": "john.fuller@fullercom.com",
+        "Phone": "404-257-9588",
+        "Source": "Web Path (/meet-the-team) \u2192 Verified",
+        "Notes": "",
+        "Confidence": "High",
+        "Latest News": "Where was Bugonia filmed? - movie-locations.com | https://news.google.com/rss/articles/CBMiXEFVX3lxTE4weTRzSmdWOGhmV0JXQzlxdzEyVDFRRkV3RW5hU2JsS19VNzh3bThRRHo0UTZYRG0zTkpZV0d3aHpvV1FqVkJscWRqdkJDYzV1NXVhd2RDeXVMTFUz?oc=5",
+        "Previously Sourced": "No",
+        "Differentiated": "Low",
+        "_niche": "trust administrator trustee services",
+        "Priority": "Low",
+        "Growth": "Medium",
+        "Txn Readiness": "Medium",
+        "Priority Confidence": "High",
+        "Growth Confidence": "Medium",
+        "Txn Readiness Confidence": "Low",
+        "Differentiated Confidence": "Medium",
+        "Conviction": 4,
+        "Conviction Pitch": "Fuller and Company's wealth management services, while adhering to a fiduciary standard, do not present a unique differentiation within the competitive Atlanta market. Their offerings of retirement planning, asset management, tax strategies, and estate planning are common services without a proprietary edge or distinct regional advantage. The firm does not align with our mandate for companies with defensible moats or those operating within a fragmented market ripe for consolidation.",
+        "Conviction Reasoning": "The firm lacks strong differentiation and operates in a competitive market, not fitting our key criteria for proprietary services or market fragmentation."
+      },
+      "reason": "Conviction 4/10: The firm lacks strong differentiation and operates in a competitive market, not fitting our key criteria for proprietary services or market fragmentation."
     }
   ],
   "filter_stats": {
-    "total_sourced": 1647,
-    "pre_filtered_size": 1224,
+    "total_sourced": 1650,
+    "pre_filtered_size": 1225,
     "pre_filtered_structural": 66,
-    "pre_filtered_blocklist": 29,
+    "pre_filtered_blocklist": 30,
     "pre_filtered_niche": 194,
     "deep_analysis_failed": 113,
     "pe_backed": 0,
     "portfolio_conflict": 0,
-    "low_differentiation": 20,
+    "low_differentiation": 21,
     "qualified": 1
   },
   "cost_tracker": {
-    "openai": 9.9944,
-    "firecrawl": 4.345,
+    "openai": 10.4318,
+    "firecrawl": 4.47,
     "apollo": 0.0,
-    "total": 14.3394,
+    "total": 14.9018,
     "call_counts": {
-      "openai": 141,
-      "firecrawl": 869,
+      "openai": 142,
+      "firecrawl": 894,
       "apollo": 0
     }
   },
@@ -21007,6 +21042,7 @@
   },
   "status": "paused",
   "reviewed_near_misses": [
+    "IQE Limited - International Fiduciary Services",
     "Lanier Legacy Group - Plan. Protect. Leave A Legacy.",
     "The Fiduciary Group"
   ]
