@@ -781,7 +781,7 @@
       "state": null,
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "In Dialogue",
       "source": "backfill-salesforce",
       "notes": "Good meeting. Small. Confirmed thesis",
       "next_followup": null,
@@ -789,7 +789,7 @@
       "sf_contact_id": "003Pp000028ZbdNIAS",
       "row_json": "{\"Website\": \"https://vnasrisk.com\", \"City\": null, \"State\": null, \"Employees\": null, \"Description\": \"VNAS Risk Solutions specializes in the design, implementation, and management of captive insurance companies both in the U.S. and internationally. They provide comprehensive services including feasibility studies, regulatory compliance, financial management, and operational oversight to support various industries in managing their risk through captive insurance.\", \"CEO/Owner Name\": \"Robert Barker\", \"Title\": \"Managing Director\", \"Email\": \"robertbarker@vnasrisk.com\", \"Phone\": null}",
       "created_at": "2026-09-30T15:45:15.001612+00:00",
-      "updated_at": "2026-09-30T16:02:01.056769+00:00",
+      "updated_at": "2026-10-02T22:00:03.680042+00:00",
       "memo": null
     },
     {
@@ -6599,6 +6599,16 @@
       "timestamp": "2026-10-02T21:59:25.143313+00:00",
       "synced_to_sf": 1,
       "user": "Trey"
+    },
+    {
+      "id": 416,
+      "deal_id": 33,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 In Dialogue",
+      "detail": "",
+      "timestamp": "2026-10-02T22:00:00.998691+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
     }
   ],
   "meta": [
@@ -6608,7 +6618,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-02T21:58:55.640844+00:00"
+      "value": "2026-10-02T21:59:31.068485+00:00"
     }
   ]
 }
