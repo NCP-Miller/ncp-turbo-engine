@@ -2,6 +2,7 @@ streamlit
 pandas
 requests
 openai
+anthropic
 openpyxl
 simple-salesforce
 python-docx
