@@ -85,7 +85,7 @@
       "state": "WI",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Investment Bankers",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -93,7 +93,7 @@
       "sf_contact_id": "003Pp00002J3MCvIAN",
       "row_json": "{\"Website\": \"http://www.rwbaird.com\", \"City\": \"Milwaukee\", \"State\": \"WI\", \"Employees\": 3126, \"Description\": \"Robert W. Baird and Co., Inc. provides wealth management, investment banking, asset management, and private equity services to individuals, financial institutions, and corporate clients. Its services include fixed-income investment management, M and A advisory, equity underwriting, private equity placements, and research.\", \"CEO/Owner Name\": \"Guiherme (\\\"Ghee\\\") Hubner\", \"Title\": \"Sponsor Coverage\", \"Email\": null, \"Phone\": \"800-792-2473\"}",
       "created_at": "2026-09-30T15:45:14.127302+00:00",
-      "updated_at": "2026-09-30T15:45:14.144223+00:00",
+      "updated_at": "2026-10-02T21:55:51.928941+00:00",
       "memo": null
     },
     {
@@ -6519,6 +6519,16 @@
       "timestamp": "2026-10-02T21:55:18.787051+00:00",
       "synced_to_sf": 1,
       "user": "Trey"
+    },
+    {
+      "id": 408,
+      "deal_id": 4,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Investment Bankers",
+      "detail": "",
+      "timestamp": "2026-10-02T21:55:49.987281+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
     }
   ],
   "meta": [
@@ -6528,7 +6538,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-02T21:54:56.181327+00:00"
+      "value": "2026-10-02T21:55:24.526261+00:00"
     }
   ]
 }
