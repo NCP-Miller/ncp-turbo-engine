@@ -133,7 +133,7 @@
       "state": "MA",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Investment Bankers",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -141,7 +141,7 @@
       "sf_contact_id": "0033A00002N5zE5QAJ",
       "row_json": "{\"Website\": \"https://merger.com\", \"City\": \"Burlington\", \"State\": \"MA\", \"Employees\": 16, \"Description\": \"Mirus Capital Advisors, Inc. is a boutique investment banking firm that offers financial advisory services to middle-market corporations in the technology and manufacturing industries. The company offers recapitalization, mergers, and acquisitions advisory, private equity raising, corporate finance advisory and valuation services to entrepreneurs, corporations, and professional financial investors.\", \"CEO/Owner Name\": \"Rudy Minar\", \"Title\": null, \"Email\": \"minar@merger.com\", \"Phone\": null}",
       "created_at": "2026-09-30T15:45:14.186618+00:00",
-      "updated_at": "2026-09-30T15:45:14.205333+00:00",
+      "updated_at": "2026-10-02T21:55:21.343470+00:00",
       "memo": null
     },
     {
@@ -6509,6 +6509,16 @@
       "timestamp": "2026-10-02T21:54:51.682227+00:00",
       "synced_to_sf": 1,
       "user": "Trey"
+    },
+    {
+      "id": 407,
+      "deal_id": 6,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Investment Bankers",
+      "detail": "",
+      "timestamp": "2026-10-02T21:55:18.787051+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
     }
   ],
   "meta": [
@@ -6518,7 +6528,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-02T21:54:34.090070+00:00"
+      "value": "2026-10-02T21:54:56.181327+00:00"
     }
   ]
 }
