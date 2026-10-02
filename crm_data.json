@@ -37,7 +37,7 @@
       "state": "DC",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Investment Bankers",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -45,7 +45,7 @@
       "sf_contact_id": "0033000001ncNwEAAU",
       "row_json": "{\"Website\": \"https://focusbankers.com\", \"City\": \"Washington, D.C.\", \"State\": \"DC\", \"Employees\": 64, \"Description\": \"FOCUS Investment Banking, LLC is a boutique investment banking firm that provides financial advisory services. It offers mergers and acquisitions, divestitures, debt and equity financing, due diligence, memorandum preparation, transaction negotiation, and strategic advisory services.\", \"CEO/Owner Name\": \"Bill Snow\", \"Title\": \"Managing Director\", \"Email\": \"william.snow@focusbankers.com\", \"Phone\": \"(312) 254-5904\"}",
       "created_at": "2026-09-30T15:45:14.067101+00:00",
-      "updated_at": "2026-09-30T15:45:14.086228+00:00",
+      "updated_at": "2026-10-02T21:54:53.584632+00:00",
       "memo": null
     },
     {
@@ -6499,6 +6499,16 @@
       "timestamp": "2026-10-02T21:54:26.935122+00:00",
       "synced_to_sf": 1,
       "user": "Trey"
+    },
+    {
+      "id": 406,
+      "deal_id": 2,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Investment Bankers",
+      "detail": "",
+      "timestamp": "2026-10-02T21:54:51.682227+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
     }
   ],
   "meta": [
@@ -6508,7 +6518,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-02T21:54:05.564185+00:00"
+      "value": "2026-10-02T21:54:34.090070+00:00"
     }
   ]
 }
