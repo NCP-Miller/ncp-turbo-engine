@@ -15,8 +15,7 @@ import runpy
 
 import streamlit as st
 
-st.set_page_config(page_title="Zombie Fund Screener", page_icon="🧟",
-                   layout="wide")
+# Page config is owned by the app.py navigation router.
 
 
 # Same password gate as the rest of the suite (shares 'password_correct',

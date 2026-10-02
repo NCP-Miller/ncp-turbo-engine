@@ -4,3 +4,5 @@ requests
 openai
 openpyxl
 simple-salesforce
+python-docx
+pypdf

@@ -322,6 +322,31 @@ def read_crm_history(max_commits=30):
     return versions
 
 
+def backup_nda(nda_dict):
+    """Push the NDA Review projects/rounds/rules to the data branch."""
+    token, repo = _get_credentials()
+    if not token or not repo:
+        return False
+    _ensure_branch(token, repo)
+    content = json.dumps(nda_dict, indent=2, default=str)
+    return _write_file(token, repo, "nda_review.json", content,
+                       message="Backup NDA review")
+
+
+def restore_nda():
+    """Read the NDA Review backup from the data branch."""
+    token, repo = _get_credentials()
+    if not token or not repo:
+        return None
+    content, _ = _read_file(token, repo, "nda_review.json")
+    if not content:
+        return None
+    try:
+        return json.loads(content)
+    except json.JSONDecodeError:
+        return None
+
+
 def backup_crm(crm_dict):
     """Push the full CRM export (deals + activities) to the data branch."""
     token, repo = _get_credentials()
