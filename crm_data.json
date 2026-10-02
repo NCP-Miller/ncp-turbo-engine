@@ -229,7 +229,7 @@
       "state": "PA",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Investment Bankers",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -237,7 +237,7 @@
       "sf_contact_id": "0033000001kWeltAAC",
       "row_json": "{\"Website\": \"https://www.fairmountpartners.com\", \"City\": \"Conshohocken\", \"State\": \"PA\", \"Employees\": 23, \"Description\": \"Fairmount Partners, LP is an independent investment bank focused on serving the needs of middle market and emerging growth business. It help clients execute mergers and acquisitions (buy-side and sell-side) assignments, raise funds for growth and design corporate development strategy. The company serve a wide range of clients with a particular focus on outsourced clinical services, including clinical research organizations, lab testing service, healthcare and life sciences staffing, specialty pharmacy, diagnostic and imaging services and other related industries.\", \"CEO/Owner Name\": \"Allen Born\", \"Title\": \"Investment Banking Director, Technology\", \"Email\": \"allen.born@fairmountpartners.com\", \"Phone\": \"12155544730\"}",
       "created_at": "2026-09-30T15:45:14.299049+00:00",
-      "updated_at": "2026-09-30T15:45:14.316552+00:00",
+      "updated_at": "2026-10-02T21:58:52.481603+00:00",
       "memo": null
     },
     {
@@ -6579,6 +6579,16 @@
       "timestamp": "2026-10-02T21:58:25.896917+00:00",
       "synced_to_sf": 1,
       "user": "Trey"
+    },
+    {
+      "id": 414,
+      "deal_id": 10,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Investment Bankers",
+      "detail": "",
+      "timestamp": "2026-10-02T21:58:50.481594+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
     }
   ],
   "meta": [
@@ -6588,7 +6598,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-02T21:57:52.547814+00:00"
+      "value": "2026-10-02T21:58:30.851128+00:00"
     }
   ]
 }
