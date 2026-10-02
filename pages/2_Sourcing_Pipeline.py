@@ -59,7 +59,8 @@ def _crm_capture(company, row=None, niche=None, activity=None,
             _crm.log_activity(deal_id, activity_type, activity,
                               synced_to_sf=synced_to_sf)
         if backup:
-            _crm.backup_to_github()
+            # async when available so memo-review clicks stay snappy
+            getattr(_crm, "backup_async", _crm.backup_to_github)()
     except Exception:
         pass
 

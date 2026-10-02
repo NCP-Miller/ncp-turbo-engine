@@ -13,7 +13,7 @@ if not all(hasattr(crm, a) for a in (
         "sync_with_github_backup", "recover_from_history",
         "backfill_from_salesforce", "auto_sync_deal",
         "sync_all_to_salesforce", "USERS", "get_meta", "set_meta",
-        "RELATIONSHIP_STATUSES")):
+        "RELATIONSHIP_STATUSES", "backup_async", "auto_sync_async")):
     crm = importlib.reload(crm)
 if not all(hasattr(_outreach_mod, a) for a in (
         "generate_custom_reminder_ics", "generate_followup_ics",
@@ -156,20 +156,30 @@ def _render_deal_card(deal, show_status=False, expanded=False):
 
         with top_r:
             current = deal["status"] if deal["status"] in STATUSES else "New"
-            new_status = st.selectbox(
+            _skey = f"status_{_id}"
+            # Always seed the widget from the DATABASE value. Stale widget
+            # memory (after bulk re-files, archive reopens, the focus
+            # card, or a colleague's change) must never masquerade as a
+            # user edit — that was silently reverting categorizations.
+            st.session_state[_skey] = current
+
+            def _on_status_change(deal_id=_id, skey=_skey):
+                _new = st.session_state.get(skey)
+                _d = crm.get_deal_by_id(deal_id)
+                if _d and _new and _new != _d["status"]:
+                    crm.set_status(deal_id, _new, _d["status"],
+                                   user=st.session_state.get("crm_user"))
+                    crm.auto_sync_async(deal_id)
+                    crm.backup_async()
+
+            st.selectbox(
                 "Status",
                 STATUSES,
-                index=STATUSES.index(current),
-                key=f"status_{_id}",
+                key=_skey,
+                on_change=_on_status_change,
                 format_func=lambda s: f"{STATUS_ICONS.get(s, '')} {s}",
                 help="Changing the status moves this deal to that folder.",
             )
-            if new_status != deal["status"]:
-                crm.set_status(_id, new_status, deal["status"],
-                               user=st.session_state.get("crm_user"))
-                crm.auto_sync_deal(_id)
-                crm.backup_to_github()
-                st.rerun()
 
         # ── Notes + follow-up date ────────────────────────────────
         n_col, f_col = st.columns([3, 2])
@@ -182,9 +192,9 @@ def _render_deal_card(deal, show_status=False, expanded=False):
             )
             if st.button("Save Notes", key=f"savenotes_{_id}"):
                 crm.update_deal(_id, notes=notes_val)
-                _synced = crm.auto_sync_deal(_id)
-                crm.backup_to_github()
-                st.success("Notes saved." + (" Synced to Salesforce." if _synced else ""))
+                crm.auto_sync_async(_id)
+                crm.backup_async()
+                st.success("Notes saved. Syncing to Salesforce in the background.")
         with f_col:
             existing_fu = None
             if deal.get("next_followup"):
@@ -204,13 +214,13 @@ def _render_deal_card(deal, show_status=False, expanded=False):
                 crm.update_deal(_id, next_followup=fu_date.isoformat())
                 crm.log_activity(_id, "Note", f"Follow-up set for {fu_date.isoformat()}",
                                  user=st.session_state.get("crm_user"))
-                crm.auto_sync_deal(_id)
-                crm.backup_to_github()
+                crm.auto_sync_async(_id)
+                crm.backup_async()
                 st.rerun()
             if deal.get("next_followup") and fu_clear.button("Clear", key=f"fuclear_{_id}"):
                 crm.update_deal(_id, next_followup=None)
-                crm.auto_sync_deal(_id)
-                crm.backup_to_github()
+                crm.auto_sync_async(_id)
+                crm.backup_async()
                 st.rerun()
             if deal.get("next_followup"):
                 st.caption(f"Currently: {deal['next_followup'][:10]}")
@@ -349,8 +359,8 @@ def _render_deal_card(deal, show_status=False, expanded=False):
             if st.form_submit_button("Log") and a_summary.strip():
                 crm.log_activity(_id, a_type, a_summary.strip(),
                                  user=st.session_state.get("crm_user"))
-                crm.auto_sync_deal(_id)
-                crm.backup_to_github()
+                crm.auto_sync_async(_id)
+                crm.backup_async()
                 st.rerun()
 
         activities = crm.list_activities(_id, limit=25)
@@ -413,8 +423,8 @@ def _render_deal_card(deal, show_status=False, expanded=False):
                     f"{r_date.isoformat()} {r_time.strftime('%H:%M')}{recur_label}",
                     user=st.session_state.get("crm_user"),
                 )
-                crm.auto_sync_deal(_id)
-                crm.backup_to_github()
+                crm.auto_sync_async(_id)
+                crm.backup_async()
 
         if st.session_state.get(f"_rem_ics_{_id}"):
             st.download_button(
@@ -492,12 +502,17 @@ with _u_col:
     )
 
 crm.init_db()
-try:
-    _sync_result = crm.sync_with_github_backup()
-except Exception:
-    _sync_result = {"status": "error"}
+# Merge the GitHub backup ONCE per browser session — not on every click.
+# (Fetching the multi-MB backup on every rerun was the main speed killer.)
+if not st.session_state.get("_crm_synced_once"):
+    st.session_state["_crm_synced_once"] = True
+    try:
+        _sync_result = crm.sync_with_github_backup()
+    except Exception:
+        _sync_result = {"status": "error"}
+    st.session_state["_crm_sync_status"] = (_sync_result or {}).get("status")
 
-if (_sync_result or {}).get("status") == "error":
+if st.session_state.get("_crm_sync_status") == "error":
     st.error(
         "⚠️ **The GitHub backup is unreachable** — deals could not be "
         "restored and new work is NOT being backed up. This usually "
@@ -509,7 +524,9 @@ else:
     _last_backup = crm.get_meta("last_backup_at")
     if _last_backup:
         st.caption(f"🛟 Backup healthy — last pushed "
-                   f"{_last_backup[:16].replace('T', ' ')} UTC")
+                   f"{_last_backup[:16].replace('T', ' ')} UTC "
+                   f"(backups and Salesforce sync now run in the "
+                   f"background — your edits save instantly)")
 
 # ── Shared-workspace reminder (shown once per browser session) ────────
 if not st.session_state.get("_crm_concurrency_ack"):
@@ -605,7 +622,7 @@ if attention and _digest_stage != "done":
             # Consume the weekly slot and deliver the invite
             st.session_state["_digest_stage"] = "done"
             crm.set_meta("last_weekly_digest", date.today().isoformat())
-            crm.backup_to_github()
+            crm.backup_async()
             from lib.outreach import generate_attention_digest_ics
             _digest_ics = generate_attention_digest_ics(attention)
             _digest_name = f"pipeline_review_{date.today().isoformat()}.ics"
@@ -763,7 +780,7 @@ with st.expander("⚙️ Import & add deals"):
                     niche=m_niche or None, source="manual",
                 )
                 crm.log_activity(deal_id, "Note", "Added manually")
-                crm.backup_to_github()
+                crm.backup_async()
                 st.rerun()
 
     st.markdown("---")
@@ -791,7 +808,7 @@ with st.expander("⚙️ Import & add deals"):
                 crm.set_status(_d["id"], _bulk_target, _d["status"],
                                user=st.session_state.get("crm_user"))
                 _moved += 1
-        crm.backup_to_github()
+        crm.backup_async()
         st.success(f"Moved {_moved} deal(s) to {_bulk_target}.")
         st.rerun()
 
@@ -967,6 +984,6 @@ elif _all_matching:
                     if c4.button("Reopen", key=f"reopen_{d['id']}"):
                         crm.set_status(d["id"], "New", d["status"],
                                        user=st.session_state.get("crm_user"))
-                        crm.auto_sync_deal(d["id"])
-                        crm.backup_to_github()
+                        crm.auto_sync_async(d["id"])
+                        crm.backup_async()
                         st.rerun()

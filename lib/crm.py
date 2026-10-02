@@ -1022,3 +1022,45 @@ def restore_from_github_if_empty():
     except Exception:
         pass
     return False
+
+
+# ---------------------------------------------------------------------------
+# BACKGROUND SYNC/BACKUP — the UI never waits on GitHub or Salesforce.
+# Local SQLite writes are the source of truth and are always synchronous;
+# mirroring runs on daemon threads with a debounce so rapid-fire edits
+# collapse into one upload instead of stacking multi-MB pushes.
+# ---------------------------------------------------------------------------
+import threading as _threading
+
+_backup_lock = _threading.Lock()
+_backup_pending = {"flag": False}
+
+
+def backup_async():
+    """Debounced fire-and-forget GitHub backup."""
+    def _worker():
+        if not _backup_lock.acquire(blocking=False):
+            _backup_pending["flag"] = True   # a run is active; queue one more
+            return
+        try:
+            while True:
+                _backup_pending["flag"] = False
+                try:
+                    backup_to_github()
+                except Exception:
+                    pass
+                if not _backup_pending["flag"]:
+                    break
+        finally:
+            _backup_lock.release()
+    _threading.Thread(target=_worker, daemon=True).start()
+
+
+def auto_sync_async(deal_id):
+    """Fire-and-forget Salesforce auto-sync for one deal."""
+    def _worker():
+        try:
+            auto_sync_deal(deal_id)
+        except Exception:
+            pass
+    _threading.Thread(target=_worker, daemon=True).start()
