@@ -181,7 +181,7 @@
       "state": "VA",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Investment Bankers",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -189,7 +189,7 @@
       "sf_contact_id": "0033000001Zcv5gAAB",
       "row_json": "{\"Website\": \"https://clearsightadvisors.com\", \"City\": \"Mc Lean\", \"State\": \"VA\", \"Employees\": 25, \"Description\": \"Clearsight Advisors, Inc. is an independent merchant banking firm dedicated to providing world-class MA and capital raising solutions exclusively to growth-oriented Business and Technology services companies. It offers growth private equity, mergers and acquisitions, strategic alternatives, and venture capital\", \"CEO/Owner Name\": \"Bhavin Patel\", \"Title\": \"Director\", \"Email\": \"bpatel@clearsightadvisors.com\", \"Phone\": \"703-672-3103\"}",
       "created_at": "2026-09-30T15:45:14.243200+00:00",
-      "updated_at": "2026-09-30T15:45:14.260307+00:00",
+      "updated_at": "2026-10-02T21:58:27.818075+00:00",
       "memo": null
     },
     {
@@ -6569,6 +6569,16 @@
       "timestamp": "2026-10-02T21:57:47.550146+00:00",
       "synced_to_sf": 1,
       "user": "Trey"
+    },
+    {
+      "id": 413,
+      "deal_id": 8,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Investment Bankers",
+      "detail": "",
+      "timestamp": "2026-10-02T21:58:25.896917+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
     }
   ],
   "meta": [
@@ -6578,7 +6588,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-02T21:57:20.743166+00:00"
+      "value": "2026-10-02T21:57:52.547814+00:00"
     }
   ]
 }
