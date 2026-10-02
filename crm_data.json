@@ -637,7 +637,7 @@
       "state": "VA",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Leads to Trade with Bankers",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -645,7 +645,7 @@
       "sf_contact_id": "0034V00003tYCYJQA4",
       "row_json": "{\"Website\": \"https://www.earthlingsecurity.com\", \"City\": \"Mc Lean\", \"State\": \"VA\", \"Employees\": 14, \"Description\": \"Earthling Security, LLC is an SBA 8(a) certified small business with extensive years of delivering security and technology solutions to both the public sector and to commercial enterprises.\\nThe Company provides a strategic, end-to-end Cloud Computing, IT Security, and Secure DevOps solutions. It focuses to provide tailored and strategic business solutions to support and optimize the business mission of its valued clients.\", \"CEO/Owner Name\": \"Yusuf Ahmed\", \"Title\": \"Chief Executive Officer\", \"Email\": \"yaa@earthlingsecurity.com\", \"Phone\": null}",
       "created_at": "2026-09-30T15:45:14.818392+00:00",
-      "updated_at": "2026-09-30T15:45:14.837127+00:00",
+      "updated_at": "2026-10-02T21:57:50.098258+00:00",
       "memo": null
     },
     {
@@ -6559,6 +6559,16 @@
       "timestamp": "2026-10-02T21:57:14.430855+00:00",
       "synced_to_sf": 1,
       "user": "Trey"
+    },
+    {
+      "id": 412,
+      "deal_id": 27,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Leads to Trade with Bankers",
+      "detail": "",
+      "timestamp": "2026-10-02T21:57:47.550146+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
     }
   ],
   "meta": [
@@ -6568,7 +6578,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-02T21:56:54.224699+00:00"
+      "value": "2026-10-02T21:57:20.743166+00:00"
     }
   ]
 }
