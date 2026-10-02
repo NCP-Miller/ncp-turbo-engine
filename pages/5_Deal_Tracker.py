@@ -106,11 +106,12 @@ def _sf_login():
 _attention_ids = set()
 
 
-def _render_deal_card(deal, show_status=False):
+def _render_deal_card(deal, show_status=False, expanded=False):
     """Full editable deal card inside an expander.
 
     A 🔴 dot right after the chevron marks deals on the Needs Attention
-    list; show_status=True prefixes the folder (used by search results).
+    list; show_status=True prefixes the folder (used by search results
+    and the pinned focus view); expanded=True opens the card.
     """
     _id = deal["id"]
     _dot = "🔴 " if _id in _attention_ids else ""
@@ -122,7 +123,7 @@ def _render_deal_card(deal, show_status=False):
         f"{_dot}{_status_prefix}{deal['company']} · "
         f"last activity: {_fmt_ts(deal.get('last_activity') or deal.get('created_at'))}"
     )
-    with st.expander(header):
+    with st.expander(header, expanded=expanded):
         top_l, top_r = st.columns([3, 2])
 
         with top_l:
@@ -654,15 +655,43 @@ if attention and _digest_stage != "done":
 if attention:
     with st.container(border=True):
         st.markdown(f"### 🔔 Needs Attention ({len(attention)})")
+        st.caption("Click a company to open its card right here.")
         for d in attention[:15]:
             icon = STATUS_ICONS.get(d["status"], "•")
-            st.markdown(
-                f"- {icon} **{d['company']}** — {d['attention_reason']}"
-                f" · last touch: {_fmt_ts(d.get('last_activity') or d.get('created_at'))}"
-                f" · in folder: {d['status']}"
+            a1, a2 = st.columns([2, 4])
+            if a1.button(f"{icon} {d['company']}", key=f"attn_{d['id']}",
+                         use_container_width=True):
+                st.session_state["_focus_deal_id"] = d["id"]
+            a2.caption(
+                f"{d['attention_reason']} · last touch: "
+                f"{_fmt_ts(d.get('last_activity') or d.get('created_at'))}"
+                f" · folder: {d['status']}"
             )
         if len(attention) > 15:
             st.caption(f"...and {len(attention) - 15} more in the folders below.")
+
+# ── Pinned focus view: the deal clicked in Needs Attention ───────────
+_focus_id = st.session_state.get("_focus_deal_id")
+if _focus_id:
+    _focus_deal = None
+    try:
+        _focus_deal = crm.get_deal_by_id(_focus_id)
+    except Exception:
+        pass
+    if _focus_deal:
+        # attach last_activity so the header matches the list view
+        _focus_full = next(
+            (x for x in crm.list_deals() if x["id"] == _focus_id),
+            _focus_deal)
+        f1, f2 = st.columns([5, 1])
+        f1.markdown("#### 📌 Focused deal")
+        if f2.button("✕ Close", key="_focus_close", use_container_width=True):
+            st.session_state.pop("_focus_deal_id", None)
+            st.rerun()
+        _render_deal_card(_focus_full, show_status=True, expanded=True)
+        st.markdown("---")
+    else:
+        st.session_state.pop("_focus_deal_id", None)
 
 # ---------------------------------------------------------------------------
 # Import + manual add
@@ -826,6 +855,8 @@ if _all_matching and search.strip():
         f"search to return to the folder view."
     )
     for deal in _all_matching:
+        if deal["id"] == st.session_state.get("_focus_deal_id"):
+            continue      # already pinned open above
         _render_deal_card(deal, show_status=True)
 
 # ---------------------------------------------------------------------------
@@ -861,6 +892,8 @@ elif _all_matching:
         if not bucket:
             st.caption(f"No deals in {selected_folder}.")
         for deal in bucket:
+            if deal["id"] == st.session_state.get("_focus_deal_id"):
+                continue  # already pinned open above
             _render_deal_card(deal)
 
     # ── Archive folder: terminal statuses, grouped, sorted by date sourced ──
