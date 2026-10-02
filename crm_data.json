@@ -525,7 +525,7 @@
       "sf_contact_id": "0033A00002WDLlYQAX",
       "row_json": "{\"Website\": \"https://www.dataseers.ai\", \"City\": \"Alpharetta\", \"State\": \"GA\", \"Employees\": 93, \"Description\": \"DataSeers, Inc. is a computer software company. It provides AI-powered enterprise software for banks and fintechs to improve reconciliation, compliance, fraud detection, and analytics. The company offers its services throughout the country.\", \"CEO/Owner Name\": \"Micah Fowler\", \"Title\": \"Manager of Strategic Alliances\", \"Email\": \"mfowler@dataseers.ai\", \"Phone\": null}",
       "created_at": "2026-09-30T15:45:14.660800+00:00",
-      "updated_at": "2026-10-02T16:05:53.897259+00:00",
+      "updated_at": "2026-10-02T21:53:25.636885+00:00",
       "memo": null
     },
     {
@@ -6469,6 +6469,16 @@
       "timestamp": "2026-10-02T19:48:53.655080+00:00",
       "synced_to_sf": 0,
       "user": "Trey"
+    },
+    {
+      "id": 403,
+      "deal_id": 22,
+      "type": "Email",
+      "summary": "corresponded today",
+      "detail": "",
+      "timestamp": "2026-10-02T21:53:20.449003+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
     }
   ],
   "meta": [
@@ -6478,7 +6488,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-02T16:20:44.347694+00:00"
+      "value": "2026-10-02T19:48:57.448188+00:00"
     }
   ]
 }
