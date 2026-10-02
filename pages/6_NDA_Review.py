@@ -49,7 +49,26 @@ st.caption(
     "marked review copy. Iterate round by round until it's executable."
 )
 
-# ── Rulebook ─────────────────────────────────────────────────────────
+def _review_clients():
+    """Claude (preferred) + GPT-4o fallback, from secrets."""
+    anthropic_client = None
+    try:
+        import anthropic
+        anthropic_client = anthropic.Anthropic(
+            api_key=st.secrets["ANTHROPIC_API_KEY"])
+    except Exception:
+        anthropic_client = None
+    openai_client = None
+    try:
+        from lib.api_clients import load_api_keys, make_openai_client
+        keys = load_api_keys()
+        openai_client = make_openai_client(api_key=keys["OPENAI_API_KEY"])
+    except Exception:
+        openai_client = None
+    return anthropic_client, openai_client
+
+
+# ── Rulebook + engine ────────────────────────────────────────────────
 with st.expander("📘 The NCP NDA rulebook (seeded from your handoff — editable)"):
     st.caption(
         "Loaded from the NCP NDA Review Handoff (Oct 2, 2026). Edits here "
@@ -57,10 +76,30 @@ with st.expander("📘 The NCP NDA rulebook (seeded from your handoff — editab
     )
     _rules = st.text_area("Rules", value=nda.load_rules(), height=400,
                           label_visibility="collapsed")
-    if st.button("Save rulebook"):
+    rc1, rc2 = st.columns([1, 2])
+    if rc1.button("Save rulebook"):
         nda.save_rules(_rules)
         nda.backup_to_github()
         st.success("Rulebook saved — future reviews use this text.")
+    _model_pick = rc2.selectbox(
+        "Negotiation brain", nda.ANTHROPIC_MODELS,
+        index=nda.ANTHROPIC_MODELS.index(nda.get_review_model()),
+        help="Claude with extended thinking reasons through the negotiation "
+             "before drafting. Falls back down this list if your API org "
+             "lacks access to the chosen model.")
+    if _model_pick != nda.get_review_model():
+        nda.set_review_model(_model_pick)
+
+_ac, _oc = _review_clients()
+if _ac:
+    st.caption(f"🧠 Reviews run on **Claude ({nda.get_review_model()})** "
+               f"with extended thinking.")
+else:
+    st.warning(
+        "ANTHROPIC_API_KEY is not in secrets — reviews will fall back to "
+        "GPT-4o. Add an Anthropic API key (console.anthropic.com) to get "
+        "Claude's negotiation reasoning."
+    )
 
 tab_review, tab_projects = st.tabs(["🔍 Review an NDA", "🗂️ Projects"])
 
@@ -135,7 +174,6 @@ with tab_review:
     up = st.file_uploader("NDA file (.docx or .pdf)", type=["docx", "pdf"])
     if st.button("Run NCP review", type="primary",
                  disabled=not (up and (proj_name or "").strip())):
-        from lib.api_clients import load_api_keys, make_openai_client
         try:
             text = nda.extract_text(up.getvalue(), up.name)
         except RuntimeError as e:
@@ -146,25 +184,77 @@ with tab_review:
                      "if it's a scanned PDF, upload the .docx instead.")
             st.stop()
 
+        _is_docx = up.name.lower().endswith(".docx")
         pid = nda.create_project(proj_name.strip(), deal_type, ncp_role,
                                  form_source)
         ctx = nda.prior_context(pid)
-        keys = load_api_keys()
-        client = make_openai_client(api_key=keys["OPENAI_API_KEY"])
-        with st.spinner("Applying the NCP rulebook (60-90 seconds)..."):
+
+        # Handoff incoming-file check: a counter-round "redline" with zero
+        # live markup means their changes were already accepted silently.
+        if ctx and _is_docx:
+            _ins_ct, _del_ct = nda.count_tracked_changes(up.getvalue())
+            if _ins_ct == 0 and _del_ct == 0:
+                st.warning(
+                    "⚠️ This counter-round file contains **no live tracked "
+                    "changes** (0 w:ins / 0 w:del) — the counterparty may "
+                    "have accepted changes before sending (the Earthling "
+                    "pattern). The review will diff against the prior "
+                    "round; ask them to keep Track Changes on."
+                )
+            else:
+                st.caption(f"Incoming file markup: {_ins_ct} insertions, "
+                           f"{_del_ct} deletions — live redline confirmed.")
+
+        with st.spinner("Claude is reasoning through the NDA against the "
+                        "rulebook (1-3 minutes with extended thinking)..."):
             try:
-                review = nda.review_nda(client, text, deal_type, ncp_role,
-                                        form_source, nda.load_rules(), ctx)
+                review, engine = nda.review_nda(
+                    text, deal_type, ncp_role, form_source,
+                    nda.load_rules(), ctx,
+                    anthropic_client=_ac, openai_client=_oc)
             except Exception as e:
                 st.error(f"Review failed: {e}")
                 st.stop()
-        round_no = nda.add_round(pid, up.name, text, review)
+        round_no = nda.add_round(pid, up.name, text, review,
+                                 file_blob=up.getvalue() if _is_docx else None)
         nda.backup_to_github()
 
         st.markdown(f"## Round {round_no} review — {proj_name}")
+        st.caption(f"Reviewed by {engine}")
         clean_text, applied, skipped = nda.apply_edits(
             text, review.get("edits", []))
         _render_review(review, skipped)
+
+        # ── Deliverables ─────────────────────────────────────────
+        if _is_docx:
+            tracked_bytes, trep = nda.build_tracked_docx(
+                up.getvalue(), review.get("edits", []))
+            st.download_button(
+                "⬇️ REDLINE — Word tracked changes (.docx)",
+                data=tracked_bytes,
+                file_name=f"{proj_name.replace(' ', '_')}_R{round_no}"
+                          f"_NCP_Redlined.docx",
+                mime="application/vnd.openxmlformats-officedocument"
+                     ".wordprocessingml.document",
+                type="primary", use_container_width=True)
+            _acc = "✅ PASS" if trep["accept_audit"] else "❌ FAIL"
+            _rej = "✅ PASS" if trep["reject_audit"] else "❌ FAIL"
+            st.caption(
+                f"Genuine Word tracked changes in the counterparty's own "
+                f"file · author **{trep['author']}** · change IDs from "
+                f"{trep['first_id']} · {trep['applied']} edits applied · "
+                f"**Accept-audit: {_acc}** · **Reject-audit: {_rej}**")
+            if trep["skipped"]:
+                st.warning(
+                    f"{len(trep['skipped'])} edit(s) could not be placed in "
+                    f"the redline automatically — apply by hand:\n"
+                    + "\n".join(f"- {s.get('original', s.get('revised', ''))[:120]}… "
+                                f"({s.get('_skip_reason')})"
+                                for s in trep["skipped"]))
+        else:
+            st.info("Tracked-changes redline needs the counterparty's "
+                    ".docx — this round was a PDF, so only the clean and "
+                    "marked copies are available.")
 
         d1, d2 = st.columns(2)
         d1.download_button(
@@ -182,12 +272,6 @@ with tab_review:
             mime="application/vnd.openxmlformats-officedocument"
                  ".wordprocessingml.document",
             use_container_width=True,
-        )
-        st.caption(
-            "The clean draft is NCP's position as plain text — feed it to "
-            "the locked compare workflow (LibreOffice CompareDocuments, "
-            "author 'New Capital Partners') for the true tracked-changes "
-            "redline. The marked copy is for review only."
         )
 
 # ═════════════════════ PROJECTS TAB ══════════════════════════════════
@@ -209,6 +293,27 @@ with tab_projects:
                 clean_text, applied, skipped = nda.apply_edits(
                     r.get("original_text") or "", review.get("edits", []))
                 _render_review(review, skipped)
+                if r.get("has_blob"):
+                    _blob = nda.get_round_blob(r["id"])
+                    if _blob:
+                        _tb, _tr = nda.build_tracked_docx(
+                            _blob, review.get("edits", []))
+                        st.download_button(
+                            "⬇️ REDLINE — Word tracked changes",
+                            data=_tb,
+                            file_name=f"{p['name'].replace(' ', '_')}"
+                                      f"_R{r['round_no']}_NCP_Redlined.docx",
+                            mime="application/vnd.openxmlformats-"
+                                 "officedocument.wordprocessingml.document",
+                            key=f"tr_{r['id']}", type="primary",
+                            use_container_width=True)
+                        st.caption(
+                            f"Accept-audit: "
+                            f"{'✅' if _tr['accept_audit'] else '❌'} · "
+                            f"Reject-audit: "
+                            f"{'✅' if _tr['reject_audit'] else '❌'} · "
+                            f"author {_tr['author']} · IDs from "
+                            f"{_tr['first_id']}")
                 rd1, rd2 = st.columns(2)
                 rd1.download_button(
                     "⬇️ Clean draft",
