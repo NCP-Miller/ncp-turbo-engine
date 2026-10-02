@@ -61,7 +61,7 @@
       "state": "OH",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Investment Bankers",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -69,7 +69,7 @@
       "sf_contact_id": "003Pp00000aTESfIAO",
       "row_json": "{\"Website\": \"https://www.53.com\", \"City\": \"Cincinnati\", \"State\": \"OH\", \"Employees\": 19247, \"Description\": \"Fifth Third Bancorp, doing business as Fifth Third Bank, operates as diversified financial services in its country. Its commercial banking segment offers credit intermediation, cash management and financial services; lending and depository products; and cash management, foreign exchange and international trade finance, derivatives and capital markets services, asset-based lending, real estate finance, public finance, commercial leasing, and syndicated finance for business, government and professional customers.\", \"CEO/Owner Name\": \"Elizabeth Vosnos\", \"Title\": null, \"Email\": null, \"Phone\": null}",
       "created_at": "2026-09-30T15:45:14.097883+00:00",
-      "updated_at": "2026-09-30T15:45:14.116535+00:00",
+      "updated_at": "2026-10-02T21:56:18.618807+00:00",
       "memo": null
     },
     {
@@ -6529,6 +6529,16 @@
       "timestamp": "2026-10-02T21:55:49.987281+00:00",
       "synced_to_sf": 1,
       "user": "Trey"
+    },
+    {
+      "id": 409,
+      "deal_id": 3,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Investment Bankers",
+      "detail": "",
+      "timestamp": "2026-10-02T21:56:16.397892+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
     }
   ],
   "meta": [
@@ -6538,7 +6548,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-02T21:55:24.526261+00:00"
+      "value": "2026-10-02T21:55:54.500914+00:00"
     }
   ]
 }
