@@ -517,7 +517,7 @@
       "state": "GA",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "In Dialogue",
       "source": "backfill-salesforce",
       "notes": "He has several really large deals closing. Follow up mid sept",
       "next_followup": "2026-09-16",
@@ -525,7 +525,7 @@
       "sf_contact_id": "0033A00002WDLlYQAX",
       "row_json": "{\"Website\": \"https://www.dataseers.ai\", \"City\": \"Alpharetta\", \"State\": \"GA\", \"Employees\": 93, \"Description\": \"DataSeers, Inc. is a computer software company. It provides AI-powered enterprise software for banks and fintechs to improve reconciliation, compliance, fraud detection, and analytics. The company offers its services throughout the country.\", \"CEO/Owner Name\": \"Micah Fowler\", \"Title\": \"Manager of Strategic Alliances\", \"Email\": \"mfowler@dataseers.ai\", \"Phone\": null}",
       "created_at": "2026-09-30T15:45:14.660800+00:00",
-      "updated_at": "2026-10-02T16:05:40.802715+00:00",
+      "updated_at": "2026-10-02T16:05:53.897259+00:00",
       "memo": null
     },
     {
@@ -6399,6 +6399,16 @@
       "timestamp": "2026-10-02T16:05:33.469403+00:00",
       "synced_to_sf": 1,
       "user": "Trey"
+    },
+    {
+      "id": 396,
+      "deal_id": 22,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 In Dialogue",
+      "detail": "",
+      "timestamp": "2026-10-02T16:05:46.366314+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
     }
   ],
   "meta": [
@@ -6408,7 +6418,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-02T15:44:19.740771+00:00"
+      "value": "2026-10-02T16:05:44.009245+00:00"
     }
   ]
 }
