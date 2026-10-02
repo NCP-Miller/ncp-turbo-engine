@@ -1453,7 +1453,7 @@
       "state": "Florida",
       "niche": "I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.",
       "project": "Wealth management and RIA compliance",
-      "status": "Revisit Later",
+      "status": "Not a Fit",
       "source": "backfill-liked",
       "notes": "Spoke with investment bankers (Macquarie) who have this mandate",
       "next_followup": null,
@@ -1461,7 +1461,7 @@
       "sf_contact_id": "003Pp000021vMQQIA2",
       "row_json": "{\"Company\": \"InnReg\", \"Description\": \"InnReg is a compliance consulting firm that specializes in providing outsourced compliance services to fintech companies. They assist clients with licensing, regulatory strategy, and compliance operations, serving sectors such as broker-dealers, investment advisors, and digital banking. Based in Miami, Florida, InnReg supports fintechs in navigating complex regulatory environments to ensure compliance with evolving financial regulations.\", \"Website\": \"http://www.innreg.com\", \"City\": \"Miami\", \"State\": \"Florida\", \"LinkedIn\": \"http://www.linkedin.com/company/innreg\", \"Employees\": 29, \"Est. EBITDA\": \"$870K\\u2013$1.4M\", \"CEO/Owner Name\": \"Francesco Matteini\", \"Title\": \"CEO and Founder\", \"Email\": \"francesco@innreg.com\", \"Email Estimate\": \"\", \"Phone\": \"305-908-1160\", \"Source\": \"Web Spider \\u2192 Verified\", \"Notes\": \"\", \"Confidence\": \"High\", \"Latest News\": \"N/A\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"I am looking for services, technology, and tech enabled services companies providing compliance solutions to RIAs and private wealth advisors.\", \"Priority\": \"High\", \"Growth\": \"Low\", \"Txn Readiness\": \"Medium\", \"Conviction\": 5, \"Conviction Pitch\": \"InnReg provides critical compliance services tailored for the burgeoning fintech industry, helping companies navigate complex regulatory landscapes. However, the firm's differentiation appears low, as many players offer similar compliance consulting in the crowded fintech service space.\", \"Conviction Reasoning\": \"The lack of standout differentiation and low growth prospects keeps InnReg from being a highly compelling opportunity, despite its focus on fintech compliance.\"}",
       "created_at": "2026-07-10T00:01:37.978146+00:00",
-      "updated_at": "2026-07-15T23:00:48.707479+00:00",
+      "updated_at": "2026-10-02T16:13:11.960267+00:00",
       "memo": null
     },
     {
@@ -6439,6 +6439,16 @@
       "timestamp": "2026-10-02T16:12:25.214410+00:00",
       "synced_to_sf": 1,
       "user": "Trey"
+    },
+    {
+      "id": 400,
+      "deal_id": 61,
+      "type": "Note",
+      "summary": "Status: Revisit Later \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-10-02T16:13:09.336396+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
     }
   ],
   "meta": [
@@ -6448,7 +6458,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-02T16:09:20.540834+00:00"
+      "value": "2026-10-02T16:12:30.709763+00:00"
     }
   ]
 }
