@@ -12,7 +12,8 @@ import lib.outreach as _outreach_mod
 if not all(hasattr(crm, a) for a in (
         "sync_with_github_backup", "recover_from_history",
         "backfill_from_salesforce", "auto_sync_deal",
-        "sync_all_to_salesforce", "USERS", "get_meta", "set_meta")):
+        "sync_all_to_salesforce", "USERS", "get_meta", "set_meta",
+        "RELATIONSHIP_STATUSES")):
     crm = importlib.reload(crm)
 if not all(hasattr(_outreach_mod, a) for a in (
         "generate_custom_reminder_ics", "generate_followup_ics",
@@ -63,6 +64,8 @@ STATUS_ICONS = {
     "Opportunity": "⭐",
     "Revisit Later": "⏰",
     "Leads to Trade with Bankers": "🤝",
+    "Investment Bankers": "🏦",
+    "Intermediaries": "🔗",
     "Closed – No Response": "🔇",
     "Contacted – No Opportunity": "🚫",
     "Not a Fit": "❌",
@@ -764,6 +767,35 @@ with st.expander("⚙️ Import & add deals"):
                 st.rerun()
 
     st.markdown("---")
+    st.markdown("**Bulk re-file deals**")
+    st.caption(
+        "Move several deals to a folder at once — e.g., sweep the banker "
+        "and intermediary accounts the Salesforce import filed as "
+        "Outreach Active into 🏦 Investment Bankers or 🔗 Intermediaries. "
+        "A re-filed deal keeps its folder through every future import."
+    )
+    _bulk_deals = crm.list_deals()
+    _bulk_map = {f"{d['company']}  ({d['status']})": d for d in _bulk_deals}
+    _bulk_sel = st.multiselect("Deals to move", list(_bulk_map),
+                               key="bulk_refile_sel")
+    _bulk_target = st.selectbox(
+        "Move to folder", STATUSES,
+        format_func=lambda s: f"{STATUS_ICONS.get(s, '')} {s}",
+        key="bulk_refile_target")
+    if st.button("Move selected", use_container_width=True,
+                 disabled=not _bulk_sel, key="bulk_refile_go"):
+        _moved = 0
+        for _label in _bulk_sel:
+            _d = _bulk_map[_label]
+            if _d["status"] != _bulk_target:
+                crm.set_status(_d["id"], _bulk_target, _d["status"],
+                               user=st.session_state.get("crm_user"))
+                _moved += 1
+        crm.backup_to_github()
+        st.success(f"Moved {_moved} deal(s) to {_bulk_target}.")
+        st.rerun()
+
+    st.markdown("---")
     st.markdown("**🛟 Recover deals from backup history**")
     st.caption(
         "If deals or statuses went missing after an app redeploy, this scans "
@@ -822,7 +854,10 @@ with st.expander("⚙️ Import & add deals"):
 # Metrics + search
 # ---------------------------------------------------------------------------
 all_deals = crm.list_deals()
-active_deals = [d for d in all_deals if d["status"] not in TERMINAL_STATUSES]
+_REL_STATUSES = getattr(crm, "RELATIONSHIP_STATUSES", set())
+active_deals = [d for d in all_deals
+                if d["status"] not in TERMINAL_STATUSES
+                and d["status"] not in _REL_STATUSES]
 opps = [d for d in all_deals if d["status"] == "Opportunity"]
 
 m1, m2, m3, m4 = st.columns(4)

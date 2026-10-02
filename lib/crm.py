@@ -28,6 +28,8 @@ STATUSES = [
     "Opportunity",
     "Revisit Later",
     "Leads to Trade with Bankers",
+    "Investment Bankers",
+    "Intermediaries",
     "Closed – No Response",
     "Contacted – No Opportunity",
     "Not a Fit",
@@ -39,9 +41,19 @@ TERMINAL_STATUSES = {
     "Not a Fit",
 }
 
+# Relationship folders: not acquisition targets, not dead — bankers,
+# intermediaries, and trade lists. Kept out of the Active metric and
+# never nudged for inactivity.
+RELATIONSHIP_STATUSES = {
+    "Leads to Trade with Bankers",
+    "Investment Bankers",
+    "Intermediaries",
+}
+
 # Days of inactivity before a deal shows up in "Needs Attention".
-# "Leads to Trade with Bankers" is intentionally absent — it's a parking
-# lot for banker swaps and never nudges (a set follow-up date still does).
+# Relationship folders are intentionally absent — Leads to Trade with
+# Bankers, Investment Bankers, and Intermediaries never nudge on
+# inactivity (an explicitly set follow-up date still does).
 ATTENTION_RULES = {
     "New": 3,
     "Outreach Active": 5,
