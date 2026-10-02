@@ -71,7 +71,7 @@ def _label(d, key):
 # ---------------------------------------------------------------------------
 # PAGE SETUP & AUTH
 # ---------------------------------------------------------------------------
-st.set_page_config(page_title="NCP Sourcing Pipeline", page_icon="🤖", layout="wide")
+# Page config is owned by the app.py navigation router.
 
 
 def _check_password():

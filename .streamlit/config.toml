@@ -4,8 +4,18 @@ runOnSave = true
 enableWebsocketCompression = true
 maxMessageSize = 200
 
+# New Capital Partners brand theme (newcapitalpartners.com)
+#   NCP blue  #0056A7 · NCP green #61A229 (primary action color)
+#   Nunito Sans body · white ground · near-square corners
 [theme]
-primaryColor = "#1E3A5F"
+primaryColor = "#61A229"
 backgroundColor = "#FFFFFF"
-secondaryBackgroundColor = "#F0F2F6"
-textColor = "#262730"
+secondaryBackgroundColor = "#F2F6FA"
+textColor = "#1F2A37"
+linkColor = "#0056A7"
+font = "sans-serif"
+baseRadius = "small"
+
+[theme.sidebar]
+backgroundColor = "#F2F6FA"
+textColor = "#1F2A37"
