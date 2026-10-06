@@ -709,7 +709,7 @@
       "state": null,
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Intermediaries",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -717,7 +717,7 @@
       "sf_contact_id": "003Pp000021Es17IAC",
       "row_json": "{\"Website\": \"https://www.brighthavenadvisors.com/\", \"City\": null, \"State\": null, \"Employees\": null, \"Description\": null, \"CEO/Owner Name\": \"Spencer Chappell\", \"Title\": \"Partner, Financial Advisor\", \"Email\": \"spencer@brighthavenadvisors.com\", \"Phone\": \"256-763-7386, ext. 104\"}",
       "created_at": "2026-09-30T15:45:14.906302+00:00",
-      "updated_at": "2026-09-30T15:45:14.924727+00:00",
+      "updated_at": "2026-10-06T20:47:00.269321+00:00",
       "memo": null
     },
     {
@@ -765,7 +765,7 @@
       "sf_contact_id": "003Pp000028FbPqIAK",
       "row_json": "{\"Website\": \"http://www.capitalfirsttrust.com\", \"City\": \"Milwaukee\", \"State\": \"Wisconsin\", \"Employees\": 90, \"Description\": \"Capital First Trust Company is an independent trust company chartered in South Dakota, providing trust administration and wealth management services. They offer customized trust solutions for settlement planners, financial advisors, accident victims, and individuals seeking corporate trustee services, with operations in South Dakota, Wisconsin, and Minnesota.\", \"CEO/Owner Name\": \"Chris Foregger\", \"Title\": null, \"Email\": \"cforegger@capitalfirsttrust.com\", \"Phone\": \"800.521.2359\"}",
       "created_at": "2026-09-30T15:45:14.969653+00:00",
-      "updated_at": "2026-10-06T20:46:33.815315+00:00",
+      "updated_at": "2026-10-06T20:46:36.089896+00:00",
       "memo": null
     },
     {
@@ -6717,6 +6717,16 @@
       "summary": "dead. no responses",
       "detail": "",
       "timestamp": "2026-10-06T20:46:33.815162+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 428,
+      "deal_id": 30,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Intermediaries",
+      "detail": "",
+      "timestamp": "2026-10-06T20:47:00.269219+00:00",
       "synced_to_sf": 0,
       "user": "Trey"
     }
@@ -6728,7 +6738,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-06T20:46:28.424703+00:00"
+      "value": "2026-10-06T20:46:36.524733+00:00"
     }
   ]
 }
