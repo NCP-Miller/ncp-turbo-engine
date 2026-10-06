@@ -157,7 +157,7 @@
       "state": "GA",
       "niche": null,
       "project": null,
-      "status": "Not a Fit",
+      "status": "Closed \u2013 No Response",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -165,7 +165,7 @@
       "sf_contact_id": "0033000001TxQYYAA3",
       "row_json": "{\"Website\": \"http://www.ering-cad.com\", \"City\": \"Alpharetta\", \"State\": \"GA\", \"Employees\": 45, \"Description\": \"E-Ring, Inc. specializes in developing CAD or GIS-centric real-time decision support systems. The company provides solutions for a variety of industries and offer broad-based industry solutions as well as custom solutions.\", \"CEO/Owner Name\": \"Rah Radhakarishsna\", \"Title\": \"President\", \"Email\": \"rah@e-ring.com\", \"Phone\": \"(256) 722-3464\"}",
       "created_at": "2026-09-30T15:45:14.217186+00:00",
-      "updated_at": "2026-10-06T22:05:08.230706+00:00",
+      "updated_at": "2026-10-06T22:05:17.794191+00:00",
       "memo": null
     },
     {
@@ -6907,6 +6907,16 @@
       "summary": "Status: Outreach Active \u2192 Not a Fit",
       "detail": "",
       "timestamp": "2026-10-06T22:05:08.230528+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 447,
+      "deal_id": 7,
+      "type": "Note",
+      "summary": "Status: Not a Fit \u2192 Closed \u2013 No Response",
+      "detail": "",
+      "timestamp": "2026-10-06T22:05:17.793899+00:00",
       "synced_to_sf": 0,
       "user": "Trey"
     }
@@ -6918,7 +6928,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-06T22:04:54.794093+00:00"
+      "value": "2026-10-06T22:05:11.149419+00:00"
     }
   ]
 }
