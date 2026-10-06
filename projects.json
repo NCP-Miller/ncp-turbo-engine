@@ -285,7 +285,18 @@
     "niche": "life sciences consulting for pharmaceutical manufacturers and medical providers",
     "geography": "Virginia",
     "memo_count": 2,
-    "active": true,
+    "active": false,
     "backup_status": "not_configured"
+  },
+  {
+    "name": "340B Empirian",
+    "slug": "340b_empirian",
+    "db_file": "project_340b_empirian.db",
+    "created_at": "2026-10-06T22:01:24.951595+00:00",
+    "niche": "340B compliance and consulting firms serving hospital covered entities, especially DSH, critical access and rural hospitals. Prioritize firms with diversified service lines such as 340B audits, HRSA audit preparation, split-billing support, state 340B reporting and manufacturer claims data management (340B ESP, Truzo), over firms that rely on claims data submission or the HRSA rebate model alone",
+    "geography": "NCP Priority Geography (Eastern US)",
+    "memo_count": 0,
+    "active": true,
+    "status": "running"
   }
 ]
