@@ -429,7 +429,7 @@
       "sf_contact_id": "0033000001muRGfAAM",
       "row_json": "{\"Website\": \"https://xstrememd.worldsecuresystems.com\", \"City\": \"Broussard\", \"State\": \"LA\", \"Employees\": 53, \"Description\": \"Life Line Technologies, LLC doing business as XstremeMD is the only telemedicine provider with a staff composed of Board Certified Emergency Medicine Physicians with extensive training in occupational medicine. Its physicians work from within the XMD Command Center and always available 24/7.\", \"CEO/Owner Name\": \"Joseph Pearson\", \"Title\": \"President\", \"Email\": \"jpearson@xstrememd.com\", \"Phone\": \"337-704-0891\"}",
       "created_at": "2026-09-30T15:45:14.537190+00:00",
-      "updated_at": "2026-09-30T15:45:14.555150+00:00",
+      "updated_at": "2026-10-06T21:57:14.795437+00:00",
       "memo": null
     },
     {
@@ -453,7 +453,7 @@
       "sf_contact_id": "0033A00002KOunaQAD",
       "row_json": "{\"Website\": \"https://www.synergylaboratories.com\", \"City\": \"Mobile\", \"State\": \"AL\", \"Employees\": 87, \"Description\": \"Synergy Laboratories, Inc. is a COLA-certified drug screening facility specializing in toxicology, genetics, and hematology. It is quality testing with a guaranteed turnaround time of 24 hours. The company prides itself on individualized customer service based on the unique needs of each organization in partnership.\", \"CEO/Owner Name\": \"Brandon Biles\", \"Title\": \"Founder, COO\", \"Email\": \"brandon.biles@synergytesting.com\", \"Phone\": null}",
       "created_at": "2026-09-30T15:45:14.566790+00:00",
-      "updated_at": "2026-10-06T21:56:26.645970+00:00",
+      "updated_at": "2026-10-06T21:56:29.338801+00:00",
       "memo": null
     },
     {
@@ -6837,6 +6837,16 @@
       "summary": "sent follow up email",
       "detail": "",
       "timestamp": "2026-10-06T21:56:26.645649+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 440,
+      "deal_id": 18,
+      "type": "Email",
+      "summary": "sent f/u email",
+      "detail": "",
+      "timestamp": "2026-10-06T21:57:14.795035+00:00",
       "synced_to_sf": 0,
       "user": "Trey"
     }
@@ -6848,7 +6858,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-06T21:55:22.623449+00:00"
+      "value": "2026-10-06T21:56:29.202356+00:00"
     }
   ]
 }
