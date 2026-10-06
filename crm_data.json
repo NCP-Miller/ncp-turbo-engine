@@ -117,7 +117,7 @@
       "sf_contact_id": "0033000001S7s6yAAB",
       "row_json": "{\"Website\": \"https://www.summitalliance.net\", \"City\": \"Dallas\", \"State\": \"TX\", \"Employees\": 30, \"Description\": \"Summit Alliance Financial, LLP operates as a life brokerage general agency. The company provides a range of financial products, sales strategies, and services, including underwriting, planning, and case management, to advisors. It also specializes in reinsurance and retention services.\", \"CEO/Owner Name\": \"0 0\", \"Title\": null, \"Email\": \"0\", \"Phone\": \"0\"}",
       "created_at": "2026-09-30T15:45:14.156771+00:00",
-      "updated_at": "2026-10-06T21:00:03.388644+00:00",
+      "updated_at": "2026-10-06T21:00:07.231501+00:00",
       "memo": null
     },
     {
@@ -373,7 +373,7 @@
       "state": "NY",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Investment Bankers",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -381,7 +381,7 @@
       "sf_contact_id": "0034V00004XrJlWQAV",
       "row_json": "{\"Website\": \"https://www.reigninvestment.com\", \"City\": \"Chappaqua\", \"State\": \"NY\", \"Employees\": 4, \"Description\": \"Reign Strategy & Investment Group, LLC focuses on small companies: with $1-15 million in revenue. It brings together two to three small companies to create a powerful new platform for growth.\", \"CEO/Owner Name\": \"Louis Albert Rodriguez\", \"Title\": \"Managing Partner\", \"Email\": \"louis@reigninvestment.com\", \"Phone\": null}",
       "created_at": "2026-09-30T15:45:14.476472+00:00",
-      "updated_at": "2026-09-30T15:45:14.492454+00:00",
+      "updated_at": "2026-10-06T21:48:19.373862+00:00",
       "memo": null
     },
     {
@@ -6757,6 +6757,16 @@
       "summary": "Status: Outreach Active \u2192 Not a Fit",
       "detail": "",
       "timestamp": "2026-10-06T21:00:03.388570+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 432,
+      "deal_id": 16,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Investment Bankers",
+      "detail": "",
+      "timestamp": "2026-10-06T21:48:19.373702+00:00",
       "synced_to_sf": 0,
       "user": "Trey"
     }
@@ -6768,7 +6778,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-06T20:57:15.446348+00:00"
+      "value": "2026-10-06T21:00:06.260307+00:00"
     }
   ]
 }
