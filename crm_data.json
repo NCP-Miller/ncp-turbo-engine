@@ -733,7 +733,7 @@
       "state": "Minnesota",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "In Dialogue",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -741,7 +741,7 @@
       "sf_contact_id": "003Pp000021kkpUIAQ",
       "row_json": "{\"Website\": \"http://www.terrapintech.com\", \"City\": \"Bloomington\", \"State\": \"Minnesota\", \"Employees\": 17, \"Description\": \"Terrapin Technologies, Inc. is a financial software company founded in 1995 and based in Bloomington, Minnesota. It specializes in providing data aggregation, reporting, compliance, and automation solutions for wealth management firms, utilizing web-based technology to enhance visibility, profitability, and regulatory adherence. The company's digital platform automates processes related to compensation, compliance, and reporting, supporting wealth management firms in achieving operational efficiency and scalable growth.\", \"CEO/Owner Name\": \"Kristefor Lysne\", \"Title\": \"President\", \"Email\": \"kristefor.lysne@terrapintech.com\", \"Phone\": null}",
       "created_at": "2026-09-30T15:45:14.939185+00:00",
-      "updated_at": "2026-10-06T20:35:37.546814+00:00",
+      "updated_at": "2026-10-06T20:35:45.431871+00:00",
       "memo": null
     },
     {
@@ -6617,6 +6617,16 @@
       "summary": "F/U regarding his questions",
       "detail": "",
       "timestamp": "2026-10-06T20:35:37.546492+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 418,
+      "deal_id": 31,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 In Dialogue",
+      "detail": "",
+      "timestamp": "2026-10-06T20:35:45.431718+00:00",
       "synced_to_sf": 0,
       "user": "Trey"
     }
@@ -6628,7 +6638,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-02T21:59:31.068485+00:00"
+      "value": "2026-10-06T20:35:41.377526+00:00"
     }
   ]
 }
