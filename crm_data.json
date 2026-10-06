@@ -349,7 +349,7 @@
       "state": null,
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Not a Fit",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -357,7 +357,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Website\": null, \"City\": null, \"State\": null, \"Employees\": null, \"Description\": null, \"CEO/Owner Name\": \"\", \"Title\": null, \"Email\": null, \"Phone\": null}",
       "created_at": "2026-09-30T15:45:14.447185+00:00",
-      "updated_at": "2026-09-30T15:45:14.464479+00:00",
+      "updated_at": "2026-10-06T21:49:15.577220+00:00",
       "memo": null
     },
     {
@@ -381,7 +381,7 @@
       "sf_contact_id": "0034V00004XrJlWQAV",
       "row_json": "{\"Website\": \"https://www.reigninvestment.com\", \"City\": \"Chappaqua\", \"State\": \"NY\", \"Employees\": 4, \"Description\": \"Reign Strategy & Investment Group, LLC focuses on small companies: with $1-15 million in revenue. It brings together two to three small companies to create a powerful new platform for growth.\", \"CEO/Owner Name\": \"Louis Albert Rodriguez\", \"Title\": \"Managing Partner\", \"Email\": \"louis@reigninvestment.com\", \"Phone\": null}",
       "created_at": "2026-09-30T15:45:14.476472+00:00",
-      "updated_at": "2026-10-06T21:48:19.373862+00:00",
+      "updated_at": "2026-10-06T21:48:22.260609+00:00",
       "memo": null
     },
     {
@@ -6767,6 +6767,16 @@
       "summary": "Status: Outreach Active \u2192 Investment Bankers",
       "detail": "",
       "timestamp": "2026-10-06T21:48:19.373702+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 433,
+      "deal_id": 15,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-10-06T21:49:15.576851+00:00",
       "synced_to_sf": 0,
       "user": "Trey"
     }
@@ -6778,7 +6788,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-06T21:00:06.260307+00:00"
+      "value": "2026-10-06T21:48:22.874531+00:00"
     }
   ]
 }
