@@ -109,7 +109,7 @@
       "state": "TX",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Not a Fit",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -117,7 +117,7 @@
       "sf_contact_id": "0033000001S7s6yAAB",
       "row_json": "{\"Website\": \"https://www.summitalliance.net\", \"City\": \"Dallas\", \"State\": \"TX\", \"Employees\": 30, \"Description\": \"Summit Alliance Financial, LLP operates as a life brokerage general agency. The company provides a range of financial products, sales strategies, and services, including underwriting, planning, and case management, to advisors. It also specializes in reinsurance and retention services.\", \"CEO/Owner Name\": \"0 0\", \"Title\": null, \"Email\": \"0\", \"Phone\": \"0\"}",
       "created_at": "2026-09-30T15:45:14.156771+00:00",
-      "updated_at": "2026-09-30T15:45:14.174554+00:00",
+      "updated_at": "2026-10-06T21:00:03.388644+00:00",
       "memo": null
     },
     {
@@ -669,7 +669,7 @@
       "sf_contact_id": "0034V00004dgar2QAA",
       "row_json": "{\"Website\": \"https://www.exodusintel.com\", \"City\": \"Austin\", \"State\": \"TX\", \"Employees\": 45, \"Description\": \"Exodus Intelligence, LLC provides actionable security information through a vulnerability intelligence data feed. The company delivers up-to-date security information that enables its customers to make informed decisions to strengthen the security posture.\", \"CEO/Owner Name\": \"Logan Brown\", \"Title\": \"President and CEO\", \"Email\": \"logan@exodusintel.com\", \"Phone\": null}",
       "created_at": "2026-09-30T15:45:14.849055+00:00",
-      "updated_at": "2026-10-06T20:57:12.710353+00:00",
+      "updated_at": "2026-10-06T20:57:15.399836+00:00",
       "memo": null
     },
     {
@@ -6747,6 +6747,16 @@
       "summary": "Status: Outreach Active \u2192 Not a Fit",
       "detail": "",
       "timestamp": "2026-10-06T20:57:12.710151+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 431,
+      "deal_id": 5,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-10-06T21:00:03.388570+00:00",
       "synced_to_sf": 0,
       "user": "Trey"
     }
@@ -6758,7 +6768,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-06T20:57:09.854774+00:00"
+      "value": "2026-10-06T20:57:15.446348+00:00"
     }
   ]
 }
