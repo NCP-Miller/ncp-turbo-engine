@@ -157,7 +157,7 @@
       "state": "GA",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Not a Fit",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -165,7 +165,7 @@
       "sf_contact_id": "0033000001TxQYYAA3",
       "row_json": "{\"Website\": \"http://www.ering-cad.com\", \"City\": \"Alpharetta\", \"State\": \"GA\", \"Employees\": 45, \"Description\": \"E-Ring, Inc. specializes in developing CAD or GIS-centric real-time decision support systems. The company provides solutions for a variety of industries and offer broad-based industry solutions as well as custom solutions.\", \"CEO/Owner Name\": \"Rah Radhakarishsna\", \"Title\": \"President\", \"Email\": \"rah@e-ring.com\", \"Phone\": \"(256) 722-3464\"}",
       "created_at": "2026-09-30T15:45:14.217186+00:00",
-      "updated_at": "2026-09-30T15:45:14.232759+00:00",
+      "updated_at": "2026-10-06T22:05:08.230706+00:00",
       "memo": null
     },
     {
@@ -213,7 +213,7 @@
       "sf_contact_id": "0033A00002WDHBJQA5",
       "row_json": "{\"Website\": \"https://serveyourx.com\", \"City\": \"Milwaukee\", \"State\": \"WI\", \"Employees\": 95, \"Description\": \"Serve You Custom Prescription Management, Inc. provides pharmacy benefit management services. It offers hand-crafted plans, including an online transaction processing system that provides drug utilization review, benefit administration, management reporting, and patient eligibility/membership maintenance services, as well as plan design and implementation services; and clinical programs, such as prior authorization, step therapy, quantity limits, dose optimization, OTC drug coverage, and formulary management.\", \"CEO/Owner Name\": \"Justin Jasniewski\", \"Title\": \"CEO\", \"Email\": \"jjasniewski@serve-you-rx.com\", \"Phone\": null}",
       "created_at": "2026-09-30T15:45:14.271791+00:00",
-      "updated_at": "2026-10-06T22:04:51.950010+00:00",
+      "updated_at": "2026-10-06T22:04:54.399646+00:00",
       "memo": null
     },
     {
@@ -6897,6 +6897,16 @@
       "summary": "Status: Outreach Active \u2192 Not a Fit",
       "detail": "",
       "timestamp": "2026-10-06T22:04:51.949726+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 446,
+      "deal_id": 7,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-10-06T22:05:08.230528+00:00",
       "synced_to_sf": 0,
       "user": "Trey"
     }
@@ -6908,7 +6918,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-06T22:04:11.337069+00:00"
+      "value": "2026-10-06T22:04:54.794093+00:00"
     }
   ]
 }
