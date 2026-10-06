@@ -469,7 +469,7 @@
       "state": "MS",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Contacted \u2013 No Opportunity",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -477,7 +477,7 @@
       "sf_contact_id": "0033A00002QlWkBQAV",
       "row_json": "{\"Website\": \"https://www.vergentlms.com\", \"City\": \"Ridgeland\", \"State\": \"MS\", \"Employees\": 71, \"Description\": \"Vergent LMS, Inc. operates a complete loan management software that encompasses loan origination, loan servicing, marketing, reporting, accounting exports, along with ancillary services to enhance and streamline the business. It is a clients receive quality loan management software and customer service. The company's scalability allows the software to service all clients from a single store, to a multi-level corporation with thousands of locations.\", \"CEO/Owner Name\": \"Scott Putnam\", \"Title\": \"CEO\", \"Email\": \"sputnam@vergentlms.com\", \"Phone\": \"844-376-3848\"}",
       "created_at": "2026-09-30T15:45:14.599089+00:00",
-      "updated_at": "2026-09-30T15:45:14.617776+00:00",
+      "updated_at": "2026-10-06T21:54:16.903899+00:00",
       "memo": null
     },
     {
@@ -501,7 +501,7 @@
       "sf_contact_id": "0033A00002T8m4DQAR",
       "row_json": "{\"Website\": \"https://optimizedpayments.com\", \"City\": \"Atlanta\", \"State\": \"GA\", \"Employees\": 37, \"Description\": \"Optimized Payments Consulting, Inc. offers proprietary software to help businesses reduce its payment processing costs. It provides optimized payments services, web-based analytics, interchange management, chargeback reduction services, alternative payment systems, and more.\", \"CEO/Owner Name\": \"Anand Goel\", \"Title\": \"CEO and Founder\", \"Email\": \"anand@optimizedpmts.com\", \"Phone\": \"800-846-1305\"}",
       "created_at": "2026-09-30T15:45:14.630782+00:00",
-      "updated_at": "2026-10-06T21:54:02.836280+00:00",
+      "updated_at": "2026-10-06T21:54:05.928164+00:00",
       "memo": null
     },
     {
@@ -6797,6 +6797,16 @@
       "summary": "Status: Outreach Active \u2192 Revisit Later",
       "detail": "",
       "timestamp": "2026-10-06T21:54:02.836030+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 436,
+      "deal_id": 20,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Contacted \u2013 No Opportunity",
+      "detail": "",
+      "timestamp": "2026-10-06T21:54:16.903642+00:00",
       "synced_to_sf": 0,
       "user": "Trey"
     }
@@ -6808,7 +6818,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-06T21:52:02.474513+00:00"
+      "value": "2026-10-06T21:54:05.833460+00:00"
     }
   ]
 }
