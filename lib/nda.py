@@ -81,6 +81,15 @@ def init_db():
 
 # ── Rules ─────────────────────────────────────────────────────────────
 
+def load_rules_file():
+    """The repo's seed rulebook (nda_rules.md) — the latest handoff."""
+    try:
+        with open(_RULES_FILE) as f:
+            return f.read()
+    except FileNotFoundError:
+        return ""
+
+
 def load_rules():
     """User-edited rules from the DB win; fall back to nda_rules.md."""
     init_db()
@@ -92,11 +101,7 @@ def load_rules():
             return r["value"]
     finally:
         conn.close()
-    try:
-        with open(_RULES_FILE) as f:
-            return f.read()
-    except FileNotFoundError:
-        return ""
+    return load_rules_file()
 
 
 def save_rules(text):
