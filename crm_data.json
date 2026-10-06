@@ -757,7 +757,7 @@
       "state": "Wisconsin",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Not a Fit",
       "source": "backfill-salesforce",
       "notes": "Emailed on 7/16",
       "next_followup": null,
@@ -765,7 +765,7 @@
       "sf_contact_id": "003Pp000028FbPqIAK",
       "row_json": "{\"Website\": \"http://www.capitalfirsttrust.com\", \"City\": \"Milwaukee\", \"State\": \"Wisconsin\", \"Employees\": 90, \"Description\": \"Capital First Trust Company is an independent trust company chartered in South Dakota, providing trust administration and wealth management services. They offer customized trust solutions for settlement planners, financial advisors, accident victims, and individuals seeking corporate trustee services, with operations in South Dakota, Wisconsin, and Minnesota.\", \"CEO/Owner Name\": \"Chris Foregger\", \"Title\": null, \"Email\": \"cforegger@capitalfirsttrust.com\", \"Phone\": \"800.521.2359\"}",
       "created_at": "2026-09-30T15:45:14.969653+00:00",
-      "updated_at": "2026-09-30T16:02:00.964536+00:00",
+      "updated_at": "2026-10-06T20:46:20.373755+00:00",
       "memo": null
     },
     {
@@ -861,7 +861,7 @@
       "sf_contact_id": "003Pp00002Is8usIAB",
       "row_json": "{\"Website\": \"http://www.trusteeservicesgroup.com\", \"City\": \"Colorado Springs\", \"State\": \"Colorado\", \"Employees\": 30, \"Description\": \"Trustee Services Group specializes in providing trustee and estate fiduciary services, focusing on family wealth management and legacy development. They work collaboratively with families and their advisory teams to navigate the complexities of wealth transfer and estate planning using a customized, open architecture model.\", \"CEO/Owner Name\": \"Gregory Schupra\", \"Title\": null, \"Email\": \"gregorys@trusteeservicesgroup.com\", \"Phone\": null}",
       "created_at": "2026-09-30T15:45:15.098528+00:00",
-      "updated_at": "2026-10-06T20:46:09.968082+00:00",
+      "updated_at": "2026-10-06T20:46:12.583239+00:00",
       "memo": "---\n\n**Investment Memo**\n\n**To:** Trey Jones, New Capital Partners  \n**From:** [Your Name], Analyst  \n**Date:** [Today's Date]  \n**Subject:** Investment Opportunity: Trustee Services Group\n\n---\n\n**1. Why We're Excited**  \nTrustee Services Group (TSG) presents a compelling acquisition opportunity due to its unique 'Open Architecture' model, allowing seamless collaboration with professional advisors nationwide, thereby enhancing client service efficacy and expanding market reach. This approach, combined with a focus on niche trust services like family, charitable, and special needs trusts, positions TSG advantageously in a fragmented market with limited local competition, providing a strong foundation for a buy-and-build growth strategy. The imminent retirement of the founder offers a natural succession opportunity to integrate TSG into a larger platform.\n\n**2. Company Overview**  \nTSG is a privately owned trustee firm based in Colorado Springs, Colorado. With approximately 30 employees, the company specializes in corporate trustee services, focusing on family trusts, charitable trusts, and special needs trusts. TSG employs a collaborative \"Open Architecture\" model to partner with a vast network of professional advisors across the U.S., assisting families in estate planning and wealth management.\n\n**3. Differentiated Value Proposition**  \nTSG's 'Open Architecture' model distinctively differentiates it from its competition. This approach not only enhances client service delivery but also acts as a defensible moat by solidifying relationships with a broad professional network, providing a structural advantage in client acquisition and retention. Furthermore, their specialization in complex trusts supports their reputation for expertise and reliability in niche markets.\n\n**4. Market Opportunity & Growth**  \nThe trust administration sector is buoyed by favorable secular tailwinds, including an aging population, increased demand for estate planning, and evolving wealth transfer dynamics. The market remains fragmented, with no dominant players, presenting significant buy-and-build opportunities. TSG is well-positioned to capture market share in this expanding space, leveraging its established model and expertise in specialized trusts to drive growth.\n\n**5. NCP Fit Rationale**  \nTSG aligns well with NCP's focus on lower middle-market, services-oriented, founder-led businesses. The company's strong recurring revenue potential, given its essential service offerings and contractual relationships, provides revenue stability and predictability. Additionally, the founder's upcoming retirement presents a timely entry point for strategic acquisition, allowing NCP to inject leadership and operational expertise to scale operations effectively.\n\n**6. Key Risks & Diligence Items**  \n- **Est. EBITDA Verification:** Current EBITDA is based on heuristics and requires accurate confirmation through detailed financial analysis.\n- **Succession Planning:** Assess the readiness and plans for leadership transition and continuity post-founder retirement.\n- **Competitive Analysis:** Conduct in-depth analysis to confirm the extent of local/regional competition and validate market positioning.\n- **Regulatory Compliance:** Evaluate adherence to trust administration regulations and certifications to ensure compliance integrity.\n- **Scalability Potential:** Determine the feasibility of scaling operations beyond the current geographic and scope constraints.\n\n--- \n\nPlease note further due diligence is paramount to addressing critical open questions and assumptions highlighted above.\n\n---"
     },
     {
@@ -6687,6 +6687,16 @@
       "summary": "active dialogue on NDA",
       "detail": "",
       "timestamp": "2026-10-06T20:46:09.967497+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 425,
+      "deal_id": 32,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-10-06T20:46:20.373666+00:00",
       "synced_to_sf": 0,
       "user": "Trey"
     }
@@ -6698,7 +6708,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-06T20:46:01.710301+00:00"
+      "value": "2026-10-06T20:46:12.878609+00:00"
     }
   ]
 }
