@@ -277,7 +277,7 @@
       "state": "NY",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Investment Bankers",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -285,7 +285,7 @@
       "sf_contact_id": "0033000001fx1WJAAY",
       "row_json": "{\"Website\": \"www.btig.com\", \"City\": \"New York\", \"State\": \"NY\", \"Employees\": 650, \"Description\": \"BTIG was formed in 2005, through the merger of two well-respected institutional trading firms, San Francisco's Baypoint Trading and New York's Bass Trading. Bringing together over 100 years of capital market experience, the founders set out to create an institutional trading firm which offers high-touch service in an increasingly automated industry.\", \"CEO/Owner Name\": \"Alex Alden\", \"Title\": \"Managing Director, Investment Banking\", \"Email\": \"aalden@btig.com\", \"Phone\": \"(415) 963-5511\"}",
       "created_at": "2026-09-30T15:45:14.355867+00:00",
-      "updated_at": "2026-09-30T15:45:14.371780+00:00",
+      "updated_at": "2026-10-06T22:04:09.018158+00:00",
       "memo": null
     },
     {
@@ -309,7 +309,7 @@
       "sf_contact_id": "0033000001hoOvOAAU",
       "row_json": "{\"Website\": \"https://www.scriptpro.com\", \"City\": \"Mission\", \"State\": \"KS\", \"Employees\": 641, \"Description\": \"Scriptpro, LLC is a technology company that develops pharmacy automation and management system products. It offers solutions for third-party management, clinical documentation, and case management, inventory management, medication adherence, interactive voice response, telepharmacy, and more. The company also provides health messaging services, a pharmacy services portal, a drug database, and pharmacy administration services. It serves customers within the area.\", \"CEO/Owner Name\": \"Michael Coughlin\", \"Title\": \"President and CEO and CFO\", \"Email\": \"mike@scriptpro.com\", \"Phone\": \"(913) 384-1008\"}",
       "created_at": "2026-09-30T15:45:14.384149+00:00",
-      "updated_at": "2026-10-06T22:03:05.157405+00:00",
+      "updated_at": "2026-10-06T22:03:09.281718+00:00",
       "memo": null
     },
     {
@@ -6877,6 +6877,16 @@
       "summary": "sent f/u and checking with shannon",
       "detail": "",
       "timestamp": "2026-10-06T22:03:05.157144+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 444,
+      "deal_id": 12,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Investment Bankers",
+      "detail": "",
+      "timestamp": "2026-10-06T22:04:09.018005+00:00",
       "synced_to_sf": 0,
       "user": "Trey"
     }
@@ -6888,7 +6898,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-06T21:58:20.834097+00:00"
+      "value": "2026-10-06T22:03:07.696321+00:00"
     }
   ]
 }
