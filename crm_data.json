@@ -693,7 +693,7 @@
       "sf_contact_id": "003Pp0000217pInIAI",
       "row_json": "{\"Website\": \"https://flytehcm.com/\", \"City\": null, \"State\": null, \"Employees\": null, \"Description\": null, \"CEO/Owner Name\": \"Eric Allen\", \"Title\": \"CEO/Founder\", \"Email\": null, \"Phone\": null}",
       "created_at": "2026-09-30T15:45:14.879426+00:00",
-      "updated_at": "2026-09-30T16:02:01.070400+00:00",
+      "updated_at": "2026-10-06T20:48:35.613792+00:00",
       "memo": null
     },
     {
@@ -717,7 +717,7 @@
       "sf_contact_id": "003Pp000021Es17IAC",
       "row_json": "{\"Website\": \"https://www.brighthavenadvisors.com/\", \"City\": null, \"State\": null, \"Employees\": null, \"Description\": null, \"CEO/Owner Name\": \"Spencer Chappell\", \"Title\": \"Partner, Financial Advisor\", \"Email\": \"spencer@brighthavenadvisors.com\", \"Phone\": \"256-763-7386, ext. 104\"}",
       "created_at": "2026-09-30T15:45:14.906302+00:00",
-      "updated_at": "2026-10-06T20:47:00.269321+00:00",
+      "updated_at": "2026-10-06T20:47:02.537315+00:00",
       "memo": null
     },
     {
@@ -6727,6 +6727,16 @@
       "summary": "Status: Outreach Active \u2192 Intermediaries",
       "detail": "",
       "timestamp": "2026-10-06T20:47:00.269219+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 429,
+      "deal_id": 29,
+      "type": "Email",
+      "summary": "emailed",
+      "detail": "",
+      "timestamp": "2026-10-06T20:48:35.613331+00:00",
       "synced_to_sf": 0,
       "user": "Trey"
     }
@@ -6738,7 +6748,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-06T20:46:36.524733+00:00"
+      "value": "2026-10-06T20:47:04.546429+00:00"
     }
   ]
 }
