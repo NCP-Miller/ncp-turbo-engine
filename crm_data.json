@@ -453,7 +453,7 @@
       "sf_contact_id": "0033A00002KOunaQAD",
       "row_json": "{\"Website\": \"https://www.synergylaboratories.com\", \"City\": \"Mobile\", \"State\": \"AL\", \"Employees\": 87, \"Description\": \"Synergy Laboratories, Inc. is a COLA-certified drug screening facility specializing in toxicology, genetics, and hematology. It is quality testing with a guaranteed turnaround time of 24 hours. The company prides itself on individualized customer service based on the unique needs of each organization in partnership.\", \"CEO/Owner Name\": \"Brandon Biles\", \"Title\": \"Founder, COO\", \"Email\": \"brandon.biles@synergytesting.com\", \"Phone\": null}",
       "created_at": "2026-09-30T15:45:14.566790+00:00",
-      "updated_at": "2026-09-30T15:45:14.585930+00:00",
+      "updated_at": "2026-10-06T21:56:26.645970+00:00",
       "memo": null
     },
     {
@@ -477,7 +477,7 @@
       "sf_contact_id": "0033A00002QlWkBQAV",
       "row_json": "{\"Website\": \"https://www.vergentlms.com\", \"City\": \"Ridgeland\", \"State\": \"MS\", \"Employees\": 71, \"Description\": \"Vergent LMS, Inc. operates a complete loan management software that encompasses loan origination, loan servicing, marketing, reporting, accounting exports, along with ancillary services to enhance and streamline the business. It is a clients receive quality loan management software and customer service. The company's scalability allows the software to service all clients from a single store, to a multi-level corporation with thousands of locations.\", \"CEO/Owner Name\": \"Scott Putnam\", \"Title\": \"CEO\", \"Email\": \"sputnam@vergentlms.com\", \"Phone\": \"844-376-3848\"}",
       "created_at": "2026-09-30T15:45:14.599089+00:00",
-      "updated_at": "2026-10-06T21:55:19.270306+00:00",
+      "updated_at": "2026-10-06T21:55:23.240839+00:00",
       "memo": null
     },
     {
@@ -6827,6 +6827,16 @@
       "summary": "doesn't have a strategy. doesn't know where he is going. flat since 2020 at about $20m of revenue.",
       "detail": "",
       "timestamp": "2026-10-06T21:55:19.270243+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 439,
+      "deal_id": 19,
+      "type": "Email",
+      "summary": "sent follow up email",
+      "detail": "",
+      "timestamp": "2026-10-06T21:56:26.645649+00:00",
       "synced_to_sf": 0,
       "user": "Trey"
     }
@@ -6838,7 +6848,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-06T21:54:26.036063+00:00"
+      "value": "2026-10-06T21:55:22.623449+00:00"
     }
   ]
 }
