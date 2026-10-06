@@ -393,7 +393,20 @@ def deals_needing_attention():
                 due = datetime.fromisoformat(nf)
                 if due.tzinfo is None:
                     due = due.replace(tzinfo=timezone.utc)
-                if due <= now:
+                if due > now:
+                    continue  # future follow-up suppresses inactivity nudges
+                # Follow-up date has passed. If the deal was touched ON or
+                # AFTER the due date, the follow-up is satisfied — fall
+                # through to the normal inactivity rules instead of
+                # flagging forever until the date field is hand-edited.
+                last = deal.get("last_activity") or deal.get("created_at")
+                try:
+                    last_dt = datetime.fromisoformat(last)
+                    if last_dt.tzinfo is None:
+                        last_dt = last_dt.replace(tzinfo=timezone.utc)
+                except (ValueError, TypeError):
+                    last_dt = None
+                if last_dt is None or last_dt < due:
                     days_over = (now - due).days
                     results.append({
                         **deal,
@@ -402,7 +415,8 @@ def deals_needing_attention():
                             + (f" {days_over}d ago" if days_over > 0 else " today")
                         ),
                     })
-                continue  # a future follow-up date suppresses inactivity nudges
+                    continue
+                # satisfied: no follow-up flag; inactivity rules apply below
             except (ValueError, TypeError):
                 pass
 

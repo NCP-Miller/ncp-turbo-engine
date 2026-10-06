@@ -223,7 +223,16 @@ def _render_deal_card(deal, show_status=False, expanded=False):
                 crm.backup_async()
                 st.rerun()
             if deal.get("next_followup"):
-                st.caption(f"Currently: {deal['next_followup'][:10]}")
+                _nf_str = deal["next_followup"][:10]
+                try:
+                    _nf_passed = date.fromisoformat(_nf_str) < date.today()
+                except (ValueError, TypeError):
+                    _nf_passed = False
+                if _nf_passed:
+                    st.caption(f"Currently: {_nf_str} — passed. Recent "
+                               f"activity covers it; set a new date or Clear.")
+                else:
+                    st.caption(f"Currently: {_nf_str}")
                 try:
                     _fu_dt = datetime.combine(
                         datetime.fromisoformat(deal["next_followup"]).date(),
