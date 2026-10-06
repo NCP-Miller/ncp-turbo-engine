@@ -477,7 +477,7 @@
       "sf_contact_id": "0033A00002QlWkBQAV",
       "row_json": "{\"Website\": \"https://www.vergentlms.com\", \"City\": \"Ridgeland\", \"State\": \"MS\", \"Employees\": 71, \"Description\": \"Vergent LMS, Inc. operates a complete loan management software that encompasses loan origination, loan servicing, marketing, reporting, accounting exports, along with ancillary services to enhance and streamline the business. It is a clients receive quality loan management software and customer service. The company's scalability allows the software to service all clients from a single store, to a multi-level corporation with thousands of locations.\", \"CEO/Owner Name\": \"Scott Putnam\", \"Title\": \"CEO\", \"Email\": \"sputnam@vergentlms.com\", \"Phone\": \"844-376-3848\"}",
       "created_at": "2026-09-30T15:45:14.599089+00:00",
-      "updated_at": "2026-10-06T21:54:23.619210+00:00",
+      "updated_at": "2026-10-06T21:55:19.270306+00:00",
       "memo": null
     },
     {
@@ -6817,6 +6817,16 @@
       "summary": "Status: Contacted \u2013 No Opportunity \u2192 Leads to Trade with Bankers",
       "detail": "",
       "timestamp": "2026-10-06T21:54:23.619064+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 438,
+      "deal_id": 20,
+      "type": "Call",
+      "summary": "doesn't have a strategy. doesn't know where he is going. flat since 2020 at about $20m of revenue.",
+      "detail": "",
+      "timestamp": "2026-10-06T21:55:19.270243+00:00",
       "synced_to_sf": 0,
       "user": "Trey"
     }
@@ -6828,7 +6838,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-06T21:54:19.428854+00:00"
+      "value": "2026-10-06T21:54:26.036063+00:00"
     }
   ]
 }
