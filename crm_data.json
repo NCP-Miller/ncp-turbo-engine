@@ -165,7 +165,7 @@
       "sf_contact_id": "0033000001TxQYYAA3",
       "row_json": "{\"Website\": \"http://www.ering-cad.com\", \"City\": \"Alpharetta\", \"State\": \"GA\", \"Employees\": 45, \"Description\": \"E-Ring, Inc. specializes in developing CAD or GIS-centric real-time decision support systems. The company provides solutions for a variety of industries and offer broad-based industry solutions as well as custom solutions.\", \"CEO/Owner Name\": \"Rah Radhakarishsna\", \"Title\": \"President\", \"Email\": \"rah@e-ring.com\", \"Phone\": \"(256) 722-3464\"}",
       "created_at": "2026-09-30T15:45:14.217186+00:00",
-      "updated_at": "2026-10-06T22:05:17.794191+00:00",
+      "updated_at": "2026-10-06T22:05:20.167119+00:00",
       "memo": null
     },
     {
@@ -2447,6 +2447,30 @@
       "created_at": "2026-10-02T15:44:16.635534+00:00",
       "updated_at": "2026-10-06T20:37:37.248044+00:00",
       "memo": "**Investment Memo: Biologics Consulting**\n\n**Why We're Excited:**\nBiologics Consulting presents a compelling acquisition opportunity due to its unrivaled regulatory expertise, leveraged by a team of former FDA officials, which establishes a defensible moat in the complex landscape of life sciences consulting. This insider knowledge uniquely positions the firm to guide clients through rigorous regulatory pathways leading to product approvals, a critical service in the burgeoning biologics and pharmaceuticals market. The firm\u2019s focus on recurring consulting services also promises strong potential for stable, essential revenue streams that align with NCP\u2019s investment strategy.\n\n**Company Overview:**\nFounded in 1993, Biologics Consulting operates out of Alexandria, Virginia, employing 76 professionals. The firm provides strategic regulatory guidance and support for the development and approval of biologics, pharmaceuticals, medical devices, and combination products, aiding clients in navigating the U.S. regulatory environment.\n\n**Differentiated Value Proposition:**\nThe company\u2019s key differentiation lies in its deep regulatory expertise, particularly its team comprised of former FDA officials. This forms a significant barrier to entry for competitors, creating a strong \"right to win\" in the regulatory consulting domain. The insiders\u2019 knowledge leads to a robust consulting practice that is both respected and reliable in facilitating client success.\n\n**Market Opportunity & Growth:**\nBiologics Consulting is positioned within a growing market with favorable secular tailwinds, such as an aging population and increasing pharmaceutical innovation. The market remains relatively fragmented, providing an opportunity for consolidation and expansion. The firm can capitalize on these dynamics through geographic expansion and diversifying service offerings to include allied life sciences fields. \n\n**NCP Fit Rationale:**\nThis acquisition aligns seamlessly with NCP\u2019s lower middle market and services-oriented investment thesis. The founder-led nature of the firm offers a natural succession opportunity, particularly with the founder approaching retirement. Biologics Consulting\u2019s service is essential and non-cyclical, catering to a market in continual demand. Furthermore, the fragmented nature of the industry provides a platform for potential buy-and-build strategies to accelerate growth.\n\n**Key Risks & Diligence Items:**\n1. **EBITDA Validation:** The estimated EBITDA range of $1.1M\u2013$2.3M is based on a heuristic and requires confirmation. Understanding the financial performance is crucial.\n2. **Client Dependency:** Potential over-reliance on key clients could pose a revenue concentration risk.\n3. **Transition and Retention:** Assess risks associated with the founder\u2019s retirement and the retention of key personnel, particularly former FDA officials.\n4. **Market Competition:** Although local/regional competition is limited, evaluate potential threats from larger consulting firms.\n5. **Regulatory Changes:** Stay informed on any impending regulatory changes that could impact the industry or client needs.\n\nIn summary, Biologics Consulting\u2019s unique regulatory insight and market position offer an attractive acquisition opportunity aligned with NCP\u2019s strategy, subject to additional due diligence on financials and operational metrics."
+    },
+    {
+      "id": 103,
+      "company": "340B Compliance Partners",
+      "company_key": "340b compliance partners",
+      "website": "http://www.340bcompliancepartners.com",
+      "contact_name": "Sherri Faber",
+      "title": "President & CEO",
+      "email": "sfaber@340bcompliancepartners.com",
+      "phone": null,
+      "city": "Roaring Spring",
+      "state": "Pennsylvania",
+      "niche": "340B compliance and consulting firms serving hospital covered entities, especially DSH, critical access and rural hospitals. Prioritize firms with diversified service lines such as 340B audits, HRSA audit preparation, split-billing support, state 340B reporting and manufacturer claims data management (340B ESP, Truzo), over firms that rely on claims data submission or the HRSA rebate model alone",
+      "project": null,
+      "status": "New",
+      "source": "memo",
+      "notes": "",
+      "next_followup": null,
+      "sf_account_id": null,
+      "sf_contact_id": null,
+      "row_json": "{\"Company\": \"340B Compliance Partners\", \"Description\": \"340B Compliance Partners is a pharmacist-owned company that specializes in providing guidance and compliance services for the 340B drug pricing program. They offer services such as policy and procedure creation, program management, HRSA audit support, and contract pharmacy management to healthcare entities. The company is staffed by pharmacists and pharmacy technicians who are certified in 340B operations, ensuring expertise in navigating the complexities of the program.\", \"Website\": \"http://www.340bcompliancepartners.com\", \"City\": \"Roaring Spring\", \"State\": \"Pennsylvania\", \"LinkedIn\": \"http://www.linkedin.com/company/340b-compliance-partners\", \"Employees\": 18, \"Est. EBITDA\": \"$378K\\u2013$693K\", \"CEO/Owner Name\": \"Sherri Faber\", \"Title\": \"President & CEO\", \"Email\": \"sfaber@340bcompliancepartners.com\", \"Email Estimate\": \"\", \"Phone\": \"N/A\", \"Source\": \"Web Path (/about) \\u2192 Verified\", \"Notes\": \"\", \"Confidence\": \"High\", \"Latest News\": \"N/A\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"340B compliance and consulting firms serving hospital covered entities, especially DSH, critical access and rural hospitals. Prioritize firms with diversified service lines such as 340B audits, HRSA audit preparation, split-billing support, state 340B reporting and manufacturer claims data management (340B ESP, Truzo), over firms that rely on claims data submission or the HRSA rebate model alone\", \"Priority\": \"Low\", \"Growth\": \"Low\", \"Txn Readiness\": \"Low\", \"Priority Confidence\": \"High\", \"Growth Confidence\": \"Low\", \"Txn Readiness Confidence\": \"Low\", \"Differentiated Confidence\": \"Medium\", \"Conviction\": 5, \"Conviction Pitch\": \"340B Compliance Partners specializes in providing compliance services for the 340B drug pricing program, staffed with certified pharmacists and pharmacy technicians. They offer a range of services, including HRSA audit support and contract pharmacy management. However, the company lacks a significant differentiation in a competitive and niche market.\", \"Conviction Reasoning\": \"The company operates in a niche market with specialized expertise but lacks a clear competitive edge or unique differentiation compared to competitors.\"}",
+      "created_at": "2026-10-06T22:28:11.267836+00:00",
+      "updated_at": "2026-10-06T22:28:11.277404+00:00",
+      "memo": "**Investment Memo: 340B Compliance Partners**\n\n**Why We're Excited**\n\n340B Compliance Partners distinguishes itself in a niche market by specializing in compliance for the 340B drug pricing program, particularly through its team of certified pharmacists and pharmacy technicians. This specialized expertise enables the firm to offer a breadth of services essential to hospital covered entities navigating regulatory complexities under the HRSA. Given the potential of a market with secular growth factors and limited regional competition, this company represents an intriguing opportunity for strategic acquisition and expansion.\n\n**Company Overview**\n\n340B Compliance Partners is headquartered in Roaring Spring, Pennsylvania, employing 18 staff members dedicated to guiding healthcare entities through the intricacies of the 340B program. The company provides a comprehensive suite of services including policy and procedure development, program management, HRSA audit support, and contract pharmacy management. Their direct involvement in these operations positions them as an essential partner to hospitals navigating 340B compliance.\n\n**Differentiated Value Proposition**\n\nThe company\u2019s competitive edge lies in its team of certified pharmacists and pharmacy technicians, offering a depth of expertise unmatched by many of its competitors. Their ability to provide critical compliance services, from audit preparation to program management, establishes a defensible niche in the market. However, while their staffing pedigree provides an entry barrier, broader service differentiation is minimal.\n\n**Market Opportunity & Growth**\n\nThe 340B program market benefits from secular growth tailwinds including demographic shifts and increasing regulatory complexity in healthcare. There remains a substantial opportunity in diversifying service lines further, which could capture more market share and enhance growth prospects. The limited direct competition in the local and regional markets presents an opportunity for market consolidation and expansion.\n\n**NCP Fit Rationale**\n\nThis acquisition aligns with NCP\u2019s lower middle market and services-oriented investment thesis. The company is founder-owned, suggesting potential for succession planning and long-term stability post-acquisition. With a fragmented market and no dominant player, 340B Compliance Partners is well-positioned for a buy-and-build strategy, tapping into an essential, non-cyclical service domain critical for healthcare providers.\n\n**Key Risks & Diligence Items**\n\n1. **Financial Verification:** Confirm the estimated EBITDA ($378K-$693K) as current projections are heuristic-based and could significantly affect valuation.\n2. **Service Differentiation:** Evaluate the potential to diversify service offerings beyond the current scope to increase market competitiveness.\n3. **Growth Strategy:** Assess the feasibility and timeframe for geographic and service line expansion.\n4. **Client Base & Retention:** Determine the stability and contractual nature of current client relationships to gauge revenue consistency.\n5. **Regulatory Changes:** Monitor any impending changes in 340B program regulations that could impact service demand or compliance processes."
     }
   ],
   "activities": [
@@ -6917,8 +6941,18 @@
       "summary": "Status: Not a Fit \u2192 Closed \u2013 No Response",
       "detail": "",
       "timestamp": "2026-10-06T22:05:17.793899+00:00",
-      "synced_to_sf": 0,
+      "synced_to_sf": 1,
       "user": "Trey"
+    },
+    {
+      "id": 448,
+      "deal_id": 103,
+      "type": "Note",
+      "summary": "Investment memo generated (closest fit)",
+      "detail": "",
+      "timestamp": "2026-10-06T22:28:11.277184+00:00",
+      "synced_to_sf": 0,
+      "user": null
     }
   ],
   "meta": [
@@ -6928,7 +6962,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-06T22:05:11.149419+00:00"
+      "value": "2026-10-06T22:05:21.278692+00:00"
     }
   ]
 }
