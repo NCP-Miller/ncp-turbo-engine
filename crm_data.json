@@ -325,7 +325,7 @@
       "state": "FL",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Not a Fit",
       "source": "backfill-salesforce",
       "notes": "pass. telecom expense management. I feel like I see one of these a quarter",
       "next_followup": null,
@@ -333,7 +333,7 @@
       "sf_contact_id": "0033000001iICCIAA4",
       "row_json": "{\"Website\": \"https://radiuspoint-expenselogic.com\", \"City\": \"Casselberry\", \"State\": \"FL\", \"Employees\": 21, \"Description\": \"TSG Enterprises, LLC doing business as RadiusPoint, LLC is a multi-solution provider for TEM (Telecom Expense Management), UEM (Utility Expense Management), LPEM (Loss Prevention Expense Management), along with MDM (Mobile Device Management). The company provides a single-source management solution for the financial, operations, and technology departments of its clients.\", \"CEO/Owner Name\": \"John Watkins\", \"Title\": \"CFO\", \"Email\": \"jwatkins@radiuspoint.com\", \"Phone\": \"(407) 661-6818\"}",
       "created_at": "2026-09-30T15:45:14.414648+00:00",
-      "updated_at": "2026-10-06T21:58:15.173515+00:00",
+      "updated_at": "2026-10-06T21:58:18.415371+00:00",
       "memo": null
     },
     {
@@ -6859,6 +6859,16 @@
       "timestamp": "2026-10-06T21:57:32.197325+00:00",
       "synced_to_sf": 1,
       "user": "Trey"
+    },
+    {
+      "id": 442,
+      "deal_id": 14,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-10-06T21:58:18.415218+00:00",
+      "synced_to_sf": 0,
+      "user": "Trey"
     }
   ],
   "meta": [
@@ -6868,7 +6878,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-06T21:57:34.351694+00:00"
+      "value": "2026-10-06T21:58:18.299476+00:00"
     }
   ]
 }
