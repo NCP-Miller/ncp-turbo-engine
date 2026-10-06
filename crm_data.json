@@ -397,7 +397,7 @@
       "state": "IN",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Not a Fit",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -405,7 +405,7 @@
       "sf_contact_id": "0033A00002Ts8oiQAB",
       "row_json": "{\"Website\": \"https://www.sevencorners.com\", \"City\": \"Carmel\", \"State\": \"IN\", \"Employees\": 195, \"Description\": \"Seven Corners, Inc. provides trip cancellation and travel health insurance. It offers medical and travel insurance policies to leisure, student, business, government, and missionary or volunteer travelers. The company's insurance plans include interruption insurance, travel medical insurance, student medical insurance, visitor's medical insurance, immigrant medical insurance, worldwide medical insurance, evacuation and multi-trip insurance, and medical tourism insurance.\", \"CEO/Owner Name\": \"Justin Tysdal\", \"Title\": \"Chief Executive Officer and Co-Founder\", \"Email\": \"justin.tysdal@sevencorners.com\", \"Phone\": \"800-335-0611\"}",
       "created_at": "2026-09-30T15:45:14.504722+00:00",
-      "updated_at": "2026-09-30T15:45:14.523471+00:00",
+      "updated_at": "2026-10-06T21:57:32.197932+00:00",
       "memo": null
     },
     {
@@ -429,7 +429,7 @@
       "sf_contact_id": "0033000001muRGfAAM",
       "row_json": "{\"Website\": \"https://xstrememd.worldsecuresystems.com\", \"City\": \"Broussard\", \"State\": \"LA\", \"Employees\": 53, \"Description\": \"Life Line Technologies, LLC doing business as XstremeMD is the only telemedicine provider with a staff composed of Board Certified Emergency Medicine Physicians with extensive training in occupational medicine. Its physicians work from within the XMD Command Center and always available 24/7.\", \"CEO/Owner Name\": \"Joseph Pearson\", \"Title\": \"President\", \"Email\": \"jpearson@xstrememd.com\", \"Phone\": \"337-704-0891\"}",
       "created_at": "2026-09-30T15:45:14.537190+00:00",
-      "updated_at": "2026-10-06T21:57:14.795437+00:00",
+      "updated_at": "2026-10-06T21:57:17.271537+00:00",
       "memo": null
     },
     {
@@ -6847,6 +6847,16 @@
       "summary": "sent f/u email",
       "detail": "",
       "timestamp": "2026-10-06T21:57:14.795035+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 441,
+      "deal_id": 17,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-10-06T21:57:32.197325+00:00",
       "synced_to_sf": 0,
       "user": "Trey"
     }
@@ -6858,7 +6868,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-06T21:56:29.202356+00:00"
+      "value": "2026-10-06T21:57:17.565269+00:00"
     }
   ]
 }
