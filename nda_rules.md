@@ -1,5 +1,5 @@
 # NCP NDA Review Handoff
-Oct 2, 2026 · @Trey
+Oct 6, 2026 · @Trey
 ## Purpose and how to use this handoff
 This document collects every standing rule New Capital Partners (NCP) applies when reviewing, negotiating and redlining NDAs. Anyone picking up an NCP NDA should be able to run a full review from this page alone.
 NCP is usually the buyer and the Recipient of confidential information on M&A deals. The default deliverable is a redlined Word document with tracked changes, authored as "New Capital Partners."
@@ -137,6 +137,14 @@ Six prior negotiations shape the rules above. Newest first.
 Round 1 (Aug 17). Five changes: fixed a term conflict between sections 2 and 6, added a full Representatives definition, added destruction in lieu of return with retention carve-outs, added a no-restriction / no-imputed-knowledge clause, and added a no-obligation-to-proceed clause. Trey declined two "nice to have" items (narrowing the confidential information definition and a carve-out qualifier).
 Round 2 (Aug 21). Earthling accepted everything except the term, cutting it from three years to one and leaving an orphaned "the anniversary" with no ordinal. That reopened a conflict between sections 2 and 6.
 Round 3 (Aug 21). Trey accepted one year. NCP conformed section 2 to one year and inserted "first (1st)" before "anniversary." Two tracked changes, nothing else. Status: V3 sent, awaiting execution.
+### Mariner (VDK621CR) record
+Trey's counsel proposed a compromise on Oct 5, 2026 that closes all four open items. It gives up the bond position and the direct-damages cap in exchange for a mutual consequential-damages waiver, reworded residuals, and narrowed supremacy. Status: with Trey for a decision on whether to send.
+Check before signing:
+Proviso tension. "Nothing in this Paragraph 9 reduces or eliminates Recipient's confidentiality obligations" could be read to undercut the residuals sentence in the same paragraph.
+Stray period. The Litera PDF shows a period after "this Agreement" ahead of "or of any data room." Confirm it is deleted in the Word file.
+Change count. Litera reports 7 total changes but 5 markers appear in the body. Confirm the other 2 in the Word file.
+Silent acceptances from Round 2. The §2 joinder wording and the §5 deletion were accepted without explicit instruction. If Mariner later attacks the §9 non-imputation sentence, the §5 point reopens.
+Not precedent: the bond waiver, the uncapped direct damages and the narrowed supremacy are Mariner-specific trades, like Copa's Competing Investments trade.
 ### Close-but-not-quite cases and inconsistencies to resolve
 These are places where the records disagree or a deal departed from the rules. Each needs a decision from Trey.
 Apollo term request. The ladder covers counter-offers to 2-year and 3 to 5-year proposals. It does not say what to do when a counterparty pushes 1 year up to 18 months. The 18-month non-solicit is inside the fallback; the 18-month term is not explicitly covered.
@@ -207,9 +215,24 @@ New numbered clauses | Inserted clause does not join the numbering | Copy the ad
 
 Deal | When | NCP role and form | What it established or where it stands
 --- | --- | --- | ---
-Mariner | Late Sept 2026 | Recipient on a sell-side form from Mariner | Seller responded to NCP's redline in late September; next turn pending
+Mariner | Sept 23 to Oct 5, 2026 | Recipient on a sell-side Mariner (Woodbridge) form, Delaware law; target not competitive; 24-month floor on restrictions | Four §4 and §9 items held open through two seller turns. Trey's counsel proposed a compromise on Oct 5, 2026. See the Mariner record below
 Project Apollo | Sept 28, 2026 | Mutual form from Kaizen Equity Partners as agent for an unnamed company; platform deal | Target could be competitive, so the full protection set applied. Kaizen accepted all Round 1 changes except asking for an 18-month non-solicit and an 18-month term (both up from 12)
 Project Avalon | Sept 25, 2026 | Receiving Party on a one-way form | Not competitive, so standard protection set only. Round 1 redline delivered as Avalon_NDA_NCP_Redlined.docx; Disclosing Party name still blank in the form
 Earthling Security | Aug 2026 | Mutual, company-direct, Virginia law; NCP the net receiving party | Trey asked for must-have changes only. Showed that a shorter term can favor NCP when it is the net receiver, and that incoming "redlines" may have no live markup
 Copa | Earlier | Outbound form | Source of the residuals, damages-cap and no-contact fallbacks in Section 6. Its Competing Investments trade is not repeatable
 Black Rose | Earlier | Not recorded | Source of the Dual Hat, data room supremacy, legal-compulsion and Competing Investments survival rules that now apply on every deal
+
+Date | Turn | What happened
+--- | --- | ---
+Oct 5, 2026 | Trey's counsel (Litera Compare) | Compromise on §4 bond, §4 damages, §9 residuals and §9 supremacy. Detail in the next table
+Oct 2, 2026 | Mariner counsel | Took the same four positions again. No untracked edits; nothing else reopened
+Sept 29, 2026 | NCP Round 2 | Accepted the §2 joinder change and the §5 deletion (§9 non-imputation covers it). Struck the bond waiver, restored the cap with Copa carve-outs, restored residuals and supremacy
+Sept 28 to 29, 2026 | Mariner (Carlos Muniz) | Accepted everything else. Added "acceptable to the Company" to the §2 joinder, reinserted the bond waiver, deleted the cap, the §5 affiliate and portfolio-company sentence, §9 residuals and §9 supremacy
+Sept 23, 2026 | NCP Round 1 | Full redline, including new standalone §9 Competing Investments. Two-year term and non-solicit left as drafted per Trey's 24-month floor
+
+Clause | NCP standard | Counsel's compromise | Assessment
+--- | --- | --- | ---
+§4 bond | No bond waiver | Accepts "without the requirement of posting a bond" | Concession. Low practical risk on a two-year NDA where only the Company is likely to seek an injunction
+§4 damages | Cap at direct damages (Copa fallback: carve-outs for fraud and willful misconduct) | Mutual waiver of consequential, special, exemplary and punitive damages and lost profits. Carve-outs keep equitable relief and direct damages for confidentiality and non-use breaches, plus fraud, intentional misrepresentation and willful misconduct | Departs from standard: direct damages are uncapped. The lost-profits and consequential waiver is the part that matters most to NCP as Recipient. "Indirect" and "incidental" are no longer listed
+§9 residuals | Copa industry-knowledge formulation | Industry knowledge that cannot be separated from overall knowledge may be used in the ordinary course of business without, by itself, being a breach. Covers Representatives | Arguably broader than Copa ("ordinary course of business" versus "internal purposes"). Drops the express reference to other investment decisions
+§9 supremacy | Controls over all current and future agreements (Black Rose) | Controls over this Agreement and any data room, click-through or similar Transaction agreement. Yields to any definitive transaction agreement and any future written agreement that expressly amends §9 | Close but not quite Black Rose. "Expressly amends" still blocks boilerplate override. The definitive-agreement carve-out needs no express reference, and "current" agreements are dropped

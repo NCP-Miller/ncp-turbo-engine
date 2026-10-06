@@ -71,17 +71,26 @@ def _review_clients():
 # ── Rulebook + engine ────────────────────────────────────────────────
 with st.expander("📘 The NCP NDA rulebook (seeded from your handoff — editable)"):
     st.caption(
-        "Loaded from the NCP NDA Review Handoff (Oct 2, 2026). Edits here "
-        "override the file and apply to every future review."
+        "Loaded from the NCP NDA Review Handoff (updated Oct 6, 2026 — "
+        "includes the full Mariner record and counsel's §4/§9 compromise "
+        "assessment). Edits here override the file and apply to every "
+        "future review."
     )
     _rules = st.text_area("Rules", value=nda.load_rules(), height=400,
                           label_visibility="collapsed")
-    rc1, rc2 = st.columns([1, 2])
+    rc1, rc2, rc3 = st.columns([1, 1, 2])
     if rc1.button("Save rulebook"):
         nda.save_rules(_rules)
         nda.backup_to_github()
         st.success("Rulebook saved — future reviews use this text.")
-    _model_pick = rc2.selectbox(
+    if rc2.button("Reset to latest handoff",
+                  help="Replaces any in-app edits with the newest handoff "
+                       "file shipped with the app (currently Oct 6, 2026)."):
+        nda.save_rules(nda.load_rules_file())
+        nda.backup_to_github()
+        st.success("Rulebook reset to the latest handoff.")
+        st.rerun()
+    _model_pick = rc3.selectbox(
         "Negotiation brain", nda.ANTHROPIC_MODELS,
         index=nda.ANTHROPIC_MODELS.index(nda.get_review_model()),
         help="Claude with extended thinking reasons through the negotiation "
