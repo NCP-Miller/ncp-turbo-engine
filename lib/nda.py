@@ -5,13 +5,15 @@ editable in the app) drives a GPT-4o review that buckets every issue the
 NCP way — non-negotiable / credibility trade / accepted as drafted —
 flags counsel escalations, and produces concrete edits.
 
-Outputs per round:
-  - CLEAN docx: NCP's position applied as plain text (this is exactly
-    the "write NCP's position as clean text" artifact the locked
-    LibreOffice-compare workflow consumes)
-  - MARKED docx: a visual review copy (red strikethrough deletions,
-    blue underline insertions). It is NOT Word tracked changes — the
-    handoff's locked workflow owns true redline generation.
+Outputs per round (both edit the counterparty's own .docx in place, so
+their formatting, numbering and styles survive and nothing is added to
+the top of the document):
+  - REDLINE docx: the uploaded file with genuine Word tracked changes
+    (w:ins / w:del, author "New Capital Partners")
+  - CLEAN docx: the same redline with every tracked change accepted —
+    ready to send back to the banker
+For PDF uploads (no source .docx to edit) a plain-text clean draft and
+a visual marked copy are generated instead, with no added headers.
 
 Projects persist across rounds in pipeline_data/nda_review.db, named by
 deal project so iterations can be reviewed until the NDA is executable,
@@ -234,6 +236,19 @@ YOUR JOB:
    string for a pure insertion), the revised NCP text, where to insert
    if new (after which clause), the rationale citing the rulebook, and
    its bucket.
+   VERBATIM RULE: "original" must be copied character-for-character
+   from THE NDA TEXT above — same capitalization, punctuation, and
+   quote characters. The redline engine places edits by exact string
+   match; a paraphrased "original" cannot be placed and the edit is
+   lost. Never span more than one paragraph in a single edit — split
+   multi-paragraph changes into one edit per paragraph.
+   BE COMPREHENSIVE: the edits array is the ENTIRE negotiation turn.
+   Walk the document clause by clause — definitions, Representatives,
+   term/tail, non-solicit, competing investments/standstill, remedies,
+   governing law/forum, notices, party blocks, signature blocks — and
+   emit an edit for EVERY change NCP needs, not just the top few. A
+   typical banker-form first round produces 15-30 edits. If a clause
+   needs three changes, emit three edits.
 5. Fill NCP party details per the signing table (NCP Management
    Holdings, LLC; 2101 Highland Ave S, Suite 700, Birmingham, AL
    35205; William "Trey" Miller III, Managing Director and Authorized
@@ -271,13 +286,16 @@ Return JSON only:
                 try:
                     kwargs = {
                         "model": model,
-                        "max_tokens": 16000,
+                        "max_tokens": 32000,
                         "messages": [{"role": "user", "content": prompt}],
                     }
                     if use_thinking:
                         kwargs["thinking"] = {"type": "enabled",
-                                              "budget_tokens": 8000}
-                    resp = anthropic_client.messages.create(**kwargs)
+                                              "budget_tokens": 10000}
+                    # Streamed so a full 20-30 edit JSON never hits the
+                    # non-streaming request time limit.
+                    with anthropic_client.messages.stream(**kwargs) as s:
+                        resp = s.get_final_message()
                     text = "".join(
                         b.text for b in resp.content
                         if getattr(b, "type", "") == "text")
@@ -346,13 +364,19 @@ def apply_edits(original_text, edits):
     return text, applied, skipped
 
 
-def build_clean_docx(clean_text, project_name, round_no):
-    """NCP's position as a plain .docx (the locked workflow's step-2 input)."""
+def deliverable_name(original_filename, suffix):
+    """Output filename built from the UPLOADED file's name, so the
+    banker's naming survives: 'BizPort NDA.docx' -> 'BizPort NDA - NCP
+    Redline.docx'. No project/round wrappers."""
+    stem = os.path.splitext(os.path.basename(original_filename or "NDA"))[0]
+    return f"{stem} - {suffix}.docx"
+
+
+def build_clean_docx(clean_text):
+    """PDF-upload fallback only: NCP's position as a plain .docx. No
+    added headers — the document starts exactly where the NDA starts."""
     import docx
     d = docx.Document()
-    d.add_heading(f"{project_name} — NCP Position (Round {round_no})", level=1)
-    d.add_paragraph("Prepared by New Capital Partners. Clean text, "
-                    "no tracked changes.")
     for para in clean_text.split("\n"):
         d.add_paragraph(para)
     buf = io.BytesIO()
@@ -360,30 +384,17 @@ def build_clean_docx(clean_text, project_name, round_no):
     return buf.getvalue()
 
 
-def build_marked_docx(original_text, edits, project_name, round_no):
-    """Visual review copy: deletions in red strikethrough, insertions in
-    blue underline. Explicitly labeled — not Word tracked changes."""
+def build_marked_docx(original_text, edits):
+    """PDF-upload fallback only: visual review copy (red strikethrough
+    deletions, blue underline insertions). No added headers."""
     import docx
     from docx.shared import RGBColor
     RED, BLUE = RGBColor(0xC0, 0x00, 0x00), RGBColor(0x00, 0x56, 0xA7)
 
-    by_para = {}
-    insertions = []
-    for e in edits:
-        orig = (e.get("original") or "").strip()
-        if orig:
-            by_para.setdefault(orig.split("\n")[0], []).append(e)
-        else:
-            insertions.append(e)
+    insertions = [e for e in edits
+                  if not (e.get("original") or "").strip()]
 
     d = docx.Document()
-    d.add_heading(f"{project_name} — Marked Review Copy (Round {round_no})",
-                  level=1)
-    d.add_paragraph(
-        "Visual markup by New Capital Partners: red strikethrough = "
-        "delete, blue underline = NCP insertion. This is a review copy, "
-        "not a tracked-changes redline — generate the executable redline "
-        "through the locked compare workflow.")
 
     for para in original_text.split("\n"):
         hits = [e for e in edits
@@ -637,6 +648,31 @@ def build_tracked_docx(original_docx_bytes, edits):
     return out, report
 
 
+def accept_all_changes(tracked_docx_bytes):
+    """The CLEAN deliverable: the tracked redline with every change
+    accepted — w:del removed, w:ins unwrapped. Because it starts from
+    the redline (which starts from the counterparty's own file), the
+    original formatting, numbering, and layout all survive."""
+    import docx
+    from docx.oxml.ns import qn
+
+    doc = docx.Document(io.BytesIO(tracked_docx_bytes))
+    body = doc.element.body
+    for d_el in list(body.iter(qn("w:del"))):
+        d_el.getparent().remove(d_el)
+    for ins in list(body.iter(qn("w:ins"))):
+        parent = ins.getparent()
+        idx = list(parent).index(ins)
+        for child in list(ins):
+            ins.remove(child)
+            parent.insert(idx, child)
+            idx += 1
+        parent.remove(ins)
+    buf = io.BytesIO()
+    doc.save(buf)
+    return buf.getvalue()
+
+
 def count_tracked_changes(docx_bytes):
     """Handoff incoming-file check: how many live w:ins / w:del marks?"""
     import zipfile as _zf
@@ -705,6 +741,35 @@ def add_round(project_id, filename, original_text, review, file_blob=None):
                      (_now(), project_id))
         conn.commit()
         return round_no
+    finally:
+        conn.close()
+
+
+def delete_project(project_id):
+    """Remove a project and all its rounds — the 'start fresh at Round
+    1' path. The next backup overwrites nda_review.json, so the delete
+    sticks across redeploys."""
+    conn = _connect()
+    try:
+        conn.execute("DELETE FROM rounds WHERE project_id = ?",
+                     (project_id,))
+        conn.execute("DELETE FROM projects WHERE id = ?", (project_id,))
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def delete_round(round_id):
+    """Drop a single round (e.g. a bad run) without losing the project."""
+    conn = _connect()
+    try:
+        r = conn.execute("SELECT project_id FROM rounds WHERE id = ?",
+                         (round_id,)).fetchone()
+        conn.execute("DELETE FROM rounds WHERE id = ?", (round_id,))
+        if r:
+            conn.execute("UPDATE projects SET updated_at = ? WHERE id = ?",
+                         (_now(), r["project_id"]))
+        conn.commit()
     finally:
         conn.close()
 
