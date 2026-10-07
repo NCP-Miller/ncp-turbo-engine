@@ -224,64 +224,103 @@ with tab_review:
             except Exception as e:
                 st.error(f"Review failed: {e}")
                 st.stop()
+        review["_engine"] = engine
         round_no = nda.add_round(pid, up.name, text, review,
                                  file_blob=up.getvalue() if _is_docx else None)
         nda.backup_to_github()
+        _rounds = nda.list_rounds(pid)
+        st.session_state["_nda_view"] = {
+            "project_id": pid,
+            "round_id": _rounds[-1]["id"],
+            "project_name": proj_name.strip(),
+        }
+        st.rerun()
 
-        st.markdown(f"## Round {round_no} review — {proj_name}")
-        st.caption(f"Reviewed by {engine}")
-        clean_text, applied, skipped = nda.apply_edits(
-            text, review.get("edits", []))
-        _render_review(review, skipped)
+# ── Persistent review display: survives download clicks and reruns ──
+_view = st.session_state.get("_nda_view")
+if _view:
+    with tab_review:
+        _vrounds = nda.list_rounds(_view["project_id"])
+        _vround = next((r for r in _vrounds
+                        if r["id"] == _view["round_id"]), None)
+        if _vround:
+            _vname = _view.get("project_name", "Project")
+            h1, h2 = st.columns([5, 1])
+            h1.markdown(f"## Round {_vround['round_no']} review — {_vname}")
+            if h2.button("✕ Close", key="_nda_view_close",
+                         use_container_width=True):
+                st.session_state.pop("_nda_view", None)
+                st.rerun()
+            _vreview = _vround.get("review", {})
+            if _vreview.get("_engine"):
+                if "fallback" in _vreview["_engine"] or \
+                        "no ANTHROPIC" in _vreview["_engine"]:
+                    st.warning(f"Reviewed by {_vreview['_engine']}")
+                else:
+                    st.caption(f"Reviewed by {_vreview['_engine']}")
+            _vtext = _vround.get("original_text") or ""
+            _vclean, _vapplied, _vskipped = nda.apply_edits(
+                _vtext, _vreview.get("edits", []))
+            _render_review(_vreview, _vskipped)
 
-        # ── Deliverables ─────────────────────────────────────────
-        if _is_docx:
-            tracked_bytes, trep = nda.build_tracked_docx(
-                up.getvalue(), review.get("edits", []))
-            st.download_button(
-                "⬇️ REDLINE — Word tracked changes (.docx)",
-                data=tracked_bytes,
-                file_name=f"{proj_name.replace(' ', '_')}_R{round_no}"
-                          f"_NCP_Redlined.docx",
+            # ── Deliverables (regenerated from storage every render,
+            #    so they survive any number of clicks) ───────────────
+            _vblob = (nda.get_round_blob(_vround["id"])
+                      if _vround.get("has_blob") else None)
+            if _vblob:
+                _tb, _tr = nda.build_tracked_docx(
+                    _vblob, _vreview.get("edits", []))
+                st.download_button(
+                    "⬇️ REDLINE — Word tracked changes (.docx)",
+                    data=_tb,
+                    file_name=f"{_vname.replace(' ', '_')}"
+                              f"_R{_vround['round_no']}_NCP_Redlined.docx",
+                    mime="application/vnd.openxmlformats-officedocument"
+                         ".wordprocessingml.document",
+                    type="primary", use_container_width=True,
+                    key="_nda_view_redline")
+                _acc = "✅ PASS" if _tr["accept_audit"] else "❌ FAIL"
+                _rej = "✅ PASS" if _tr["reject_audit"] else "❌ FAIL"
+                st.caption(
+                    f"Genuine Word tracked changes in the counterparty's "
+                    f"own file · author **{_tr['author']}** · change IDs "
+                    f"from {_tr['first_id']} · {_tr['applied']} edits "
+                    f"applied · **Accept-audit: {_acc}** · "
+                    f"**Reject-audit: {_rej}**")
+                if _tr["skipped"]:
+                    st.warning(
+                        f"{len(_tr['skipped'])} edit(s) could not be placed "
+                        f"in the redline automatically — apply by hand:\n"
+                        + "\n".join(
+                            f"- {s.get('original', s.get('revised', ''))[:120]}… "
+                            f"({s.get('_skip_reason')})"
+                            for s in _tr["skipped"]))
+            else:
+                st.info("Tracked-changes redline needs the counterparty's "
+                        ".docx — this round was a PDF, so only the clean "
+                        "and marked copies are available.")
+
+            vd1, vd2 = st.columns(2)
+            vd1.download_button(
+                "⬇️ Clean NCP-position draft (.docx)",
+                data=nda.build_clean_docx(_vclean, _vname,
+                                          _vround["round_no"]),
+                file_name=f"{_vname.replace(' ', '_')}"
+                          f"_R{_vround['round_no']}_NCP_clean.docx",
                 mime="application/vnd.openxmlformats-officedocument"
                      ".wordprocessingml.document",
-                type="primary", use_container_width=True)
-            _acc = "✅ PASS" if trep["accept_audit"] else "❌ FAIL"
-            _rej = "✅ PASS" if trep["reject_audit"] else "❌ FAIL"
-            st.caption(
-                f"Genuine Word tracked changes in the counterparty's own "
-                f"file · author **{trep['author']}** · change IDs from "
-                f"{trep['first_id']} · {trep['applied']} edits applied · "
-                f"**Accept-audit: {_acc}** · **Reject-audit: {_rej}**")
-            if trep["skipped"]:
-                st.warning(
-                    f"{len(trep['skipped'])} edit(s) could not be placed in "
-                    f"the redline automatically — apply by hand:\n"
-                    + "\n".join(f"- {s.get('original', s.get('revised', ''))[:120]}… "
-                                f"({s.get('_skip_reason')})"
-                                for s in trep["skipped"]))
+                use_container_width=True, key="_nda_view_clean")
+            vd2.download_button(
+                "⬇️ Marked review copy (.docx)",
+                data=nda.build_marked_docx(_vtext, _vapplied, _vname,
+                                           _vround["round_no"]),
+                file_name=f"{_vname.replace(' ', '_')}"
+                          f"_R{_vround['round_no']}_marked.docx",
+                mime="application/vnd.openxmlformats-officedocument"
+                     ".wordprocessingml.document",
+                use_container_width=True, key="_nda_view_marked")
         else:
-            st.info("Tracked-changes redline needs the counterparty's "
-                    ".docx — this round was a PDF, so only the clean and "
-                    "marked copies are available.")
-
-        d1, d2 = st.columns(2)
-        d1.download_button(
-            "⬇️ Clean NCP-position draft (.docx)",
-            data=nda.build_clean_docx(clean_text, proj_name, round_no),
-            file_name=f"{proj_name.replace(' ', '_')}_R{round_no}_NCP_clean.docx",
-            mime="application/vnd.openxmlformats-officedocument"
-                 ".wordprocessingml.document",
-            use_container_width=True,
-        )
-        d2.download_button(
-            "⬇️ Marked review copy (.docx)",
-            data=nda.build_marked_docx(text, applied, proj_name, round_no),
-            file_name=f"{proj_name.replace(' ', '_')}_R{round_no}_marked.docx",
-            mime="application/vnd.openxmlformats-officedocument"
-                 ".wordprocessingml.document",
-            use_container_width=True,
-        )
+            st.session_state.pop("_nda_view", None)
 
 # ═════════════════════ PROJECTS TAB ══════════════════════════════════
 with tab_projects:
