@@ -193,11 +193,17 @@ general practice disagree, the rulebook wins.
 
 THIS DEAL'S INTAKE GATES (already answered by Trey):
 - Deal type: {deal_type}
-  (Add-on => include Affiliates in Representatives per the fallback
-   table; competitive platform => apply the FULL protection set:
-   portfolio non-imputation, portfolio non-solicit carve-out, Dual Hat
-   Employees, hardened Competing Investments; non-competitive =>
-   standard protection set, Competing Investments still required.)
+  (ADD-ON FOR A PORTFOLIO COMPANY: competitive overlap EXISTS BY
+   DEFINITION — the target operates in an NCP portfolio company's
+   space. Apply the FULL protection set: portfolio company
+   non-imputation, non-solicit carve-out for portfolio companies,
+   Dual Hat Employees clause, hardened Competing Investments — AND
+   include Affiliates in the Representatives definition per the
+   ladder ("Include only on add-on deals").
+   NEW PLATFORM, POTENTIALLY COMPETITIVE: apply the FULL protection
+   set as well.
+   NEW PLATFORM, NON-COMPETITIVE: standard protection set only; the
+   standalone Competing Investments clause is still required.)
 - NCP role: {ncp_role}
   (As Recipient, carve-outs stay broad — never apply Disclosing-Party
    moves. On a mutual form, identify the net discloser and say so.)
@@ -283,6 +289,11 @@ Return JSON only:
                     continue
         if openai_client is None:
             raise RuntimeError(f"Claude review failed: {last_err}")
+        _fallback_note = (f"GPT-4o (fallback — Claude failed: "
+                          f"{type(last_err).__name__}: "
+                          f"{str(last_err)[:300]})")
+    else:
+        _fallback_note = "GPT-4o (no ANTHROPIC_API_KEY configured)"
 
     if openai_client is None:
         raise RuntimeError(
@@ -295,7 +306,7 @@ Return JSON only:
         temperature=0.2,
         timeout=120,
     )
-    return json.loads(resp.choices[0].message.content), "GPT-4o (fallback)"
+    return json.loads(resp.choices[0].message.content), _fallback_note
 
 
 # ── Document builders ─────────────────────────────────────────────────
