@@ -589,7 +589,7 @@
       "state": "AL",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "In Dialogue",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -597,7 +597,7 @@
       "sf_contact_id": "0033A00002Vq3l9QAB",
       "row_json": "{\"Website\": \"https://www.ssiuw.com\", \"City\": \"Foley\", \"State\": \"AL\", \"Employees\": 18, \"Description\": \"South Shore Insurance Underwriters, LLC (SSIU) exists to pursue opportunities within the property and casualty insurance industry through excess and surplus lines markets with a strong bias towards personal lines and a secondary focus on commercial lines. Its product offerings include HO3, DP3, HO6, Commercial Property, Wind Only, and Primary and Excess Flood. It serves and offers its services within the area.\", \"CEO/Owner Name\": \"Taylor Norton\", \"Title\": \"Founder and President and CEO\", \"Email\": \"taylor@ssiuw.com\", \"Phone\": null}",
       "created_at": "2026-09-30T15:45:14.724175+00:00",
-      "updated_at": "2026-10-09T14:59:43.540316+00:00",
+      "updated_at": "2026-10-19T19:44:53.889849+00:00",
       "memo": null
     },
     {
@@ -7031,6 +7031,16 @@
       "timestamp": "2026-10-12T20:08:22.831947+00:00",
       "synced_to_sf": 0,
       "user": null
+    },
+    {
+      "id": 452,
+      "deal_id": 25,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 In Dialogue",
+      "detail": "",
+      "timestamp": "2026-10-19T19:44:53.889744+00:00",
+      "synced_to_sf": 0,
+      "user": "Trey"
     }
   ],
   "meta": [
@@ -7040,7 +7050,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-12T20:03:05.558010+00:00"
+      "value": "2026-10-19T19:43:01.856522+00:00"
     }
   ]
 }
