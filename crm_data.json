@@ -453,7 +453,7 @@
       "sf_contact_id": "0033000001muRGfAAM",
       "row_json": "{\"Website\": \"https://xstrememd.worldsecuresystems.com\", \"City\": \"Broussard\", \"State\": \"LA\", \"Employees\": 53, \"Description\": \"Life Line Technologies, LLC doing business as XstremeMD is the only telemedicine provider with a staff composed of Board Certified Emergency Medicine Physicians with extensive training in occupational medicine. Its physicians work from within the XMD Command Center and always available 24/7.\", \"CEO/Owner Name\": \"Joseph Pearson\", \"Title\": \"President\", \"Email\": \"jpearson@xstrememd.com\", \"Phone\": \"337-704-0891\"}",
       "created_at": "2026-09-30T15:45:14.537190+00:00",
-      "updated_at": "2026-10-06T21:57:17.271537+00:00",
+      "updated_at": "2026-10-19T19:45:34.721249+00:00",
       "memo": null
     },
     {
@@ -813,7 +813,7 @@
       "sf_contact_id": "003Pp000028ZbdNIAS",
       "row_json": "{\"Website\": \"https://vnasrisk.com\", \"City\": null, \"State\": null, \"Employees\": null, \"Description\": \"VNAS Risk Solutions specializes in the design, implementation, and management of captive insurance companies both in the U.S. and internationally. They provide comprehensive services including feasibility studies, regulatory compliance, financial management, and operational oversight to support various industries in managing their risk through captive insurance.\", \"CEO/Owner Name\": \"Robert Barker\", \"Title\": \"Managing Director\", \"Email\": \"robertbarker@vnasrisk.com\", \"Phone\": null}",
       "created_at": "2026-09-30T15:45:15.001612+00:00",
-      "updated_at": "2026-10-19T19:45:17.275598+00:00",
+      "updated_at": "2026-10-19T19:45:20.302200+00:00",
       "memo": null
     },
     {
@@ -7059,6 +7059,16 @@
       "summary": "sit tight. in touch",
       "detail": "",
       "timestamp": "2026-10-19T19:45:17.275242+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 455,
+      "deal_id": 19,
+      "type": "Call",
+      "summary": "ethan to call them",
+      "detail": "",
+      "timestamp": "2026-10-19T19:45:34.720591+00:00",
       "synced_to_sf": 0,
       "user": "Trey"
     }
@@ -7070,7 +7080,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-19T19:45:07.288278+00:00"
+      "value": "2026-10-19T19:45:19.930527+00:00"
     }
   ]
 }
