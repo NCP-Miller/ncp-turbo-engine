@@ -573,7 +573,7 @@
       "sf_contact_id": "0033A00002VnabbQAB",
       "row_json": "{\"Website\": \"https://www.basiconline.com\", \"City\": \"Portage\", \"State\": \"MI\", \"Employees\": 499, \"Description\": \"Benefit Administrative Services International Corp. (BASIC) provides an HR ecosystem to employers and health insurance agents nationwide, with a suite of HR Benefit, Compliance, Payroll, and Leave Management solutions offered independently or as part of a platform of services. The company's proprietary software and solutions allow employers to control costs, manage risks, and maintain flexibility.\", \"CEO/Owner Name\": \"Robert Hayes\", \"Title\": \"Executive VP and Principal and Board Member\", \"Email\": \"rhayes@basiconline.com\", \"Phone\": null}",
       "created_at": "2026-09-30T15:45:14.692452+00:00",
-      "updated_at": "2026-10-22T18:36:21.010513+00:00",
+      "updated_at": "2026-10-22T18:36:25.549760+00:00",
       "memo": null
     },
     {
@@ -711,13 +711,13 @@
       "project": null,
       "status": "Outreach Active",
       "source": "backfill-salesforce",
-      "notes": "He has gone silent on me. ",
+      "notes": "He has gone silent on me. Sent another email on 10.22",
       "next_followup": null,
       "sf_account_id": "001Pp000027a68LIAQ",
       "sf_contact_id": "003Pp0000217pInIAI",
       "row_json": "{\"Website\": \"https://flytehcm.com/\", \"City\": null, \"State\": null, \"Employees\": null, \"Description\": null, \"CEO/Owner Name\": \"Eric Allen\", \"Title\": \"CEO/Founder\", \"Email\": null, \"Phone\": null}",
       "created_at": "2026-09-30T15:45:14.879426+00:00",
-      "updated_at": "2026-10-06T20:48:38.973886+00:00",
+      "updated_at": "2026-10-22T18:37:46.931047+00:00",
       "memo": null
     },
     {
@@ -7169,7 +7169,7 @@
       "summary": "Status: Outreach Active \u2192 Contacted \u2013 No Opportunity",
       "detail": "",
       "timestamp": "2026-10-22T18:36:18.114895+00:00",
-      "synced_to_sf": 0,
+      "synced_to_sf": 1,
       "user": "Trey"
     },
     {
@@ -7179,7 +7179,7 @@
       "summary": "Status: Contacted \u2013 No Opportunity \u2192 Closed \u2013 No Response",
       "detail": "",
       "timestamp": "2026-10-22T18:36:21.010215+00:00",
-      "synced_to_sf": 0,
+      "synced_to_sf": 1,
       "user": "Trey"
     }
   ],
@@ -7190,7 +7190,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-22T18:36:21.140634+00:00"
+      "value": "2026-10-22T18:36:23.562472+00:00"
     }
   ]
 }
