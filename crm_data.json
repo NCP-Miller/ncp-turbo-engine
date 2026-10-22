@@ -549,7 +549,7 @@
       "sf_contact_id": "0033A00002WDLlYQAX",
       "row_json": "{\"Website\": \"https://www.dataseers.ai\", \"City\": \"Alpharetta\", \"State\": \"GA\", \"Employees\": 93, \"Description\": \"DataSeers, Inc. is a computer software company. It provides AI-powered enterprise software for banks and fintechs to improve reconciliation, compliance, fraud detection, and analytics. The company offers its services throughout the country.\", \"CEO/Owner Name\": \"Micah Fowler\", \"Title\": \"Manager of Strategic Alliances\", \"Email\": \"mfowler@dataseers.ai\", \"Phone\": null}",
       "created_at": "2026-09-30T15:45:14.660800+00:00",
-      "updated_at": "2026-10-22T18:39:20.092750+00:00",
+      "updated_at": "2026-10-22T18:39:24.551433+00:00",
       "memo": null
     },
     {
@@ -757,7 +757,7 @@
       "state": "Minnesota",
       "niche": null,
       "project": null,
-      "status": "In Dialogue",
+      "status": "Revisit Later",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -765,7 +765,7 @@
       "sf_contact_id": "003Pp000021kkpUIAQ",
       "row_json": "{\"Website\": \"http://www.terrapintech.com\", \"City\": \"Bloomington\", \"State\": \"Minnesota\", \"Employees\": 17, \"Description\": \"Terrapin Technologies, Inc. is a financial software company founded in 1995 and based in Bloomington, Minnesota. It specializes in providing data aggregation, reporting, compliance, and automation solutions for wealth management firms, utilizing web-based technology to enhance visibility, profitability, and regulatory adherence. The company's digital platform automates processes related to compensation, compliance, and reporting, supporting wealth management firms in achieving operational efficiency and scalable growth.\", \"CEO/Owner Name\": \"Kristefor Lysne\", \"Title\": \"President\", \"Email\": \"kristefor.lysne@terrapintech.com\", \"Phone\": null}",
       "created_at": "2026-09-30T15:45:14.939185+00:00",
-      "updated_at": "2026-10-06T20:35:48.677134+00:00",
+      "updated_at": "2026-10-22T18:42:18.713060+00:00",
       "memo": null
     },
     {
@@ -7239,6 +7239,16 @@
       "summary": "follow up set for 10/27",
       "detail": "",
       "timestamp": "2026-10-22T18:39:20.092426+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 473,
+      "deal_id": 32,
+      "type": "Note",
+      "summary": "Status: In Dialogue \u2192 Revisit Later",
+      "detail": "",
+      "timestamp": "2026-10-22T18:42:18.712770+00:00",
       "synced_to_sf": 0,
       "user": "Trey"
     }
@@ -7250,7 +7260,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-22T18:38:37.093619+00:00"
+      "value": "2026-10-22T18:39:23.014946+00:00"
     }
   ]
 }
