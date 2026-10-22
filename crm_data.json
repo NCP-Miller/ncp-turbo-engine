@@ -13,7 +13,7 @@
       "state": "North Carolina",
       "niche": "Trust administrator",
       "project": null,
-      "status": "New",
+      "status": "Outreach Active",
       "source": "memo",
       "notes": "",
       "next_followup": null,
@@ -21,7 +21,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"Old North State Trust\", \"Description\": \"Old North State Trust is a financial services company that provides trust and estate services, investment management, and retirement planning. They operate in North Carolina, Tennessee, and Georgia, focusing on helping families grow wealth and preserve legacies through personalized solutions and fiduciary responsibility.\", \"Website\": \"http://www.oldnorthstatetrust.com\", \"City\": \"Greensboro\", \"State\": \"North Carolina\", \"LinkedIn\": \"http://www.linkedin.com/company/old-north-state-trust-llc\", \"Employees\": 50, \"Est. EBITDA\": \"$1.5M\\u2013$2.5M\", \"CEO/Owner Name\": \"Denis Aubin\", \"Title\": \"CEO\", \"Email\": \"daubin@oldnorthstatetrust.com\", \"Email Estimate\": \"\", \"Phone\": \"N/A\", \"Source\": \"Web Path (/about) \\u2192 Verified\", \"Notes\": \"\", \"Confidence\": \"High\", \"Latest News\": \"The List: New No. 1 tops 50 fastest-growing companies in the Triad - The Business Journals | https://news.google.com/rss/articles/CBMiowFBVV95cUxQNV9UU0dtZFFtTEVrNmZ6MXdVWktlaTlNWTk3VlU5LS1RUW9oVHRmcmhnVUJuYXFFU1ZkMUZhLU5Ca3k3QUdXVGJZSHY5RnhBSW1kUmgxVUw5b3BTZTI3N3hDWXEyU2FRRHBuempKRjhIcXB1N2VCclZJb3RBQWdPZTlfRVJXRm1kajViNi0zWUk3SzFoU0gyZ3d6dWRTQ2M2enFF?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Low\", \"_niche\": \"Trust administrator\\n\\nEXCLUDE these types of companies: wealth manager accounting\", \"Priority\": \"High\", \"Growth\": \"Medium\", \"Txn Readiness\": \"High\", \"Priority Confidence\": \"High\", \"Growth Confidence\": \"Medium\", \"Txn Readiness Confidence\": \"Medium\", \"Differentiated Confidence\": \"Medium\", \"Conviction\": 8, \"Conviction Pitch\": \"Old North State Trust operates in the growing Southeast U.S. market, offering personalized trust and estate services that cater specifically to families' wealth preservation and legacy building. Their multi-state presence in North Carolina, Tennessee, and Georgia positions them well for regional expansion in a fragmented market with no dominant player, providing a compelling buy-and-build opportunity. With a founder potentially approaching retirement, this company presents a natural succession opportunity for us to leverage our expertise in the trust administration niche and expand their regional footprint.\", \"Conviction Reasoning\": \"The company's regional focus in a fragmented and growing market, coupled with the potential for founder succession, aligns with our investment mandate of acquiring service businesses with clear expansion potential.\"}",
       "created_at": "2026-10-12T20:03:02.899123+00:00",
-      "updated_at": "2026-10-22T14:20:57.289231+00:00",
+      "updated_at": "2026-10-22T14:21:00.203700+00:00",
       "memo": "**Investment Memo: Old North State Trust**\n\n1. **Why We're Excited**\n\nOld North State Trust presents a unique acquisition opportunity due to its strategic regional presence in the fragmented Southeast U.S. trust administration market and an approaching founder succession scenario. With an established foothold in North Carolina, Tennessee, and Georgia, they are poised for further regional expansion, leveraging their expertise in personalized trust and estate services in a market with secular tailwinds and limited direct competition. Their operations cater to families' wealth preservation needs, aligning perfectly with the demographic trends of an aging population seeking fiduciary support.\n\n2. **Company Overview**\n\nOld North State Trust is a financial services firm headquartered in Greensboro, North Carolina. They provide a range of services including trust and estate administration, investment management, and retirement planning across three southeastern states: North Carolina, Tennessee, and Georgia. The company employs approximately 50 people, with an estimated EBITDA range of $1.5M\u2013$2.5M (subject to confirmation).\n\n3. **Differentiated Value Proposition**\n\nDespite a low differentiation rating, Old North State Trust's value lies in its established, loyal client base and strong regional presence. Their focus on personalized service for families provides a niche advantage, though the absence of unique certifications or proprietary processes means the competitive advantage is primarily relational and service-oriented.\n\n4. **Market Opportunity & Growth**\n\nThe company operates in a rapidly growing market driven by demographic changes such as an aging population increasingly in need of trust and estate services. The Southeast U.S. market is highly fragmented, presenting significant buy-and-build opportunities. Old North State's current presence in North Carolina, Tennessee, and Georgia offers both a solid foundation and ample whitespace for expansion.\n\n5. **NCP Fit Rationale**\n\nOld North State Trust aligns well with NCP's lower middle market, services-oriented acquisition strategy. Their operations as a founder-owned entity offer a natural private equity succession opportunity. The company's profile fits NCP's focus on acquiring essential service providers with steady, non-cyclical demand.\n\n6. **Key Risks & Diligence Items**\n\n- **EBITDA Verification**: Current estimates are heuristic; financial diligence is necessary to validate EBITDA.\n- **Competition Analysis**: Further analysis needed to assess regional competitive dynamics despite perceived fragmentation.\n- **Succession Plan**: Evaluate impact on operations and client retention with founder's retirement.\n- **Scalability**: Due diligence required to explore operational capacity for expansion into new markets.\n- **Regulatory Compliance**: Ensure current adherence and potential impact of new regulations on operations.\n\nOld North State Trust stands as a promising acquisition target, offering strategic regional growth with a significant succession opportunity, subject to thorough financial and operational diligence."
     },
     {
@@ -7111,6 +7111,16 @@
       "timestamp": "2026-10-22T14:20:57.289007+00:00",
       "synced_to_sf": 0,
       "user": "Trey"
+    },
+    {
+      "id": 460,
+      "deal_id": 1,
+      "type": "Note",
+      "summary": "Status: New \u2192 Outreach Active",
+      "detail": "",
+      "timestamp": "2026-10-22T14:21:00.203400+00:00",
+      "synced_to_sf": 0,
+      "user": "Trey"
     }
   ],
   "meta": [
@@ -7120,7 +7130,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-22T14:17:01.646191+00:00"
+      "value": "2026-10-22T14:21:00.725731+00:00"
     }
   ]
 }
