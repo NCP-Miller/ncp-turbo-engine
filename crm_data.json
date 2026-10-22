@@ -477,7 +477,7 @@
       "sf_contact_id": "0033A00002KOunaQAD",
       "row_json": "{\"Website\": \"https://www.synergylaboratories.com\", \"City\": \"Mobile\", \"State\": \"AL\", \"Employees\": 87, \"Description\": \"Synergy Laboratories, Inc. is a COLA-certified drug screening facility specializing in toxicology, genetics, and hematology. It is quality testing with a guaranteed turnaround time of 24 hours. The company prides itself on individualized customer service based on the unique needs of each organization in partnership.\", \"CEO/Owner Name\": \"Brandon Biles\", \"Title\": \"Founder, COO\", \"Email\": \"brandon.biles@synergytesting.com\", \"Phone\": null}",
       "created_at": "2026-09-30T15:45:14.566790+00:00",
-      "updated_at": "2026-10-22T16:02:58.611064+00:00",
+      "updated_at": "2026-10-22T16:03:02.611522+00:00",
       "memo": null
     },
     {
@@ -565,7 +565,7 @@
       "state": "MI",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Contacted \u2013 No Opportunity",
       "source": "backfill-salesforce",
       "notes": "sent an email to Michael Stoddard",
       "next_followup": null,
@@ -573,7 +573,7 @@
       "sf_contact_id": "0033A00002VnabbQAB",
       "row_json": "{\"Website\": \"https://www.basiconline.com\", \"City\": \"Portage\", \"State\": \"MI\", \"Employees\": 499, \"Description\": \"Benefit Administrative Services International Corp. (BASIC) provides an HR ecosystem to employers and health insurance agents nationwide, with a suite of HR Benefit, Compliance, Payroll, and Leave Management solutions offered independently or as part of a platform of services. The company's proprietary software and solutions allow employers to control costs, manage risks, and maintain flexibility.\", \"CEO/Owner Name\": \"Robert Hayes\", \"Title\": \"Executive VP and Principal and Board Member\", \"Email\": \"rhayes@basiconline.com\", \"Phone\": null}",
       "created_at": "2026-09-30T15:45:14.692452+00:00",
-      "updated_at": "2026-10-06T21:52:02.061336+00:00",
+      "updated_at": "2026-10-22T18:36:18.115056+00:00",
       "memo": null
     },
     {
@@ -7159,6 +7159,16 @@
       "summary": "Ethan is reaching out",
       "detail": "",
       "timestamp": "2026-10-22T16:02:58.610404+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 465,
+      "deal_id": 24,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Contacted \u2013 No Opportunity",
+      "detail": "",
+      "timestamp": "2026-10-22T18:36:18.114895+00:00",
       "synced_to_sf": 0,
       "user": "Trey"
     }
@@ -7170,7 +7180,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-22T14:48:43.058894+00:00"
+      "value": "2026-10-22T16:03:01.706057+00:00"
     }
   ]
 }
