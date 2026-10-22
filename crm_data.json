@@ -333,7 +333,7 @@
       "sf_contact_id": "0033000001hoOvOAAU",
       "row_json": "{\"Website\": \"https://www.scriptpro.com\", \"City\": \"Mission\", \"State\": \"KS\", \"Employees\": 641, \"Description\": \"Scriptpro, LLC is a technology company that develops pharmacy automation and management system products. It offers solutions for third-party management, clinical documentation, and case management, inventory management, medication adherence, interactive voice response, telepharmacy, and more. The company also provides health messaging services, a pharmacy services portal, a drug database, and pharmacy administration services. It serves customers within the area.\", \"CEO/Owner Name\": \"Michael Coughlin\", \"Title\": \"President and CEO and CFO\", \"Email\": \"mike@scriptpro.com\", \"Phone\": \"(913) 384-1008\"}",
       "created_at": "2026-09-30T15:45:14.384149+00:00",
-      "updated_at": "2026-10-22T14:23:56.156199+00:00",
+      "updated_at": "2026-10-22T14:48:00.002058+00:00",
       "memo": null
     },
     {
@@ -7140,7 +7140,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-22T14:24:04.564351+00:00"
+      "value": "2026-10-22T14:24:08.060870+00:00"
     }
   ]
 }
