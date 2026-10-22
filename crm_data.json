@@ -325,7 +325,7 @@
       "state": "KS",
       "niche": null,
       "project": null,
-      "status": "In Dialogue",
+      "status": "Outreach Active",
       "source": "backfill-salesforce",
       "notes": "Ethan reaching out",
       "next_followup": null,
@@ -333,7 +333,7 @@
       "sf_contact_id": "0033000001hoOvOAAU",
       "row_json": "{\"Website\": \"https://www.scriptpro.com\", \"City\": \"Mission\", \"State\": \"KS\", \"Employees\": 641, \"Description\": \"Scriptpro, LLC is a technology company that develops pharmacy automation and management system products. It offers solutions for third-party management, clinical documentation, and case management, inventory management, medication adherence, interactive voice response, telepharmacy, and more. The company also provides health messaging services, a pharmacy services portal, a drug database, and pharmacy administration services. It serves customers within the area.\", \"CEO/Owner Name\": \"Michael Coughlin\", \"Title\": \"President and CEO and CFO\", \"Email\": \"mike@scriptpro.com\", \"Phone\": \"(913) 384-1008\"}",
       "created_at": "2026-09-30T15:45:14.384149+00:00",
-      "updated_at": "2026-10-22T14:48:36.345897+00:00",
+      "updated_at": "2026-10-22T14:48:40.134687+00:00",
       "memo": null
     },
     {
@@ -7139,6 +7139,16 @@
       "summary": "Status: Outreach Active \u2192 In Dialogue",
       "detail": "",
       "timestamp": "2026-10-22T14:48:36.345655+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 463,
+      "deal_id": 14,
+      "type": "Note",
+      "summary": "Status: In Dialogue \u2192 Outreach Active",
+      "detail": "",
+      "timestamp": "2026-10-22T14:48:40.134513+00:00",
       "synced_to_sf": 0,
       "user": "Trey"
     }
@@ -7150,7 +7160,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-22T14:48:33.749187+00:00"
+      "value": "2026-10-22T14:48:38.829326+00:00"
     }
   ]
 }
