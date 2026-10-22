@@ -717,7 +717,7 @@
       "sf_contact_id": "003Pp0000217pInIAI",
       "row_json": "{\"Website\": \"https://flytehcm.com/\", \"City\": null, \"State\": null, \"Employees\": null, \"Description\": null, \"CEO/Owner Name\": \"Eric Allen\", \"Title\": \"CEO/Founder\", \"Email\": null, \"Phone\": null}",
       "created_at": "2026-09-30T15:45:14.879426+00:00",
-      "updated_at": "2026-10-22T18:37:46.931047+00:00",
+      "updated_at": "2026-10-22T18:38:00.338573+00:00",
       "memo": null
     },
     {
@@ -7181,6 +7181,16 @@
       "timestamp": "2026-10-22T18:36:21.010215+00:00",
       "synced_to_sf": 1,
       "user": "Trey"
+    },
+    {
+      "id": 467,
+      "deal_id": 30,
+      "type": "Email",
+      "summary": "10/22. Gone completely silent for 6 months",
+      "detail": "",
+      "timestamp": "2026-10-22T18:38:00.337959+00:00",
+      "synced_to_sf": 0,
+      "user": "Trey"
     }
   ],
   "meta": [
@@ -7190,7 +7200,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-22T18:36:23.562472+00:00"
+      "value": "2026-10-22T18:37:50.775802+00:00"
     }
   ]
 }
