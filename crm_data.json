@@ -453,7 +453,7 @@
       "sf_contact_id": "0033000001muRGfAAM",
       "row_json": "{\"Website\": \"https://xstrememd.worldsecuresystems.com\", \"City\": \"Broussard\", \"State\": \"LA\", \"Employees\": 53, \"Description\": \"Life Line Technologies, LLC doing business as XstremeMD is the only telemedicine provider with a staff composed of Board Certified Emergency Medicine Physicians with extensive training in occupational medicine. Its physicians work from within the XMD Command Center and always available 24/7.\", \"CEO/Owner Name\": \"Joseph Pearson\", \"Title\": \"President\", \"Email\": \"jpearson@xstrememd.com\", \"Phone\": \"337-704-0891\"}",
       "created_at": "2026-09-30T15:45:14.537190+00:00",
-      "updated_at": "2026-10-19T19:45:34.721249+00:00",
+      "updated_at": "2026-10-27T13:47:43.600250+00:00",
       "memo": null
     },
     {
@@ -597,7 +597,7 @@
       "sf_contact_id": "0033A00002Vq3l9QAB",
       "row_json": "{\"Website\": \"https://www.ssiuw.com\", \"City\": \"Foley\", \"State\": \"AL\", \"Employees\": 18, \"Description\": \"South Shore Insurance Underwriters, LLC (SSIU) exists to pursue opportunities within the property and casualty insurance industry through excess and surplus lines markets with a strong bias towards personal lines and a secondary focus on commercial lines. Its product offerings include HO3, DP3, HO6, Commercial Property, Wind Only, and Primary and Excess Flood. It serves and offers its services within the area.\", \"CEO/Owner Name\": \"Taylor Norton\", \"Title\": \"Founder and President and CEO\", \"Email\": \"taylor@ssiuw.com\", \"Phone\": null}",
       "created_at": "2026-09-30T15:45:14.724175+00:00",
-      "updated_at": "2026-10-27T13:47:32.875545+00:00",
+      "updated_at": "2026-10-27T13:47:37.062398+00:00",
       "memo": null
     },
     {
@@ -7259,6 +7259,16 @@
       "summary": "scheduled for 10/27",
       "detail": "",
       "timestamp": "2026-10-27T13:47:32.875255+00:00",
+      "synced_to_sf": 1,
+      "user": "Intern"
+    },
+    {
+      "id": 475,
+      "deal_id": 19,
+      "type": "Call",
+      "summary": "ethan is chasing this one",
+      "detail": "",
+      "timestamp": "2026-10-27T13:47:43.599489+00:00",
       "synced_to_sf": 0,
       "user": "Intern"
     }
@@ -7270,7 +7280,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-22T18:39:23.014946+00:00"
+      "value": "2026-10-27T13:47:36.793876+00:00"
     }
   ]
 }
