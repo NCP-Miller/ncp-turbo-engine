@@ -813,7 +813,7 @@
       "sf_contact_id": "003Pp000028ZbdNIAS",
       "row_json": "{\"Website\": \"https://vnasrisk.com\", \"City\": null, \"State\": null, \"Employees\": null, \"Description\": \"VNAS Risk Solutions specializes in the design, implementation, and management of captive insurance companies both in the U.S. and internationally. They provide comprehensive services including feasibility studies, regulatory compliance, financial management, and operational oversight to support various industries in managing their risk through captive insurance.\", \"CEO/Owner Name\": \"Robert Barker\", \"Title\": \"Managing Director\", \"Email\": \"robertbarker@vnasrisk.com\", \"Phone\": null}",
       "created_at": "2026-09-30T15:45:15.001612+00:00",
-      "updated_at": "2026-10-22T13:58:37.438440+00:00",
+      "updated_at": "2026-10-30T15:48:24.486595+00:00",
       "memo": null
     },
     {
@@ -7301,6 +7301,16 @@
       "timestamp": "2026-10-30T15:48:09.661736+00:00",
       "synced_to_sf": 0,
       "user": "Intern"
+    },
+    {
+      "id": 479,
+      "deal_id": 34,
+      "type": "Email",
+      "summary": "Reaching out week of 11/2",
+      "detail": "",
+      "timestamp": "2026-10-30T15:48:24.486209+00:00",
+      "synced_to_sf": 0,
+      "user": "Intern"
     }
   ],
   "meta": [
@@ -7310,7 +7320,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-30T15:47:58.269656+00:00"
+      "value": "2026-10-30T15:48:12.593624+00:00"
     }
   ]
 }
