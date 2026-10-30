@@ -333,7 +333,7 @@
       "sf_contact_id": "0033000001hoOvOAAU",
       "row_json": "{\"Website\": \"https://www.scriptpro.com\", \"City\": \"Mission\", \"State\": \"KS\", \"Employees\": 641, \"Description\": \"Scriptpro, LLC is a technology company that develops pharmacy automation and management system products. It offers solutions for third-party management, clinical documentation, and case management, inventory management, medication adherence, interactive voice response, telepharmacy, and more. The company also provides health messaging services, a pharmacy services portal, a drug database, and pharmacy administration services. It serves customers within the area.\", \"CEO/Owner Name\": \"Michael Coughlin\", \"Title\": \"President and CEO and CFO\", \"Email\": \"mike@scriptpro.com\", \"Phone\": \"(913) 384-1008\"}",
       "created_at": "2026-09-30T15:45:14.384149+00:00",
-      "updated_at": "2026-10-30T15:48:37.081798+00:00",
+      "updated_at": "2026-10-30T15:48:40.314787+00:00",
       "memo": null
     },
     {
@@ -477,7 +477,7 @@
       "sf_contact_id": "0033A00002KOunaQAD",
       "row_json": "{\"Website\": \"https://www.synergylaboratories.com\", \"City\": \"Mobile\", \"State\": \"AL\", \"Employees\": 87, \"Description\": \"Synergy Laboratories, Inc. is a COLA-certified drug screening facility specializing in toxicology, genetics, and hematology. It is quality testing with a guaranteed turnaround time of 24 hours. The company prides itself on individualized customer service based on the unique needs of each organization in partnership.\", \"CEO/Owner Name\": \"Brandon Biles\", \"Title\": \"Founder, COO\", \"Email\": \"brandon.biles@synergytesting.com\", \"Phone\": null}",
       "created_at": "2026-09-30T15:45:14.566790+00:00",
-      "updated_at": "2026-10-22T16:03:02.611522+00:00",
+      "updated_at": "2026-10-30T15:48:50.024335+00:00",
       "memo": null
     },
     {
@@ -7319,6 +7319,16 @@
       "summary": "Ethan is chasing",
       "detail": "",
       "timestamp": "2026-10-30T15:48:37.081418+00:00",
+      "synced_to_sf": 1,
+      "user": "Intern"
+    },
+    {
+      "id": 481,
+      "deal_id": 20,
+      "type": "Email",
+      "summary": "Ethan is chasing",
+      "detail": "",
+      "timestamp": "2026-10-30T15:48:50.024134+00:00",
       "synced_to_sf": 0,
       "user": "Intern"
     }
@@ -7330,7 +7340,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-10-30T15:48:28.021797+00:00"
+      "value": "2026-10-30T15:48:40.105149+00:00"
     }
   ]
 }
