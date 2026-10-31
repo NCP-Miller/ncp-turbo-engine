@@ -749,19 +749,29 @@ def plan_from_edits(edits, view):
             elif i >= 0 and _CONTINUATION.match(body) and \
                     (texts[i] or "").strip():
                 pending_append.append((i, body))
-                notes.append(f"A sentence emitted as its own paragraph after "
-                             f"¶{i} reads as part of that clause, so it was "
-                             f"added to the end of ¶{i} instead.")
                 continue
             plan["insert"].append({"after": i, "text": body,
                                    "numbered": numbered})
         else:
             notes.append(f"Unknown edit action '{action}' skipped.")
+    deleting = set(plan["delete"])
     for i, body in pending_append:
+        if i in deleting and i not in plan["modify"]:
+            plan["insert"].append({"after": i, "text": body,
+                                   "numbered": False})
+            notes.append(f"¶{i} is being deleted, so the sentence anchored "
+                         f"after it was kept as its own paragraph.")
+            continue
         base = plan["modify"].get(i, texts[i]).rstrip()
         plan["modify"][i] = f"{base} {body}"
-    plan["delete"] = [i for i in sorted(set(plan["delete"]))
-                      if i not in plan["modify"]]
+        notes.append(f"A sentence emitted as its own paragraph after ¶{i} "
+                     f"reads as part of that clause, so it was added to the "
+                     f"end of ¶{i} instead.")
+    dropped = sorted(i for i in deleting if i in plan["modify"])
+    for i in dropped:
+        notes.append(f"¶{i} was both revised and deleted; the revision "
+                     f"was kept.")
+    plan["delete"] = [i for i in sorted(deleting) if i not in plan["modify"]]
     return plan, notes
 
 
@@ -844,7 +854,12 @@ _QMAP = str.maketrans({"“": '"', "”": '"', "„": '"',
 
 
 def _norm_tok(t):
-    return " " if t.isspace() else t.translate(_QMAP)
+    """Compare tokens the way a reader would: quote styles, spaces, tabs and
+    non-breaking spaces are interchangeable, but a line break (shown to the
+    reviewer as ⏎) is a real change."""
+    if t.isspace():
+        return "\n" if ("\n" in t or "\x0b" in t) else " "
+    return t.translate(_QMAP)
 
 
 def norm_text(s):
@@ -1037,33 +1052,61 @@ def _touches(start, end, ops):
     return False
 
 
-def _collapse_fields(p, ops=None):
-    """Turn fields into their displayed text where they would otherwise
-    misbehave: volatile fields (DATE, SEQ and the like, which the rulebook
-    says surface as spurious changes) and any field whose displayed result
-    this edit changes (or Word would regenerate it and undo NCP's words).
-    Other fields, and anything inside text boxes or drawings, keep working."""
+def _fldsimple_to_complex(fs):
+    """Rewrite a w:fldSimple as the equivalent complex field (begin, code,
+    separate, result, end runs), whose parts can carry tracked changes."""
+    first = fs.find(W + "r")
+    rpr = first.find(W + "rPr") if first is not None else None
+
+    def run(child):
+        r = _el("r")
+        if rpr is not None:
+            r.append(copy.deepcopy(rpr))
+        r.append(child)
+        return r
+
+    def char(kind):
+        c = _el("fldChar")
+        c.set(W + "fldCharType", kind)
+        return run(c)
+    code = _el("instrText")
+    code.text = fs.get(W + "instr") or ""
+    code.set(XML_SPACE, "preserve")
+    parts = [char("begin"), run(code), char("separate")]
+    parts += [c for c in fs if _is_tag(c) and c.tag != W + "fldData"]
+    parts.append(char("end"))
+    parent, at = fs.getparent(), fs.getparent().index(fs)
+    parent.remove(fs)
+    for k, el in enumerate(parts):
+        parent.insert(at + k, el)
+
+
+def _dissolve_fields(p, ops, ctx, delete_all=False):
+    """Fields whose displayed result this edit changes become NCP's plain
+    text, as a tracked change: the field's code is marked deleted, so
+    accepting leaves NCP's words (Word would otherwise regenerate the
+    result and undo them) and rejecting restores the counterparty's live
+    field. Untouched fields, and anything in text boxes or drawings, are
+    left alone. With delete_all (the paragraph is being deleted) simple
+    fields are rewritten so every part of them can be deleted."""
     runs = _collect_runs(p)
     for fs in [x for x in p.iter(W + "fldSimple") if _outside_objects(x, p)]:
         span = [(rs, re_) for r, rs, re_, _ in runs if fs in r.iterancestors()]
         start = min((s for s, _ in span), default=0)
         end = max((e for _, e in span), default=0)
-        code = (fs.get(W + "instr") or "").split()
-        if (code and code[0].upper() in _VOLATILE_FIELDS) or \
-                _touches(start, end, ops):
-            _unwrap(fs)
+        if delete_all or _touches(start, end, ops):
+            _fldsimple_to_complex(fs)
+    if delete_all:
+        return
     for f in _complex_fields(_collect_runs(p)):
-        code = f["code"].split()
-        if not ((code and code[0].upper() in _VOLATILE_FIELDS)
-                or _touches(f["start"], f["stop"], ops)):
+        if not _touches(f["start"], f["stop"], ops):
             continue
         for r in f["runs"]:
-            for ch in list(r):
-                if _is_tag(ch) and ch.tag in (W + "fldChar", W + "instrText"):
-                    r.remove(ch)
-            if r.getparent() is not None and \
-                    not [c for c in r if _is_tag(c) and c.tag != W + "rPr"]:
-                r.getparent().remove(r)
+            if r.getparent() is None or _run_text(r):
+                continue
+            d = ctx.rev("del")
+            r.getparent().replace(r, d)
+            d.append(_as_deleted(r))
 
 
 def _clean_rpr(rpr):
@@ -1465,11 +1508,30 @@ def _template_for(paras, labels, levels, after, numbered):
     return anchor
 
 
+_PPR_BEFORE_NUMPR = (W + "pStyle", W + "keepNext", W + "keepLines",
+                     W + "pageBreakBefore", W + "framePr", W + "widowControl")
+
+
 def _strip_numbering(p):
+    """Unnumbered, even when the paragraph style carries numbering: an
+    explicit numId 0 switches list numbering off."""
     ppr = p.find(W + "pPr")
-    if ppr is not None:
-        for el in ppr.findall(W + "numPr"):
-            ppr.remove(el)
+    if ppr is None:
+        ppr = _el("pPr")
+        p.insert(0, ppr)
+    for el in ppr.findall(W + "numPr"):
+        ppr.remove(el)
+    num_pr = _el("numPr")
+    ilvl, num_id = _el("ilvl"), _el("numId")
+    ilvl.set(W + "val", "0")
+    num_id.set(W + "val", "0")
+    num_pr.append(ilvl)
+    num_pr.append(num_id)
+    before = [c for c in ppr if _is_tag(c) and c.tag in _PPR_BEFORE_NUMPR]
+    if before:
+        before[-1].addnext(num_pr)
+    else:
+        ppr.insert(0, num_pr)
 
 
 # ── Build + audit ────────────────────────────────────────────────────
@@ -1545,7 +1607,7 @@ def build(source_bytes, plan, author=AUTHOR, when=None):
         p = paras[i]
         old = para_text(p)
         ops, merged = diff_ops(old, new)
-        _collapse_fields(p, ops)
+        _dissolve_fields(p, ops, ctx)
         runs, segs_of, inserts, wraps = _apply_ops(p, old, ops, ctx)
         _place_insertions(p, old, new, runs, segs_of, inserts, ctx, wraps)
         expected[i] = merged
@@ -1556,8 +1618,8 @@ def build(source_bytes, plan, author=AUTHOR, when=None):
         if not 0 <= i < n or i in changed:
             continue
         p = paras[i]
-        _collapse_fields(p)
         old = para_text(p)
+        _dissolve_fields(p, None, ctx, delete_all=True)
         _apply_ops(p, old, [("delete", 0, len(old), 0, 0)] if old else [],
                    ctx, delete_all=True)
         nxt = _next_paragraph(p)
@@ -1589,8 +1651,15 @@ def build(source_bytes, plan, author=AUTHOR, when=None):
             _strip_numbering(newp)
         if after in last_new:
             last_new[after].addnext(newp)
-        elif after == -1:
+        elif after == -1 and paras:
             paras[0].addprevious(newp)
+        elif after == -1:
+            body = doc.element.body
+            sect = body.find(W + "sectPr")
+            if sect is not None:
+                sect.addprevious(newp)
+            else:
+                body.append(newp)
         else:
             paras[after].addnext(newp)
         last_new[after] = newp
