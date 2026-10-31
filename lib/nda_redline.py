@@ -254,12 +254,37 @@ def _accept_tree(root):
 
 def accept_all(docx_bytes):
     """Accept every tracked change (body, headers, footers, notes)."""
+    from lxml import etree
     doc = _load(docx_bytes)
     _accept_tree(doc.element.body)
     for part in doc.part.package.iter_parts():
-        if _STORY_PART.match(str(part.partname)) and hasattr(part, "_element"):
+        if not _STORY_PART.match(str(part.partname)):
+            continue
+        if hasattr(part, "_element"):
             _accept_tree(part._element)
+        else:
+            # python-docx loads footnotes/endnotes as opaque parts.
+            root = etree.fromstring(part.blob)
+            _accept_tree(root)
+            part._blob = etree.tostring(root, xml_declaration=True,
+                                        encoding="UTF-8", standalone=True)
     return _save(doc)
+
+
+_REVISION_TAG = re.compile(rb"<w:(ins|del|moveFrom|moveTo)[\s/>]")
+
+
+def story_revisions(docx_bytes):
+    """Live revision marks in every story part (body, headers, footers,
+    notes), read straight from the package."""
+    import zipfile
+    total = 0
+    with zipfile.ZipFile(io.BytesIO(docx_bytes)) as z:
+        for name in z.namelist():
+            if re.match(r"^word/(document|header\d*|footer\d*|footnotes|"
+                        r"endnotes)\.xml$", name):
+                total += len(_REVISION_TAG.findall(z.read(name)))
+    return total
 
 
 # ── Numbering labels (so the reviewer can cite clause numbers) ───────
@@ -300,8 +325,16 @@ def _val(el, path):
     return None if x is None else x.get(W + "val")
 
 
-def numbering_labels(doc, paras):
-    """Best-effort rendering of Word auto-numbering for each paragraph."""
+def _lvl_def(lvl):
+    return (_val(lvl, W + "numFmt") or "decimal",
+            _val(lvl, W + "lvlText") or "",
+            int(_val(lvl, W + "start") or "1"),
+            lvl.find(W + "isLgl") is not None)
+
+
+def numbering_info(doc, paras):
+    """Best-effort rendering of Word auto-numbering: [(label, ilvl)] per
+    paragraph, with ilvl None for paragraphs that are not numbered."""
     try:
         numbering = doc.part.numbering_part.element
     except Exception:
@@ -312,75 +345,106 @@ def numbering_labels(doc, paras):
     except Exception:
         styles = {}
     if numbering is None:
-        return [""] * len(paras)
-    abstract, nums = {}, {}
+        return [("", None)] * len(paras)
+    abstract, links, defines, nums = {}, {}, {}, {}
     for a in numbering.iter(W + "abstractNum"):
-        lv = {}
-        for lvl in a.iter(W + "lvl"):
-            lv[int(lvl.get(W + "ilvl", "0"))] = (
-                _val(lvl, W + "numFmt") or "decimal",
-                _val(lvl, W + "lvlText") or "",
-                int(_val(lvl, W + "start") or "1"))
-        abstract[a.get(W + "abstractNumId")] = lv
+        aid = a.get(W + "abstractNumId")
+        abstract[aid] = {int(l.get(W + "ilvl", "0")): _lvl_def(l)
+                         for l in a.iter(W + "lvl")}
+        link = _val(a, W + "numStyleLink")
+        if link:
+            links[aid] = link
+        defined = _val(a, W + "styleLink")
+        if defined:
+            defines[defined] = aid
     for n in numbering.iter(W + "num"):
         nid = n.get(W + "numId")
-        restarts = {}
+        restarts, lvl_over = {}, {}
         for ov in n.iter(W + "lvlOverride"):
+            k = int(ov.get(W + "ilvl", "0"))
             so = _val(ov, W + "startOverride")
             if so is not None:
-                restarts[int(ov.get(W + "ilvl", "0"))] = int(so)
-        nums[nid] = (_val(n, W + "abstractNumId"), restarts)
+                restarts[k] = int(so)
+            lv = ov.find(W + "lvl")
+            if lv is not None:
+                lvl_over[k] = _lvl_def(lv)
+                restarts.setdefault(k, lvl_over[k][2])
+        nums[nid] = (_val(n, W + "abstractNumId"), restarts, lvl_over)
+
+    def style_num_id(style_id):
+        st = styles.get(style_id)
+        return _val(st, W + "pPr/" + W + "numPr/" + W + "numId") \
+            if st is not None else None
+
+    def resolve_levels(abs_id, hops=0):
+        # A numStyleLink abstract borrows its levels from the list style.
+        if abs_id in links and hops < 4:
+            target = defines.get(links[abs_id])
+            if target is None:
+                nid = style_num_id(links[abs_id])
+                target = nums[nid][0] if nid in nums else None
+            if target is not None and target != abs_id:
+                return resolve_levels(target, hops + 1)
+        return abs_id, abstract.get(abs_id, {})
 
     def para_num(p):
+        # numId and ilvl resolve independently through the style chain.
         ppr = p.find(W + "pPr")
-        num_pr = ppr.find(W + "numPr") if ppr is not None else None
-        style_id = _val(ppr, W + "pStyle")
-        hops = 0
-        while num_pr is None and style_id and hops < 6:
+        nid = _val(ppr, W + "numPr/" + W + "numId")
+        ilvl = _val(ppr, W + "numPr/" + W + "ilvl")
+        style_id, hops = _val(ppr, W + "pStyle"), 0
+        while (nid is None or ilvl is None) and style_id and hops < 8:
             st = styles.get(style_id)
             if st is None:
                 break
-            num_pr = st.find(W + "pPr/" + W + "numPr")
+            if nid is None:
+                nid = _val(st, W + "pPr/" + W + "numPr/" + W + "numId")
+            if ilvl is None:
+                ilvl = _val(st, W + "pPr/" + W + "numPr/" + W + "ilvl")
             style_id = _val(st, W + "basedOn")
             hops += 1
-        if num_pr is None:
-            return None, 0
-        nid = _val(num_pr, W + "numId")
-        ilvl = int(_val(num_pr, W + "ilvl") or "0")
-        return nid, ilvl
+        return nid, int(ilvl or "0")
 
     # Word keeps one counter per abstract list; a num with a startOverride
     # restarts that list the first time the num is used.
-    counters, restarted, labels = {}, set(), []
+    counters, restarted, out = {}, set(), []
     for p in paras:
         nid, ilvl = para_num(p)
         if not nid or nid == "0" or nid not in nums:
-            labels.append("")
+            out.append(("", None))
             continue
-        abs_id, restarts = nums[nid]
-        levels = abstract.get(abs_id, {})
-        cnt = counters.setdefault(abs_id, [0] * 9)
+        abs_id, restarts, lvl_over = nums[nid]
+        abs_id, levels = resolve_levels(abs_id)
+        levels = {**levels, **lvl_over}
+        cnt = counters.setdefault(abs_id, [None] * 9)
         ilvl = min(max(ilvl, 0), 8)
-        start = levels.get(ilvl, ("decimal", "", 1))[2]
+        start = levels.get(ilvl, ("decimal", "", 1, False))[2]
         if ilvl in restarts and (nid, ilvl) not in restarted:
             restarted.add((nid, ilvl))
             cnt[ilvl] = restarts[ilvl]
         else:
-            cnt[ilvl] = start if cnt[ilvl] == 0 else cnt[ilvl] + 1
+            cnt[ilvl] = start if cnt[ilvl] is None else cnt[ilvl] + 1
+        for j in range(ilvl):
+            if cnt[j] is None:
+                cnt[j] = levels.get(j, ("decimal", "", 1, False))[2]
         for j in range(ilvl + 1, 9):
-            cnt[j] = 0
-        fmt, text, _ = levels.get(ilvl, ("decimal", "%1.", 1))
+            cnt[j] = None
+        fmt, text, _, legal = levels.get(ilvl, ("decimal", "%1.", 1, False))
         if fmt == "bullet":
-            labels.append("•")
+            out.append(("\u2022", ilvl))
             continue
 
         def sub(m):
             k = int(m.group(1)) - 1
-            lf = levels.get(k, ("decimal", "", 1))[0]
-            c = cnt[k] or levels.get(k, ("decimal", "", 1))[2]
-            return _fmt_num(c, lf)
-        labels.append(re.sub(r"%(\d)", sub, text).strip())
-    return labels
+            lf = levels.get(k, ("decimal", "", 1, False))[0]
+            return _fmt_num(cnt[k] if cnt[k] is not None else 1,
+                            "decimal" if legal else lf)
+        out.append((re.sub(r"%(\d)", sub, text).strip(), ilvl))
+    return out
+
+
+def numbering_labels(doc, paras):
+    return [label for label, _ in numbering_info(doc, paras)]
 
 
 # ── Baseline view for the reviewer ──────────────────────────────────
@@ -399,15 +463,35 @@ def signature_start(texts):
     return len(texts)
 
 
-def default_insert_anchor(texts, labels):
-    """Where a new clause goes when no better spot is given: after the last
-    numbered operative clause before the signature block."""
+_CLOSING_CUE = re.compile(
+    r"^\s*(please\b|kindly\b|if (this|the foregoing)\b|very truly|sincerely|"
+    r"in witness|(schedule|exhibit|annex|appendix|attachment)\b)", re.I)
+
+
+def default_insert_anchor(texts, labels, section_ends=None):
+    """Where a new clause goes when no better spot is given: at the end of
+    the last operative clause (its heading and any body paragraphs), before
+    closing lines, schedules, a section break and the signature block."""
     sig = signature_start(texts)
-    numbered = [i for i in range(sig) if labels[i] and labels[i] != "•"]
-    if numbered:
-        return numbered[-1]
-    body = [i for i in range(sig) if (texts[i] or "").strip()]
-    return body[-1] if body else max(0, len(texts) - 1)
+    ends = section_ends or [False] * len(texts)
+    numbered = [i for i in range(sig) if labels[i] and labels[i] != "\u2022"]
+    anchor = numbered[-1] if numbered else None
+    start = (anchor + 1) if anchor is not None else 0
+    for k in range(start, sig):
+        if anchor is not None and ends[anchor]:
+            break
+        t = (texts[k] or "").strip()
+        if not t:
+            if ends[k]:
+                break
+            continue
+        if _CLOSING_CUE.match(t) or DELIVERY_CUE.match(t):
+            break
+        anchor = k
+    if anchor is None:
+        body = [i for i in range(sig) if (texts[i] or "").strip()]
+        anchor = body[-1] if body else max(0, len(texts) - 1)
+    return anchor
 
 
 def baseline_view(source_bytes):
@@ -416,13 +500,17 @@ def baseline_view(source_bytes):
     doc = _load(base)
     paras = list_paragraphs(doc)
     texts = [para_text(p) for p in paras]
-    labels = numbering_labels(doc, paras)
+    info = numbering_info(doc, paras)
+    labels = [lab for lab, _ in info]
+    section_ends = [p.find(W + "pPr/" + W + "sectPr") is not None
+                    for p in paras]
     return {
         "baseline": base,
         "texts": texts,
         "labels": labels,
+        "levels": [lvl for _, lvl in info],
         "signature_start": signature_start(texts),
-        "default_anchor": default_insert_anchor(texts, labels),
+        "default_anchor": default_insert_anchor(texts, labels, section_ends),
         "curly_quotes": _curly_share(texts),
     }
 
@@ -557,8 +645,11 @@ def plan_from_edits(edits, view):
             body = text.strip()
             if not body:
                 continue
+            numbered = e.get("numbered")
+            if isinstance(numbered, str) and numbered != "same_level":
+                numbered = numbered.strip().lower() in ("true", "yes", "1")
             if not -1 <= i < n:
-                i = view["default_anchor"]
+                i, numbered = view["default_anchor"], True
             if SIGNATURE_CUE.match(body):
                 delivery = next((k for k in range(max(i, 0), n)
                                  if DELIVERY_CUE.match(texts[k] or "")), None)
@@ -573,7 +664,7 @@ def plan_from_edits(edits, view):
                              f"block (after ¶{i}) was moved to follow "
                              f"¶{view['default_anchor']}, the last operative "
                              f"clause.")
-                i = view["default_anchor"]
+                i, numbered = view["default_anchor"], True
             elif i >= 0 and _CONTINUATION.match(body) and \
                     (texts[i] or "").strip():
                 pending_append.append((i, body))
@@ -581,7 +672,6 @@ def plan_from_edits(edits, view):
                              f"¶{i} reads as part of that clause, so it was "
                              f"added to the end of ¶{i} instead.")
                 continue
-            numbered = e.get("numbered")
             plan["insert"].append({"after": i, "text": body,
                                    "numbered": numbered})
         else:
@@ -650,13 +740,14 @@ def plan_from_legacy(edits, view):
         if view.get("curly_quotes"):
             body = smarten_quotes(body)
         anchor = (e.get("insert_after") or "").strip()
-        i = view["default_anchor"]
+        i, numbered = view["default_anchor"], True
         if anchor:
             pat = re.compile(_loose_pattern(anchor))
             found = [k for k in range(len(texts)) if pat.search(cur(k))]
             if found and found[0] < view["signature_start"]:
                 i = found[0]
-        plan["insert"].append({"after": i, "text": body, "numbered": None})
+        plan["insert"].append({"after": i, "text": body,
+                               "numbered": numbered})
     plan["delete"] = [i for i in sorted(set(plan["delete"]))
                       if i not in plan["modify"]]
     return plan, skipped
@@ -777,18 +868,66 @@ def _collect_runs(p):
     return out
 
 
+_VOLATILE_FIELDS = {"DATE", "TIME", "PRINTDATE", "SAVEDATE", "CREATEDATE",
+                    "EDITTIME", "REVNUM", "SEQ", "AUTONUM", "AUTONUMLGL",
+                    "AUTONUMOUT", "LISTNUM"}
+_OBJECT_TAGS = {W + "drawing", W + "pict", W + "object", MC + "AlternateContent",
+                W + "txbxContent"}
+# Zero-width run content that still prints (and so must go when its
+# clause is deleted).
+_PRINTING_ATOMS = {W + "footnoteReference", W + "endnoteReference", W + "sym",
+                   W + "drawing", W + "pict", W + "object",
+                   MC + "AlternateContent", W + "commentReference"}
+
+
+def _outside_objects(el, p):
+    a = el.getparent()
+    while a is not None and a is not p:
+        if a.tag in _OBJECT_TAGS:
+            return False
+        a = a.getparent()
+    return True
+
+
 def _collapse_fields(p):
-    """Turn fields into their displayed text (rulebook: DATE/SEQ fields
-    otherwise surface as spurious changes)."""
-    for fs in list(p.iter(W + "fldSimple")):
-        _unwrap(fs)
-    for r in list(p.iter(W + "r")):
-        for ch in list(r):
-            if _is_tag(ch) and ch.tag in (W + "fldChar", W + "instrText",
-                                          W + "lastRenderedPageBreak"):
-                r.remove(ch)
-        if not [c for c in r if _is_tag(c) and c.tag != W + "rPr"]:
-            r.getparent().remove(r)
+    """Turn volatile fields (DATE, SEQ and the like) that sit wholly inside
+    this paragraph's own runs into their displayed text (rulebook: they
+    otherwise surface as spurious changes). Other fields, and anything
+    inside text boxes or drawings, keep working."""
+    for fs in [x for x in p.iter(W + "fldSimple") if _outside_objects(x, p)]:
+        code = (fs.get(W + "instr") or "").split()
+        if code and code[0].upper() in _VOLATILE_FIELDS:
+            _unwrap(fs)
+    stack, complete = [], []
+    for r, _, _, _ in _collect_runs(p):
+        for ch in r:
+            if not _is_tag(ch):
+                continue
+            if ch.tag == W + "fldChar":
+                kind = ch.get(W + "fldCharType")
+                if kind == "begin":
+                    stack.append({"runs": [r], "code": ""})
+                elif kind == "separate" and stack:
+                    stack[-1]["runs"].append(r)
+                elif kind == "end" and stack:
+                    f = stack.pop()
+                    f["runs"].append(r)
+                    if not stack:
+                        complete.append(f)
+            elif ch.tag == W + "instrText" and stack:
+                stack[-1]["code"] += ch.text or ""
+                stack[-1]["runs"].append(r)
+    for f in complete:
+        code = f["code"].split()
+        if not code or code[0].upper() not in _VOLATILE_FIELDS:
+            continue
+        for r in f["runs"]:
+            for ch in list(r):
+                if _is_tag(ch) and ch.tag in (W + "fldChar", W + "instrText"):
+                    r.remove(ch)
+            if r.getparent() is not None and \
+                    not [c for c in r if _is_tag(c) and c.tag != W + "rPr"]:
+                r.getparent().remove(r)
 
 
 def _clean_rpr(rpr):
@@ -883,8 +1022,10 @@ def _rpr_key(r):
     return etree.tostring(_clean_rpr(rpr))
 
 
-def _apply_ops(p, old, ops, ctx):
-    """Rewrite paragraph p in place so it carries the edit script."""
+def _apply_ops(p, old, ops, ctx, delete_all=False):
+    """Rewrite paragraph p in place so it carries the edit script. With
+    delete_all, every run goes, including zero-width ones (footnote marks,
+    symbols, images)."""
     runs = _collect_runs(p)
     cuts = set()
     deleted, inserts = [], []
@@ -901,6 +1042,12 @@ def _apply_ops(p, old, ops, ctx):
     slices_of = {}
     for r, rs, re_, top in runs:
         if re_ == rs:
+            printing = any(_is_tag(c) and c.tag in _PRINTING_ATOMS for c in r)
+            if delete_all or (printing and any(a0 < rs < a1
+                                               for a0, a1 in deleted)):
+                d = ctx.rev("del")
+                r.getparent().replace(r, d)
+                d.append(_as_deleted(r))
             continue
         bounds = sorted({rs, re_} | {c for c in cuts if rs < c < re_})
         spans = list(zip(bounds, bounds[1:]))
@@ -1045,9 +1192,10 @@ def _new_paragraph(template, text, ctx):
     tppr = template.find(W + "pPr") if template is not None else None
     if tppr is not None:
         ppr = copy.deepcopy(tppr)
-        # A neighbor's border is usually a fill-in underline; a new clause
-        # or block should not inherit it.
-        for tag in ("sectPr", "pPrChange", "pBdr"):
+        # Never inherit a neighbor's section break, fill-in underline
+        # border, forced page break or text frame.
+        for tag in ("sectPr", "pPrChange", "pBdr", "pageBreakBefore",
+                    "framePr"):
             for el in ppr.findall(W + tag):
                 ppr.remove(el)
         prpr = ppr.find(W + "rPr")
@@ -1083,21 +1231,30 @@ def _new_paragraph(template, text, ctx):
     return p
 
 
-def _has_num(p, labels, i):
-    return bool(labels[i]) and labels[i] != "•"
+def _has_num(labels, i):
+    return bool(labels[i]) and labels[i] != "\u2022"
 
 
-def _template_for(paras, labels, after, numbered):
+def _template_for(paras, labels, levels, after, numbered):
+    """The paragraph whose properties a new paragraph copies.
+
+    numbered True: a new top-level clause, copying the last top-level
+    numbered clause (never a sub-item or a heading's body). "same_level":
+    another item at the anchor's own numbering level, e.g. (c) after (b).
+    None: follow the anchor. False: unnumbered, laid out like the anchor."""
     if after < 0:
         return paras[0] if paras else None
     anchor = paras[after]
-    if numbered is False:
+    if numbered in (False, None):
         return anchor
-    if _has_num(anchor, labels, after) or numbered is None:
-        return anchor
-    for k in range(after, -1, -1):
-        if _has_num(paras[k], labels, k):
-            return paras[k]
+    numbered_before = [k for k in range(after, -1, -1) if _has_num(labels, k)]
+    if numbered == "same_level":
+        return paras[numbered_before[0]] if numbered_before else anchor
+    top = [k for k in numbered_before if levels[k] == 0]
+    if top:
+        return paras[top[0]]
+    if numbered_before:
+        return paras[numbered_before[0]]
     return anchor
 
 
@@ -1153,7 +1310,9 @@ def build(source_bytes, plan, author=AUTHOR, when=None):
     base_bytes = accept_all(source_bytes)
     doc = _load(base_bytes)
     paras = list_paragraphs(doc)
-    labels = numbering_labels(doc, paras)
+    info = numbering_info(doc, paras)
+    labels = [lab for lab, _ in info]
+    levels = [lvl for _, lvl in info]
     base_texts = [para_text(p) for p in paras]
     n = len(paras)
     date = when or datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -1184,13 +1343,15 @@ def build(source_bytes, plan, author=AUTHOR, when=None):
         p = paras[i]
         _collapse_fields(p)
         old = para_text(p)
-        if old:
-            runs, slices_of, inserts = _apply_ops(
-                p, old, [("delete", 0, len(old), 0, 0)], ctx)
+        _apply_ops(p, old, [("delete", 0, len(old), 0, 0)] if old else [],
+                   ctx, delete_all=True)
         nxt = p.getnext()
         while nxt is not None and not _is_tag(nxt):
             nxt = nxt.getnext()
-        if nxt is not None and nxt.tag == W + "p":
+        # A paragraph mark that carries a section break stays, or accepting
+        # the deletion would take the page layout with it.
+        holds_section = p.find(W + "pPr/" + W + "sectPr") is not None
+        if nxt is not None and nxt.tag == W + "p" and not holds_section:
             _mark_paragraph(p, ctx, "del")
             expected[i] = None
         else:
@@ -1208,7 +1369,8 @@ def build(source_bytes, plan, author=AUTHOR, when=None):
         text = (ins.get("text") or "").strip()
         if not text:
             continue
-        template = _template_for(paras, labels, after, ins.get("numbered"))
+        template = _template_for(paras, labels, levels, after,
+                                 ins.get("numbered"))
         newp = _new_paragraph(template, text, ctx)
         if ins.get("numbered") is False:
             _strip_numbering(newp)
@@ -1221,6 +1383,20 @@ def build(source_bytes, plan, author=AUTHOR, when=None):
         last_new[after] = newp
         inserted.setdefault(after, []).append(text)
         applied.append(("insert", after))
+
+    # Like pressing Enter at the end of a paragraph that ends a section:
+    # the section break moves to the last new paragraph, so new clauses
+    # print in the anchor's section rather than the next one.
+    for after, newp in last_new.items():
+        if after < 0:
+            continue
+        sect = paras[after].find(W + "pPr/" + W + "sectPr")
+        if sect is not None:
+            sect.getparent().remove(sect)
+            newp.find(W + "pPr").append(sect)
+            changed.add(after)
+            notes.append(f"¶{after} ends a document section; its section "
+                         f"break now follows the new text inserted after it.")
 
     exp = list(inserted.get(-1, []))
     for i in range(n):
@@ -1247,8 +1423,7 @@ def build(source_bytes, plan, author=AUTHOR, when=None):
     clean = accept_all(redline)
     cdoc = _load(clean)
     ctexts = [para_text(p) for p in list_paragraphs(cdoc)]
-    leftover = sum(1 for _ in cdoc.element.body.iter(
-        W + "ins", W + "del", W + "moveFrom", W + "moveTo"))
+    leftover = story_revisions(clean)
     audits["clean"] = ctexts == exp and leftover == 0
     if not audits["clean"]:
         problems.append("The clean copy does not match NCP's position.")
