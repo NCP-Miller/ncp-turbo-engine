@@ -1,19 +1,19 @@
-"""NDA Review engine — applies NCP's NDA rulebook to uploaded NDAs.
+"""NDA Review engine: applies NCP's NDA rulebook to uploaded NDAs.
 
 The rulebook (nda_rules.md, seeded from the NCP NDA Review Handoff and
-editable in the app) drives a GPT-4o review that buckets every issue the
-NCP way — non-negotiable / credibility trade / accepted as drafted —
-flags counsel escalations, and produces concrete edits.
+editable in the app) drives a Claude Fable review that drafts NCP's
+position paragraph by paragraph, accounts for every rulebook requirement
+in a coverage checklist, buckets each change the NCP way, flags counsel
+escalations, and is checked by a second senior-partner pass.
 
-Outputs per round (both edit the counterparty's own .docx in place, so
-their formatting, numbering and styles survive and nothing is added to
-the top of the document):
-  - REDLINE docx: the uploaded file with genuine Word tracked changes
-    (w:ins / w:del, author "New Capital Partners")
-  - CLEAN docx: the same redline with every tracked change accepted —
-    ready to send back to the banker
-For PDF uploads (no source .docx to edit) a plain-text clean draft and
-a visual marked copy are generated instead, with no added headers.
+Deliverables per round come from lib/nda_redline.py, which edits the
+counterparty's own .docx in place:
+  - REDLINE: genuine Word tracked changes (author "New Capital Partners",
+    IDs from 960), word-level, with untouched paragraphs left exactly as
+    the counterparty sent them
+  - CLEAN: the redline with every change accepted, ready to send
+Every build is audited (reject-all reproduces their text, accept-all
+equals NCP's position) before it is offered as send-ready.
 
 Projects persist across rounds in pipeline_data/nda_review.db, named by
 deal project so iterations can be reviewed until the NDA is executable,
@@ -26,6 +26,8 @@ import os
 import sqlite3
 from datetime import datetime, timezone
 
+from lib import nda_redline as R
+
 _ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _DB_DIR = os.path.join(_ROOT, "pipeline_data")
 _DB = os.path.join(_DB_DIR, "nda_review.db")
@@ -35,6 +37,7 @@ DEAL_TYPES = [
     "Add-on for a portfolio company",
     "New platform — potentially competitive",
     "New platform — non-competitive",
+    "Not sure yet — apply the full protection set",
 ]
 NCP_ROLES = ["Recipient (NCP receiving)", "Mutual form", "Disclosing Party"]
 FORM_SOURCES = ["Company-direct form", "Banker/agent form (sell-side)",
@@ -118,570 +121,504 @@ def save_rules(text):
         conn.close()
 
 
-# ── Text extraction ───────────────────────────────────────────────────
+# ── Settings ──────────────────────────────────────────────────────────
 
-def extract_text(file_bytes, filename):
-    """Pull plain text from a .docx or .pdf upload."""
-    name = filename.lower()
-    if name.endswith(".docx"):
-        import docx
-        d = docx.Document(io.BytesIO(file_bytes))
-        parts = [p.text for p in d.paragraphs]
-        for t in d.tables:
-            for row in t.rows:
-                parts.append(" | ".join(c.text for c in row.cells))
-        return "\n".join(parts)
-    if name.endswith(".pdf"):
-        try:
-            from pypdf import PdfReader
-        except Exception as e:
-            raise RuntimeError(
-                f"PDF support unavailable on this server ({e}). "
-                f"Upload the .docx instead.")
-        reader = PdfReader(io.BytesIO(file_bytes))
-        return "\n".join((page.extract_text() or "") for page in reader.pages)
-    raise RuntimeError("Upload a .docx or .pdf file.")
-
-
-# ── AI review ─────────────────────────────────────────────────────────
-# Claude (Fable, extended thinking) is the preferred negotiation brain;
-# Opus/Sonnet are access fallbacks, GPT-4o the last resort.
-
-ANTHROPIC_MODELS = ["claude-fable-5-1", "claude-opus-5", "claude-sonnet-5"]
-
-
-def get_review_model():
+def _meta_get(key, default=None):
     init_db()
     conn = _connect()
     try:
-        r = conn.execute(
-            "SELECT value FROM nda_meta WHERE key = 'model'").fetchone()
-        return r["value"] if r and r["value"] in ANTHROPIC_MODELS \
-            else ANTHROPIC_MODELS[0]
+        r = conn.execute("SELECT value FROM nda_meta WHERE key = ?",
+                         (key,)).fetchone()
+        return r["value"] if r and r["value"] is not None else default
     finally:
         conn.close()
 
 
-def set_review_model(model):
+def _meta_set(key, value):
+    init_db()
     conn = _connect()
     try:
         conn.execute(
-            "INSERT INTO nda_meta (key, value) VALUES ('model', ?) "
-            "ON CONFLICT(key) DO UPDATE SET value = excluded.value", (model,))
+            "INSERT INTO nda_meta (key, value) VALUES (?, ?) "
+            "ON CONFLICT(key) DO UPDATE SET value = excluded.value",
+            (key, value))
         conn.commit()
     finally:
         conn.close()
 
 
-def _extract_json(text):
-    import re
-    m = re.search(r"\{.*\}", text, re.DOTALL)
-    if not m:
-        raise ValueError("The model returned no JSON.")
-    return json.loads(m.group())
+SIGNING_DEFAULTS = {
+    "entity": "NCP Management Holdings, LLC",
+    "address": "2101 Highland Ave S, Suite 700, Birmingham, AL 35205",
+    "signatory": 'William "Trey" Miller III',
+    "title": "Managing Director and Authorized Signor",
+    "email": "tmiller@newcapitalpartners.com",
+    "phone": "",
+}
 
 
-def review_nda(nda_text, deal_type, ncp_role, form_source, rules,
-               prior_context="", anthropic_client=None,
-               anthropic_model=None, openai_client=None):
-    """One review round. Returns (review_dict, engine_label)."""
-    prompt = f"""You are New Capital Partners' NDA reviewer. Apply the NCP NDA
-rulebook below EXACTLY — it is the authority. Where the rulebook and
-general practice disagree, the rulebook wins.
-
-━━━━━━━━━ THE NCP NDA RULEBOOK ━━━━━━━━━
-{rules[:24000]}
-━━━━━━━━━ END RULEBOOK ━━━━━━━━━
-
-THIS DEAL'S INTAKE GATES (already answered by Trey):
-- Deal type: {deal_type}
-  (ADD-ON FOR A PORTFOLIO COMPANY: competitive overlap EXISTS BY
-   DEFINITION — the target operates in an NCP portfolio company's
-   space. Apply the FULL protection set: portfolio company
-   non-imputation, non-solicit carve-out for portfolio companies,
-   Dual Hat Employees clause, hardened Competing Investments — AND
-   include Affiliates in the Representatives definition per the
-   ladder ("Include only on add-on deals").
-   NEW PLATFORM, POTENTIALLY COMPETITIVE: apply the FULL protection
-   set as well.
-   NEW PLATFORM, NON-COMPETITIVE: standard protection set only; the
-   standalone Competing Investments clause is still required.)
-- NCP role: {ncp_role}
-  (As Recipient, carve-outs stay broad — never apply Disclosing-Party
-   moves. On a mutual form, identify the net discloser and say so.)
-- Form source: {form_source}
-  (Banker forms: hunt for standstills, broad no-contact lists, tails.)
-
-{("PRIOR ROUNDS OF THIS NEGOTIATION:" + chr(10) + prior_context) if prior_context else "This is Round 1."}
-
-THE NDA TEXT:
-{nda_text[:60000]}
-
-YOUR JOB:
-1. Check every clause against the non-negotiables, standard terms, and
-   concession ladder. Missing required clauses (standalone Competing
-   Investments with survival/supremacy, lenders in Representatives,
-   Dual Hat where competitive, no-obligation-to-proceed, etc.) must be
-   ADDED as insertions.
-2. Bucket every issue exactly as the rulebook does: "non_negotiable"
-   (always hold), "trade" (credibility trades / ladder fallbacks —
-   name the fallback), "accepted" (as good as or better than NCP
-   standard — list them so nothing is silently accepted).
-3. Flag counsel escalations (liquidated damages, indemnification,
-   exclusivity, anything binding LPs) and the watch-list traps
-   (standstills, broad CI definitions, non-solicits that work as
-   non-competes, forum away from Delaware, tails).
-4. Produce concrete text edits. For each: the EXACT original text to
-   change (verbatim, long enough to be unique in the document; empty
-   string for a pure insertion), the revised NCP text, where to insert
-   if new (after which clause), the rationale citing the rulebook, and
-   its bucket.
-   VERBATIM RULE: "original" must be copied character-for-character
-   from THE NDA TEXT above — same capitalization, punctuation, and
-   quote characters. The redline engine places edits by exact string
-   match; a paraphrased "original" cannot be placed and the edit is
-   lost. Never span more than one paragraph in a single edit — split
-   multi-paragraph changes into one edit per paragraph.
-   BE COMPREHENSIVE: the edits array is the ENTIRE negotiation turn.
-   Walk the document clause by clause — definitions, Representatives,
-   term/tail, non-solicit, competing investments/standstill, remedies,
-   governing law/forum, notices, party blocks, signature blocks — and
-   emit an edit for EVERY change NCP needs, not just the top few. A
-   typical banker-form first round produces 15-30 edits. If a clause
-   needs three changes, emit three edits.
-5. Fill NCP party details per the signing table (NCP Management
-   Holdings, LLC; 2101 Highland Ave S, Suite 700, Birmingham, AL
-   35205; William "Trey" Miller III, Managing Director and Authorized
-   Signor; By: line left blank). Never leave NCP placeholders.
-6. Judge executability: is this draft signable by both sides as-is
-   after these edits, or does it still need the counterparty to move?
-
-STYLE (from the rulebook): no em dashes or long dashes anywhere in
-drafted text — commas, periods, or parentheses instead. Short, direct,
-honest about weak spots. Explain direction of benefit where a
-counterparty change actually helps NCP.
-
-Return JSON only:
-{{"summary": "3-5 sentence report to Trey",
-  "executable": true/false,
-  "executable_reasoning": "one sentence",
-  "net_discloser_note": "for mutual forms, who is the net discloser and what that means; else empty",
-  "escalations": ["counsel red-flag items found, with clause reference"],
-  "accepted_as_drafted": ["provisions left alone but listed for Trey"],
-  "edits": [{{"bucket": "non_negotiable|trade|style",
-             "original": "exact text to replace, or empty for insertion",
-             "insert_after": "anchor text when original is empty, else empty",
-             "revised": "NCP's replacement/new text",
-             "rationale": "why, citing the rulebook"}}]
-}}"""
-
-    # Preferred: Claude with extended thinking — real negotiation
-    # reasoning before the redline, not just pattern matching.
-    if anthropic_client is not None:
-        first = anthropic_model or get_review_model()
-        order = [first] + [m for m in ANTHROPIC_MODELS if m != first]
-        last_err = None
-        for model in order:
-            for use_thinking in (True, False):
-                try:
-                    kwargs = {
-                        "model": model,
-                        "max_tokens": 32000,
-                        "messages": [{"role": "user", "content": prompt}],
-                    }
-                    if use_thinking:
-                        kwargs["thinking"] = {"type": "enabled",
-                                              "budget_tokens": 10000}
-                    # Streamed so a full 20-30 edit JSON never hits the
-                    # non-streaming request time limit.
-                    with anthropic_client.messages.stream(**kwargs) as s:
-                        resp = s.get_final_message()
-                    text = "".join(
-                        b.text for b in resp.content
-                        if getattr(b, "type", "") == "text")
-                    label = (f"Claude {model}"
-                             + (" · extended thinking" if use_thinking else ""))
-                    return _extract_json(text), label
-                except Exception as e:
-                    last_err = e
-                    continue
-        if openai_client is None:
-            raise RuntimeError(f"Claude review failed: {last_err}")
-        _fallback_note = (f"GPT-4o (fallback — Claude failed: "
-                          f"{type(last_err).__name__}: "
-                          f"{str(last_err)[:300]})")
-    else:
-        _fallback_note = "GPT-4o (no ANTHROPIC_API_KEY configured)"
-
-    if openai_client is None:
-        raise RuntimeError(
-            "No AI configured. Add ANTHROPIC_API_KEY (preferred — enables "
-            "Claude with extended thinking) or OPENAI_API_KEY to secrets.")
-    resp = openai_client.chat.completions.create(
-        model="gpt-4o",
-        messages=[{"role": "user", "content": prompt}],
-        response_format={"type": "json_object"},
-        temperature=0.2,
-        timeout=120,
-    )
-    return json.loads(resp.choices[0].message.content), _fallback_note
+def get_signing():
+    try:
+        saved = json.loads(_meta_get("signing", "{}") or "{}")
+    except json.JSONDecodeError:
+        saved = {}
+    return {**SIGNING_DEFAULTS, **{k: v for k, v in saved.items()
+                                   if k in SIGNING_DEFAULTS}}
 
 
-# ── Document builders ─────────────────────────────────────────────────
+def set_signing(details):
+    _meta_set("signing", json.dumps(
+        {k: (details.get(k) or "").strip() for k in SIGNING_DEFAULTS}))
 
-def apply_edits(original_text, edits):
-    """Apply edits to produce NCP's clean position text.
 
-    Mirrors the handoff's uniqueness rule: a replacement only applies
-    when its original text appears EXACTLY once; otherwise the edit is
-    reported as unapplied instead of silently guessing (the silent-skip
-    trap the handoff warns about). Returns (clean_text, applied, skipped).
-    """
-    text = original_text
-    applied, skipped = [], []
-    for e in edits:
-        orig = (e.get("original") or "").strip()
-        revised = e.get("revised") or ""
-        if orig:
-            count = text.count(orig)
-            if count == 1:
-                text = text.replace(orig, revised)
-                applied.append(e)
-            else:
-                skipped.append({**e, "_skip_reason":
-                                f"original text found {count} times "
-                                f"(needs exactly 1)"})
-        else:
-            anchor = (e.get("insert_after") or "").strip()
-            if anchor and text.count(anchor) == 1:
-                idx = text.index(anchor) + len(anchor)
-                text = text[:idx] + "\n\n" + revised + text[idx:]
-                applied.append(e)
-            else:
-                # Fall back: append new clauses before any signature block
-                text = text + "\n\n" + revised
-                applied.append({**e, "_appended": True})
-    return text, applied, skipped
+# Claude Fable is the negotiation brain; Opus and Sonnet are access
+# fallbacks; GPT-4o is the last resort.
+ANTHROPIC_MODELS = ["claude-fable-5-1", "claude-opus-5-5", "claude-sonnet-5-5"]
+EFFORT_LEVELS = ["high", "xhigh", "max", "medium"]
+
+
+def get_review_model():
+    m = _meta_get("model")
+    return m if m in ANTHROPIC_MODELS else ANTHROPIC_MODELS[0]
+
+
+def set_review_model(model):
+    _meta_set("model", model)
+
+
+def get_effort():
+    e = _meta_get("effort")
+    return e if e in EFFORT_LEVELS else EFFORT_LEVELS[0]
+
+
+def set_effort(effort):
+    _meta_set("effort", effort)
+
+
+def get_self_audit():
+    return _meta_get("self_audit", "1") != "0"
+
+
+def set_self_audit(on):
+    _meta_set("self_audit", "1" if on else "0")
+
+
+# ── Upload handling ───────────────────────────────────────────────────
+
+def _pdf_text(file_bytes):
+    try:
+        from pypdf import PdfReader
+    except Exception as e:
+        raise RuntimeError(f"PDF support unavailable on this server ({e}). "
+                           f"Upload the .docx instead.")
+    reader = PdfReader(io.BytesIO(file_bytes))
+    return "\n".join((page.extract_text() or "") for page in reader.pages)
+
+
+def prepare_upload(file_bytes, filename):
+    """The .docx the redline is built on, and whether it was rebuilt from a
+    PDF (layout lost, but the redline is still genuine tracked changes)."""
+    name = (filename or "").lower()
+    if name.endswith(".docx"):
+        return file_bytes, False
+    if name.endswith(".pdf"):
+        return R.docx_from_text(_pdf_text(file_bytes)), True
+    raise RuntimeError("Upload a .docx or .pdf file.")
 
 
 def deliverable_name(original_filename, suffix):
     """Output filename built from the UPLOADED file's name, so the
     banker's naming survives: 'BizPort NDA.docx' -> 'BizPort NDA - NCP
-    Redline.docx'. No project/round wrappers."""
+    Redline.docx'."""
     stem = os.path.splitext(os.path.basename(original_filename or "NDA"))[0]
     return f"{stem} - {suffix}.docx"
 
 
-def build_clean_docx(clean_text):
-    """PDF-upload fallback only: NCP's position as a plain .docx. No
-    added headers — the document starts exactly where the NDA starts."""
-    import docx
-    d = docx.Document()
-    for para in clean_text.split("\n"):
-        d.add_paragraph(para)
-    buf = io.BytesIO()
-    d.save(buf)
-    return buf.getvalue()
-
-
-def build_marked_docx(original_text, edits):
-    """PDF-upload fallback only: visual review copy (red strikethrough
-    deletions, blue underline insertions). No added headers."""
-    import docx
-    from docx.shared import RGBColor
-    RED, BLUE = RGBColor(0xC0, 0x00, 0x00), RGBColor(0x00, 0x56, 0xA7)
-
-    insertions = [e for e in edits
-                  if not (e.get("original") or "").strip()]
-
-    d = docx.Document()
-
-    for para in original_text.split("\n"):
-        hits = [e for e in edits
-                if (e.get("original") or "").strip()
-                and (e["original"].strip().split("\n")[0] in para
-                     or para.strip() and para.strip() in e["original"])]
-        if not hits:
-            d.add_paragraph(para)
-            continue
-        p = d.add_paragraph()
-        consumed = False
-        for e in hits:
-            orig_first = e["original"].strip().split("\n")[0]
-            if orig_first in para and not consumed:
-                before, _, after = para.partition(orig_first)
-                if before:
-                    p.add_run(before)
-                r_del = p.add_run(e["original"].strip())
-                r_del.font.strike = True
-                r_del.font.color.rgb = RED
-                r_ins = p.add_run(" " + (e.get("revised") or ""))
-                r_ins.font.underline = True
-                r_ins.font.color.rgb = BLUE
-                if after:
-                    p.add_run(after)
-                consumed = True
-        if not consumed:
-            p.add_run(para)
-
-    if insertions:
-        d.add_heading("NCP insertions (new clauses)", level=2)
-        for e in insertions:
-            p = d.add_paragraph()
-            r = p.add_run(e.get("revised") or "")
-            r.font.underline = True
-            r.font.color.rgb = BLUE
-            d.add_paragraph(f"Rationale: {e.get('rationale', '')}")
-
-    buf = io.BytesIO()
-    d.save(buf)
-    return buf.getvalue()
-
-
-# ── TRUE tracked-changes redline (w:ins / w:del OOXML) ───────────────
-# Edits the counterparty's own .docx so their styles and numbering are
-# preserved, injecting genuine Word tracked changes per the handoff:
-# author "New Capital Partners", change IDs from 960, every substitution
-# uniqueness-checked, and the accept/reject audits (the authoritative
-# correctness tests) run on every build.
-
-TRACK_AUTHOR = "New Capital Partners"
-TRACK_ID_START = 960
-
-
-def _iter_paragraphs(doc):
-    """Every paragraph in document order, including inside tables."""
-    from docx.text.paragraph import Paragraph
-    from docx.oxml.ns import qn
-    for p in doc.element.body.iter(qn("w:p")):
-        yield Paragraph(p, doc)
-
-
-def _walker_text(doc):
-    return "\n".join(p.text for p in _iter_paragraphs(doc))
-
-
-def _defragment(doc):
-    """Merge each paragraph's runs into one (Word splits words across
-    tiny runs; without this, text searches fail silently — the exact
-    trap the handoff warns about)."""
-    for para in _iter_paragraphs(doc):
-        runs = para.runs
-        if len(runs) > 1:
-            full = "".join(r.text for r in runs)
-            runs[0].text = full
-            for r in runs[1:]:
-                r._r.getparent().remove(r._r)
-
-
-def _xml_escape(t):
-    return (str(t).replace("&", "&amp;").replace("<", "&lt;")
-            .replace(">", "&gt;"))
-
-
-def build_tracked_docx(original_docx_bytes, edits):
-    """Inject genuine tracked changes into the uploaded .docx.
-
-    Returns (docx_bytes, report) where report carries applied/skipped
-    edits and the accept/reject audit results.
-    """
-    import docx
-    from docx.oxml import parse_xml
-    from docx.oxml.ns import nsdecls, qn
-
-    doc = docx.Document(io.BytesIO(original_docx_bytes))
-    _defragment(doc)
-    base_text = _walker_text(doc)
-    date = _now()[:19] + "Z"
-    next_id = [TRACK_ID_START]
-
-    def _rid():
-        next_id[0] += 1
-        return next_id[0] - 1
-
-    def _rpr_xml(para):
-        if para.runs and para.runs[0]._r.rPr is not None:
-            return para.runs[0]._r.rPr.xml
-        return ""
-
-    def _plain_run(text, rpr):
-        return parse_xml(
-            f'<w:r {nsdecls("w")}>{rpr}'
-            f'<w:t xml:space="preserve">{_xml_escape(text)}</w:t></w:r>')
-
-    def _del_el(text, rpr):
-        return parse_xml(
-            f'<w:del {nsdecls("w")} w:id="{_rid()}" '
-            f'w:author="{TRACK_AUTHOR}" w:date="{date}"><w:r>{rpr}'
-            f'<w:delText xml:space="preserve">{_xml_escape(text)}'
-            f'</w:delText></w:r></w:del>')
-
-    def _ins_el(text, rpr):
-        return parse_xml(
-            f'<w:ins {nsdecls("w")} w:id="{_rid()}" '
-            f'w:author="{TRACK_AUTHOR}" w:date="{date}"><w:r>{rpr}'
-            f'<w:t xml:space="preserve">{_xml_escape(text)}</w:t>'
-            f'</w:r></w:ins>')
-
-    def _replace_in_para(para, orig, revised):
-        full = para.text
-        before, _, after = full.partition(orig)
-        rpr = _rpr_xml(para)
-        for r in list(para.runs):
-            r._r.getparent().remove(r._r)
-        if before:
-            para._p.append(_plain_run(before, rpr))
-        para._p.append(_del_el(orig, rpr))
-        if revised:
-            para._p.append(_ins_el(revised, rpr))
-        if after:
-            para._p.append(_plain_run(after, rpr))
-
-    applied, skipped = [], []
-    # Parallel text simulation, line-aligned with the paragraph DOM, so
-    # the accept-audit has an independent expectation that reflects
-    # WHERE insertions land, not just that they exist.
-    sim_lines = base_text.split("\n")
-
-    for e in edits:
-        orig = (e.get("original") or "").strip()
-        revised = e.get("revised") or ""
-        if not orig:
-            continue                     # insertions handled below
-        paras = list(_iter_paragraphs(doc))
-        if base_text.count(orig) == 1 and "\n" not in orig:
-            idx = next((i for i, p in enumerate(paras) if orig in p.text),
-                       None)
-            if idx is None:
-                skipped.append({**e, "_skip_reason":
-                                "text crosses a paragraph boundary"})
-                continue
-            full = paras[idx].text
-            _replace_in_para(paras[idx], orig, revised)
-            sim_lines[idx] = full.replace(orig, revised)
-            applied.append(e)
-        elif "\n" in orig:
-            # multi-paragraph original: match a consecutive para sequence
-            orig_lines = [l for l in orig.split("\n")]
-            texts = [p.text for p in paras]
-            hit = None
-            for i in range(len(texts) - len(orig_lines) + 1):
-                if [t.strip() for t in texts[i:i + len(orig_lines)]] == \
-                        [l.strip() for l in orig_lines]:
-                    hit = i
-                    break
-            if hit is None:
-                skipped.append({**e, "_skip_reason":
-                                "multi-paragraph text not matched"})
-                continue
-            _replace_in_para(paras[hit], texts[hit], revised)
-            sim_lines[hit] = revised
-            for j in range(1, len(orig_lines)):
-                _replace_in_para(paras[hit + j], texts[hit + j], "")
-                sim_lines[hit + j] = ""
-            applied.append(e)
-        else:
-            n = base_text.count(orig)
-            skipped.append({**e, "_skip_reason":
-                            f"original text found {n} times "
-                            f"(needs exactly 1)"})
-
-    # Insertions: new clauses as fully-inserted paragraphs
-    for e in edits:
-        if (e.get("original") or "").strip():
-            continue
-        revised = e.get("revised") or ""
-        if not revised.strip():
-            continue
-        anchor_text = (e.get("insert_after") or "").strip()
-        paras = list(_iter_paragraphs(doc))
-        k = next((i for i, p in enumerate(paras)
-                  if anchor_text and anchor_text in p.text), None)
-        new_p = parse_xml(f'<w:p {nsdecls("w")}></w:p>')
-        new_p.append(_ins_el(revised, ""))
-        if k is not None:
-            paras[k]._p.addnext(new_p)
-            sim_lines.insert(k + 1, revised)
-        else:
-            doc.element.body.insert(len(doc.element.body) - 1, new_p)
-            sim_lines.append(revised)
-        applied.append(e)
-
-    expected_clean = "\n".join(sim_lines)
-
-    buf = io.BytesIO()
-    doc.save(buf)
-    out = buf.getvalue()
-
-    # ── The authoritative audits (handoff: screen appearance is not) ──
-    def _norm(s):
-        return "\n".join(l.strip() for l in s.split("\n") if l.strip())
-
-    rdoc = docx.Document(io.BytesIO(out))
-    acc_lines, rej_lines = [], []
-    for para in _iter_paragraphs(rdoc):
-        acc, rej = "", ""
-        for child in para._p:
-            if child.tag == qn("w:r"):
-                t = "".join(n.text or "" for n in child.iter(qn("w:t")))
-                acc += t
-                rej += t
-            elif child.tag == qn("w:ins"):
-                acc += "".join(n.text or "" for n in child.iter(qn("w:t")))
-            elif child.tag == qn("w:del"):
-                rej += "".join(n.text or ""
-                               for n in child.iter(qn("w:delText")))
-        acc_lines.append(acc)
-        rej_lines.append(rej)
-
-    accept_audit = _norm("\n".join(acc_lines)) == _norm(expected_clean)
-    reject_audit = _norm("\n".join(rej_lines)) == _norm(base_text)
-
-    report = {
-        "applied": len(applied),
-        "skipped": skipped,
-        "accept_audit": accept_audit,
-        "reject_audit": reject_audit,
-        "author": TRACK_AUTHOR,
-        "first_id": TRACK_ID_START,
-    }
-    return out, report
-
-
-def accept_all_changes(tracked_docx_bytes):
-    """The CLEAN deliverable: the tracked redline with every change
-    accepted — w:del removed, w:ins unwrapped. Because it starts from
-    the redline (which starts from the counterparty's own file), the
-    original formatting, numbering, and layout all survive."""
-    import docx
-    from docx.oxml.ns import qn
-
-    doc = docx.Document(io.BytesIO(tracked_docx_bytes))
-    body = doc.element.body
-    for d_el in list(body.iter(qn("w:del"))):
-        d_el.getparent().remove(d_el)
-    for ins in list(body.iter(qn("w:ins"))):
-        parent = ins.getparent()
-        idx = list(parent).index(ins)
-        for child in list(ins):
-            ins.remove(child)
-            parent.insert(idx, child)
-            idx += 1
-        parent.remove(ins)
-    buf = io.BytesIO()
-    doc.save(buf)
-    return buf.getvalue()
-
-
 def count_tracked_changes(docx_bytes):
-    """Handoff incoming-file check: how many live w:ins / w:del marks?"""
-    import zipfile as _zf
+    """Incoming-file check: how many live w:ins / w:del marks?"""
     try:
-        with _zf.ZipFile(io.BytesIO(docx_bytes)) as z:
-            xml = z.read("word/document.xml").decode("utf-8", "replace")
-        return xml.count("<w:ins "), xml.count("<w:del ")
+        return R.count_revisions(docx_bytes)
     except Exception:
         return 0, 0
+
+
+# ── The review brain ─────────────────────────────────────────────────
+
+COVERAGE_CHECKLIST = [
+    ("competing_investments", "Standalone Competing Investments / Nature of "
+     "Business clause (its own clause): NCP evaluates, makes and manages "
+     "investments across many companies and industries; NCP and its "
+     "Affiliates may invest in competitors; nothing in the NDA limits that, "
+     "provided Confidential Information is not used or disclosed in breach"),
+    ("residuals", "Residuals backup inside the Competing Investments clause: "
+     "the opening position is unaided-memory residuals plus the industry-"
+     "knowledge acknowledgment (usable for internal purposes, including "
+     "other investment decisions); the Copa industry-knowledge-only wording "
+     "is the fallback, not the opener"),
+    ("ci_survival_supremacy", "Competing Investments (and No Imputed "
+     "Knowledge) survive indefinitely and control over any contrary current "
+     "or future agreement of the Recipient or its Representatives, yielding "
+     "only to a writing signed by the Recipient that expressly references the "
+     "clause (Black Rose)"),
+    ("dual_hat", "Dual Hat Employees on every deal: portfolio companies are "
+     "not deemed to receive Confidential Information, or to be restricted, "
+     "because NCP personnel sit on their boards or serve as officers or "
+     "advisors, provided the dual-hat person does not pass Confidential "
+     "Information to portfolio company personnel"),
+    ("no_imputed_knowledge", "No imputed knowledge: knowledge limited to "
+     "individuals who actually receive information; portfolio companies are "
+     "not Affiliates or Representatives unless they actually receive it"),
+    ("data_room_supremacy", "The NDA governs over any current or future data "
+     "room, click-through or similar terms"),
+    ("compulsion_cost", "Legal compulsion: any cooperation is at the "
+     "disclosing party's sole cost"),
+    ("compulsion_counsel", "Legal compulsion: Recipient's counsel (internal "
+     "counsel acceptable) decides the scope of required disclosure"),
+    ("compulsion_regulatory", "Legal compulsion: regulatory and bank-examiner "
+     "requests carved out with no notice required"),
+    ("representatives", "Representatives limited to those who actually "
+     "receive information; lenders and financing sources included; "
+     "co-investors included; Affiliates only on add-on deals"),
+    ("rep_responsibility", "NCP not responsible for a Representative's breach "
+     "where that Representative signs a joinder or separate NDA"),
+    ("return_destroy", "Return or destruction at NCP's election, email "
+     "confirmation of destruction sufficient, retention for legal, "
+     "regulatory, compliance and IT/archival backup purposes"),
+    ("term", "Term per the ladder (1 year preferred; counter 2 years at 18 "
+     "months; counter 3 to 5 years at 2 years) and ONE sunset governing every "
+     "obligation (non-disclosure, use restriction, retained copies), except "
+     "the clauses meant to survive; no 'for as long as it is retained' tail"),
+    ("non_solicit", "Non-solicit: 1 year; management-level employees with "
+     "direct contact in the Transaction; general advertising carve-out; binds "
+     "NCP only, not portfolio companies"),
+    ("contact_restrictions", "Contact restrictions limited to contacts "
+     "concerning the proposed Transaction, with a carve-out for general market "
+     "research and customary diligence that does not reveal Confidential "
+     "Information, its receipt, or Transaction terms"),
+    ("carve_outs", "Confidentiality carve-outs broad (public, already known, "
+     "independently developed, received from a third party) with the "
+     "knowledge qualifier 'after all reasonable inquiry'"),
+    ("no_obligation", "No obligation to proceed; nothing binds until a "
+     "definitive written agreement is signed; either side may walk away"),
+    ("governing_law", "Delaware law with exclusive Court of Chancery forum"),
+    ("remedies", "Injunctive relief: the disclosing party 'may seek' it, never "
+     "an automatic entitlement; no waiver of the actual-damages requirement; "
+     "no waiver of bond"),
+    ("liability", "Liability capped at direct damages only, as determined by "
+     "final court order (fraud/willful-misconduct carve-outs are a Copa "
+     "fallback, not an opening position)"),
+    ("no_noncompete_standstill", "No non-compete, no standstill, and no "
+     "no-contact or non-solicit broad enough to work as one"),
+    ("party_details", "NCP party details and signature fields filled per the "
+     "signing table; Recipient defined as the NCP entity only; By: line left "
+     "blank; nothing left as a placeholder"),
+    ("countersignature", "One-way letter signed only by NCP: a Company "
+     "acceptance block (banker signing as authorized agent) so the Company "
+     "is bound by the acknowledgments NCP added; not_applicable on forms "
+     "both sides sign"),
+    ("defined_terms", "One label for NCP in every operative clause (the "
+     "Recipient), every capitalized term defined, references to information "
+     "use the defined Confidential Information, and no undefined 'the "
+     "Company' or 'transaction(s) contemplated by this Agreement'"),
+    ("counsel_flags", "Counsel red flags surfaced: liquidated damages, "
+     "indemnification, exclusivity, anything binding NCP's LPs"),
+]
+
+_COVERAGE_TEXT = "\n".join(f"- {k}: {t}" for k, t in COVERAGE_CHECKLIST)
+
+_OUTPUT_SCHEMA = """{
+  "summary": "report to Trey, 3 to 6 sentences: what matters, what is weak, what to watch",
+  "executable": false,
+  "executable_reasoning": "one sentence",
+  "net_discloser_note": "mutual forms only: who is the net discloser and what that means; else empty",
+  "escalations": ["counsel red flags and judgment calls for Trey, each citing the paragraph"],
+  "accepted_as_drafted": ["provisions left alone because they already meet NCP's standard, each with the paragraph"],
+  "counterparty_moves": [{"para": 7, "what_they_did": "their change since NCP's last turn", "ncp_response": "accept|reject|counter", "note": "why; flag any silent acceptance"}],
+  "edits": [
+    {"action": "modify", "para": 6, "text": "the complete revised paragraph",
+     "changes": [{"bucket": "non_negotiable|trade|style", "title": "short label, e.g. Term 2 years to 18 months", "rationale": "why, citing the rulebook"}]},
+    {"action": "insert_after", "para": 15, "numbered": true, "text": "Caption. Full text of the new clause.",
+     "changes": [{"bucket": "non_negotiable", "title": "...", "rationale": "..."}]},
+    {"action": "delete", "para": 9, "changes": [{"bucket": "...", "title": "...", "rationale": "..."}]}
+  ],
+  "coverage": [{"item": "checklist key", "status": "in_form|added|revised|not_applicable|conceded|missing", "paras": [6], "note": "short"}],
+  "fallbacks_available": ["ladder or precedent fallbacks still in reserve for later rounds"],
+  "cover_email": "brief cover email to the banker or counsel describing each change in a sentence; no em dashes",
+  "audit_notes": []
+}"""
+
+
+def _system_prompt(rules):
+    return f"""You are the NDA negotiator for New Capital Partners (NCP), a private equity firm that is usually the buyer and the Recipient of confidential information. Trey Miller, NCP's Managing Director, sends your work straight back to the counterparty's banker or counsel, so it has to be right on substance under NCP's rulebook and drafted the way an experienced M&A lawyer marks up someone else's form.
+
+HOW YOUR EDITS BECOME THE REDLINE
+The app turns your edits into genuine Word tracked changes inside the counterparty's own document. For each paragraph you revise it compares your text with the original word by word and marks only the words that differ. That shapes how you draft:
+- Revise a paragraph by returning its complete new text in one "modify" edit, with every change to that paragraph in that one edit. Copy each word you keep exactly as it appears (capitalization, punctuation, defined terms); anything you retype differently shows up as a change.
+- Keep the counterparty's language wherever it works and change only the words that need to change. A banker accepts a surgical markup much faster than a rewrite. Replace a clause wholesale only when targeted edits cannot fix its structure.
+- A sentence that belongs to an existing clause (a carve-out, a qualifier, an avoidance-of-doubt sentence, the counsel-decides and regulator carve-outs) goes inside that clause's paragraph, never in a paragraph of its own.
+- New standalone clauses use "insert_after" with the paragraph number of the last operative numbered clause (the document view marks where the signature block starts; never put a clause after that point) and "numbered": true. They join the document's numbering automatically, so if the last clause is auto-numbered 6, your new clauses become 7, 8 and so on in the order you list them; use those numbers in cross-references. Open each with a short caption such as "Competing Investments; Nature of Business."
+- Fill NCP's details into the form's existing blanks and signature fields in place by modifying those paragraphs. Never add a second NCP signature block. Leave the By: line and the date blank. (The Company acceptance block for one-way letters is covered under the drafting standards below.)
+- The Recipient is the NCP entity in the signing details. Trey signs only as its authorized signatory; never make him, or "the undersigned" as an individual, a party or part of the Recipient definition.
+- Use the form's existing defined terms consistently, define any new term before relying on it, and make sure every term the final text uses (Confidential Information, Representatives, Effective Date, Transaction, Purpose and so on) is defined somewhere.
+- Match the document's quote style. Never use em dashes or en dashes in drafted text; use commas, periods or parentheses.
+- Open at NCP's standard positions. Concession-ladder and precedent (Copa, Mariner) fallbacks are only for later rounds and only on Trey's instruction; never volunteer one in a draft. List the ones still in reserve in "fallbacks_available".
+
+NCP DRAFTING STANDARDS (lessons from past markups; they apply alongside the rulebook)
+- Party line: "The undersigned, [signatory], [title], as duly authorized agent for [entity] (the "Recipient")". Then use "the Recipient" as the obligor in every operative clause, converting "the undersigned" with word-level swaps, and fix undefined labels such as "the Company" or "this Company".
+- Term: one sunset governs every obligation. Add it to the term clause ("at which time all obligations under this Agreement terminate, except Paragraph N, which survives indefinitely") and make retained copies subject to confidentiality only until the term ends. Treat "for as long as it is maintained/retained" as a tail.
+- Representatives: the "who actually receive Confidential Information" limiter belongs inside the definition itself. Include lenders, other financing sources and co-investors; affiliates only on add-on deals; "partners" should exclude limited partners in their capacity as such. Do not add an affirmative undertaking that the Recipient is responsible for its Representatives when the form has none; state only a "will direct its Representatives" duty and the joinder or separate-NDA safe harbor.
+- Return or destruction: destruction or return at the Recipient's election, retention carve-outs for legal, regulatory, compliance and backup systems. Say email confirmation is sufficient only where the form already requires a confirmation or certification; never add a new confirmation duty.
+- Non-solicit and no-contact: "directly solicit for employment" management-level employees with direct contact in the Transaction; the carve-out verbs must match the restriction ("soliciting or hiring"); the restriction binds the Recipient only, not affiliates or portfolio companies (say so inside that clause). Put the Transaction qualifier on the contact itself: "knowingly contact, concerning the proposed Transaction, any customer, supplier or other business relation of the Subject Company identified as such in the Confidential Information", with a carve-out for ordinary-course dealings and customary market research or diligence that does not reveal Confidential Information, its receipt, or Transaction terms. Define "Transaction" if the form does not.
+- Acknowledgments that information is "confidential and proprietary" or usable "solely" for a purpose should refer to the defined Confidential Information and the defined Purpose so they do not override the exclusions or the Competing Investments clause.
+- Remedies: "may seek" injunctive relief; state that nothing waives the requirement to prove actual damages or to post a bond; liability limited to direct damages as determined by final, non-appealable court order, with consequential, incidental, indirect, special, exemplary and punitive damages and lost profits excluded.
+- Supremacy language (Competing Investments, data room terms) reaches agreements and click-throughs of the Recipient and its Representatives, current or future, and yields only to a writing signed by the Recipient that expressly references the clause.
+- One-way letter signed only by NCP: when your edits add acknowledgments or obligations of the Company, add a short acceptance block so the Company is bound: one insert_after with "numbered": false, placed right after NCP's signature fields and before any delivery instructions, lines separated by ⏎, e.g. "ACKNOWLEDGED AND AGREED on behalf of the Subject Company:⏎[banker], as authorized agent for the Subject Company⏎By: ____________________⏎Name:⏎Title:⏎Dated:". Tell Trey in the summary that he can drop it and ask by email instead.
+- Watch for, and raise in escalations, anything the rulebook does not settle: assignment of the Company's rights (for example the non-solicit passing to a strategic buyer), third-party beneficiaries, and any language that could bind NCP's LPs. When two rulebook rules pull in opposite directions for NCP's role, follow the more specific one and flag the tension.
+
+COVERAGE
+Before you finish, read the document as it will stand after your edits and account for every item below in "coverage": "in_form" when the counterparty's text already meets NCP's standard, "added" or "revised" when your edits deliver it (cite the paragraphs), "not_applicable" with a reason, "conceded" only where Trey has instructed it in this negotiation, "missing" only if you could not deliver it (explain why). Deliver every item that applies; a coverage claim must be true of the final text.
+{_COVERAGE_TEXT}
+
+REPORTING TO TREY
+Short, direct and honest about weak spots. Bucket each change as the rulebook does: "non_negotiable", "trade" (credibility trades; name the fallback being traded) or "style" (conforming and clean-up). List what you left alone in "accepted_as_drafted" so nothing is accepted silently. On counter-rounds, account for every counterparty change in "counterparty_moves", and call out any silent acceptance, including a counterparty deleting something NCP inserted. Explain direction of benefit when a counterparty change actually helps NCP. Put counsel red flags and judgment calls in "escalations". If the form is a one-way letter signed only by NCP, explain in the summary that the Company acceptance block is there so the Company-side acknowledgments (Competing Investments, supremacy, remedies) bind the Company.
+
+THE NCP NDA RULEBOOK (the authority; where it and general practice disagree, the rulebook wins)
+{rules}
+
+OUTPUT
+Return one JSON object and nothing else, in this shape:
+{_OUTPUT_SCHEMA}"""
+
+
+_GATE_NOTES = {
+    "Add-on for a portfolio company": (
+        "Competitive overlap exists by definition (the target operates in an "
+        "NCP portfolio company's space). Apply the full protection set: "
+        "portfolio company non-imputation, non-solicit carve-out for "
+        "portfolio companies, Dual Hat Employees, hardened Competing "
+        "Investments, and Affiliates in Representatives per the ladder."),
+    "New platform — potentially competitive": (
+        "Apply the full protection set (portfolio company non-imputation, "
+        "non-solicit carve-out for portfolio companies, Dual Hat Employees, "
+        "hardened Competing Investments). Affiliates stay out of "
+        "Representatives."),
+    "New platform — non-competitive": (
+        "Standard protection set: no portfolio-company carve-outs beyond the "
+        "rulebook's every-deal items. The standalone Competing Investments "
+        "clause with survival and supremacy and the Black Rose additions "
+        "(Dual Hat, data room supremacy, legal-compulsion refinements) still "
+        "apply on every deal."),
+    "Not sure yet — apply the full protection set": (
+        "Trey has not confirmed whether the target could compete with an NCP "
+        "business or portfolio company. Apply the full protection set (as for "
+        "a potentially competitive platform) and open the summary with a "
+        "one-line request that Trey confirm Gate 2 before this goes out."),
+}
+
+
+def _user_prompt(document_view, deal_type, ncp_role, form_source, signing,
+                 prior_context, counterparty_changes):
+    sig = "\n".join(f"- {k}: {v}" for k, v in signing.items() if v)
+    history = (f"PRIOR ROUNDS OF THIS NEGOTIATION\n{prior_context}\n\n"
+               if prior_context else "This is Round 1 of this negotiation.\n\n")
+    theirs = (f"COUNTERPARTY CHANGES SINCE NCP'S LAST TURN\n"
+              f"{counterparty_changes}\n\n" if counterparty_changes else "")
+    return f"""DEAL GATES (answered by Trey)
+- Deal type: {deal_type}. {_GATE_NOTES.get(deal_type, "")}
+- NCP role: {ncp_role}. As Recipient, carve-outs stay broad and Disclosing-Party moves never apply. On a mutual form, identify the net discloser.
+- Form source: {form_source}. Banker forms tend to carry standstills, broad no-contact lists and tails.
+
+NCP SIGNING DETAILS
+{sig}
+
+{history}{theirs}THE DOCUMENT
+Each line is one paragraph of the counterparty's document, tagged with its paragraph number (use it as "para" in edits) and its auto-number when it has one. Auto-numbers are generated by Word and are not part of the paragraph text; do not type them into your revised text. A ⏎ marks a line break inside a paragraph; keep it where it belongs. Empty paragraphs are omitted.
+
+{document_view}"""
+
+
+_AUDIT_INSTRUCTION = """An NCP associate drafted the review below for this NDA. You are the senior partner checking it before it reaches Trey. Re-read the document and the rulebook, then fix anything wrong or missing:
+- every coverage item is actually delivered by the final text (read the text, not the claim), or is honestly in_form or not_applicable;
+- no Disclosing-Party moves, no volunteered fallbacks, and no non-compete, standstill or tail left standing;
+- each modify edit keeps the counterparty's wording wherever it works, reproduces unchanged words exactly, and carries every change for that paragraph;
+- defined terms, cross-references, the numbering of new clauses, placement before the signature block, and signature fields filled in place are all correct;
+- nothing in the draft leaves NCP worse off than the counterparty's form.
+Return the complete corrected review JSON in the same shape (the full object, not a diff). In "audit_notes" list each thing you changed and why, or leave it empty if the draft was right.
+
+DRAFT REVIEW TO CHECK
+"""
+
+
+def _extract_json(text):
+    import re
+    t = (text or "").strip()
+    t = re.sub(r"^```(?:json)?\s*|\s*```$", "", t)
+    start, end = t.find("{"), t.rfind("}")
+    if start == -1 or end <= start:
+        raise ValueError("The model returned no JSON.")
+    body = t[start:end + 1]
+    try:
+        return json.loads(body)
+    except json.JSONDecodeError:
+        return json.loads(re.sub(r",\s*([}\]])", r"\1", body))
+
+
+def _claude_call(client, model, effort, system, user):
+    """One streamed Claude call. Fable and Opus 5.5 think adaptively on
+    their own; effort sets how hard. Server-side fallback reroutes a
+    policy decline to Anthropic's recommended model."""
+    import anthropic
+    kwargs = dict(
+        model=model,
+        max_tokens=64000,
+        system=[{"type": "text", "text": system,
+                 "cache_control": {"type": "ephemeral"}}],
+        messages=[{"role": "user", "content": user}],
+        output_config={"effort": effort},
+    )
+    try:
+        with client.beta.messages.stream(
+                betas=["server-side-fallback-2026-07-01"],
+                fallbacks="default", **kwargs) as s:
+            resp = s.get_final_message()
+    except anthropic.BadRequestError as e:
+        if "fallback" not in str(e).lower():
+            raise
+        with client.messages.stream(**kwargs) as s:
+            resp = s.get_final_message()
+    if resp.stop_reason == "refusal":
+        raise RuntimeError(f"{model} declined the request")
+    if resp.stop_reason == "max_tokens":
+        raise RuntimeError(f"{model} ran out of output room")
+    text = "".join(b.text for b in resp.content
+                   if getattr(b, "type", "") == "text")
+    return _extract_json(text), getattr(resp, "model", model) or model
+
+
+def review_nda(document_view, deal_type, ncp_role, form_source, rules,
+               prior_context="", counterparty_changes="", signing=None,
+               anthropic_client=None, anthropic_model=None,
+               openai_client=None, effort=None, self_audit=None,
+               progress=None):
+    """One review round over the paragraph-tagged document view.
+
+    Returns (review_dict, engine_label). The review's edits are keyed to
+    paragraph numbers and feed the redline engine directly."""
+    say = progress or (lambda msg: None)
+    signing = signing or get_signing()
+    effort = effort or get_effort()
+    self_audit = get_self_audit() if self_audit is None else self_audit
+    system = _system_prompt(rules)
+    user = _user_prompt(document_view, deal_type, ncp_role, form_source,
+                        signing, prior_context, counterparty_changes)
+
+    if anthropic_client is not None:
+        import anthropic
+        first = anthropic_model or get_review_model()
+        order = [first] + [m for m in ANTHROPIC_MODELS if m != first]
+        last_err = None
+        for model in order:
+            try:
+                say(f"Drafting NCP's position with {model} "
+                    f"({effort} effort)...")
+                review, served = _claude_call(anthropic_client, model, effort,
+                                              system, user)
+            except (anthropic.AuthenticationError,
+                    anthropic.PermissionDeniedError) as e:
+                last_err = e
+                break
+            except Exception as e:
+                last_err = e
+                continue
+            label = f"Claude {served} · adaptive thinking, {effort} effort"
+            if served != model:
+                label += f" (served by fallback from {model})"
+            if self_audit:
+                say("Senior-partner pass: auditing the draft against the "
+                    "rulebook...")
+                try:
+                    audited, _ = _claude_call(
+                        anthropic_client, served, effort, system,
+                        user + "\n\n" + _AUDIT_INSTRUCTION
+                        + json.dumps(review, ensure_ascii=False))
+                    if audited.get("edits"):
+                        review = audited
+                        label += " · self-audited"
+                except Exception as e:
+                    review["_audit_error"] = f"{type(e).__name__}: {e}"[:300]
+            review["format"] = 2
+            return review, label
+        if openai_client is None:
+            raise RuntimeError(f"Claude review failed: {last_err}")
+        fallback_note = (f"GPT-4o (fallback — Claude failed: "
+                         f"{type(last_err).__name__}: {str(last_err)[:300]})")
+    else:
+        fallback_note = "GPT-4o (no ANTHROPIC_API_KEY configured)"
+
+    if openai_client is None:
+        raise RuntimeError(
+            "No AI configured. Add ANTHROPIC_API_KEY (preferred — enables "
+            "Claude) or OPENAI_API_KEY to secrets.")
+    say("Drafting with GPT-4o (fallback)...")
+    resp = openai_client.chat.completions.create(
+        model="gpt-4o",
+        messages=[{"role": "system", "content": system},
+                  {"role": "user", "content": user}],
+        response_format={"type": "json_object"},
+        temperature=0.2,
+        timeout=240,
+    )
+    review = json.loads(resp.choices[0].message.content)
+    review["format"] = 2
+    return review, fallback_note
+
+
+# ── Deliverables ──────────────────────────────────────────────────────
+
+def plan_for(review, view):
+    """The redline plan for a stored review: paragraph-keyed edits for
+    reviews from this version on, substring edits for older rounds."""
+    if review.get("format") == 2:
+        plan, notes = R.plan_from_edits(review.get("edits", []), view)
+        return plan, notes, []
+    plan, skipped = R.plan_from_legacy(review.get("edits", []), view)
+    return plan, [], skipped
+
+
+def build_deliverables(source_bytes, review):
+    """(redline_bytes, clean_bytes, report) for one round. The report
+    carries the audits; report['ok'] gates whether the files are
+    send-ready."""
+    view = R.baseline_view(source_bytes)
+    plan, notes, skipped = plan_for(review, view)
+    redline, clean, report = R.build(source_bytes, plan)
+    report["notes"] = notes + report["notes"]
+    report["skipped"] = skipped
+    report["plan"] = plan
+    report["labels"] = view["labels"]
+    return redline, clean, report
+
+
+def format_counterparty_changes(tracked=None, untracked=None):
+    """Text block describing what the counterparty changed, for the
+    reviewer's prompt."""
+    lines = []
+    for c in tracked or []:
+        who = ", ".join(c.get("authors") or [])
+        if c.get("mark") == "ins" and not c.get("before"):
+            lines.append(f"- Tracked insertion ({who}): {c['after']}")
+        elif c.get("mark") == "del" and not c.get("after"):
+            lines.append(f"- Tracked deletion ({who}): {c['before']}")
+        else:
+            lines.append(f"- Tracked change ({who}):\n  was: {c['before']}\n"
+                         f"  now: {c['after']}")
+    for u in untracked or []:
+        paras = ", ".join(f"¶{p}" for p in u.get("paras", [])) or "removed"
+        was = " / ".join(u.get("ncp_last") or []) or "(nothing)"
+        now = " / ".join(u.get("theirs") or []) or "(deleted)"
+        lines.append(f"- UNTRACKED change at {paras}:\n  NCP's last turn: "
+                     f"{was}\n  their file now: {now}")
+    return "\n".join(lines)
 
 
 # ── Project / round storage ──────────────────────────────────────────
@@ -806,14 +743,34 @@ def list_rounds(project_id):
         conn.close()
 
 
+def _change_titles(review):
+    titles = []
+    for e in review.get("edits", []):
+        if review.get("format") == 2:
+            for c in e.get("changes") or []:
+                if c.get("title"):
+                    titles.append(f"{c['title']} [{c.get('bucket', '')}]")
+        elif e.get("rationale"):
+            titles.append(e["rationale"][:120])
+    return titles
+
+
 def prior_context(project_id):
-    """Compressed history of earlier rounds for the next review prompt."""
+    """History of earlier rounds for the next review prompt: what NCP
+    asked for each round, so a counter-round can hold or trade knowingly."""
     lines = []
     for r in list_rounds(project_id):
         rv = r.get("review", {})
-        lines.append(f"Round {r['round_no']} ({(r['created_at'] or '')[:10]}): "
+        lines.append(f"Round {r['round_no']} ({(r['created_at'] or '')[:10]}, "
+                     f"file {r.get('filename') or 'unknown'}): "
                      f"{rv.get('summary', 'no summary')} "
                      f"Executable: {rv.get('executable')}")
+        titles = _change_titles(rv)
+        if titles:
+            lines.append("  NCP's changes that round: " + "; ".join(titles))
+        for m in rv.get("counterparty_moves") or []:
+            lines.append(f"  Counterparty move: {m.get('what_they_did', '')} "
+                         f"-> NCP {m.get('ncp_response', '')}")
     return "\n".join(lines)
 
 
