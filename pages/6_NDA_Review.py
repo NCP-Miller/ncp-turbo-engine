@@ -336,6 +336,12 @@ def _render_review(review, report=None):
                         f"silent ({len(review['accepted_as_drafted'])})**")
             for a in review["accepted_as_drafted"]:
                 st.markdown(f"- {a}")
+    if review.get("fallbacks_used"):
+        st.warning("**Fallbacks used in this draft** (confirm each was your "
+                   "instruction):\n" + "\n".join(
+                       f"- {f.get('fallback', '')} — "
+                       f"{f.get('instruction') or 'no instruction recorded'}"
+                       for f in review["fallbacks_used"]))
     if review.get("fallbacks_available"):
         st.markdown("**Fallbacks still in reserve:** "
                     + "; ".join(review["fallbacks_available"]))
@@ -481,6 +487,10 @@ with tab_review:
         c3, c4 = st.columns(2)
         ncp_role = c3.selectbox("NCP's role (Gate 1)", nda.NCP_ROLES)
         form_source = c4.selectbox("Form source (Gate 3)", nda.FORM_SOURCES)
+        if deal_type.startswith("Not sure"):
+            st.info("Gate 2 unconfirmed: the review applies the full "
+                    "protection set and will ask you to confirm whether the "
+                    "target could compete before the markup goes out.")
         _existing = next(
             (p for p in projects
              if p["name"].strip().lower() ==
@@ -568,7 +578,7 @@ with tab_review:
                     R.format_for_model(view), deal_type, ncp_role,
                     form_source, nda.load_rules(), ctx, cp_changes,
                     signing=nda.get_signing(), anthropic_client=_ac,
-                    openai_client=_oc, progress=_status.write)
+                    openai_client=_oc, progress=_status.write, view=view)
             except Exception as e:
                 _status.update(label="Review failed", state="error")
                 st.error(f"Review failed: {e}")

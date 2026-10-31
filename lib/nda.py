@@ -343,6 +343,7 @@ _OUTPUT_SCHEMA = """{
   ],
   "coverage": [{"item": "checklist key", "status": "in_form|added|revised|not_applicable|conceded|missing", "paras": [6], "note": "short"}],
   "fallbacks_available": ["ladder or precedent fallbacks still in reserve for later rounds"],
+  "fallbacks_used": [{"fallback": "ladder row or precedent used in this draft", "instruction": "where Trey instructed it (round and wording)"}],
   "cover_email": "brief cover email to the banker or counsel describing each change in a sentence; no em dashes",
   "audit_notes": []
 }"""
@@ -361,7 +362,7 @@ The app turns your edits into genuine Word tracked changes inside the counterpar
 - The Recipient is the NCP entity in the signing details. Trey signs only as its authorized signatory; never make him, or "the undersigned" as an individual, a party or part of the Recipient definition.
 - Use the form's existing defined terms consistently, define any new term before relying on it, and make sure every term the final text uses (Confidential Information, Representatives, Effective Date, Transaction, Purpose and so on) is defined somewhere.
 - Match the document's quote style. Never use em dashes or en dashes in drafted text; use commas, periods or parentheses.
-- Open at NCP's standard positions. Concession-ladder and precedent (Copa, Mariner) fallbacks are only for later rounds and only on Trey's instruction; never volunteer one in a draft. List the ones still in reserve in "fallbacks_available".
+- Open at NCP's standard positions. Concession-ladder and precedent (Copa, Mariner) fallbacks are only for later rounds and only on Trey's instruction; never volunteer one in a draft. List the ones still in reserve in "fallbacks_available". Use a fallback only where the prior rounds record Trey instructing it, and then list it in "fallbacks_used" with where he did; otherwise "fallbacks_used" stays empty.
 
 NCP DRAFTING STANDARDS (lessons from past markups; they apply alongside the rulebook)
 - Party line: "The undersigned, [signatory], [title], as duly authorized agent for [entity] (the "Recipient")". Then use "the Recipient" as the obligor in every operative clause, converting "the undersigned" with word-level swaps, and fix undefined labels such as "the Company" or "this Company".
@@ -370,7 +371,7 @@ NCP DRAFTING STANDARDS (lessons from past markups; they apply alongside the rule
 - Return or destruction: destruction or return at the Recipient's election, retention carve-outs for legal, regulatory, compliance and backup systems. Say email confirmation is sufficient only where the form already requires a confirmation or certification; never add a new confirmation duty.
 - Non-solicit and no-contact: "directly solicit for employment" management-level employees with direct contact in the Transaction; the carve-out verbs must match the restriction ("soliciting or hiring"); the restriction binds the Recipient only, not affiliates or portfolio companies (say so inside that clause). Put the Transaction qualifier on the contact itself: "knowingly contact, concerning the proposed Transaction, any customer, supplier or other business relation of the Subject Company identified as such in the Confidential Information", with a carve-out for ordinary-course dealings and customary market research or diligence that does not reveal Confidential Information, its receipt, or Transaction terms. Define "Transaction" if the form does not.
 - Acknowledgments that information is "confidential and proprietary" or usable "solely" for a purpose should refer to the defined Confidential Information and the defined Purpose so they do not override the exclusions or the Competing Investments clause.
-- Remedies: "may seek" injunctive relief; state that nothing waives the requirement to prove actual damages or to post a bond; liability limited to direct damages as determined by final, non-appealable court order, with consequential, incidental, indirect, special, exemplary and punitive damages and lost profits excluded.
+- Remedies: "may seek" injunctive relief for an actual breach (not "threatened"); state that nothing waives the requirement to prove actual damages or to post a bond; liability limited to direct damages as determined by final, non-appealable court order, with consequential, incidental, indirect, special, exemplary and punitive damages and lost profits excluded.
 - Supremacy language (Competing Investments, data room terms) reaches agreements and click-throughs of the Recipient and its Representatives, current or future, and yields only to a writing signed by the Recipient that expressly references the clause.
 - One-way letter signed only by NCP: when your edits add acknowledgments or obligations of the Company, add a short acceptance block so the Company is bound: one insert_after with "numbered": false, placed right after NCP's signature fields and before any delivery instructions, lines separated by ⏎, e.g. "ACKNOWLEDGED AND AGREED on behalf of the Subject Company:⏎[banker], as authorized agent for the Subject Company⏎By: ____________________⏎Name:⏎Title:⏎Dated:". Tell Trey in the summary that he can drop it and ask by email instead.
 - Watch for, and raise in escalations, anything the rulebook does not settle: assignment of the Company's rights (for example the non-solicit passing to a strategic buyer), third-party beneficiaries, and any language that could bind NCP's LPs. When two rulebook rules pull in opposite directions for NCP's role, follow the more specific one and flag the tension.
@@ -424,7 +425,7 @@ def _user_prompt(document_view, deal_type, ncp_role, form_source, signing,
     theirs = (f"COUNTERPARTY CHANGES SINCE NCP'S LAST TURN\n"
               f"{counterparty_changes}\n\n" if counterparty_changes else "")
     return f"""DEAL GATES (answered by Trey)
-- Deal type: {deal_type}. {_GATE_NOTES.get(deal_type, "")}
+- Deal type: {deal_type.replace(" — ", ": ")}. {_GATE_NOTES.get(deal_type, "")}
 - NCP role: {ncp_role}. As Recipient, carve-outs stay broad and Disclosing-Party moves never apply. On a mutual form, identify the net discloser.
 - Form source: {form_source}. Banker forms tend to carry standstills, broad no-contact lists and tails.
 
@@ -499,11 +500,13 @@ def review_nda(document_view, deal_type, ncp_role, form_source, rules,
                prior_context="", counterparty_changes="", signing=None,
                anthropic_client=None, anthropic_model=None,
                openai_client=None, effort=None, self_audit=None,
-               progress=None):
+               progress=None, view=None):
     """One review round over the paragraph-tagged document view.
 
     Returns (review_dict, engine_label). The review's edits are keyed to
-    paragraph numbers and feed the redline engine directly."""
+    paragraph numbers and feed the redline engine directly. With the
+    baseline `view`, the self-audit pass reads the document as it would
+    stand with the draft accepted, not just the list of edits."""
     say = progress or (lambda msg: None)
     signing = signing or get_signing()
     effort = effort or get_effort()
@@ -536,11 +539,21 @@ def review_nda(document_view, deal_type, ncp_role, form_source, rules,
             if self_audit:
                 say("Senior-partner pass: auditing the draft against the "
                     "rulebook...")
+                final = ""
+                if view is not None:
+                    try:
+                        plan, _ = R.plan_from_edits(review.get("edits", []),
+                                                    view)
+                        final = ("\n\nTHE DOCUMENT AS IT WOULD READ WITH THE "
+                                 "DRAFT ACCEPTED (judge this text, not the "
+                                 "claims)\n" + R.final_view(view, plan))
+                    except Exception:
+                        final = ""
                 try:
                     audited, _ = _claude_call(
                         anthropic_client, served, effort, system,
                         user + "\n\n" + _AUDIT_INSTRUCTION
-                        + json.dumps(review, ensure_ascii=False))
+                        + json.dumps(review, ensure_ascii=False) + final)
                     if audited.get("edits"):
                         review = audited
                         label += " · self-audited"

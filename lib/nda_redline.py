@@ -487,8 +487,43 @@ def _strip_label(text, label):
     return t
 
 
+DELIVERY_CUE = re.compile(
+    r"^\s*(please\s+(complete|sign|execute|return|e-?mail|send|countersign)|"
+    r"kindly\s+(sign|return)|return\s+(a|one)\s+(signed|executed))", re.I)
+# A "new paragraph" that opens like this is really a sentence belonging to
+# the clause before it; standing alone, its "this paragraph" would point
+# at itself.
+_CONTINUATION = re.compile(
+    r"^\s*(this\s+paragraph|this\s+section|such\b|the\s+foregoing|"
+    r"notwithstanding\s+the\s+foregoing|in\s+addition|for\s+the\s+avoidance"
+    r"\s+of\s+doubt|provided(,)?\s+(however|that)|the\s+recipient['’]s"
+    r"\s+counsel)", re.I)
+
+
 def new_plan():
     return {"modify": {}, "delete": [], "insert": []}
+
+
+def final_view(view, plan):
+    """NCP's position as it will read once every change is accepted,
+    tagged with the baseline paragraph numbers it came from."""
+    texts = view["texts"]
+    inserted = {}
+    for ins in plan.get("insert", []):
+        inserted.setdefault(ins["after"], []).append(ins["text"])
+    deleted = set(plan.get("delete", []))
+    lines = [f"[new clause] {t}" for t in inserted.get(-1, [])]
+    for i, t in enumerate(texts):
+        if i in deleted:
+            lines.append(f"[¶{i} deleted]")
+        else:
+            body = plan.get("modify", {}).get(i, t)
+            if body.strip():
+                tag = f"¶{i} revised" if i in plan.get("modify", {}) else f"¶{i}"
+                lines.append(f"[{tag}] {body.replace(chr(10), LINE_BREAK_MARK)}")
+        lines.extend(f"[new after ¶{i}] {x.replace(chr(10), LINE_BREAK_MARK)}"
+                     for x in inserted.get(i, []))
+    return "\n".join(lines)
 
 
 def plan_from_edits(edits, view):
@@ -496,7 +531,7 @@ def plan_from_edits(edits, view):
     texts, labels = view["texts"], view["labels"]
     n = len(texts)
     sig = view["signature_start"]
-    plan, notes = new_plan(), []
+    plan, notes, pending_append = new_plan(), [], []
     for e in edits or []:
         action = (e.get("action") or "").strip().lower()
         try:
@@ -524,17 +559,36 @@ def plan_from_edits(edits, view):
                 continue
             if not -1 <= i < n:
                 i = view["default_anchor"]
-            if i >= sig and not SIGNATURE_CUE.match(body):
+            if SIGNATURE_CUE.match(body):
+                delivery = next((k for k in range(max(i, 0), n)
+                                 if DELIVERY_CUE.match(texts[k] or "")), None)
+                if delivery is not None and i >= delivery:
+                    before = max([k for k in range(delivery)
+                                  if (texts[k] or "").strip()] or [i])
+                    notes.append(f"The acceptance block was moved above the "
+                                 f"delivery instructions at ¶{delivery}.")
+                    i = before
+            elif i >= sig:
                 notes.append(f"A new clause anchored inside the signature "
                              f"block (after ¶{i}) was moved to follow "
                              f"¶{view['default_anchor']}, the last operative "
                              f"clause.")
                 i = view["default_anchor"]
+            elif i >= 0 and _CONTINUATION.match(body) and \
+                    (texts[i] or "").strip():
+                pending_append.append((i, body))
+                notes.append(f"A sentence emitted as its own paragraph after "
+                             f"¶{i} reads as part of that clause, so it was "
+                             f"added to the end of ¶{i} instead.")
+                continue
             numbered = e.get("numbered")
             plan["insert"].append({"after": i, "text": body,
                                    "numbered": numbered})
         else:
             notes.append(f"Unknown edit action '{action}' skipped.")
+    for i, body in pending_append:
+        base = plan["modify"].get(i, texts[i]).rstrip()
+        plan["modify"][i] = f"{base} {body}"
     plan["delete"] = [i for i in sorted(set(plan["delete"]))
                       if i not in plan["modify"]]
     return plan, notes
