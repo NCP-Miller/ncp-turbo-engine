@@ -237,7 +237,7 @@ def _changes_md(changes):
     return "\n".join(
         f"- {_BUCKETS.get(c.get('bucket'), c.get('bucket') or '')} · "
         f"**{c.get('title', '')}** — {c.get('rationale', '')}"
-        for c in changes or [])
+        for c in changes or [] if isinstance(c, dict))
 
 
 def _render_review(review, report=None):
@@ -256,12 +256,13 @@ def _render_review(review, report=None):
                  + "\n".join(f"- {e}" for e in review["escalations"]))
     if review.get("counterparty_moves"):
         st.markdown("#### Counterparty moves since NCP's last turn")
-        for m in review["counterparty_moves"]:
+        for m in [m for m in review["counterparty_moves"]
+                  if isinstance(m, dict)]:
             st.markdown(
                 f"- ¶{m.get('para', '?')}: {m.get('what_they_did', '')} → "
                 f"**{m.get('ncp_response', '')}**. {m.get('note', '')}")
 
-    edits = review.get("edits", [])
+    edits = [e for e in (review.get("edits") or []) if isinstance(e, dict)]
     if review.get("format") == 2:
         base = (report or {}).get("baseline") or review.get("_para_texts") \
             or []
@@ -269,7 +270,8 @@ def _render_review(review, report=None):
         counts = {}
         for e in edits:
             for c in e.get("changes") or []:
-                counts[c.get("bucket")] = counts.get(c.get("bucket"), 0) + 1
+                if isinstance(c, dict):
+                    counts[c.get("bucket")] = counts.get(c.get("bucket"), 0) + 1
         st.markdown(
             f"#### NCP's changes ({len(edits)} paragraphs) — "
             + " · ".join(f"{_BUCKETS[k]}: {counts[k]}"
@@ -310,7 +312,8 @@ def _render_review(review, report=None):
                         st.caption(e.get("rationale", ""))
 
     if review.get("coverage") is not None and review.get("format") == 2:
-        got = {c.get("item"): c for c in review.get("coverage") or []}
+        got = {c.get("item"): c for c in review.get("coverage") or []
+               if isinstance(c, dict)}
         rows = []
         for key, _ in nda.COVERAGE_CHECKLIST:
             c = got.get(key, {})
@@ -341,7 +344,8 @@ def _render_review(review, report=None):
                    "instruction):\n" + "\n".join(
                        f"- {f.get('fallback', '')} — "
                        f"{f.get('instruction') or 'no instruction recorded'}"
-                       for f in review["fallbacks_used"]))
+                       for f in review["fallbacks_used"]
+                       if isinstance(f, dict)))
     if review.get("fallbacks_available"):
         st.markdown("**Fallbacks still in reserve:** "
                     + "; ".join(review["fallbacks_available"]))

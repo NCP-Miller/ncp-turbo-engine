@@ -554,9 +554,16 @@ def review_nda(document_view, deal_type, ncp_role, form_source, rules,
                         anthropic_client, served, effort, system,
                         user + "\n\n" + _AUDIT_INSTRUCTION
                         + json.dumps(review, ensure_ascii=False) + final)
-                    if audited.get("edits"):
+                    if isinstance(audited.get("edits"), list):
+                        if review.get("edits") and not audited["edits"]:
+                            audited.setdefault("audit_notes", []).append(
+                                "The senior-partner pass withdrew every edit "
+                                "in the first draft; check its summary.")
                         review = audited
                         label += " · self-audited"
+                    else:
+                        review["_audit_error"] = ("the senior-partner pass "
+                                                  "returned no edit list")
                 except Exception as e:
                     review["_audit_error"] = f"{type(e).__name__}: {e}"[:300]
             review["format"] = 2
@@ -658,7 +665,8 @@ def create_project(name, deal_type, ncp_role, form_source):
     conn = _connect()
     try:
         existing = conn.execute(
-            "SELECT id FROM projects WHERE name = ?", (name,)).fetchone()
+            "SELECT id FROM projects WHERE lower(trim(name)) = lower(trim(?))",
+            (name,)).fetchone()
         if existing:
             return existing["id"]
         cur = conn.execute(

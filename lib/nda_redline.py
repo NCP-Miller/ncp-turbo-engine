@@ -621,14 +621,15 @@ def _loose_pattern(s):
     return "".join(out)
 
 
-_CONTROL = re.compile(r"[\x00-\x08\x0e-\x1f\x7f]")
+_CONTROL = re.compile("[\x00-\x08\x0e-\x1f\x7f\ud800-\udfff\ufffe\uffff]")
 
 
 def clean_text(text):
     """Make reviewer text safe for Word XML: Windows and old-Mac line
     endings, vertical tabs, form feeds and Unicode line separators become
     line breaks; other control characters are dropped."""
-    t = (text or "").replace("\r\n", "\n")
+    t = (text if isinstance(text, str) else str(text or "")).replace(
+        "\r\n", "\n")
     t = re.sub(r"[\r\x0b\x0c\u2028\u2029]", "\n", t)
     return _CONTROL.sub("", t)
 
@@ -696,15 +697,18 @@ def plan_from_edits(edits, view):
     n = len(texts)
     sig = view["signature_start"]
     plan, notes, pending_append = new_plan(), [], []
-    for e in edits or []:
-        action = (e.get("action") or "").strip().lower()
+    for e in edits if isinstance(edits, list) else []:
+        if not isinstance(e, dict):
+            notes.append("An edit that was not a JSON object was skipped.")
+            continue
+        action = str(e.get("action") or "").strip().lower()
         try:
             i = int(e.get("para"))
         except (TypeError, ValueError):
             notes.append(f"Edit without a valid paragraph number skipped: "
                          f"{(e.get('text') or '')[:80]}")
             continue
-        text = clean_text(re.sub(r" ?⏎ ?", "\n", e.get("text") or ""))
+        text = re.sub(r" ?⏎ ?", "\n", clean_text(e.get("text")))
         if view.get("curly_quotes"):
             text = smarten_quotes(text)
         if action == "modify":
@@ -771,8 +775,10 @@ def plan_from_legacy(edits, view):
     def cur(i):
         return work.get(i, texts[i])
 
-    for e in edits or []:
-        orig = (e.get("original") or "").strip()
+    edits = [e for e in (edits if isinstance(edits, list) else [])
+             if isinstance(e, dict)]
+    for e in edits:
+        orig = str(e.get("original") or "").strip()
         revised = clean_text(e.get("revised") or "")
         if view.get("curly_quotes"):
             revised = smarten_quotes(revised)
@@ -808,15 +814,15 @@ def plan_from_legacy(edits, view):
         work[i] = cur(i)[:m.start()] + revised + cur(i)[m.end():]
     for i, t in work.items():
         plan["modify"][i] = t
-    for e in edits or []:
-        if (e.get("original") or "").strip():
+    for e in edits:
+        if str(e.get("original") or "").strip():
             continue
         body = clean_text(e.get("revised") or "").strip()
         if not body:
             continue
         if view.get("curly_quotes"):
             body = smarten_quotes(body)
-        anchor = (e.get("insert_after") or "").strip()
+        anchor = str(e.get("insert_after") or "").strip()
         i, numbered = view["default_anchor"], True
         if anchor:
             pat = re.compile(_loose_pattern(anchor))
@@ -1521,6 +1527,13 @@ def build(source_bytes, plan, author=AUTHOR, when=None):
     notes, applied = [], []
     expected = list(base_texts)
     changed = set()
+    from lxml import etree as _et
+    snapshot = [_et.tostring(p) for p in paras]
+    # Anchors where new text must take over the paragraph mark (Word's
+    # own model for pressing Enter at the end of a paragraph): ones that
+    # end a section, a table cell or the document.
+    ends_container = [p.find(W + "pPr/" + W + "sectPr") is not None
+                      or _next_paragraph(p) is None for p in paras]
 
     for i, new in sorted(plan.get("modify", {}).items()):
         new = clean_text(new)
@@ -1584,19 +1597,45 @@ def build(source_bytes, plan, author=AUTHOR, when=None):
         inserted.setdefault(after, []).append(text)
         applied.append(("insert", after))
 
-    # Like pressing Enter at the end of a paragraph that ends a section:
-    # the section break moves to the last new paragraph, so new clauses
-    # print in the anchor's section rather than the next one.
-    for after, newp in last_new.items():
-        if after < 0:
+    # After a paragraph that ends a section, a table cell or the document,
+    # record the insertion the way Word records pressing Enter there: the
+    # anchor's own paragraph mark is tracked as inserted, and the last new
+    # paragraph inherits the original mark (and any section break), with
+    # the anchor's old paragraph properties kept in a pPrChange. Rejecting
+    # then restores the anchor, its section break and its layout exactly.
+    for after, last in last_new.items():
+        if after < 0 or not ends_container[after]:
             continue
-        sect = paras[after].find(W + "pPr/" + W + "sectPr")
+        anchor = paras[after]
+        if _mark(anchor) == "del":
+            continue
+        a_ppr = anchor.find(W + "pPr")
+        l_ppr = last.find(W + "pPr")
+        l_rpr = l_ppr.find(W + "rPr") if l_ppr is not None else None
+        if l_rpr is not None:
+            for m in l_rpr.findall(W + "ins"):
+                l_rpr.remove(m)
+        sect = a_ppr.find(W + "sectPr") if a_ppr is not None else None
         if sect is not None:
-            sect.getparent().remove(sect)
-            newp.find(W + "pPr").append(sect)
-            changed.add(after)
-            notes.append(f"¶{after} ends a document section; its section "
-                         f"break now follows the new text inserted after it.")
+            a_ppr.remove(sect)
+            l_ppr.append(sect)
+        old_props = _el("pPr")
+        if a_ppr is not None:
+            for ch in a_ppr:
+                if _is_tag(ch) and ch.tag not in (W + "rPr", W + "sectPr",
+                                                  W + "pPrChange"):
+                    old_props.append(copy.deepcopy(ch))
+        new_props = [_et.tostring(c) for c in l_ppr if _is_tag(c) and c.tag
+                     not in (W + "rPr", W + "sectPr", W + "pPrChange")]
+        if new_props != [_et.tostring(c) for c in old_props]:
+            change = ctx.rev("pPrChange")
+            change.append(old_props)
+            l_ppr.append(change)
+        _mark_paragraph(anchor, ctx, "ins")
+        changed.add(after)
+        if sect is not None:
+            notes.append(f"¶{after} ends a document section; the new text "
+                         f"after it stays in that section.")
 
     exp = list(inserted.get(-1, []))
     for i in range(n):
@@ -1627,21 +1666,12 @@ def build(source_bytes, plan, author=AUTHOR, when=None):
     audits["clean"] = ctexts == exp and leftover == 0
     if not audits["clean"]:
         problems.append("The clean copy does not match NCP's position.")
-    bdoc = _load(base_bytes)
-    bparas = list_paragraphs(bdoc)
-    kept = [p for p in rparas if not (_mark(p) == "ins"
-                                      and not para_text(p, "reject"))]
-    untouched_ok = len(kept) == len(bparas)
-    if untouched_ok:
-        for i, (bp, rp) in enumerate(zip(bparas, kept)):
-            if i in changed:
-                continue
-            if etree.tostring(bp) != etree.tostring(rp):
-                untouched_ok = False
-                problems.append(f"¶{i} changed although NCP did not edit it.")
-                break
-    else:
-        problems.append("Paragraph structure drifted from the baseline.")
+    untouched_ok = True
+    for i, p in enumerate(paras):
+        if i not in changed and _et.tostring(p) != snapshot[i]:
+            untouched_ok = False
+            problems.append(f"¶{i} changed although NCP did not edit it.")
+            break
     audits["untouched"] = untouched_ok
     schema = _schema_problems(rdoc.element.body, author)
     audits["schema"] = not schema
