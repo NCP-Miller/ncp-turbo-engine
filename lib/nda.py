@@ -464,6 +464,48 @@ def _extract_json(text):
         return json.loads(re.sub(r",\s*([}\]])", r"\1", body))
 
 
+def _as_int(v):
+    try:
+        return int(str(v).strip().lstrip("\u00b6"))
+    except (TypeError, ValueError):
+        return None
+
+
+def _normalize_review(review):
+    """Coerce the model's JSON into the shapes the app relies on before it
+    is stored, so one malformed field can never break the page for good."""
+    if not isinstance(review, dict):
+        review = {}
+    for key in ("escalations", "accepted_as_drafted", "fallbacks_available",
+                "audit_notes"):
+        v = review.get(key)
+        review[key] = [str(x) for x in v] if isinstance(v, list) else (
+            [str(v)] if v else [])
+    for key in ("coverage", "counterparty_moves", "fallbacks_used"):
+        v = review.get(key)
+        review[key] = [x for x in v if isinstance(x, dict)] \
+            if isinstance(v, list) else []
+    edits = []
+    for e in review.get("edits") if isinstance(review.get("edits"), list) \
+            else []:
+        if not isinstance(e, dict):
+            continue
+        e = dict(e)
+        e["para"] = _as_int(e.get("para"))
+        ch = e.get("changes")
+        e["changes"] = [c for c in ch if isinstance(c, dict)] \
+            if isinstance(ch, list) else []
+        if e.get("text") is not None and not isinstance(e["text"], str):
+            e["text"] = str(e["text"])
+        edits.append(e)
+    review["edits"] = edits
+    for key in ("summary", "executable_reasoning", "net_discloser_note",
+                "cover_email"):
+        if review.get(key) is not None and not isinstance(review[key], str):
+            review[key] = str(review[key])
+    return review
+
+
 def _claude_call(client, model, effort, system, user):
     """One streamed Claude call. Fable and Opus 5.5 think adaptively on
     their own; effort sets how hard. Server-side fallback reroutes a
@@ -550,7 +592,7 @@ def review_nda(document_view, deal_type, ncp_role, form_source, rules,
                     except Exception:
                         final = ""
                 try:
-                    audited, _ = _claude_call(
+                    audited, audit_served = _claude_call(
                         anthropic_client, served, effort, system,
                         user + "\n\n" + _AUDIT_INSTRUCTION
                         + json.dumps(review, ensure_ascii=False) + final)
@@ -560,12 +602,15 @@ def review_nda(document_view, deal_type, ncp_role, form_source, rules,
                                 "The senior-partner pass withdrew every edit "
                                 "in the first draft; check its summary.")
                         review = audited
-                        label += " · self-audited"
+                        label += (" · self-audited" if audit_served == served
+                                  else f" · self-audited by {audit_served} "
+                                       f"(fallback)")
                     else:
                         review["_audit_error"] = ("the senior-partner pass "
                                                   "returned no edit list")
                 except Exception as e:
                     review["_audit_error"] = f"{type(e).__name__}: {e}"[:300]
+            review = _normalize_review(review)
             review["format"] = 2
             return review, label
         if openai_client is None:
@@ -588,7 +633,7 @@ def review_nda(document_view, deal_type, ncp_role, form_source, rules,
         temperature=0.2,
         timeout=240,
     )
-    review = json.loads(resp.choices[0].message.content)
+    review = _normalize_review(json.loads(resp.choices[0].message.content))
     review["format"] = 2
     return review, fallback_note
 
@@ -732,6 +777,7 @@ def delete_project(project_id):
         conn.commit()
     finally:
         conn.close()
+    _meta_set("last_delete", _now())
 
 
 def delete_round(round_id):
@@ -847,8 +893,11 @@ def restore_if_empty():
     conn = _connect()
     try:
         n = conn.execute("SELECT COUNT(*) FROM projects").fetchone()[0]
+        n += conn.execute("SELECT COUNT(*) FROM nda_meta").fetchone()[0]
     finally:
         conn.close()
+    # Only a truly fresh database (a new deploy) is restored; one where
+    # Trey deleted everything stays empty even if that backup push failed.
     if n:
         return False
     try:

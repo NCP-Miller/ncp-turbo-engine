@@ -127,9 +127,14 @@ def _review_clients():
         anthropic_client = None
     openai_client = None
     try:
-        from lib.api_clients import load_api_keys, make_openai_client
-        keys = load_api_keys()
-        openai_client = make_openai_client(api_key=keys["OPENAI_API_KEY"])
+        # Only the OpenAI key: the shared loader also demands the sourcing
+        # tools' Apollo and Firecrawl keys, which this page does not need.
+        from lib.api_clients import make_openai_client
+        try:
+            openai_key = st.secrets["OPENAI_API_KEY"]
+        except Exception:
+            openai_key = None
+        openai_client = make_openai_client(api_key=openai_key)
     except Exception:
         openai_client = None
     return anthropic_client, openai_client
@@ -277,18 +282,22 @@ def _render_review(review, report=None):
             + " · ".join(f"{_BUCKETS[k]}: {counts[k]}"
                          for k in _BUCKETS if counts.get(k)))
         order = {"modify": 0, "delete": 1, "insert_after": 2, "insert": 2}
+        def _para_key(x):
+            try:
+                return int(x.get("para"))
+            except (TypeError, ValueError):
+                return -1
         for e in sorted(edits, key=lambda x: (order.get(x.get("action"), 3),
-                                              x.get("para") or 0)):
-            i = e.get("para")
-            lab = labels[i] if isinstance(i, int) and 0 <= i < len(labels) \
-                else ""
+                                              _para_key(x))):
+            i = _para_key(e)
+            lab = labels[i] if 0 <= i < len(labels) else ""
             with st.container(border=True):
                 act = e.get("action")
-                if act == "modify" and isinstance(i, int) and i < len(base):
+                if act == "modify" and 0 <= i < len(base):
                     st.caption(f"¶{i}" + (f" · clause {lab}" if lab else ""))
                     st.markdown(_diff_html(base[i], e.get("text") or ""),
                                 unsafe_allow_html=True)
-                elif act == "delete" and isinstance(i, int) and i < len(base):
+                elif act == "delete" and 0 <= i < len(base):
                     st.caption(f"¶{i} deleted")
                     st.markdown("<del style='color:#B00020'>"
                                 f"{html.escape(base[i])}</del>",
@@ -513,6 +522,12 @@ with tab_review:
                  "Start fresh at Round 1 — delete the prior round(s) "
                  "first"],
             ).startswith("Start fresh")
+            if not _start_fresh:
+                deal_type = _existing["deal_type"]
+                ncp_role = _existing["ncp_role"]
+                form_source = _existing["form_source"]
+                st.caption(f"Continuing uses this project's gates: "
+                           f"{deal_type} · {ncp_role} · {form_source}.")
     else:
         proj = next(p for p in projects if p["name"] == mode)
         proj_name = proj["name"]
