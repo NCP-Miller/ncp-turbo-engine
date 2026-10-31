@@ -207,29 +207,57 @@ def _next_paragraph(p):
     """The paragraph that follows p, looking past body-level range markers
     (bookmarks, comment ranges, proofing marks) and into a block-level
     content control; None when a table or the section end comes first."""
-    nxt = p.getnext()
-    while nxt is not None:
+    nxt, node = p.getnext(), p
+    while True:
+        if nxt is None:
+            holder = node.getparent()
+            if holder is not None and holder.tag == W + "sdtContent":
+                node = holder.getparent()
+                nxt = node.getnext()
+                continue
+            return None
         if not _is_tag(nxt) or nxt.tag in _BODY_MARKERS:
             nxt = nxt.getnext()
             continue
         if nxt.tag == W + "sdt":
             first = nxt.find(W + "sdtContent")
-            nxt = first[0] if first is not None and len(first) else None
+            if first is not None and len(first):
+                node, nxt = first[0], first[0]
+            else:
+                node, nxt = nxt, nxt.getnext()
             continue
         return nxt if nxt.tag == W + "p" else None
-    return None
 
 
 def _merge_into_next(p):
+    """Apply a deleted paragraph mark. A paragraph whose text is all gone
+    simply disappears into the next one; a paragraph that still has text
+    is joined with the next and keeps its own properties (numbering,
+    style), as when two clauses are run together. A section break on the
+    following paragraph's mark is carried over so layout survives."""
     nxt = _next_paragraph(p)
     if nxt is None:
         return False
-    content = [c for c in p if _is_tag(c) and c.tag != W + "pPr"]
-    idx = 1 if (len(nxt) and nxt[0].tag == W + "pPr") else 0
-    for c in content:
-        nxt.insert(idx, c)
-        idx += 1
-    p.getparent().remove(p)
+    if not para_text(p).strip():
+        content = [c for c in p if _is_tag(c) and c.tag != W + "pPr"]
+        idx = 1 if (len(nxt) and nxt[0].tag == W + "pPr") else 0
+        for c in content:
+            nxt.insert(idx, c)
+            idx += 1
+        p.getparent().remove(p)
+        return True
+    for c in [c for c in nxt if _is_tag(c) and c.tag != W + "pPr"]:
+        p.append(c)
+    sect = nxt.find(W + "pPr/" + W + "sectPr")
+    if sect is not None:
+        ppr = p.find(W + "pPr")
+        if ppr is None:
+            ppr = _el("pPr")
+            p.insert(0, ppr)
+        for old_sect in ppr.findall(W + "sectPr"):
+            ppr.remove(old_sect)
+        ppr.append(sect)
+    nxt.getparent().remove(nxt)
     return True
 
 
@@ -1254,9 +1282,11 @@ def _place_insertions(p, old, new, runs, segs_of, inserts, ctx, wraps):
         return None
 
     def put_after(el, ins):
-        key = id(el)
-        (last_after.get(key) or el).addnext(ins)
-        last_after[key] = ins
+        # Keyed by id() but holding the element, so the key cannot be
+        # reused by a different element mid-loop.
+        held = last_after.get(id(el))
+        (held[1] if held and held[0] is el else el).addnext(ins)
+        last_after[id(el)] = (el, ins)
 
     for x, (b0, b1), replaced in inserts:
         text = new[b0:b1]
@@ -1685,8 +1715,13 @@ def incoming_changes(upload_bytes, ncp_author=AUTHOR, limit=60):
     ncp = {ncp_author}
 
     def scan(root, where):
+        in_marked_row = set()
+        for tr in root.iter(W + "tr"):
+            if tr.find(W + "trPr/" + W + "del") is not None or \
+                    tr.find(W + "trPr/" + W + "ins") is not None:
+                in_marked_row.update(tr.iter(W + "p"))
         for p in root.iter(W + "p"):
-            if _in_textbox(p) and where == "body":
+            if (_in_textbox(p) and where == "body") or p in in_marked_row:
                 continue
             theirs = _revision_authors(p) - ncp
             if not theirs:
@@ -1754,6 +1789,14 @@ _CLAUSE_START = re.compile(
     r"^(\d+(\.\d+)*\.?|\(?[a-z]\)|\([ivxlc]+\)|[A-Z]\.|section\s+\d+|"
     r"article\s+[ivxlc\d]+)\s+[A-Z\u201c\"(]", re.I)
 _FIELD_LINE = re.compile(r"^[A-Z][A-Za-z .&/-]{0,24}:(\s|$)")
+# Clause captions at the start of a line: "Notices:" or a title of two or
+# more words ending in a period ("Governing Law."). A lone "Company." is
+# too often a mid-paragraph wrap to count.
+_CAPTION_START = re.compile(
+    r"^([A-Z][A-Za-z,&/-]*(\s+[A-Za-z,&/-]+){0,5}:\s|"
+    r"[A-Z][a-z]+(\s+(of|and|the|to|on|for|[A-Z][a-z]+)){1,5}\.\s+[A-Z])")
+_KEEP_HYPHEN = re.compile(r"(^|\W)(non|pre|post|co|self|anti|multi|sub|"
+                          r"inter|cross|third|well|long|short)-$", re.I)
 
 
 def _is_heading_line(s):
@@ -1764,39 +1807,58 @@ def _is_heading_line(s):
             and not s.endswith((",", ";")))
 
 
+def _is_field_line(s):
+    """A signature-style field line ("By: ____", "Name: Jane Doe"), as
+    opposed to a clause whose caption ends in a colon."""
+    return bool(_FIELD_LINE.match(s)) and len(s) <= 45
+
+
 def docx_from_text(text):
     """A plain .docx rebuilt from extracted PDF text, so a PDF upload still
     gets a genuine tracked-changes redline (layout is not preserved).
-    Wrapped lines are rejoined; page numbers and footers are dropped; a
-    new paragraph starts at blank lines, headings, numbered clauses after
-    a finished sentence, and signature-style field lines (By:, Name:)."""
+
+    PDF text arrives as hard-wrapped lines. A line that finishes a
+    sentence well short of the usual line width ends its paragraph; a
+    full-width line is a wrap. Blank lines, headings, numbered clauses,
+    closing and signature lines also start paragraphs. Page numbers and
+    footers are dropped and hyphenated wraps are rejoined."""
     import docx
-    lines = clean_text(text or "").split("\n")
+    lines = [l.strip() for l in clean_text(text or "").split("\n")]
+    lines = [l for l in lines if not (l and _PAGE_FURNITURE.match(l))]
+    widths = sorted(len(l) for l in lines if len(l) > 20)
+    full = widths[int(len(widths) * 0.8)] if widths else 80
     paras, buf = [], []
 
     def flush():
         if buf:
-            paras.append(" ".join(buf))
+            paras.append(" ".join(buf).replace("\u00ad ", ""))
             buf.clear()
 
-    for line in lines:
-        s = line.strip()
+    for s in lines:
         if not s:
             flush()
             continue
-        if _PAGE_FURNITURE.match(s):
-            continue
-        ended = bool(re.search(r"[.:;!?)]\s*$", buf[-1])) if buf else True
-        caps = any(c.isalpha() for c in s) and s.upper() == s
-        if buf and (_is_heading_line(buf[-1])
-                    or (caps and ended)
-                    or _FIELD_LINE.match(s) or _FIELD_LINE.match(buf[0])
-                    or (_CLAUSE_START.match(s)
-                        and re.search(r"[.:;]\s*$", buf[-1]))):
-            flush()
+        if buf:
+            prev = buf[-1]
+            ended = bool(re.search(r"[.:;!?)\]\u201d\"]\s*$", prev))
+            short = len(prev) < 0.85 * full
+            caps = any(c.isalpha() for c in s) and s.upper() == s
+            closing = _CLOSING_CUE.match(prev) and len(prev) <= 40
+            if (_is_heading_line(prev) and len(buf) == 1) or closing \
+                    or _is_field_line(prev) or _is_field_line(s) \
+                    or (ended and (short or caps or _CLAUSE_START.match(s)
+                                   or _CAPTION_START.match(s)
+                                   or SIGNATURE_CUE.match(s)
+                                   or _CLOSING_CUE.match(s))):
+                flush()
+            elif re.search(r"[A-Za-z]-$", prev) and s[:1].islower():
+                if _KEEP_HYPHEN.search(prev):
+                    buf[-1] = prev + "\u00ad"
+                else:
+                    buf[-1] = prev[:-1] + "\u00ad"
         buf.append(s)
     flush()
     d = docx.Document()
     for t in paras:
-        d.add_paragraph(t)
+        d.add_paragraph(t.replace("\u00ad", ""))
     return _save(d)
