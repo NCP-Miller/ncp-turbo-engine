@@ -7177,9 +7177,9 @@
     }
   },
   "last_event": {
-    "type": "discovering_web",
-    "message": "Web discovery pass \u2014 round 4 of 4.",
-    "timestamp": "2026-10-12T21:37:42.612597+00:00",
+    "type": "starting",
+    "message": "Pipeline starting. Niche: Trust administrator, geography: North Carolina, target: 5 memos.",
+    "timestamp": "2026-10-31T17:17:12.420465+00:00",
     "severity": "info"
   },
   "created_at": "2026-10-12T19:59:05.216306+00:00",
