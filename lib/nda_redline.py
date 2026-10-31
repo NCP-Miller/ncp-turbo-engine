@@ -1083,30 +1083,35 @@ def _fldsimple_to_complex(fs):
 
 def _dissolve_fields(p, ops, ctx, delete_all=False):
     """Fields whose displayed result this edit changes become NCP's plain
-    text, as a tracked change: the field's code is marked deleted, so
-    accepting leaves NCP's words (Word would otherwise regenerate the
-    result and undo them) and rejecting restores the counterparty's live
-    field. Untouched fields, and anything in text boxes or drawings, are
-    left alone. With delete_all (the paragraph is being deleted) simple
-    fields are rewritten so every part of them can be deleted."""
+    text (Word would otherwise regenerate the result and undo NCP's
+    words). Word and LibreOffice treat a field as one unit when accepting
+    changes, so marking only its code as deleted would take the displayed
+    text with it; the field is therefore turned into plain text directly,
+    and rejecting restores the text but not the live link. Untouched
+    fields, and anything in text boxes or drawings, are left alone. With
+    delete_all (the paragraph is being deleted) simple fields are rewritten
+    as complex fields so the whole field is deleted as a unit."""
     runs = _collect_runs(p)
     for fs in [x for x in p.iter(W + "fldSimple") if _outside_objects(x, p)]:
         span = [(rs, re_) for r, rs, re_, _ in runs if fs in r.iterancestors()]
         start = min((s for s, _ in span), default=0)
         end = max((e for _, e in span), default=0)
-        if delete_all or _touches(start, end, ops):
+        if delete_all:
             _fldsimple_to_complex(fs)
+        elif _touches(start, end, ops):
+            _unwrap(fs)
     if delete_all:
         return
     for f in _complex_fields(_collect_runs(p)):
         if not _touches(f["start"], f["stop"], ops):
             continue
         for r in f["runs"]:
-            if r.getparent() is None or _run_text(r):
-                continue
-            d = ctx.rev("del")
-            r.getparent().replace(r, d)
-            d.append(_as_deleted(r))
+            for ch in list(r):
+                if _is_tag(ch) and ch.tag in (W + "fldChar", W + "instrText"):
+                    r.remove(ch)
+            if r.getparent() is not None and \
+                    not [c for c in r if _is_tag(c) and c.tag != W + "rPr"]:
+                r.getparent().remove(r)
 
 
 def _clean_rpr(rpr):
