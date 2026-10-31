@@ -50,7 +50,7 @@ _RANGE_MARKS = ("moveFromRangeStart", "moveFromRangeEnd", "moveToRangeStart",
                 "customXmlInsRangeEnd", "customXmlDelRangeStart",
                 "customXmlDelRangeEnd")
 _STORY_PART = re.compile(r"^/word/(header|footer)\d*\.xml$|"
-                         r"^/word/(footnotes|endnotes)\.xml$")
+                         r"^/word/(footnotes|endnotes|comments)\.xml$")
 SIGNATURE_CUE = re.compile(
     r"^\s*(in witness whereof|dated\b|date:|by:|by\s*_|name:|title:|"
     r"signature|authorized signature|accepted and agreed|agreed and accepted|"
@@ -195,11 +195,34 @@ def count_revisions(docx_bytes):
 
 # ── Accept all (baseline + clean deliverable) ───────────────────────
 
-def _merge_into_next(p):
+_BODY_MARKERS = {W + t for t in (
+    "bookmarkStart", "bookmarkEnd", "permStart", "permEnd", "proofErr",
+    "commentRangeStart", "commentRangeEnd", "moveFromRangeStart",
+    "moveFromRangeEnd", "moveToRangeStart", "moveToRangeEnd",
+    "customXmlInsRangeStart", "customXmlInsRangeEnd",
+    "customXmlDelRangeStart", "customXmlDelRangeEnd")}
+
+
+def _next_paragraph(p):
+    """The paragraph that follows p, looking past body-level range markers
+    (bookmarks, comment ranges, proofing marks) and into a block-level
+    content control; None when a table or the section end comes first."""
     nxt = p.getnext()
-    while nxt is not None and not _is_tag(nxt):
-        nxt = nxt.getnext()
-    if nxt is None or nxt.tag != W + "p":
+    while nxt is not None:
+        if not _is_tag(nxt) or nxt.tag in _BODY_MARKERS:
+            nxt = nxt.getnext()
+            continue
+        if nxt.tag == W + "sdt":
+            first = nxt.find(W + "sdtContent")
+            nxt = first[0] if first is not None and len(first) else None
+            continue
+        return nxt if nxt.tag == W + "p" else None
+    return None
+
+
+def _merge_into_next(p):
+    nxt = _next_paragraph(p)
+    if nxt is None:
         return False
     content = [c for c in p if _is_tag(c) and c.tag != W + "pPr"]
     idx = 1 if (len(nxt) and nxt[0].tag == W + "pPr") else 0
@@ -250,6 +273,10 @@ def _accept_tree(root):
             p = owner.getparent()
             if p is not None and p.tag == W + "p":
                 _merge_into_next(p)
+    # A table whose every row was deleted goes with its rows.
+    for tbl in list(root.iter(W + "tbl")):
+        if tbl.find(W + "tr") is None and tbl.getparent() is not None:
+            tbl.getparent().remove(tbl)
 
 
 def accept_all(docx_bytes):
@@ -282,7 +309,7 @@ def story_revisions(docx_bytes):
     with zipfile.ZipFile(io.BytesIO(docx_bytes)) as z:
         for name in z.namelist():
             if re.match(r"^word/(document|header\d*|footer\d*|footnotes|"
-                        r"endnotes)\.xml$", name):
+                        r"endnotes|comments)\.xml$", name):
                 total += len(_REVISION_TAG.findall(z.read(name)))
     return total
 
@@ -1490,13 +1517,11 @@ def build(source_bytes, plan, author=AUTHOR, when=None):
         old = para_text(p)
         _apply_ops(p, old, [("delete", 0, len(old), 0, 0)] if old else [],
                    ctx, delete_all=True)
-        nxt = p.getnext()
-        while nxt is not None and not _is_tag(nxt):
-            nxt = nxt.getnext()
+        nxt = _next_paragraph(p)
         # A paragraph mark that carries a section break stays, or accepting
         # the deletion would take the page layout with it.
         holds_section = p.find(W + "pPr/" + W + "sectPr") is not None
-        if nxt is not None and nxt.tag == W + "p" and not holds_section:
+        if nxt is not None and not holds_section:
             _mark_paragraph(p, ctx, "del")
             expected[i] = None
         else:
@@ -1616,30 +1641,95 @@ def build(source_bytes, plan, author=AUTHOR, when=None):
 
 # ── Counter-round support ────────────────────────────────────────────
 
-def incoming_changes(upload_bytes, limit=40):
-    """The counterparty's live tracked changes, per paragraph, as
-    (before, after) text pairs."""
-    doc = _load(upload_bytes)
+def _text_as(p, accept_authors):
+    """Paragraph text with only the listed authors' revisions accepted and
+    everyone else's rejected (None accepts every author)."""
+    parts = []
+
+    def ok(el):
+        return accept_authors is None or el.get(W + "author") in accept_authors
+
+    def walk(el):
+        for ch in el:
+            if not _is_tag(ch):
+                continue
+            if ch.tag == W + "r":
+                parts.append(_run_text(ch))
+            elif ch.tag in _INS:
+                if ok(ch):
+                    walk(ch)
+            elif ch.tag in _DEL:
+                if not ok(ch):
+                    walk(ch)
+            elif ch.tag in _CONTAINERS:
+                walk(ch)
+    walk(p)
+    return "".join(parts)
+
+
+def _revision_authors(el):
+    return {x.get(W + "author") or "?"
+            for x in el.iter(W + "ins", W + "del", W + "moveFrom", W + "moveTo",
+                             W + "rPrChange", W + "pPrChange")}
+
+
+def incoming_changes(upload_bytes, ncp_author=AUTHOR, limit=60):
+    """The counterparty's live tracked changes, measured against NCP's own
+    markup: NCP-authored revisions count as accepted, so a counterparty
+    striking NCP language shows up as a change to NCP's text. Covers the
+    body, headers, footers, footnotes, endnotes and comments, table rows,
+    and formatting-only changes."""
+    from lxml import etree
+    import zipfile
     out = []
-    for p in list_paragraphs(doc):
-        has_rev = any(True for _ in p.iter(W + "ins", W + "del",
-                                           W + "moveFrom", W + "moveTo"))
-        if not has_rev:
-            continue
-        before, after = para_text(p, "reject"), para_text(p, "accept")
-        if before != after or _mark(p):
-            authors = sorted({el.get(W + "author") or "?"
-                              for el in p.iter(W + "ins", W + "del")})
-            out.append({"before": before, "after": after,
-                        "authors": authors, "mark": _mark(p)})
-        if len(out) >= limit:
-            break
-    return out
+    ncp = {ncp_author}
+
+    def scan(root, where):
+        for p in root.iter(W + "p"):
+            if _in_textbox(p) and where == "body":
+                continue
+            theirs = _revision_authors(p) - ncp
+            if not theirs:
+                continue
+            before, after = _text_as(p, ncp), _text_as(p, None)
+            if before != after or _mark(p):
+                out.append({"before": before, "after": after,
+                            "authors": sorted(theirs), "mark": _mark(p),
+                            "where": where})
+            elif p.find(".//" + W + "rPrChange") is not None or \
+                    p.find(".//" + W + "pPrChange") is not None:
+                out.append({"before": before, "after": after,
+                            "authors": sorted(theirs), "mark": None,
+                            "where": where, "kind": "format"})
+        for tr in root.iter(W + "tr"):
+            mark = tr.find(W + "trPr/" + W + "del")
+            kind = "row deleted"
+            if mark is None:
+                mark, kind = tr.find(W + "trPr/" + W + "ins"), "row inserted"
+            if mark is not None and mark.get(W + "author") not in ncp:
+                view_as = set() if kind == "row deleted" else None
+                text = " | ".join(
+                    " ".join(_text_as(cp, view_as) for cp in c.iter(W + "p"))
+                    for c in tr.iter(W + "tc"))
+                out.append({"before": text if kind == "row deleted" else "",
+                            "after": text if kind == "row inserted" else "",
+                            "authors": [mark.get(W + "author") or "?"],
+                            "mark": None, "where": where, "kind": kind})
+
+    doc = _load(upload_bytes)
+    scan(doc.element.body, "body")
+    with zipfile.ZipFile(io.BytesIO(upload_bytes)) as z:
+        for name in z.namelist():
+            m = re.match(r"^word/(header\d*|footer\d*|footnotes|endnotes|"
+                         r"comments)\.xml$", name)
+            if m:
+                scan(etree.fromstring(z.read(name)), m.group(1))
+    return out[:limit]
 
 
-def untracked_changes(prev_texts, new_texts, limit=40):
-    """Paragraph-level differences between NCP's last position and the
-    counterparty's new file (for files sent without live markup)."""
+def untracked_changes(prev_texts, new_texts, limit=60):
+    """Every paragraph-level difference between NCP's last position and the
+    counterparty's new file, tracked or not, ignoring blank-line churn."""
     a = [norm_text(t) for t in prev_texts]
     b = [norm_text(t) for t in new_texts]
     sm = difflib.SequenceMatcher(None, a, b, autojunk=False)
@@ -1647,37 +1737,65 @@ def untracked_changes(prev_texts, new_texts, limit=40):
     for tag, i1, i2, j1, j2 in sm.get_opcodes():
         if tag == "equal":
             continue
-        out.append({"kind": tag,
-                    "ncp_last": [prev_texts[k] for k in range(i1, i2)
-                                 if prev_texts[k].strip()],
-                    "theirs": [new_texts[k] for k in range(j1, j2)
-                               if new_texts[k].strip()],
-                    "paras": list(range(j1, j2))})
-        if len(out) >= limit:
-            break
-    return [o for o in out if o["ncp_last"] or o["theirs"]]
+        entry = {"kind": tag,
+                 "ncp_last": [prev_texts[k] for k in range(i1, i2)
+                              if prev_texts[k].strip()],
+                 "theirs": [new_texts[k] for k in range(j1, j2)
+                            if new_texts[k].strip()],
+                 "paras": list(range(j1, j2))}
+        if entry["ncp_last"] or entry["theirs"]:
+            out.append(entry)
+    return out[:limit]
+
+
+_PAGE_FURNITURE = re.compile(
+    r"^(page\s+\d+(\s+of\s+\d+)?|\d{1,3}|-\s*\d+\s*-|\[?\d+\]?)$", re.I)
+_CLAUSE_START = re.compile(
+    r"^(\d+(\.\d+)*\.?|\(?[a-z]\)|\([ivxlc]+\)|[A-Z]\.|section\s+\d+|"
+    r"article\s+[ivxlc\d]+)\s+[A-Z\u201c\"(]", re.I)
+_FIELD_LINE = re.compile(r"^[A-Z][A-Za-z .&/-]{0,24}:(\s|$)")
+
+
+def _is_heading_line(s):
+    """A short all-caps line (a title or clause heading). Long all-caps
+    lines are wrapped disclaimer text and are joined as usual."""
+    letters = [c for c in s if c.isalpha()]
+    return (bool(letters) and s.upper() == s and len(s) <= 60
+            and not s.endswith((",", ";")))
 
 
 def docx_from_text(text):
     """A plain .docx rebuilt from extracted PDF text, so a PDF upload still
-    gets a genuine tracked-changes redline (layout is not preserved)."""
+    gets a genuine tracked-changes redline (layout is not preserved).
+    Wrapped lines are rejoined; page numbers and footers are dropped; a
+    new paragraph starts at blank lines, headings, numbered clauses after
+    a finished sentence, and signature-style field lines (By:, Name:)."""
     import docx
-    lines = (text or "").replace("\r", "").split("\n")
+    lines = clean_text(text or "").split("\n")
     paras, buf = [], []
+
+    def flush():
+        if buf:
+            paras.append(" ".join(buf))
+            buf.clear()
+
     for line in lines:
         s = line.strip()
         if not s:
-            if buf:
-                paras.append(" ".join(buf))
-                buf = []
+            flush()
             continue
-        if buf and (re.match(r"^(\(?[0-9a-zA-Z]{1,3}[.)]|[•\-])\s", s)
-                    or re.search(r"[.:;]$", buf[-1])):
-            paras.append(" ".join(buf))
-            buf = []
+        if _PAGE_FURNITURE.match(s):
+            continue
+        ended = bool(re.search(r"[.:;!?)]\s*$", buf[-1])) if buf else True
+        caps = any(c.isalpha() for c in s) and s.upper() == s
+        if buf and (_is_heading_line(buf[-1])
+                    or (caps and ended)
+                    or _FIELD_LINE.match(s) or _FIELD_LINE.match(buf[0])
+                    or (_CLAUSE_START.match(s)
+                        and re.search(r"[.:;]\s*$", buf[-1]))):
+            flush()
         buf.append(s)
-    if buf:
-        paras.append(" ".join(buf))
+    flush()
     d = docx.Document()
     for t in paras:
         d.add_paragraph(t)

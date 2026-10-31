@@ -542,33 +542,33 @@ with tab_review:
         ctx = nda.prior_context(pid)
         prev_rounds = nda.list_rounds(pid)
 
-        # Counter-round intake: what did the counterparty change? Live
-        # markup is read directly; a file with none is diffed against
-        # NCP's last position (the Earthling pattern).
+        # Counter-round intake: what did the counterparty change? Their
+        # tracked changes are read against NCP's own markup, and the whole
+        # file is compared with NCP's last position, which also catches
+        # anything changed without Track Changes (the Earthling pattern).
         cp_changes = ""
         if prev_rounds and not from_pdf:
             tracked = R.incoming_changes(up.getvalue())
             if tracked:
-                _ins_ct, _del_ct = nda.count_tracked_changes(up.getvalue())
-                st.caption(f"Incoming file markup: {_ins_ct} insertions, "
-                           f"{_del_ct} deletions — live redline confirmed; "
-                           f"their changes are accepted into the baseline so "
-                           f"NCP's markup is a single layer.")
-                cp_changes = nda.format_counterparty_changes(tracked=tracked)
+                st.caption(f"Incoming file: {len(tracked)} tracked "
+                           f"change(s) by the counterparty — accepted into the "
+                           f"baseline so NCP's markup is a single layer.")
             else:
                 st.warning(
                     "⚠️ This counter-round file contains **no live tracked "
-                    "changes** — the counterparty may have accepted changes "
-                    "before sending (the Earthling pattern). The review "
-                    "compares it with NCP's last position; ask them to keep "
-                    "Track Changes on.")
-                try:
-                    _, _, prev_rep, _ = _build_for(prev_rounds[-1])
-                    cp_changes = nda.format_counterparty_changes(
-                        untracked=R.untracked_changes(prev_rep["expected"],
-                                                      view["texts"]))
-                except Exception:
-                    cp_changes = ""
+                    "changes** from the counterparty — they may have accepted "
+                    "changes before sending (the Earthling pattern). The "
+                    "review compares it with NCP's last position; ask them "
+                    "to keep Track Changes on.")
+            untracked = []
+            try:
+                _, _, prev_rep, _ = _build_for(prev_rounds[-1])
+                untracked = R.untracked_changes(prev_rep["expected"],
+                                                view["texts"])
+            except Exception:
+                untracked = []
+            cp_changes = nda.format_counterparty_changes(
+                tracked=tracked, untracked=untracked)
 
         with st.status("Reviewing the NDA against the rulebook "
                        "(a few minutes with Fable's thinking)...",

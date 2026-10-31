@@ -614,23 +614,40 @@ def build_deliverables(source_bytes, review):
 
 def format_counterparty_changes(tracked=None, untracked=None):
     """Text block describing what the counterparty changed, for the
-    reviewer's prompt."""
+    reviewer's prompt. Tracked changes are measured against NCP's own
+    markup, so striking NCP language shows as a change to NCP's text."""
     lines = []
+    if tracked:
+        lines.append("Their tracked changes (measured against NCP's last "
+                     "markup):")
     for c in tracked or []:
         who = ", ".join(c.get("authors") or [])
-        if c.get("mark") == "ins" and not c.get("before"):
-            lines.append(f"- Tracked insertion ({who}): {c['after']}")
+        where = "" if c.get("where", "body") == "body" else \
+            f" in {c['where']}"
+        kind = c.get("kind")
+        if kind == "format":
+            lines.append(f"- Formatting-only change{where} ({who}): "
+                         f"{c['after'][:200]}")
+        elif kind in ("row deleted", "row inserted"):
+            lines.append(f"- Table {kind}{where} ({who}): "
+                         f"{c['before'] or c['after']}")
+        elif c.get("mark") == "ins" and not c.get("before"):
+            lines.append(f"- Inserted{where} ({who}): {c['after']}")
         elif c.get("mark") == "del" and not c.get("after"):
-            lines.append(f"- Tracked deletion ({who}): {c['before']}")
+            lines.append(f"- Deleted{where} ({who}): {c['before']}")
         else:
-            lines.append(f"- Tracked change ({who}):\n  was: {c['before']}\n"
-                         f"  now: {c['after']}")
+            lines.append(f"- Changed{where} ({who}):\n  NCP's markup: "
+                         f"{c['before']}\n  now: {c['after']}")
+    if untracked:
+        lines.append("Every difference between NCP's last position and "
+                     "their file once all changes are accepted (catches "
+                     "edits they made without Track Changes):")
     for u in untracked or []:
         paras = ", ".join(f"¶{p}" for p in u.get("paras", [])) or "removed"
         was = " / ".join(u.get("ncp_last") or []) or "(nothing)"
         now = " / ".join(u.get("theirs") or []) or "(deleted)"
-        lines.append(f"- UNTRACKED change at {paras}:\n  NCP's last turn: "
-                     f"{was}\n  their file now: {now}")
+        lines.append(f"- At {paras}:\n  NCP's last position: {was}\n"
+                     f"  their file now: {now}")
     return "\n".join(lines)
 
 
