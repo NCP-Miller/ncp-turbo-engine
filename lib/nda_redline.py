@@ -566,6 +566,27 @@ def _loose_pattern(s):
     return "".join(out)
 
 
+_CONTROL = re.compile(r"[\x00-\x08\x0e-\x1f\x7f]")
+
+
+def clean_text(text):
+    """Make reviewer text safe for Word XML: Windows and old-Mac line
+    endings, vertical tabs, form feeds and Unicode line separators become
+    line breaks; other control characters are dropped."""
+    t = (text or "").replace("\r\n", "\n")
+    t = re.sub(r"[\r\x0b\x0c\u2028\u2029]", "\n", t)
+    return _CONTROL.sub("", t)
+
+
+def _keep_edges(new, old):
+    """Carry the original paragraph's leading and trailing whitespace (a
+    tab indent, a trailing space) onto the revised text, so trimming the
+    reviewer's text never shows up as a tracked deletion."""
+    lead = re.match(r"^\s*", old).group()
+    trail = re.search(r"\s*$", old).group() if old.strip() else ""
+    return lead + new.strip() + trail
+
+
 def _strip_label(text, label):
     t = (text or "").strip()
     if label:
@@ -628,7 +649,7 @@ def plan_from_edits(edits, view):
             notes.append(f"Edit without a valid paragraph number skipped: "
                          f"{(e.get('text') or '')[:80]}")
             continue
-        text = re.sub(r" ?⏎ ?", "\n", e.get("text") or "")
+        text = clean_text(re.sub(r" ?⏎ ?", "\n", e.get("text") or ""))
         if view.get("curly_quotes"):
             text = smarten_quotes(text)
         if action == "modify":
@@ -637,7 +658,8 @@ def plan_from_edits(edits, view):
                 continue
             if i in plan["modify"]:
                 notes.append(f"Two edits targeted ¶{i}; the later one was used.")
-            plan["modify"][i] = _strip_label(text, labels[i])
+            plan["modify"][i] = _keep_edges(_strip_label(text, labels[i]),
+                                            texts[i])
         elif action == "delete":
             if 0 <= i < n:
                 plan["delete"].append(i)
@@ -696,7 +718,7 @@ def plan_from_legacy(edits, view):
 
     for e in edits or []:
         orig = (e.get("original") or "").strip()
-        revised = e.get("revised") or ""
+        revised = clean_text(e.get("revised") or "")
         if view.get("curly_quotes"):
             revised = smarten_quotes(revised)
         if not orig:
@@ -734,7 +756,7 @@ def plan_from_legacy(edits, view):
     for e in edits or []:
         if (e.get("original") or "").strip():
             continue
-        body = (e.get("revised") or "").strip()
+        body = clean_text(e.get("revised") or "").strip()
         if not body:
             continue
         if view.get("curly_quotes"):
@@ -768,9 +790,27 @@ def norm_text(s):
     return "".join(_norm_tok(t) for t in _TOKEN.findall(s or "")).strip()
 
 
+_GLUE_WORDS = {"the", "a", "an", "of", "and", "or", "to", "in", "for", "by",
+               "with", "on", "at", "its", "their", "any", "such"}
+
+
 def _is_glue(tokens):
-    words = [t for t in tokens if not t.isspace() and re.match(r"\w", t)]
-    return len(words) <= 2 and sum(len(t) for t in tokens) <= 14
+    """Unchanged text short and plain enough to fold into the surrounding
+    change so the banker reads whole phrases: plain spaces, light
+    punctuation and up to two function words. Defined terms, tabs and line
+    breaks are never folded, so their formatting and layout survive."""
+    words = 0
+    for t in tokens:
+        if t.isspace():
+            if set(t) != {" "}:
+                return False
+        elif re.match(r"\w", t):
+            if t.lower() not in _GLUE_WORDS:
+                return False
+            words += 1
+        elif t not in ",;:.()":
+            return False
+    return words <= 2 and sum(len(t) for t in tokens) <= 14
 
 
 def diff_ops(old, new):
@@ -878,6 +918,9 @@ _OBJECT_TAGS = {W + "drawing", W + "pict", W + "object", MC + "AlternateContent"
 _PRINTING_ATOMS = {W + "footnoteReference", W + "endnoteReference", W + "sym",
                    W + "drawing", W + "pict", W + "object",
                    MC + "AlternateContent", W + "commentReference"}
+# Elements whose content belongs to the counterparty's object (a link, a
+# content control, a field): new text at their edge goes outside them.
+_WRAPPER_TAGS = {W + "hyperlink", W + "sdt", W + "fldSimple"}
 
 
 def _outside_objects(el, p):
@@ -889,37 +932,69 @@ def _outside_objects(el, p):
     return True
 
 
-def _collapse_fields(p):
-    """Turn volatile fields (DATE, SEQ and the like) that sit wholly inside
-    this paragraph's own runs into their displayed text (rulebook: they
-    otherwise surface as spurious changes). Other fields, and anything
-    inside text boxes or drawings, keep working."""
-    for fs in [x for x in p.iter(W + "fldSimple") if _outside_objects(x, p)]:
-        code = (fs.get(W + "instr") or "").split()
-        if code and code[0].upper() in _VOLATILE_FIELDS:
-            _unwrap(fs)
-    stack, complete = [], []
-    for r, _, _, _ in _collect_runs(p):
+def _complex_fields(runs):
+    """Complex fields among a paragraph's runs: dicts with the field code,
+    the runs that make it up, its displayed-result character span and its
+    begin/end runs. Only fields wholly inside the paragraph are returned."""
+    stack, done = [], []
+    for idx, (r, rs, re_, _) in enumerate(runs):
         for ch in r:
             if not _is_tag(ch):
                 continue
             if ch.tag == W + "fldChar":
                 kind = ch.get(W + "fldCharType")
                 if kind == "begin":
-                    stack.append({"runs": [r], "code": ""})
+                    stack.append({"runs": [r], "code": "", "begin": r,
+                                  "start": rs, "first": idx, "sep": None})
                 elif kind == "separate" and stack:
                     stack[-1]["runs"].append(r)
+                    stack[-1]["start"] = re_
+                    stack[-1]["sep"] = idx
                 elif kind == "end" and stack:
                     f = stack.pop()
+                    f.update(end=r, stop=rs, last=idx)
                     f["runs"].append(r)
-                    if not stack:
-                        complete.append(f)
+                    done.append(f)
             elif ch.tag == W + "instrText" and stack:
                 stack[-1]["code"] += ch.text or ""
                 stack[-1]["runs"].append(r)
-    for f in complete:
+    for f in done:
+        f["members"] = set(range((f["sep"] if f["sep"] is not None
+                                  else f["first"]) + 1, f["last"]))
+    return done
+
+
+def _touches(start, end, ops):
+    """Does the edit script delete inside, or insert strictly inside, the
+    character span [start, end)?"""
+    for tag, a0, a1, b0, b1 in ops or []:
+        if tag in ("delete", "replace") and a1 > a0 and a0 < end and a1 > start:
+            return True
+        x = a1 if tag == "replace" else a0
+        if tag in ("insert", "replace") and b1 > b0 and start < x < end:
+            return True
+    return False
+
+
+def _collapse_fields(p, ops=None):
+    """Turn fields into their displayed text where they would otherwise
+    misbehave: volatile fields (DATE, SEQ and the like, which the rulebook
+    says surface as spurious changes) and any field whose displayed result
+    this edit changes (or Word would regenerate it and undo NCP's words).
+    Other fields, and anything inside text boxes or drawings, keep working."""
+    runs = _collect_runs(p)
+    for fs in [x for x in p.iter(W + "fldSimple") if _outside_objects(x, p)]:
+        span = [(rs, re_) for r, rs, re_, _ in runs if fs in r.iterancestors()]
+        start = min((s for s, _ in span), default=0)
+        end = max((e for _, e in span), default=0)
+        code = (fs.get(W + "instr") or "").split()
+        if (code and code[0].upper() in _VOLATILE_FIELDS) or \
+                _touches(start, end, ops):
+            _unwrap(fs)
+    for f in _complex_fields(_collect_runs(p)):
         code = f["code"].split()
-        if not code or code[0].upper() not in _VOLATILE_FIELDS:
+        if not ((code and code[0].upper() in _VOLATILE_FIELDS)
+                or _touches(f["start"], f["stop"], ops)):
             continue
         for r in f["runs"]:
             for ch in list(r):
@@ -946,6 +1021,20 @@ def _clean_rpr(rpr):
     return rpr
 
 
+def _emphasized(r):
+    rpr = r.find(W + "rPr") if r is not None else None
+    if rpr is None:
+        return False
+    for tag in ("b", "i", "u", "caps", "smallCaps", "strike", "highlight"):
+        el = rpr.find(W + tag)
+        if el is not None and (el.get(W + "val") or "true").lower() not in (
+                "0", "false", "none", "off"):
+            return True
+    style = rpr.find(W + "rStyle")
+    return style is not None and "hyperlink" in (style.get(W + "val") or
+                                                 "").lower()
+
+
 def _text_run(text, rpr):
     r = _el("r")
     if rpr is not None:
@@ -965,37 +1054,47 @@ def _text_run(text, rpr):
     return r
 
 
-def _slice_run(r, rs, slices):
+def _segment_run(r, rs, bounds):
+    """Rebuild run r as ordered segments [(start, end, new_run, is_atom)]:
+    text cut at `bounds`, and every zero-width atom (footnote mark, symbol,
+    image, field character) in a segment of its own so it is deleted only
+    when it sits strictly inside a deletion."""
     rpr = r.find(W + "rPr")
-    outs = []
-    for _ in slices:
+
+    def fresh():
         nr = _el("r")
         for k, v in r.attrib.items():
             nr.set(k, v)
         if rpr is not None:
             nr.append(copy.deepcopy(rpr))
-        outs.append(nr)
-    pos = rs
+        return nr
+
+    segs, cur, pos = [], None, rs
     for child, txt in _run_atoms(r):
         n = len(txt)
         if n == 0:
-            k = next((j for j, (s, e) in enumerate(slices) if s <= pos < e),
-                     len(slices) - 1)
-            outs[k].append(copy.deepcopy(child))
-            continue
-        for k, (s, e) in enumerate(slices):
-            lo, hi = max(pos, s), min(pos + n, e)
-            if lo >= hi:
+            if child.tag == W + "lastRenderedPageBreak":
                 continue
+            nr = fresh()
+            nr.append(copy.deepcopy(child))
+            segs.append([pos, pos, nr, True])
+            cur = None
+            continue
+        cuts = [pos] + [b for b in bounds if pos < b < pos + n] + [pos + n]
+        for lo, hi in zip(cuts, cuts[1:]):
+            if cur is None or cur[1] != lo or any(b == lo for b in bounds):
+                cur = [lo, lo, fresh(), False]
+                segs.append(cur)
             if child.tag in (W + "t", W + "delText"):
                 t = _el("t")
                 t.text = txt[lo - pos:hi - pos]
                 t.set(XML_SPACE, "preserve")
-                outs[k].append(t)
+                cur[2].append(t)
             else:
-                outs[k].append(copy.deepcopy(child))
+                cur[2].append(copy.deepcopy(child))
+            cur[1] = hi
         pos += n
-    return outs
+    return [tuple(s) for s in segs]
 
 
 def _as_deleted(r):
@@ -1023,10 +1122,13 @@ def _rpr_key(r):
 
 
 def _apply_ops(p, old, ops, ctx, delete_all=False):
-    """Rewrite paragraph p in place so it carries the edit script. With
-    delete_all, every run goes, including zero-width ones (footnote marks,
-    symbols, images)."""
+    """Rewrite paragraph p in place so it carries the edit script.
+
+    Returns (runs, segments_by_run, inserts, wrappers) for
+    _place_insertions; wrappers are measured before any run is replaced.
+    With delete_all every run goes, including zero-width ones."""
     runs = _collect_runs(p)
+    wraps = _wrapper_spans(p, runs)
     cuts = set()
     deleted, inserts = [], []
     for tag, a0, a1, b0, b1 in ops:
@@ -1034,112 +1136,154 @@ def _apply_ops(p, old, ops, ctx, delete_all=False):
         if tag in ("delete", "replace") and a1 > a0:
             deleted.append((a0, a1))
         if tag in ("insert", "replace") and b1 > b0:
-            inserts.append((a1 if tag == "replace" else a0, (b0, b1)))
+            inserts.append((a1 if tag == "replace" else a0, (b0, b1),
+                            (a0, a1) if tag == "replace" else None))
 
-    def is_del(s, e):
+    def is_del(s, e, atom):
+        if delete_all:
+            return True
+        if atom:
+            return any(a0 < s < a1 for a0, a1 in deleted)
         return any(a0 <= s and e <= a1 for a0, a1 in deleted)
 
-    slices_of = {}
+    segs_of = {}
     for r, rs, re_, top in runs:
         if re_ == rs:
-            printing = any(_is_tag(c) and c.tag in _PRINTING_ATOMS for c in r)
-            if delete_all or (printing and any(a0 < rs < a1
-                                               for a0, a1 in deleted)):
+            if delete_all or (any(_is_tag(c) and c.tag in _PRINTING_ATOMS
+                                  for c in r)
+                              and any(a0 < rs < a1 for a0, a1 in deleted)):
                 d = ctx.rev("del")
                 r.getparent().replace(r, d)
                 d.append(_as_deleted(r))
             continue
-        bounds = sorted({rs, re_} | {c for c in cuts if rs < c < re_})
-        spans = list(zip(bounds, bounds[1:]))
-        if len(spans) == 1 and not is_del(*spans[0]):
-            slices_of[id(r)] = [(rs, re_, r)]
+        bounds = sorted(c for c in cuts if rs < c < re_)
+        has_atoms = any(t == "" and c.tag != W + "lastRenderedPageBreak"
+                        for c, t in _run_atoms(r))
+        if not bounds and not has_atoms and not is_del(rs, re_, False):
+            segs_of[id(r)] = [(rs, re_, r, False)]
             continue
-        built = _slice_run(r, rs, spans)
         elems = []
-        for (s, e), nr in zip(spans, built):
-            if is_del(s, e):
+        for s, e, nr, atom in _segment_run(r, rs, bounds):
+            if is_del(s, e, atom):
                 d = ctx.rev("del")
                 d.append(_as_deleted(nr))
-                elems.append((s, e, d))
+                elems.append((s, e, d, atom))
             else:
-                elems.append((s, e, nr))
+                elems.append((s, e, nr, atom))
         parent = r.getparent()
         at = parent.index(r)
         parent.remove(r)
-        for k, (_, _, el) in enumerate(elems):
+        for k, (_, _, el, _) in enumerate(elems):
             parent.insert(at + k, el)
-        slices_of[id(r)] = elems
-    return runs, slices_of, inserts
+        segs_of[id(r)] = elems
+    return runs, segs_of, inserts, wraps
 
 
-def _place_insertions(p, old, new, runs, slices_of, inserts, ctx):
+def _wrapper_spans(p, runs):
+    """Per run: the wrappers around it as (start, end, before_el, after_el),
+    outermost last. Wrappers are hyperlinks, content controls and simple
+    fields (elements) and complex-field results (begin/end runs)."""
+    spans = {}
+    for r, rs, re_, _ in runs:
+        a = r.getparent()
+        while a is not None and a is not p:
+            if a.tag in _WRAPPER_TAGS:
+                sp = spans.setdefault(id(a), [rs, re_, a])
+                sp[0], sp[1] = min(sp[0], rs), max(sp[1], re_)
+            a = a.getparent()
+    per_run = {}
+    for idx, (r, rs, re_, _) in enumerate(runs):
+        ws = []
+        a = r.getparent()
+        while a is not None and a is not p:
+            if a.tag in _WRAPPER_TAGS:
+                s, e, el = spans[id(a)]
+                ws.append((s, e, el, el))
+            a = a.getparent()
+        per_run[id(r)] = ws
+    for f in _complex_fields(runs):
+        for idx in f["members"]:
+            r = runs[idx][0]
+            per_run.setdefault(id(r), []).append(
+                (f["start"], f["stop"], f["begin"], f["end"]))
+    for ws in per_run.values():
+        ws.sort(key=lambda w: w[1] - w[0])
+    return per_run
+
+
+def _place_insertions(p, old, new, runs, segs_of, inserts, ctx, wraps):
     text_runs = [x for x in runs if x[2] > x[1]]
     weights = {}
     for r, rs, re_, _ in text_runs:
         k = _rpr_key(r)
         weights[k] = weights.get(k, 0) + (re_ - rs)
     dominant = max(weights, key=weights.get) if weights else b""
-    span_of_top = {}
-    for r, rs, re_, top in text_runs:
-        lo, hi = span_of_top.get(id(top), (rs, re_))
-        span_of_top[id(top)] = (min(lo, rs), max(hi, re_))
     last_after = {}
 
-    def in_link(top, r):
-        return top is not r and top.tag == W + "hyperlink"
+    def run_at(x, after):
+        for r, rs, re_, t in text_runs:
+            if (rs < x <= re_) if after else (rs <= x < re_):
+                return r
+        return None
 
-    for x, (b0, b1) in inserts:
+    def put_after(el, ins):
+        key = id(el)
+        (last_after.get(key) or el).addnext(ins)
+        last_after[key] = ins
+
+    for x, (b0, b1), replaced in inserts:
         text = new[b0:b1]
-        prev = next(((r, rs, re_, t) for r, rs, re_, t in text_runs
-                     if rs < x <= re_), None)
-        nxt = next(((r, rs, re_, t) for r, rs, re_, t in text_runs
-                    if rs <= x < re_), None)
-        if prev and nxt:
-            if in_link(prev[3], prev[0]) and not in_link(nxt[3], nxt[0]):
-                choice = (nxt, "before")
-            elif in_link(nxt[3], nxt[0]) and not in_link(prev[3], prev[0]):
-                choice = (prev, "after")
-            elif _rpr_key(prev[0]) == dominant or _rpr_key(nxt[0]) != dominant:
-                choice = (prev, "after")
-            else:
-                choice = (nxt, "before")
-        elif prev:
-            choice = (prev, "after")
-        elif nxt:
-            choice = (nxt, "before")
-        else:
-            choice = (None, "append")
-        (anchor, side) = choice
-        if anchor is None:
-            rpr = _clean_rpr(p.find(W + "pPr/" + W + "rPr"))
-            ins = ctx.rev("ins")
-            ins.append(_text_run(text, rpr))
-            key = id(p)
-            if key in last_after:
-                last_after[key].addnext(ins)
+        ins = ctx.rev("ins")
+        if replaced is not None:
+            # A replacement keeps the look of what it replaces and goes
+            # right after the deleted text.
+            a0, a1 = replaced
+            covering = [(min(re_, a1) - max(rs, a0), r)
+                        for r, rs, re_, _ in text_runs if rs < a1 and re_ > a0]
+            src = max(covering, key=lambda c: c[0])[1] if covering else None
+            ins.append(_text_run(text, _clean_rpr(
+                src.find(W + "rPr") if src is not None else None)))
+            prev = run_at(x, True)
+            if prev is not None:
+                target = [el for s, e, el, atom in segs_of[id(prev)]
+                          if e == x and not atom][-1]
+                put_after(target, ins)
+                continue
+        prev, nxt = run_at(x, True), run_at(x, False)
+        if prev is None and nxt is None:
+            ins.append(_text_run(text, _clean_rpr(
+                p.find(W + "pPr/" + W + "rPr"))))
+            if len(p):
+                put_after(p[len(p) - 1], ins)
             else:
                 p.append(ins)
-            last_after[key] = ins
             continue
-        r, rs, re_, top = anchor
-        ins = ctx.rev("ins")
-        ins.append(_text_run(text, _clean_rpr(r.find(W + "rPr"))))
-        elems = slices_of[id(r)]
-        if side == "after":
-            target = next(el for s, e, el in elems if e == x)
-            if top is not r and top.tag == W + "hyperlink" and \
-                    span_of_top[id(top)][1] == x:
-                target = top
-            if id(target) in last_after:
-                last_after[id(target)].addnext(ins)
+        if prev is not None and nxt is not None and prev is not nxt:
+            pe, ne = _emphasized(prev), _emphasized(nxt)
+            pw = any(w[1] == x for w in wraps.get(id(prev), []))
+            nw = any(w[0] == x for w in wraps.get(id(nxt), []))
+            if pe != ne:
+                use_prev = not pe
+            elif pw != nw:
+                use_prev = not pw
             else:
-                target.addnext(ins)
-            last_after[id(target)] = ins
+                use_prev = (_rpr_key(prev) == dominant
+                            or _rpr_key(nxt) != dominant)
         else:
-            target = next(el for s, e, el in elems if s == x)
-            if top is not r and top.tag == W + "hyperlink" and \
-                    span_of_top[id(top)][0] == x:
-                target = top
+            use_prev = prev is not None
+        anchor = prev if use_prev else nxt
+        ins.append(_text_run(text, _clean_rpr(anchor.find(W + "rPr"))))
+        if use_prev:
+            target = [el for s, e, el, _ in segs_of[id(prev)] if e == x][-1]
+            exits = [w for w in wraps.get(id(prev), []) if w[1] == x]
+            if exits:
+                target = exits[-1][3]
+            put_after(target, ins)
+        else:
+            target = [el for s, e, el, _ in segs_of[id(nxt)] if s == x][0]
+            exits = [w for w in wraps.get(id(nxt), []) if w[0] == x]
+            if exits:
+                target = exits[-1][2]
             target.addprevious(ins)
 
 
@@ -1322,17 +1466,18 @@ def build(source_bytes, plan, author=AUTHOR, when=None):
     changed = set()
 
     for i, new in sorted(plan.get("modify", {}).items()):
+        new = clean_text(new)
         if not 0 <= i < n:
             notes.append(f"¶{i} does not exist; edit skipped.")
             continue
         if norm_text(new) == norm_text(base_texts[i]):
             continue
         p = paras[i]
-        _collapse_fields(p)
         old = para_text(p)
         ops, merged = diff_ops(old, new)
-        runs, slices_of, inserts = _apply_ops(p, old, ops, ctx)
-        _place_insertions(p, old, new, runs, slices_of, inserts, ctx)
+        _collapse_fields(p, ops)
+        runs, segs_of, inserts, wraps = _apply_ops(p, old, ops, ctx)
+        _place_insertions(p, old, new, runs, segs_of, inserts, ctx, wraps)
         expected[i] = merged
         changed.add(i)
         applied.append(("modify", i))
@@ -1366,7 +1511,7 @@ def build(source_bytes, plan, author=AUTHOR, when=None):
         if not -1 <= after < n:
             notes.append("A new clause had no valid position; skipped.")
             continue
-        text = (ins.get("text") or "").strip()
+        text = clean_text(ins.get("text") or "").strip()
         if not text:
             continue
         template = _template_for(paras, labels, levels, after,
