@@ -325,7 +325,7 @@
       "state": "KS",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Closed \u2013 No Response",
       "source": "backfill-salesforce",
       "notes": "Ethan reaching out",
       "next_followup": null,
@@ -333,7 +333,7 @@
       "sf_contact_id": "0033000001hoOvOAAU",
       "row_json": "{\"Website\": \"https://www.scriptpro.com\", \"City\": \"Mission\", \"State\": \"KS\", \"Employees\": 641, \"Description\": \"Scriptpro, LLC is a technology company that develops pharmacy automation and management system products. It offers solutions for third-party management, clinical documentation, and case management, inventory management, medication adherence, interactive voice response, telepharmacy, and more. The company also provides health messaging services, a pharmacy services portal, a drug database, and pharmacy administration services. It serves customers within the area.\", \"CEO/Owner Name\": \"Michael Coughlin\", \"Title\": \"President and CEO and CFO\", \"Email\": \"mike@scriptpro.com\", \"Phone\": \"(913) 384-1008\"}",
       "created_at": "2026-09-30T15:45:14.384149+00:00",
-      "updated_at": "2026-10-30T15:48:40.314787+00:00",
+      "updated_at": "2026-11-05T21:18:57.506298+00:00",
       "memo": null
     },
     {
@@ -477,7 +477,7 @@
       "sf_contact_id": "0033A00002KOunaQAD",
       "row_json": "{\"Website\": \"https://www.synergylaboratories.com\", \"City\": \"Mobile\", \"State\": \"AL\", \"Employees\": 87, \"Description\": \"Synergy Laboratories, Inc. is a COLA-certified drug screening facility specializing in toxicology, genetics, and hematology. It is quality testing with a guaranteed turnaround time of 24 hours. The company prides itself on individualized customer service based on the unique needs of each organization in partnership.\", \"CEO/Owner Name\": \"Brandon Biles\", \"Title\": \"Founder, COO\", \"Email\": \"brandon.biles@synergytesting.com\", \"Phone\": null}",
       "created_at": "2026-09-30T15:45:14.566790+00:00",
-      "updated_at": "2026-11-05T21:18:51.842027+00:00",
+      "updated_at": "2026-11-05T21:18:55.448522+00:00",
       "memo": null
     },
     {
@@ -7413,6 +7413,16 @@
       "summary": "Status: Outreach Active \u2192 Closed \u2013 No Response",
       "detail": "",
       "timestamp": "2026-11-05T21:18:51.841722+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 488,
+      "deal_id": 14,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Closed \u2013 No Response",
+      "detail": "",
+      "timestamp": "2026-11-05T21:18:57.506130+00:00",
       "synced_to_sf": 0,
       "user": "Trey"
     }
@@ -7424,7 +7434,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-11-05T21:18:46.428215+00:00"
+      "value": "2026-11-05T21:18:55.145482+00:00"
     }
   ]
 }
