@@ -333,7 +333,7 @@
       "sf_contact_id": "0033000001hoOvOAAU",
       "row_json": "{\"Website\": \"https://www.scriptpro.com\", \"City\": \"Mission\", \"State\": \"KS\", \"Employees\": 641, \"Description\": \"Scriptpro, LLC is a technology company that develops pharmacy automation and management system products. It offers solutions for third-party management, clinical documentation, and case management, inventory management, medication adherence, interactive voice response, telepharmacy, and more. The company also provides health messaging services, a pharmacy services portal, a drug database, and pharmacy administration services. It serves customers within the area.\", \"CEO/Owner Name\": \"Michael Coughlin\", \"Title\": \"President and CEO and CFO\", \"Email\": \"mike@scriptpro.com\", \"Phone\": \"(913) 384-1008\"}",
       "created_at": "2026-09-30T15:45:14.384149+00:00",
-      "updated_at": "2026-11-05T21:18:57.506298+00:00",
+      "updated_at": "2026-11-05T21:19:00.679598+00:00",
       "memo": null
     },
     {
@@ -445,7 +445,7 @@
       "state": "LA",
       "niche": null,
       "project": null,
-      "status": "Outreach Active",
+      "status": "Closed \u2013 No Response",
       "source": "backfill-salesforce",
       "notes": "",
       "next_followup": null,
@@ -453,7 +453,7 @@
       "sf_contact_id": "0033000001muRGfAAM",
       "row_json": "{\"Website\": \"https://xstrememd.worldsecuresystems.com\", \"City\": \"Broussard\", \"State\": \"LA\", \"Employees\": 53, \"Description\": \"Life Line Technologies, LLC doing business as XstremeMD is the only telemedicine provider with a staff composed of Board Certified Emergency Medicine Physicians with extensive training in occupational medicine. Its physicians work from within the XMD Command Center and always available 24/7.\", \"CEO/Owner Name\": \"Joseph Pearson\", \"Title\": \"President\", \"Email\": \"jpearson@xstrememd.com\", \"Phone\": \"337-704-0891\"}",
       "created_at": "2026-09-30T15:45:14.537190+00:00",
-      "updated_at": "2026-10-27T13:47:43.600250+00:00",
+      "updated_at": "2026-11-05T21:19:02.558641+00:00",
       "memo": null
     },
     {
@@ -7423,6 +7423,16 @@
       "summary": "Status: Outreach Active \u2192 Closed \u2013 No Response",
       "detail": "",
       "timestamp": "2026-11-05T21:18:57.506130+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 489,
+      "deal_id": 19,
+      "type": "Note",
+      "summary": "Status: Outreach Active \u2192 Closed \u2013 No Response",
+      "detail": "",
+      "timestamp": "2026-11-05T21:19:02.558481+00:00",
       "synced_to_sf": 0,
       "user": "Trey"
     }
@@ -7434,7 +7444,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-11-05T21:18:55.145482+00:00"
+      "value": "2026-11-05T21:19:00.265064+00:00"
     }
   ]
 }
