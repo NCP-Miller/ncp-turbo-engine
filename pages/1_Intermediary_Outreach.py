@@ -1523,23 +1523,308 @@ def _fmt_assets(val_thousands):
 
 
 # ---------------------------------------------------------------------------
+# BANKING - SPECIAL ASSETS: lenders' distressed-credit people
+# ---------------------------------------------------------------------------
+from lib import special_assets as SA
+
+_SA_MAX_CANDIDATES = 250   # cap on AI review (cost and time)
+_SA_MAX_ENRICH = 150       # cap on Apollo email/phone lookups
+_SA_MAX_BANKS = 40         # in-state banks checked, largest first
+_SA_MAX_FUNDS = 30
+
+
+def _anthropic_client():
+    try:
+        import anthropic
+        kw = {"api_key": st.secrets["ANTHROPIC_API_KEY"]}
+        ws = (st.secrets.get("ANTHROPIC_WORKSPACE_ID") or "").strip()
+        if ws:
+            kw["default_headers"] = {"anthropic-workspace-id": ws}
+        return anthropic.Anthropic(**kw)
+    except Exception:
+        return None
+
+
+def _sa_people(titles, locations=None, org_ids=None, seniorities=None,
+               max_pages=3):
+    """Apollo people search; returns raw search-result people."""
+    url = "https://api.apollo.io/api/v1/mixed_people/api_search"
+    headers = {"Content-Type": "application/json", "X-Api-Key": APOLLO_API_KEY}
+    out = []
+    for page in range(1, max_pages + 1):
+        payload = {"person_titles": titles,
+                   "person_seniorities": seniorities or SA.SENIORITIES,
+                   "per_page": 100, "page": page}
+        if locations:
+            payload["person_locations"] = locations
+        if org_ids:
+            payload["organization_ids"] = org_ids
+        _apollo_limiter.wait()
+        try:
+            r = requests.post(url, headers=headers, json=payload, timeout=15)
+        except Exception as e:
+            _alog(f"  people search error: {e}")
+            break
+        if r.status_code != 200:
+            _alog(f"  people search HTTP {r.status_code}")
+            break
+        people = r.json().get("people", [])
+        out.extend(people)
+        if len(people) < 100:
+            break
+    return out
+
+
+def _sa_funds(locations):
+    """Mezzanine, private credit and BDC lenders located in the area."""
+    url = "https://api.apollo.io/v1/organizations/search"
+    headers = {"Content-Type": "application/json", "X-Api-Key": APOLLO_API_KEY}
+    _apollo_limiter.wait()
+    try:
+        r = requests.post(url, headers=headers, json={
+            "organization_locations": locations,
+            "q_organization_keyword_tags": SA.FUND_KEYWORDS,
+            "per_page": 100, "page": 1,
+        }, timeout=15)
+        if r.status_code == 200:
+            return r.json().get("organizations", [])[:_SA_MAX_FUNDS]
+        _alog(f"  fund search HTTP {r.status_code}")
+    except Exception as e:
+        _alog(f"  fund search error: {e}")
+    return []
+
+
+def _sa_candidate(p, note):
+    org = p.get("organization") or {}
+    name = " ".join(x for x in (p.get("first_name"), p.get("last_name")
+                                or p.get("last_name_obfuscated")) if x)
+    return {
+        "id": p.get("id"),
+        "name": name or p.get("name") or "",
+        "title": p.get("title") or "",
+        "company": org.get("name") or "",
+        "company_industry": org.get("industry") or "",
+        "city": p.get("city") or "",
+        "state": p.get("state") or "",
+        "note": note,
+    }
+
+
+# ---------------------------------------------------------------------------
 # UI — one category picker drives both engines
 # ---------------------------------------------------------------------------
 COMMUNITY_LENDER_CATEGORY = "Community Lenders (Banks & Credit Unions)"
+SPECIAL_ASSETS_CATEGORY = "Banking - Special Assets"
 
 st.title("🔍 Intermediary Outreach")
 st.caption(
     "One tool for every referral channel: wealth advisors, tax advisors, "
-    "estate attorneys, investment bankers, business brokers — and community "
-    "banks/credit unions without in-house investment banking."
+    "estate attorneys, investment bankers, business brokers, community "
+    "banks/credit unions without in-house investment banking, and lenders' "
+    "special assets teams."
 )
 
 category = st.selectbox(
     "Category",
-    list(CATEGORIES.keys()) + [COMMUNITY_LENDER_CATEGORY],
+    list(CATEGORIES.keys()) + [COMMUNITY_LENDER_CATEGORY,
+                               SPECIAL_ASSETS_CATEGORY],
 )
 
-if category == COMMUNITY_LENDER_CATEGORY:
+if category == SPECIAL_ASSETS_CATEGORY:
+    # ── Banking - Special Assets ──────────────────────────────────
+    st.caption(
+        "Finds the people at banks and mezzanine / private credit lenders "
+        "who manage troubled commercial loans and decide how to exit them, "
+        "so NCP is the first call when a lender needs a buyer for a "
+        "business. Every contact is graded by AI: **A** runs workouts of "
+        "loans to operating companies, **B** can route you to that person.")
+    _ac = _anthropic_client()
+    if _ac is None and _oai is None:
+        st.error("Add ANTHROPIC_API_KEY (preferred) or OPENAI_API_KEY to "
+                 "secrets; the AI review is what makes this list reliable.")
+        st.stop()
+    col1, col2 = st.columns([3, 2])
+    location = col1.text_input(
+        "City", placeholder="e.g. Birmingham, AL  |  Charlotte, NC  |  Dallas, TX")
+    lender_types = col2.multiselect(
+        "Lenders", ["Banks", "Mezzanine / Private Credit"],
+        default=["Banks", "Mezzanine / Private Credit"])
+    statewide = st.checkbox(
+        "Also include special assets people elsewhere in the state at banks "
+        "and funds headquartered there (groups often sit in a regional hub)",
+        value=True)
+    include_routing = st.checkbox(
+        "Also look for people who can route you (chief credit officers, "
+        "sponsor / leveraged finance heads)", value=True)
+
+    if st.button("Search", type="primary"):
+        city, state_code = _parse_location(location or "")
+        if not city or not state_code:
+            st.error("Enter a city and state, e.g. **Birmingham, AL**.")
+            st.stop()
+        state_name = _STATES.get(state_code, state_code)
+        loc_label = f"{city}, {state_code}"
+        metro = [f"{city}, {state_name}"]
+        state_loc = [f"{state_name}, US"]
+        progress = st.progress(0)
+        status = st.empty()
+        pool = {}
+
+        def _add(people, note):
+            for p in people:
+                if p.get("id") and p["id"] not in pool and \
+                        SA.plausible(p.get("title")):
+                    pool[p["id"]] = _sa_candidate(p, note)
+
+        # ── Stage 1: people by role in the metro ──────────────────
+        with st.spinner(f"Searching special assets roles in **{loc_label}**…"):
+            _add(_sa_people(SA.SPECIAL_ASSETS_TITLES, metro),
+                 "found by special assets title in the metro")
+            if include_routing:
+                _add(_sa_people(SA.CREDIT_ROUTING_TITLES, metro,
+                                seniorities=["c_suite", "partner", "vp",
+                                             "head", "director"],
+                                max_pages=2),
+                     "found by credit / sponsor finance title in the metro")
+        progress.progress(0.3)
+        status.caption(f"Stage 1: {len(pool)} candidates from role search")
+
+        # ── Stage 2: institutions based in the state / metro ──────
+        banks, funds = [], []
+        if "Banks" in lender_types:
+            banks = [b for b in _search_fdic(state_code)
+                     if b.get("name")][:_SA_MAX_BANKS]
+        if "Mezzanine / Private Credit" in lender_types:
+            funds = _sa_funds(metro) or (_sa_funds(state_loc) if statewide
+                                         else [])
+        sources = [(b, "bank") for b in banks] + [(f, "fund") for f in funds]
+        for i, (inst, kind) in enumerate(sources):
+            if kind == "bank":
+                org = _find_apollo_org(inst["name"],
+                                       _clean_domain(inst.get("website")))
+                oid = (org or {}).get("id")
+                label = inst["name"]
+            else:
+                oid, label = inst.get("id"), inst.get("name") or ""
+            if oid:
+                titles = SA.SPECIAL_ASSETS_TITLES if kind == "bank" \
+                    else SA.FUND_TITLES
+                where = (state_loc if statewide else metro) \
+                    if kind == "bank" else None
+                _add(_sa_people(titles, where, org_ids=[oid], max_pages=1),
+                     f"at {label}, a {'bank' if kind == 'bank' else 'fund'} "
+                     f"based in {state_name if kind == 'bank' else 'the area'}")
+            progress.progress(0.3 + 0.3 * (i + 1) / max(len(sources), 1))
+            status.caption(f"Stage 2: {i + 1}/{len(sources)} institutions | "
+                           f"{len(pool)} candidates")
+
+        if not pool:
+            st.warning("No candidates found. Try a larger metro or turn on the "
+                       "statewide option.")
+            st.stop()
+
+        # ── Stage 3: AI review of every candidate ─────────────────
+        candidates = list(pool.values())[:_SA_MAX_CANDIDATES]
+        if len(pool) > _SA_MAX_CANDIDATES:
+            st.caption(f"Reviewing the first {_SA_MAX_CANDIDATES} of "
+                       f"{len(pool)} candidates.")
+        verdicts, engines, errors = {}, set(), []
+        batches = [candidates[k:k + 20] for k in range(0, len(candidates), 20)]
+
+        def _review(batch):
+            return SA.review_batch(batch, loc_label, _ac, _oai)
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as ex:
+            futs = [ex.submit(_review, b) for b in batches]
+            for i, fut in enumerate(concurrent.futures.as_completed(futs)):
+                try:
+                    v, eng = fut.result()
+                    verdicts.update(v)
+                    engines.add(eng)
+                except Exception as e:
+                    errors.append(str(e)[:300])
+                progress.progress(0.6 + 0.2 * (i + 1) / len(batches))
+                status.caption(f"AI review: {i + 1}/{len(batches)} batches")
+        if errors:
+            st.warning("Some contacts could not be reviewed and were left out: "
+                       + errors[0])
+
+        keep = [c for c in candidates
+                if verdicts.get(str(c["id"]), {}).get("tier") in ("A", "B")]
+        rejected = [c for c in candidates
+                    if verdicts.get(str(c["id"]), {}).get("tier") == "reject"]
+
+        # ── Stage 4: emails and phones for the keepers only ──────
+        keep.sort(key=lambda c: (verdicts[str(c["id"])]["tier"],
+                                 not verdicts[str(c["id"])]["local"],
+                                 c["company"]))
+        rows = []
+        to_enrich = keep[:_SA_MAX_ENRICH]
+        with concurrent.futures.ThreadPoolExecutor(max_workers=5) as ex:
+            enriched = list(ex.map(lambda c: _enrich_person(c["id"]),
+                                   to_enrich))
+        enriched += [None] * (len(keep) - len(to_enrich))
+        for c, person in zip(keep, enriched):
+            v = verdicts[str(c["id"])]
+            person = person or {}
+            phones = person.get("phone_numbers") or []
+            name = " ".join(x for x in (person.get("first_name"),
+                                        person.get("last_name")) if x)
+            rows.append({
+                "Fit": v["tier"],
+                "Name": name or c["name"],
+                "Title": person.get("title") or c["title"],
+                "Institution": (person.get("organization") or {}).get("name")
+                or c["company"],
+                "Lender Type": v["lender_type"],
+                "Local": "Yes" if v["local"] else "In-state hub",
+                "City": person.get("city") or c["city"],
+                "State": person.get("state") or c["state"],
+                "Email": person.get("email") or "N/A",
+                "Phone": (phones[0].get("sanitized_number") if phones
+                          else "N/A"),
+                "LinkedIn": person.get("linkedin_url") or "N/A",
+                "Why them": v["reason"],
+                "Outreach angle": v["angle"],
+            })
+        progress.progress(1.0)
+        status.write("Done!")
+
+        a_ct = sum(1 for r in rows if r["Fit"] == "A")
+        st.success(
+            f"**{a_ct}** A contacts (run workouts) and **{len(rows) - a_ct}** "
+            f"B contacts (can route you) in {loc_label}, from "
+            f"{len(candidates)} candidates reviewed by "
+            f"{' and '.join(sorted(engines)) or 'AI'}.")
+        if rows:
+            df = pd.DataFrame(rows)
+            st.dataframe(df, use_container_width=True, hide_index=True)
+            st.download_button(
+                "Download CSV", data=df.to_csv(index=False).encode("utf-8"),
+                file_name=f"NCP_Special_Assets_{city.replace(' ', '_')}_"
+                          f"{state_code}.csv",
+                mime="text/csv", type="primary")
+        else:
+            st.warning("No candidates passed the AI review.")
+        with st.expander(f"Rejected by the AI review ({len(rejected)})"):
+            st.dataframe(pd.DataFrame([{
+                "Name": c["name"], "Title": c["title"],
+                "Institution": c["company"],
+                "Reason": verdicts[str(c["id"])]["reason"],
+            } for c in rejected]), use_container_width=True, hide_index=True)
+        with st.expander("Institutions searched"):
+            st.write(f"{len(banks)} banks headquartered in {state_name} "
+                     f"(largest first) and {len(funds)} mezzanine / private "
+                     f"credit lenders.")
+            if banks or funds:
+                st.write(", ".join([b["name"] for b in banks]
+                                   + [f.get("name") or "" for f in funds]))
+        if _apollo_log:
+            with st.expander("Apollo Debug Log"):
+                st.code("\n".join(_apollo_log))
+            _apollo_log.clear()
+
+elif category == COMMUNITY_LENDER_CATEGORY:
     # ── Community Lender controls ─────────────────────────────────
     if _oai is None:
         st.error("OPENAI_API_KEY missing — required for the lender IB check.")
