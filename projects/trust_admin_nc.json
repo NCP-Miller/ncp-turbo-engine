@@ -4,7 +4,21 @@
     "analysis": "idle",
     "writeup": "idle"
   },
-  "candidate_queue": [],
+  "candidate_queue": [
+    {
+      "id": null,
+      "name": "TrustCounsel",
+      "website_url": "https://www.trustcounselpa.com",
+      "city": "Chapel Hill",
+      "state": "NC",
+      "linkedin_url": null,
+      "estimated_num_employees": null,
+      "short_description": "Attorney with over 15 years in business",
+      "headline": "",
+      "keywords": [],
+      "ownership_status": null
+    }
+  ],
   "qualified_queue": [],
   "completed_memos": [
     {
@@ -2938,7 +2952,11 @@
     "plancentricfinancial.com",
     "strategicadvisorypartners.com",
     "cunninghamfinancial.net",
-    "clicksoftit.com"
+    "clicksoftit.com",
+    "trustcompanyofnc.com",
+    "trustandestatelawnc.com",
+    "ncwillsandtrusts.com",
+    "trustcounselpa.com"
   ],
   "seen_names": [
     "honeywell technologies",
@@ -5923,7 +5941,11 @@
     "plancentric financial group",
     "strategic advisory partners",
     "cunningham financial",
-    "clicksoft solutions"
+    "clicksoft solutions",
+    "trust company of north carolina",
+    "trusts and estates law group of north carolina",
+    "nc wills and trusts",
+    "trustcounsel"
   ],
   "near_misses": [
     {
@@ -6104,8 +6126,8 @@
   ],
   "reviewed_near_misses": [],
   "filter_stats": {
-    "total_sourced": 2983,
-    "pre_filtered_size": 2003,
+    "total_sourced": 2986,
+    "pre_filtered_size": 2006,
     "pre_filtered_structural": 343,
     "pre_filtered_blocklist": 84,
     "pre_filtered_niche": 116,
@@ -6116,20 +6138,20 @@
     "qualified": 2
   },
   "cost_tracker": {
-    "openai": 6.2988,
-    "firecrawl": 7.5,
+    "openai": 6.3778,
+    "firecrawl": 7.525,
     "apollo": 0.0,
-    "total": 13.7988,
+    "total": 13.9028,
     "call_counts": {
-      "openai": 461,
-      "firecrawl": 1500,
+      "openai": 463,
+      "firecrawl": 1505,
       "apollo": 0
     }
   },
   "last_event": {
     "type": "searching_apollo",
-    "message": "Searching Apollo for Legal Services companies in North Carolina (round 2 of 4).",
-    "timestamp": "2026-11-12T21:43:26.941927+00:00",
+    "message": "Searching Apollo for Banking companies in North Carolina (round 3 of 4).",
+    "timestamp": "2026-11-12T21:44:01.987596+00:00",
     "severity": "info"
   },
   "created_at": "2026-10-12T19:59:05.216306+00:00",
