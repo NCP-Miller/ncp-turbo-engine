@@ -1,6 +1,6 @@
 {
   "bot_status": {
-    "search": "discovering_web",
+    "search": "searching_apollo",
     "analysis": "idle",
     "writeup": "idle"
   },
@@ -2937,7 +2937,8 @@
     "risenwealth.com",
     "plancentricfinancial.com",
     "strategicadvisorypartners.com",
-    "cunninghamfinancial.net"
+    "cunninghamfinancial.net",
+    "clicksoftit.com"
   ],
   "seen_names": [
     "honeywell technologies",
@@ -5921,7 +5922,8 @@
     "risen financial",
     "plancentric financial group",
     "strategic advisory partners",
-    "cunningham financial"
+    "cunningham financial",
+    "clicksoft solutions"
   ],
   "near_misses": [
     {
@@ -6102,8 +6104,8 @@
   ],
   "reviewed_near_misses": [],
   "filter_stats": {
-    "total_sourced": 2982,
-    "pre_filtered_size": 2002,
+    "total_sourced": 2983,
+    "pre_filtered_size": 2003,
     "pre_filtered_structural": 343,
     "pre_filtered_blocklist": 84,
     "pre_filtered_niche": 116,
@@ -6114,20 +6116,20 @@
     "qualified": 2
   },
   "cost_tracker": {
-    "openai": 6.2898,
+    "openai": 6.2988,
     "firecrawl": 7.5,
     "apollo": 0.0,
-    "total": 13.7898,
+    "total": 13.7988,
     "call_counts": {
-      "openai": 460,
+      "openai": 461,
       "firecrawl": 1500,
       "apollo": 0
     }
   },
   "last_event": {
-    "type": "discovering_web",
-    "message": "Web discovery pass \u2014 round 1 of 4.",
-    "timestamp": "2026-11-12T21:42:37.315067+00:00",
+    "type": "searching_apollo",
+    "message": "Searching Apollo for Legal Services companies in North Carolina (round 2 of 4).",
+    "timestamp": "2026-11-12T21:43:26.941927+00:00",
     "severity": "info"
   },
   "created_at": "2026-10-12T19:59:05.216306+00:00",
