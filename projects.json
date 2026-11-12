@@ -308,6 +308,6 @@
     "geography": "North Carolina",
     "memo_count": 2,
     "active": true,
-    "status": "running"
+    "status": "stopped"
   }
 ]
