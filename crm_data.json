@@ -549,7 +549,7 @@
       "sf_contact_id": "0033A00002WDLlYQAX",
       "row_json": "{\"Website\": \"https://www.dataseers.ai\", \"City\": \"Alpharetta\", \"State\": \"GA\", \"Employees\": 93, \"Description\": \"DataSeers, Inc. is a computer software company. It provides AI-powered enterprise software for banks and fintechs to improve reconciliation, compliance, fraud detection, and analytics. The company offers its services throughout the country.\", \"CEO/Owner Name\": \"Micah Fowler\", \"Title\": \"Manager of Strategic Alliances\", \"Email\": \"mfowler@dataseers.ai\", \"Phone\": null}",
       "created_at": "2026-09-30T15:45:14.660800+00:00",
-      "updated_at": "2026-11-05T21:21:34.023472+00:00",
+      "updated_at": "2026-11-13T18:32:05.953619+00:00",
       "memo": null
     },
     {
@@ -813,7 +813,7 @@
       "sf_contact_id": "003Pp000028ZbdNIAS",
       "row_json": "{\"Website\": \"https://vnasrisk.com\", \"City\": null, \"State\": null, \"Employees\": null, \"Description\": \"VNAS Risk Solutions specializes in the design, implementation, and management of captive insurance companies both in the U.S. and internationally. They provide comprehensive services including feasibility studies, regulatory compliance, financial management, and operational oversight to support various industries in managing their risk through captive insurance.\", \"CEO/Owner Name\": \"Robert Barker\", \"Title\": \"Managing Director\", \"Email\": \"robertbarker@vnasrisk.com\", \"Phone\": null}",
       "created_at": "2026-09-30T15:45:15.001612+00:00",
-      "updated_at": "2026-11-13T18:29:48.006728+00:00",
+      "updated_at": "2026-11-13T18:29:50.623922+00:00",
       "memo": null
     },
     {
@@ -7483,6 +7483,16 @@
       "summary": "in dialogue",
       "detail": "",
       "timestamp": "2026-11-13T18:29:48.005847+00:00",
+      "synced_to_sf": 1,
+      "user": "Trey"
+    },
+    {
+      "id": 495,
+      "deal_id": 23,
+      "type": "Email",
+      "summary": "sent an email to check back in",
+      "detail": "",
+      "timestamp": "2026-11-13T18:32:05.953162+00:00",
       "synced_to_sf": 0,
       "user": "Trey"
     }
@@ -7494,7 +7504,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-11-13T18:29:27.582983+00:00"
+      "value": "2026-11-13T18:29:51.010888+00:00"
     }
   ]
 }
