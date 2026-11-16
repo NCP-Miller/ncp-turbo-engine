@@ -300,17 +300,6 @@
     "backup_status": "not_configured"
   },
   {
-    "name": "Trust Admin - NC",
-    "slug": "trust_admin_nc",
-    "db_file": "project_trust_admin_nc.db",
-    "created_at": "2026-11-16T22:34:57.770444+00:00",
-    "niche": "Trust administrator",
-    "geography": "Louisiana",
-    "memo_count": 2,
-    "active": false,
-    "backup_status": "not_configured"
-  },
-  {
     "name": "Trust administrator - Virginia",
     "slug": "trust_administrator_virginia",
     "db_file": "project_trust_administrator_virginia.db",
@@ -318,7 +307,18 @@
     "niche": "Trust administrator",
     "geography": "Virginia, United States",
     "memo_count": 2,
-    "active": true,
+    "active": false,
     "status": "stopped"
+  },
+  {
+    "name": "Trust Admin - NC",
+    "slug": "trust_admin_nc",
+    "db_file": "project_trust_admin_nc.db",
+    "created_at": "2026-11-16T23:41:14.965026+00:00",
+    "niche": "Trust administrator",
+    "geography": "Virginia, United States",
+    "memo_count": 2,
+    "active": true,
+    "backup_status": "not_configured"
   }
 ]
