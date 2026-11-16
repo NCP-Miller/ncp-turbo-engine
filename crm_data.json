@@ -13,7 +13,7 @@
       "state": "Virginia",
       "niche": "Trust administrator",
       "project": null,
-      "status": "New",
+      "status": "Not a Fit",
       "source": "memo",
       "notes": "",
       "next_followup": null,
@@ -21,7 +21,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"The Legacy Elder Law Center\", \"Description\": \"The Legacy Elder Law Center provides legal services specializing in elder law, estate planning, and asset protection, serving Virginia, Maryland, and the District of Columbia. They focus on areas such as special needs trusts, conservatorships, guardianships, Medicaid planning, and veterans' benefits, offering a holistic approach that includes care coordination through their partner, GuideWise.\", \"Website\": \"http://www.legacyelderlaw.com\", \"City\": \"Leesburg\", \"State\": \"Virginia\", \"LinkedIn\": \"http://www.linkedin.com/company/the-legacy-elder-law-center\", \"Employees\": 18, \"Est. EBITDA\": \"$540K\\u2013$900K\", \"CEO/Owner Name\": \"Rory Clark\", \"Title\": \"Founder\", \"Email\": \"rclark@legacyelderlaw.com\", \"Email Estimate\": \"\", \"Phone\": \"571-800-0678\", \"Source\": \"Web Path (/about) \\u2192 Verified\", \"Notes\": \"\", \"Confidence\": \"High\", \"Latest News\": \"Chad Hodson Obituary (1980 - 2019) - Leesburg, OH - Times Gazette - Legacy | Obituary | https://news.google.com/rss/articles/CBMikAFBVV95cUxQLTBEaGRWWUpERE4yTXVDMDB1VjZOLS1zS0pMVXhCaWNXQnRBTnVwNGF2SU1uNUZDQ0M3eVczdGxQV05tb25LVER3bUkwUGlBSnpFWFJGallZS3hiYjdUaU91bFdOTXJxSmZIeG1TdkFzal9UczRmSk1qeW9DbVJrYnpmRHNoTE5lUkl2YjExVlI?oc=5\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Medium\", \"_niche\": \"Trust administrator\\n\\nEXCLUDE these types of companies: accounting or wealth management\", \"Priority\": \"Low\", \"Growth\": \"Medium\", \"Txn Readiness\": \"Medium\", \"Priority Confidence\": \"High\", \"Growth Confidence\": \"Medium\", \"Txn Readiness Confidence\": \"Low\", \"Differentiated Confidence\": \"Medium\", \"Conviction\": 7, \"Conviction Pitch\": \"The Legacy Elder Law Center is uniquely positioned in the elder law niche, benefiting from the growing aging population in the US. Their holistic approach to service delivery, which includes legal services and care coordination through their partner GuideWise, creates a strong competitive advantage. The fragmented market in elder law provides significant whitespace for expansion and a buy-and-build strategy.\", \"Conviction Reasoning\": \"The company's focus on essential elder law services, coupled with the secular tailwinds of an aging population and limited competition, provide an exciting growth opportunity despite not having a standout differentiation.\"}",
       "created_at": "2026-11-16T22:47:02.192152+00:00",
-      "updated_at": "2026-11-16T22:47:02.201006+00:00",
+      "updated_at": "2026-11-16T23:28:14.712079+00:00",
       "memo": "**Investment Memo: The Legacy Elder Law Center**\n\n---\n\n**1. Why We're Excited**\n\nThe Legacy Elder Law Center stands out due to its specialized focus on elder law coupled with a holistic service approach that includes care coordination through its partner, GuideWise. This provides a compelling \"right to win\" in a market increasingly driven by the needs of an aging population. Their unique combination of legal expertise and care coordination services sets them apart in the fragmented elder law market, offering substantial whitespace for expansion via a buy-and-build strategy.\n\n**2. Company Overview**\n\nThe Legacy Elder Law Center provides elder law services such as estate planning, asset protection, special needs trusts, conservatorships, guardianships, Medicaid planning, and veterans' benefits. Operating out of Leesburg, Virginia, the firm services Virginia, Maryland, and the District of Columbia. With 18 employees, the business is estimated to generate an EBITDA in the range of $540K\u2013$900K, though this figure requires further validation.\n\n**3. Differentiated Value Proposition**\n\nThe company differentiates itself through its holistic service model, which integrates legal assistance with care coordination facilitated by GuideWise. This partnership enhances client outcomes and solidifies customer relationships, serving as a defensible moat against regional competitors. Additionally, their expertise in a specialized niche of the legal market helps mitigate competitive pressure.\n\n**4. Market Opportunity & Growth**\n\nThe growing elder population in the US presents a significant Total Addressable Market (TAM) for elder law services, driven by increasing demand for estate planning, Medicaid planning, and essential elder-care services. The market's fragmented nature and lack of a dominant player posit substantial opportunities for consolidation and expansion. The firm's expertise and unique service model position them favorably to capture market share and drive growth through geographic expansion and additional service offerings.\n\n**5. NCP Fit Rationale**\n\nThe Legacy Elder Law Center aligns with NCP's focus on lower middle-market, services-oriented, founder-owned businesses poised for growth. As the founder is likely approaching retirement, this presents a natural succession planning opportunity for NCP to step in and drive the next phase of growth. The firm\u2019s model ensures recurring revenue streams through ongoing legal retainers and care management services, consistent with NCP\u2019s preference for acquisitions with stable, non-cyclical demand.\n\n**6. Key Risks & Diligence Items**\n\n1. Validate EBITDA: The current EBITDA estimate is heuristic-based and requires primary diligence verification.\n2. Competition Analysis: Evaluate the competitive landscape in specific geographies served and identify potential competitive threats.\n3. Succession Plan: Assess the readiness of the existing leadership team for transition and determine key person dependencies.\n4. Growth Strategy: Confirm the scalability of their service model, especially given their partner-dependent care coordination approach.\n5. Regulatory Compliance: Review compliance with state-specific legal and care coordination regulations to ensure there are no unaddressed liabilities. \n\nIn conclusion, while several risks and diligence items need addressing, The Legacy Elder Law Center offers a compelling opportunity for NCP to leverage its market position and capture substantial growth in an evergreen market."
     },
     {
@@ -7573,6 +7573,16 @@
       "timestamp": "2026-11-16T23:27:58.209993+00:00",
       "synced_to_sf": 0,
       "user": null
+    },
+    {
+      "id": 499,
+      "deal_id": 1,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-11-16T23:28:14.710774+00:00",
+      "synced_to_sf": 0,
+      "user": null
     }
   ],
   "meta": [
@@ -7582,7 +7592,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-11-16T22:54:07.649678+00:00"
+      "value": "2026-11-16T23:28:00.558070+00:00"
     }
   ]
 }
