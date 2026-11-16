@@ -303,11 +303,22 @@
     "name": "Trust Admin - NC",
     "slug": "trust_admin_nc",
     "db_file": "project_trust_admin_nc.db",
-    "created_at": "2026-10-12T19:58:24.942171+00:00",
+    "created_at": "2026-11-16T22:34:57.770444+00:00",
     "niche": "Trust administrator",
     "geography": "Louisiana",
     "memo_count": 2,
+    "active": false,
+    "backup_status": "not_configured"
+  },
+  {
+    "name": "Trust administrator - Virginia",
+    "slug": "trust_administrator_virginia",
+    "db_file": "project_trust_administrator_virginia.db",
+    "created_at": "2026-11-16T22:35:01.154459+00:00",
+    "niche": "Trust administrator",
+    "geography": "Virginia, United States",
+    "memo_count": 0,
     "active": true,
-    "status": "stopped"
+    "status": "running"
   }
 ]
