@@ -4355,5 +4355,8 @@
   "reviewed_near_misses": [
     "Chesapeake Bank",
     "Hook Law"
-  ]
+  ],
+  "memo_verdicts": {
+    "Oast & Taylor PLC": "rejected"
+  }
 }
