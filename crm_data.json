@@ -2581,7 +2581,7 @@
       "state": "Virginia",
       "niche": "Trust administrator",
       "project": null,
-      "status": "New",
+      "status": "Not a Fit",
       "source": "memo",
       "notes": "",
       "next_followup": null,
@@ -2589,7 +2589,7 @@
       "sf_contact_id": null,
       "row_json": "{\"Company\": \"Oast & Taylor PLC\", \"Description\": \"Oast & Taylor PLC is a law firm specializing in estate planning, elder law, and disability law, serving southeastern Virginia and northeastern North Carolina. The firm offers legal services in areas such as estate and trust administration, guardianships, long-term care planning, and veterans benefits. With over 100 years of history, Oast & Taylor provides in-home consultations and has multiple office locations to accommodate clients with limited mobility.\", \"Website\": \"http://www.oasttaylor.com\", \"City\": \"Virginia Beach\", \"State\": \"Virginia\", \"LinkedIn\": \"http://www.linkedin.com/company/oast-&-taylor\", \"Employees\": 17, \"Est. EBITDA\": \"$510K\\u2013$850K\", \"CEO/Owner Name\": \"N/A\", \"Title\": \"N/A\", \"Email\": \"info@oasttaylor.com\", \"Email Estimate\": \"\", \"Phone\": \"757-452-6200\", \"Source\": \"Web (contact only)\", \"Notes\": \"\", \"Confidence\": \"Medium\", \"Latest News\": \"N/A\", \"Previously Sourced\": \"No\", \"Differentiated\": \"Medium\", \"_niche\": \"Trust administrator\\n\\nEXCLUDE these types of companies: accounting or wealth management\", \"Priority\": \"Low\", \"Growth\": \"Low\", \"Txn Readiness\": \"Low\", \"Priority Confidence\": \"High\", \"Growth Confidence\": \"Low\", \"Txn Readiness Confidence\": \"Low\", \"Differentiated Confidence\": \"Medium\", \"Conviction\": 6, \"Conviction Pitch\": \"Oast & Taylor PLC operates in the growing fields of elder law and estate planning, serving a region with an aging population that demands these specialized legal services. The firm's long history and multi-location presence in Virginia and North Carolina provide a strategic advantage in capturing local market share. The focus on elder law and in-home consultations sets it apart, but its differentiation and growth potential appear modest compared to standout firms in the industry.\", \"Conviction Reasoning\": \"The firm's specialization in a non-cyclical service with demographic tailwinds is balanced by its limited differentiation and growth potential, leading to a solid yet not exceptional profile.\"}",
       "created_at": "2026-11-16T22:54:05.384014+00:00",
-      "updated_at": "2026-11-16T22:54:05.393776+00:00",
+      "updated_at": "2026-11-16T23:27:58.210149+00:00",
       "memo": "**1. Why We're Excited**\n\nOast & Taylor PLC represents a strategic acquisition opportunity for NCP in the trust administration space due to its deep roots and high level of local brand recognition in Southeastern Virginia and Northeastern North Carolina. The company operates within a niche market segment benefitting from the supportive demographics of an aging population, which is expected to drive demand for elder law and estate planning services. While the differentiation may appear modest, the firm's long-standing reputation and expertise in offering in-home consultations set it apart from competitors, presenting a viable path for regional expansion and increased market share.\n\n**2. Company Overview**\n\nOast & Taylor PLC is a law firm with a century-long presence, specializing in estate planning, elder law, and disability law across Southeastern Virginia and Northeastern North Carolina. With 17 employees, the firm is well-positioned to address the growing legal needs of its aging clientele through services such as estate and trust administration, guardianships, long-term care planning, and veterans benefits. The estimated EBITDA ranges between $510K-$850K, though this requires confirmation.\n\n**3. Differentiated Value Proposition**\n\nThe firm's key differentiator lies in its capacity to deliver personalized legal services through in-home consultations, which is particularly appealing to its elderly clientele with mobility constraints. The multi-location presence enables accessibility across a broad geographic area, fostering strong client relationships and trust within the community. The historical reputation of Oast & Taylor further reinforces its defensible position in the market.\n\n**4. Market Opportunity & Growth**\n\nThe market for elder law and estate planning services is poised for growth, driven by the significant portion of the population entering retirement age. This demographic shift presents a substantial Total Addressable Market (TAM). Oast & Taylor's regional footprint and alignment with these trends provide a promising platform for growth. However, opportunities for accelerated expansion may primarily rely on increasing market penetration and broadening service offerings.\n\n**5. NCP Fit Rationale**\n\nThe acquisition of Oast & Taylor aligns with NCP's focus on lower middle-market, founder-owned firms, offering essential, non-cyclical services that are inherently resistant to economic downturns. The firm's established presence in a fragmented market presents potential for bolstering through a buy-and-build strategy, capitalizing on untapped geographic regions and the aging demographic trend. Moreover, the founder's nearing retirement offers a natural succession planning opportunity.\n\n**6. Key Risks & Diligence Items**\n\n1. **EBITDA Confirmation:** The EBITDA estimation warrants precise validation; significant variance could impact valuation and financing.\n   \n2. **Growth Potential:** Confirm whether market demand in secondary regions substantiates proposed expansion plans.\n   \n3. **Succession Planning:** Ensure the presence of a capable management team to minimize disruptions from potential founder transition.\n   \n4. **Competitive Landscape:** Assess the competitive intensity, especially from emerging firms offering similar services.\n   \n5. **Legal and Regulatory Compliance:** Ensure thorough diligence on compliance with local and federal regulations impacting elder and disability law."
     }
   ],
@@ -7563,6 +7563,16 @@
       "timestamp": "2026-11-16T22:54:05.393633+00:00",
       "synced_to_sf": 0,
       "user": null
+    },
+    {
+      "id": 498,
+      "deal_id": 108,
+      "type": "Note",
+      "summary": "Status: New \u2192 Not a Fit",
+      "detail": "",
+      "timestamp": "2026-11-16T23:27:58.209993+00:00",
+      "synced_to_sf": 0,
+      "user": null
     }
   ],
   "meta": [
@@ -7572,7 +7582,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-11-16T22:47:04.719596+00:00"
+      "value": "2026-11-16T22:54:07.649678+00:00"
     }
   ]
 }
