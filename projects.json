@@ -325,11 +325,11 @@
     "name": "HC Transport",
     "slug": "hc_transport",
     "db_file": "project_hc_transport.db",
-    "created_at": "2026-11-16T23:41:29.506077+00:00",
+    "created_at": "2026-11-18T00:31:57.969246+00:00",
     "niche": "non-emergency healthcare transportation",
     "geography": "Tennessee",
     "memo_count": 3,
     "active": true,
-    "status": "running"
+    "backup_status": "not_configured"
   }
 ]
