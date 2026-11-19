@@ -330,6 +330,7 @@
     "geography": "Tennessee",
     "memo_count": 3,
     "active": true,
-    "backup_status": "not_configured"
+    "backup_status": "not_configured",
+    "status": "stopped"
   }
 ]
