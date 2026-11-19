@@ -4458,11 +4458,12 @@
     "override_size_max": 150,
     "pivot_signal": false
   },
-  "memo_verdicts": {
-    "All-Med Express, Inc.": "rejected"
-  },
   "reviewed_near_misses": [
     "LifeCare for Seniors"
   ],
-  "status": "stopped"
+  "status": "stopped",
+  "memo_verdicts": {
+    "All-Med Express, Inc.": "rejected",
+    "Mobile Images": "liked"
+  }
 }
