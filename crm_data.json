@@ -589,7 +589,7 @@
       "state": "GA",
       "niche": null,
       "project": null,
-      "status": "In Dialogue",
+      "status": "Revisit Later",
       "source": "backfill-salesforce",
       "notes": "He has several really large deals closing. Follow up mid sept",
       "next_followup": "2026-09-16",
@@ -597,7 +597,7 @@
       "sf_contact_id": "0033A00002WDLlYQAX",
       "row_json": "{\"Website\": \"https://www.dataseers.ai\", \"City\": \"Alpharetta\", \"State\": \"GA\", \"Employees\": 93, \"Description\": \"DataSeers, Inc. is a computer software company. It provides AI-powered enterprise software for banks and fintechs to improve reconciliation, compliance, fraud detection, and analytics. The company offers its services throughout the country.\", \"CEO/Owner Name\": \"Micah Fowler\", \"Title\": \"Manager of Strategic Alliances\", \"Email\": \"mfowler@dataseers.ai\", \"Phone\": null}",
       "created_at": "2026-09-30T15:45:14.660800+00:00",
-      "updated_at": "2026-11-13T18:32:05.953619+00:00",
+      "updated_at": "2026-11-23T22:24:25.343994+00:00",
       "memo": null
     },
     {
@@ -861,7 +861,7 @@
       "sf_contact_id": "003Pp000028ZbdNIAS",
       "row_json": "{\"Website\": \"https://vnasrisk.com\", \"City\": null, \"State\": null, \"Employees\": null, \"Description\": \"VNAS Risk Solutions specializes in the design, implementation, and management of captive insurance companies both in the U.S. and internationally. They provide comprehensive services including feasibility studies, regulatory compliance, financial management, and operational oversight to support various industries in managing their risk through captive insurance.\", \"CEO/Owner Name\": \"Robert Barker\", \"Title\": \"Managing Director\", \"Email\": \"robertbarker@vnasrisk.com\", \"Phone\": null}",
       "created_at": "2026-09-30T15:45:15.001612+00:00",
-      "updated_at": "2026-11-23T22:24:18.771937+00:00",
+      "updated_at": "2026-11-23T22:24:23.621994+00:00",
       "memo": null
     },
     {
@@ -7733,6 +7733,16 @@
       "summary": "Status: In Dialogue \u2192 Revisit Later",
       "detail": "",
       "timestamp": "2026-11-23T22:24:18.771780+00:00",
+      "synced_to_sf": 1,
+      "user": "Intern"
+    },
+    {
+      "id": 508,
+      "deal_id": 25,
+      "type": "Note",
+      "summary": "Status: In Dialogue \u2192 Revisit Later",
+      "detail": "",
+      "timestamp": "2026-11-23T22:24:25.343886+00:00",
       "synced_to_sf": 0,
       "user": "Intern"
     }
@@ -7744,7 +7754,7 @@
     },
     {
       "key": "last_backup_at",
-      "value": "2026-11-19T00:35:03.625836+00:00"
+      "value": "2026-11-23T22:24:21.505368+00:00"
     }
   ]
 }
